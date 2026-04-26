@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Bid, BidSpec, BidStatus } from './page'
 import { scoreGoNoGo, verdictConfig } from './lib/scoring'
+import { updateBidStatus } from './actions/bids'
 
 type Props = {
   bids: Bid[]
@@ -20,6 +22,24 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [search, setSearch] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showArchived, setShowArchived] = useState(false)
+  const [, startTransition] = useTransition()
+  const router = useRouter()
+
+  function archiveBid(e: React.MouseEvent, bidId: string) {
+    e.stopPropagation()
+    startTransition(async () => {
+      await updateBidStatus(bidId, 'no_bid')
+      router.refresh()
+    })
+  }
+
+  function restoreBid(e: React.MouseEvent, bidId: string) {
+    e.stopPropagation()
+    startTransition(async () => {
+      await updateBidStatus(bidId, 'active')
+      router.refresh()
+    })
+  }
 
   const t = new Date(today)
   const d3 = new Date(in3)
@@ -158,7 +178,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               <th style={{ ...thStyle, width: 100 }}>Published</th>
               <th style={{ ...thStyle, width: 100 }}>Due Date</th>
               <th style={{ ...thStyle, width: 80 }}>Status</th>
-              <th style={{ ...thStyle, width: 28 }} />
+              <th style={{ ...thStyle, width: 70 }} />
             </tr>
           </thead>
           <tbody>
@@ -231,8 +251,21 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
-                  <td style={{ ...tdStyle, width: 20, color: 'var(--gray)', fontSize: 11 }}>
-                    {b.url && <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-light)' }}>↗</a>}
+                  <td style={{ ...tdStyle, width: 70, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right' }}>
+                    {b.url && (
+                      <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-light)', marginRight: 10 }}>↗</a>
+                    )}
+                    <button
+                      onClick={e => showArchived ? restoreBid(e, b.bid_id) : archiveBid(e, b.bid_id)}
+                      style={{
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        color: 'var(--gray)', fontSize: 10, fontFamily: 'IBM Plex Mono',
+                        padding: 0, opacity: 0.5,
+                      }}
+                      title={showArchived ? 'Restore to active' : 'Archive (no bid)'}
+                    >
+                      {showArchived ? 'Restore' : 'Archive'}
+                    </button>
                   </td>
                 </tr>,
                 isExpanded && (
