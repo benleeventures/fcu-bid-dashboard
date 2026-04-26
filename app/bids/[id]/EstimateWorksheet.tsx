@@ -84,7 +84,7 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
   const [savedMsg, setSavedMsg] = useState<string | null>(null)
   const [rfqMsg, setRfqMsg] = useState<string | null>(null)
   const [rfqTo, setRfqTo] = useState('')
-  const [rfqCc, setRfqCc] = useState('gutarra.leonardo@gmail.com')
+  const [rfqCc, setRfqCc] = useState('')
   const [status, setStatus] = useState(estimate?.status ?? 'draft')
 
   const subtotal = useMemo(() => lines.reduce((s, l) => s + l.total, 0), [lines])
@@ -292,13 +292,19 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
               />
             </div>
             <div style={{ flex: 1, minWidth: 200 }}>
-              <label style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', display: 'block', marginBottom: 4 }}>CC (Joanne)</label>
+              <label style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', display: 'block', marginBottom: 4 }}>
+                Additional CC <span style={{ opacity: 0.5 }}>(optional)</span>
+              </label>
               <input
                 type="email"
+                placeholder="another@email.com"
                 value={rfqCc}
                 onChange={e => setRfqCc(e.target.value)}
                 style={{ ...rfqInputStyle, width: '100%' }}
               />
+              <div style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', marginTop: 4, opacity: 0.6 }}>
+                Joanne always CC'd automatically
+              </div>
             </div>
           </div>
         </div>
