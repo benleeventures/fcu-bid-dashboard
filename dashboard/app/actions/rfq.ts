@@ -9,7 +9,7 @@ function sb() {
 async function sendResend(to: string[], subject: string, html: string, cc?: string[]) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) throw new Error('RESEND_API_KEY not set')
-  const body: Record<string, any> = { from: 'FCU Bid Agent <ben@benlee.ventures>', to, subject, html }
+  const body: Record<string, any> = { from: 'FCU Bid Agent <agent@bids.benlee.ventures>', to, subject, html }
   if (cc?.length) body.cc = cc
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
