@@ -55,9 +55,20 @@ export default async function BidDetailPage({ params }: { params: { id: string }
         <a href="/" style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
           ← All bids
         </a>
-        <a href="/settings" style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
-          ⚙ Rate settings
-        </a>
+        <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+          {bid.url && (
+            <a href={bid.url} target="_blank" rel="noopener noreferrer" style={{
+              color: 'var(--gold)', fontSize: 12, fontFamily: 'IBM Plex Mono',
+              textDecoration: 'none', border: '1px solid var(--gold)', borderRadius: 6,
+              padding: '4px 10px',
+            }}>
+              Open Portal ↗
+            </a>
+          )}
+          <a href="/settings" style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
+            ⚙ Rate settings
+          </a>
+        </div>
       </div>
 
       {/* Bid header */}

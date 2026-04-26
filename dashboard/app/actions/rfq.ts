@@ -6,13 +6,15 @@ function sb() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!)
 }
 
-async function sendResend(to: string[], subject: string, html: string) {
+async function sendResend(to: string[], subject: string, html: string, cc?: string[]) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) throw new Error('RESEND_API_KEY not set')
+  const body: Record<string, any> = { from: 'FCU Bid Agent <onboarding@resend.dev>', to, subject, html }
+  if (cc?.length) body.cc = cc
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'FCU Bid Agent <onboarding@resend.dev>', to, subject, html }),
+    body: JSON.stringify(body),
   })
   if (!resp.ok) {
     const text = await resp.text()
@@ -20,7 +22,11 @@ async function sendResend(to: string[], subject: string, html: string) {
   }
 }
 
-export async function sendRFQEmails(bidId: string): Promise<{ ok: boolean; error?: string }> {
+export async function sendRFQEmails(
+  bidId: string,
+  toEmail: string,
+  ccEmail?: string,
+): Promise<{ ok: boolean; error?: string }> {
   try {
     const client = sb()
     const [{ data: bid }, { data: spec }, { data: est }] = await Promise.all([
@@ -115,11 +121,14 @@ export async function sendRFQEmails(bidId: string): Promise<{ ok: boolean; error
 </body>
 </html>`
 
-    const notifyEmail = process.env.NOTIFY_EMAIL ?? ''
-    const recipients = notifyEmail.split(',').map(e => e.trim()).filter(Boolean)
-    if (!recipients.length) return { ok: false, error: 'NOTIFY_EMAIL not set' }
-
-    await sendResend(recipients, `[RFQ Draft] ${title.slice(0, 55)} — ${materialLines.length} material line${materialLines.length > 1 ? 's' : ''}`, html)
+    if (!toEmail?.trim()) return { ok: false, error: 'Enter a recipient email first' }
+    const cc = ccEmail?.trim() ? [ccEmail.trim()] : []
+    await sendResend(
+      [toEmail.trim()],
+      `[RFQ Draft] ${title.slice(0, 55)} — ${materialLines.length} material line${materialLines.length > 1 ? 's' : ''}`,
+      html,
+      cc,
+    )
     return { ok: true }
   } catch (err: any) {
     return { ok: false, error: err.message }
