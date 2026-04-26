@@ -83,6 +83,8 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
   const [isPending, startTransition] = useTransition()
   const [savedMsg, setSavedMsg] = useState<string | null>(null)
   const [rfqMsg, setRfqMsg] = useState<string | null>(null)
+  const [rfqTo, setRfqTo] = useState('')
+  const [rfqCc, setRfqCc] = useState('gutarra.leonardo@gmail.com')
   const [status, setStatus] = useState(estimate?.status ?? 'draft')
 
   const subtotal = useMemo(() => lines.reduce((s, l) => s + l.total, 0), [lines])
@@ -129,8 +131,8 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
 
   function handleSendRFQ() {
     startTransition(async () => {
-      const result = await sendRFQEmails(bidId)
-      setRfqMsg(result.ok ? '✓ RFQ sent to Joanne' : `⚠ ${result.error}`)
+      const result = await sendRFQEmails(bidId, rfqTo, rfqCc)
+      setRfqMsg(result.ok ? `✓ RFQ sent to ${rfqTo}` : `⚠ ${result.error}`)
       setTimeout(() => setRfqMsg(null), 5000)
     })
   }
@@ -272,9 +274,39 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
         )}
       </div>
 
+      {/* RFQ email fields */}
+      {!isApproved && materialLines.some(l => l.qty > 0) && (
+        <div style={{ marginTop: 20, padding: '14px 16px', background: 'var(--charcoal-soft)', borderRadius: 8, border: '1px solid var(--charcoal-mid)' }}>
+          <div style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
+            RFQ Recipients
+          </div>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <label style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', display: 'block', marginBottom: 4 }}>To (rep email)</label>
+              <input
+                type="email"
+                placeholder="rep@supplier.com"
+                value={rfqTo}
+                onChange={e => setRfqTo(e.target.value)}
+                style={{ ...rfqInputStyle, width: '100%' }}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <label style={{ fontSize: 10, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', display: 'block', marginBottom: 4 }}>CC (Joanne)</label>
+              <input
+                type="email"
+                value={rfqCc}
+                onChange={e => setRfqCc(e.target.value)}
+                style={{ ...rfqInputStyle, width: '100%' }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Action buttons */}
       {!isApproved && (
-        <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
           <button
             onClick={() => handleSave('draft')}
             disabled={isPending}
@@ -302,13 +334,13 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
           {materialLines.some(l => l.qty > 0) && (
             <button
               onClick={handleSendRFQ}
-              disabled={isPending}
+              disabled={isPending || !rfqTo.trim()}
               style={{
                 background: rfqMsg?.startsWith('✓') ? 'var(--green)' : 'transparent',
-                color: rfqMsg?.startsWith('✓') ? 'var(--charcoal)' : rfqMsg?.startsWith('⚠') ? 'var(--orange)' : 'var(--gray)',
+                color: rfqMsg?.startsWith('✓') ? 'var(--charcoal)' : rfqMsg?.startsWith('⚠') ? 'var(--orange)' : (!rfqTo.trim() ? '#555' : 'var(--gray)'),
                 border: `1px dashed ${rfqMsg?.startsWith('⚠') ? 'var(--orange)' : 'var(--charcoal-mid)'}`,
                 borderRadius: 8, padding: '10px 20px', fontSize: 13,
-                fontWeight: 600, cursor: isPending ? 'not-allowed' : 'pointer',
+                fontWeight: 600, cursor: (isPending || !rfqTo.trim()) ? 'not-allowed' : 'pointer',
                 fontFamily: 'IBM Plex Mono',
               }}
             >
@@ -459,4 +491,10 @@ const cellInput: React.CSSProperties = {
 
 const monoCell: React.CSSProperties = {
   fontFamily: 'IBM Plex Mono', fontSize: 12, color: 'var(--white)',
+}
+
+const rfqInputStyle: React.CSSProperties = {
+  background: 'var(--charcoal)', border: '1px solid var(--charcoal-mid)',
+  borderRadius: 6, color: 'var(--white)', padding: '7px 10px',
+  fontSize: 12, outline: 'none', fontFamily: 'IBM Plex Mono', boxSizing: 'border-box',
 }
