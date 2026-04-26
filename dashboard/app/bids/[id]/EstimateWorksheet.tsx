@@ -132,6 +132,9 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
 
   function handleSendRFQ() {
     startTransition(async () => {
+      await saveEstimate(bidId, lines, markup, {
+        standard: rates.standard, prevailing: rates.prevailing, apprentice: rates.apprentice,
+      }, 'draft')
       const result = await sendRFQEmails(bidId, rfqTo, rfqCc)
       setRfqMsg(result.ok ? `✓ RFQ sent to ${rfqTo}` : `⚠ ${result.error}`)
       setTimeout(() => setRfqMsg(null), 5000)
