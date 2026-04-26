@@ -173,7 +173,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               <th style={{ ...thStyle, width: 100 }}>Published</th>
               <th style={{ ...thStyle, width: 100 }}>Due Date</th>
               <th style={{ ...thStyle, width: 80 }}>Status</th>
-              <th style={{ ...thStyle, width: 44 }} />
+              <th style={{ ...thStyle, width: 64 }} />
             </tr>
           </thead>
           <tbody>
@@ -246,7 +246,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
-                  <td style={{ ...tdStyle, width: 44, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right' }}>
+                  <td style={{ ...tdStyle, width: 64, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right', paddingRight: 16 }}>
                     {b.url && (
                       <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-light)', marginRight: 10 }}>↗</a>
                     )}
@@ -254,8 +254,9 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       onClick={e => showArchived ? restoreBid(e, b.bid_id) : archiveBid(e, b.bid_id)}
                       style={{
                         background: 'none', border: 'none', cursor: 'pointer',
-                        color: 'var(--gray)', fontSize: 15, lineHeight: 1,
-                        padding: '0 2px', opacity: 0.45,
+                        color: showArchived ? 'var(--green)' : 'var(--red)',
+                        fontSize: 15, lineHeight: 1,
+                        padding: '0 2px', opacity: 0.6,
                       }}
                       title={showArchived ? 'Restore to active' : 'Archive (no bid)'}
                     >
