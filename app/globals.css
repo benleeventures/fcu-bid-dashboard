@@ -1,16 +1,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --charcoal:     #1C1C1E;
-  --charcoal-soft:#2C2C2E;
-  --charcoal-mid: #3A3A3C;
+  --charcoal:     #FAF7F2;   /* cream background */
+  --charcoal-soft:#FFFFFF;   /* white surface / cards */
+  --charcoal-mid: #E5DDD0;   /* warm border */
   --gold:         #C8922A;
-  --gold-light:   #E8B84B;
-  --white:        #F5F5F7;
-  --gray:         #8E8E93;
-  --red:          #FF453A;
-  --green:        #30D158;
-  --orange:       #FF9F0A;
+  --gold-light:   #9A6C10;   /* darkened for contrast on light bg */
+  --star:         #F5C518;   /* review-star yellow */
+  --white:        #1A1A1C;   /* primary text */
+  --gray:         #6A6A70;   /* muted text */
+  --red:          #D93025;
+  --green:        #2A8A3E;
+  --orange:       #D4720A;
 }
 
 body {
@@ -21,5 +22,5 @@ body {
   min-height: 100vh;
 }
 
-a { color: var(--gold-light); text-decoration: none; }
+a { color: var(--gold); text-decoration: none; }
 a:hover { text-decoration: underline; }
