@@ -154,7 +154,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, fontFamily: 'IBM Plex Mono', color: 'var(--gray)' }}>
         <span><span style={{ color: 'var(--red)' }}>●</span> Due &lt;3 days</span>
         <span><span style={{ color: 'var(--orange)' }}>●</span> Due this week</span>
-        <span><span style={{ color: 'var(--gold)' }}>★</span> Flooring relevant</span>
+        <span><span style={{ color: 'var(--star)' }}>★</span> Flooring relevant</span>
       </div>
 
       {/* Table */}
@@ -197,7 +197,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   }}
                 >
                   <td style={{ ...tdStyle, width: 24, textAlign: 'center' }}>
-                    {b.is_relevant && <span style={{ color: 'var(--gold)', fontSize: 13 }}>★</span>}
+                    {b.is_relevant && <span style={{ color: 'var(--star)', fontSize: 13 }}>★</span>}
                   </td>
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, color: 'var(--gray)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <a
