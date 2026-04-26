@@ -85,6 +85,7 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
   const [rfqMsg, setRfqMsg] = useState<string | null>(null)
   const [rfqTo, setRfqTo] = useState('')
   const [rfqCc, setRfqCc] = useState('')
+  const [rfqHover, setRfqHover] = useState(false)
   const [status, setStatus] = useState(estimate?.status ?? 'draft')
 
   const subtotal = useMemo(() => lines.reduce((s, l) => s + l.total, 0), [lines])
@@ -337,22 +338,38 @@ export default function EstimateWorksheet({ bidId, spec, estimate, rates, isStal
           >
             Approve →
           </button>
-          {materialLines.some(l => l.qty > 0) && (
-            <button
-              onClick={handleSendRFQ}
-              disabled={isPending || !rfqTo.trim()}
-              style={{
-                background: rfqMsg?.startsWith('✓') ? 'var(--green)' : 'transparent',
-                color: rfqMsg?.startsWith('✓') ? 'var(--charcoal)' : rfqMsg?.startsWith('⚠') ? 'var(--orange)' : (!rfqTo.trim() ? '#555' : 'var(--gray)'),
-                border: `1px dashed ${rfqMsg?.startsWith('⚠') ? 'var(--orange)' : 'var(--charcoal-mid)'}`,
-                borderRadius: 8, padding: '10px 20px', fontSize: 13,
-                fontWeight: 600, cursor: (isPending || !rfqTo.trim()) ? 'not-allowed' : 'pointer',
-                fontFamily: 'IBM Plex Mono',
-              }}
-            >
-              {rfqMsg ?? 'Send RFQ →'}
-            </button>
-          )}
+          {materialLines.some(l => l.qty > 0) && (() => {
+            const disabled = isPending || !rfqTo.trim()
+            const isSuccess = rfqMsg?.startsWith('✓')
+            const isError   = rfqMsg?.startsWith('⚠')
+            return (
+              <button
+                onClick={handleSendRFQ}
+                disabled={disabled}
+                onMouseEnter={() => setRfqHover(true)}
+                onMouseLeave={() => setRfqHover(false)}
+                style={{
+                  borderRadius: 8, padding: '10px 20px', fontSize: 13,
+                  fontWeight: 700, fontFamily: 'IBM Plex Mono',
+                  cursor: disabled ? 'not-allowed' : 'pointer',
+                  transition: 'background 0.15s, border-color 0.15s',
+                  ...(isSuccess ? {
+                    background: 'var(--green)', color: 'var(--charcoal)', border: '1px solid var(--green)',
+                  } : isError ? {
+                    background: '#FF453A18', color: 'var(--red)', border: '1px solid var(--red)',
+                  } : disabled ? {
+                    background: 'transparent', color: '#555', border: '1px solid #333',
+                  } : {
+                    background: rfqHover ? '#C8922A28' : '#C8922A14',
+                    color: 'var(--gold)',
+                    border: '1px solid var(--gold)',
+                  }),
+                }}
+              >
+                {isPending ? 'Sending…' : (rfqMsg ?? '↑ Send RFQ')}
+              </button>
+            )
+          })()}
         </div>
       )}
     </div>
