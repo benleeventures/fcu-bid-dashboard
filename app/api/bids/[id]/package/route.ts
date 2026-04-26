@@ -259,7 +259,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   )
 
   const safe = (bid.bid_id ?? bidId).replace(/[^a-zA-Z0-9-_]/g, '_')
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="FCU-Bid-${safe}.pdf"`,
