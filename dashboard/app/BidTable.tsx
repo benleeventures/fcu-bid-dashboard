@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useMemo } from 'react'
 import type { Bid, BidSpec, BidStatus } from './page'
 import { scoreGoNoGo, verdictConfig } from './lib/scoring'
 import { updateBidStatus } from './actions/bids'
@@ -22,23 +21,18 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [search, setSearch] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showArchived, setShowArchived] = useState(false)
-  const [, startTransition] = useTransition()
-  const router = useRouter()
+  const [localStatus, setLocalStatus] = useState<Map<string, string>>(new Map())
 
   function archiveBid(e: React.MouseEvent, bidId: string) {
     e.stopPropagation()
-    startTransition(async () => {
-      await updateBidStatus(bidId, 'no_bid')
-      router.refresh()
-    })
+    setLocalStatus(m => new Map(m).set(bidId, 'no_bid'))
+    updateBidStatus(bidId, 'no_bid')
   }
 
   function restoreBid(e: React.MouseEvent, bidId: string) {
     e.stopPropagation()
-    startTransition(async () => {
-      await updateBidStatus(bidId, 'active')
-      router.refresh()
-    })
+    setLocalStatus(m => new Map(m).set(bidId, 'active'))
+    updateBidStatus(bidId, 'active')
   }
 
   const t = new Date(today)
@@ -46,16 +40,17 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const d7 = new Date(in7)
 
   const archivedCount = useMemo(
-    () => bids.filter(b => b.bid_status === 'no_bid').length,
-    [bids],
+    () => bids.filter(b => (localStatus.get(b.bid_id) ?? b.bid_status) === 'no_bid').length,
+    [bids, localStatus],
   )
 
   const filtered = useMemo(() => {
     return bids.filter(b => {
+      const status = localStatus.get(b.bid_id) ?? b.bid_status
       if (showArchived) {
-        if (b.bid_status !== 'no_bid') return false
+        if (status !== 'no_bid') return false
       } else {
-        if (b.bid_status === 'no_bid') return false
+        if (status === 'no_bid') return false
       }
       if (filterRelevant && !b.is_relevant) return false
       if (filterSource && b.source !== filterSource) return false
@@ -178,7 +173,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               <th style={{ ...thStyle, width: 100 }}>Published</th>
               <th style={{ ...thStyle, width: 100 }}>Due Date</th>
               <th style={{ ...thStyle, width: 80 }}>Status</th>
-              <th style={{ ...thStyle, width: 70 }} />
+              <th style={{ ...thStyle, width: 44 }} />
             </tr>
           </thead>
           <tbody>
@@ -251,7 +246,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
-                  <td style={{ ...tdStyle, width: 70, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right' }}>
+                  <td style={{ ...tdStyle, width: 44, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right' }}>
                     {b.url && (
                       <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-light)', marginRight: 10 }}>↗</a>
                     )}
@@ -259,12 +254,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       onClick={e => showArchived ? restoreBid(e, b.bid_id) : archiveBid(e, b.bid_id)}
                       style={{
                         background: 'none', border: 'none', cursor: 'pointer',
-                        color: 'var(--gray)', fontSize: 10, fontFamily: 'IBM Plex Mono',
-                        padding: 0, opacity: 0.5,
+                        color: 'var(--gray)', fontSize: 15, lineHeight: 1,
+                        padding: '0 2px', opacity: 0.45,
                       }}
                       title={showArchived ? 'Restore to active' : 'Archive (no bid)'}
                     >
-                      {showArchived ? 'Restore' : 'Archive'}
+                      {showArchived ? '↩' : '×'}
                     </button>
                   </td>
                 </tr>,
