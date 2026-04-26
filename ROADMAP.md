@@ -1,5 +1,5 @@
 # FCU — AI Bid Agent Roadmap
-**Last updated:** 2026-04-26
+**Last updated:** 2026-04-26 (palette + Phase 4 progress)
 
 > Always read this before any bid agent work. Contains current build status, pricing rates, phase checklist, and portal coverage.
 
@@ -17,7 +17,7 @@
 | New-Bid Email Digest | ✅ Done | Fires via Resend after each scanner run with new relevant bids |
 | Job Walk Alert Email | ✅ Done | Fires via Resend when `walk_required=True` after parsing |
 | Compliance Alert Email | ✅ Done | Fires via Resend on `--save` when bid_bond/prevailing_wage/dvbe/dbe flags set |
-| RFQ Email Generator | ✅ Done | `--rfq <bid_id>` CLI + "Send RFQ →" button in dashboard; sends draft to Joanne |
+| RFQ Email Generator | ✅ Done | `--rfq <bid_id>` CLI + "Send RFQ →" button in dashboard; To (rep) + Joanne always CC'd |
 | Scheduler | ⬜ Skipped for now | Test manually first; add cron after validation |
 | BidNet Direct (public listing page) | ⚠ Partial | Headless browser blocked on listing page; doc download works via login |
 | LAUSD Portal | ⬜ Not connected | High priority — TOPO renewal 2027 |
@@ -25,6 +25,8 @@
 | Compliance Auto-Checker | ⬜ Phase 3 | Compliance fields exist in bid_specs, no alert yet |
 | Bid Package Assembler | ✅ Done | `/api/bids/[id]/package` — PDF download from dashboard |
 | Bid Results Tracking | ✅ Done | Status badges, win/loss tracker, amount fields in bid detail + table filter |
+| Go/No-Go Scoring | ✅ Done | Score pill in table + GoNoGoCard in bid detail; 9-factor model (scope, SF, PW, deadline, etc.) |
+| Dashboard UX | ✅ Done | Light cream theme, archive/restore bids (no-bid), "No docs" badge, portal button |
 | Competitive Intelligence | ⬜ Phase 4 | |
 
 ---
@@ -68,11 +70,11 @@ Extend `bid_specs` with room-by-room breakdown for estimate pre-filling.
 | 2 | Document Download & Parsing | Agent | ✅ Download / ✅ Manual parsing with Claude Code |
 | 3 | Job Walk Assessment | Lenny | ✅ Agent sends job walk alert email when walk_required |
 | 4 | Scope Extraction & Quantity Takeoff | Agent | ⬜ Phase 2 |
-| 5 | Material Quote Requests (RFQs) | Agent drafts / Joanne approves | ⬜ Phase 3 |
+| 5 | Material Quote Requests (RFQs) | Agent drafts / Joanne approves | ✅ Done — dashboard button sends to rep; Joanne always CC'd |
 | 6 | AI-Powered Estimate Worksheet | Agent + Joanne | ✅ Done (dashboard) |
 | 7 | Compliance & Requirements Check | Agent | ⚠ Fields captured in bid_specs, no alert email yet |
-| 8 | Bid Package Preparation | Agent + Joanne signs | ⬜ Phase 3 |
-| 9 | Submission, Tracking & Learning | Joanne submits / Agent logs | ⬜ Phase 4 |
+| 8 | Bid Package Preparation | Agent + Joanne signs | ✅ Done — PDF bid package download in dashboard |
+| 9 | Submission, Tracking & Learning | Joanne submits / Agent logs | ✅ Done — outcome tracker: status, submitted amount, award amount |
 
 ---
 
@@ -107,9 +109,9 @@ Extend `bid_specs` with room-by-room breakdown for estimate pre-filling.
 - [ ] Ollama/LLaMA 3 local model for auto-parsing (replace manual mode)
 
 ### Phase 4: Intelligence
-- [ ] Bid results tracking and logging
+- [x] Bid results tracking and logging — status badges, win/loss, submitted/award amounts
+- [x] Go/no-go scoring model — 9-factor score (scope, SF, prevailing wage, deadline, DVBE, etc.) in table + detail
 - [ ] Competitive intelligence dashboard (win/loss by agency, job type)
-- [ ] Go/no-go scoring model
 - [ ] Markup recommendation engine
 
 ---
