@@ -91,11 +91,25 @@ export default async function BidDetailPage({ params }: { params: { id: string }
         )}
       </div>
 
-      {/* Go/No-Go score card */}
-      <GoNoGoCard
-        bid={{ is_relevant: bid.is_relevant, due_date: bid.due_date }}
-        spec={spec}
-      />
+      {/* Go/No-Go score card — only when spec is parsed */}
+      {spec ? (
+        <GoNoGoCard
+          bid={{ is_relevant: bid.is_relevant, due_date: bid.due_date }}
+          spec={spec}
+        />
+      ) : (
+        <div style={{
+          marginBottom: 24, padding: '16px 20px',
+          background: 'var(--charcoal-soft)', borderRadius: 12,
+          border: '1px solid var(--charcoal-mid)',
+          fontSize: 12, fontFamily: 'IBM Plex Mono', color: 'var(--gray)',
+        }}>
+          No documents parsed yet — score unavailable.{' '}
+          Run <code style={{ background: 'var(--charcoal-mid)', padding: '1px 6px', borderRadius: 3 }}>
+            python parser.py --save {bid.bid_id} '...'
+          </code> to unlock scoring.
+        </div>
+      )}
 
       {/* Download bid package — only when estimate exists */}
       {estimate && (

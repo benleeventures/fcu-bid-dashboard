@@ -32,7 +32,11 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
 
   const filtered = useMemo(() => {
     return bids.filter(b => {
-      if (!showArchived && b.bid_status === 'no_bid') return false
+      if (showArchived) {
+        if (b.bid_status !== 'no_bid') return false
+      } else {
+        if (b.bid_status === 'no_bid') return false
+      }
       if (filterRelevant && !b.is_relevant) return false
       if (filterSource && b.source !== filterSource) return false
       if (search) {
@@ -129,7 +133,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               padding: 0, textDecoration: 'underline', textUnderlineOffset: 3,
             }}
           >
-            {showArchived ? 'Hide no-bid bids' : `Show ${archivedCount} archived (no bid)`}
+            {showArchived ? '← Back to active bids' : `Show ${archivedCount} archived (no bid)`}
           </button>
         </div>
       )}
@@ -201,7 +205,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                           background: 'var(--charcoal-mid)', color: 'var(--gray)', fontFamily: 'IBM Plex Mono'
                         }}>{b.search_keyword}</span>
                       )}
-                      {!hasSpec && b.is_relevant && (
+                      {!hasSpec && (
                         <span style={{
                           fontSize: 10, padding: '1px 5px', borderRadius: 4,
                           background: 'var(--charcoal-mid)', color: 'var(--gray)', fontFamily: 'IBM Plex Mono'
