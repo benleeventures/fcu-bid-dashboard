@@ -19,13 +19,20 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [filterStatus, setFilterStatus] = useState('')
   const [search, setSearch] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [showArchived, setShowArchived] = useState(false)
 
   const t = new Date(today)
   const d3 = new Date(in3)
   const d7 = new Date(in7)
 
+  const archivedCount = useMemo(
+    () => bids.filter(b => b.bid_status === 'no_bid').length,
+    [bids],
+  )
+
   const filtered = useMemo(() => {
     return bids.filter(b => {
+      if (!showArchived && b.bid_status === 'no_bid') return false
       if (filterRelevant && !b.is_relevant) return false
       if (filterSource && b.source !== filterSource) return false
       if (search) {
@@ -49,7 +56,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       if (filterStatus && (b.bid_status ?? 'active') !== filterStatus) return false
       return true
     })
-  }, [bids, filterRelevant, filterSource, filterDue, search, t, d3, d7])
+  }, [bids, showArchived, filterRelevant, filterSource, filterDue, search, t, d3, d7])
 
   function urgencyColor(due_date: string | null): string {
     if (!due_date) return 'transparent'
@@ -110,6 +117,22 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           {filtered.length} bids
         </span>
       </div>
+
+      {/* Archive toggle */}
+      {archivedCount > 0 && (
+        <div style={{ marginBottom: 10 }}>
+          <button
+            onClick={() => setShowArchived(v => !v)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono',
+              padding: 0, textDecoration: 'underline', textUnderlineOffset: 3,
+            }}
+          >
+            {showArchived ? 'Hide no-bid bids' : `Show ${archivedCount} archived (no bid)`}
+          </button>
+        </div>
+      )}
 
       {/* Legend */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, fontFamily: 'IBM Plex Mono', color: 'var(--gray)' }}>
@@ -178,11 +201,11 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                           background: 'var(--charcoal-mid)', color: 'var(--gray)', fontFamily: 'IBM Plex Mono'
                         }}>{b.search_keyword}</span>
                       )}
-                      {hasSpec && (
+                      {!hasSpec && b.is_relevant && (
                         <span style={{
                           fontSize: 10, padding: '1px 5px', borderRadius: 4,
-                          background: '#C8922A22', color: 'var(--gold)', fontFamily: 'IBM Plex Mono'
-                        }}>parsed</span>
+                          background: 'var(--charcoal-mid)', color: 'var(--gray)', fontFamily: 'IBM Plex Mono'
+                        }}>No docs</span>
                       )}
                       <ScorePill bid={b} spec={b.spec ?? null} />
                     </div>
