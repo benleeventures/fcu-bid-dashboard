@@ -1,0 +1,26 @@
+# Secrets
+.env
+*.env
+cookies.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Node
+node_modules/
+.next/
+dashboard/.next/
+
+# OS
+.DS_Store
+.claude/
+.playwright-mcp/
+
+# Screenshots / local artifacts
+*.png
+*.jpg
+
+# Downloaded bid documents
+bid-scanner/output/

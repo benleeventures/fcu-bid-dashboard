@@ -1,0 +1,25 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --charcoal:     #1C1C1E;
+  --charcoal-soft:#2C2C2E;
+  --charcoal-mid: #3A3A3C;
+  --gold:         #C8922A;
+  --gold-light:   #E8B84B;
+  --white:        #F5F5F7;
+  --gray:         #8E8E93;
+  --red:          #FF453A;
+  --green:        #30D158;
+  --orange:       #FF9F0A;
+}
+
+body {
+  background: var(--charcoal);
+  color: var(--white);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+a { color: var(--gold-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
