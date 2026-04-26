@@ -47,11 +47,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const filtered = useMemo(() => {
     return bids.filter(b => {
       const status = localStatus.get(b.bid_id) ?? b.bid_status
-      if (showArchived) {
-        if (status !== 'no_bid') return false
-      } else {
-        if (status === 'no_bid') return false
-      }
+      if (showArchived) return status === 'no_bid'
+      if (status === 'no_bid') return false
       if (filterRelevant && !b.is_relevant) return false
       if (filterSource && b.source !== filterSource) return false
       if (search) {
