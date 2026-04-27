@@ -36,7 +36,7 @@
 ### 1. Test AI Parsing + Notifications
 Env vars needed in `bid-scanner/.env`:
 ```
-RESEND_API_KEY=re_gLdEGPTm_MFB96mykY8kJtFEZ7TUg7UoA
+RESEND_API_KEY=your_resend_api_key_here
 NOTIFY_EMAIL=gutarra.leonardo@gmail.com
 ```
 
