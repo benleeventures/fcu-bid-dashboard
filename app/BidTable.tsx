@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import type { Bid, BidSpec, BidStatus } from './page'
 import { scoreGoNoGo, verdictConfig } from './lib/scoring'
-import { updateBidStatus } from './actions/bids'
+import { updateBidStatus, updateBidFavorite } from './actions/bids'
 
 type Props = {
   bids: Bid[]
@@ -13,8 +13,10 @@ type Props = {
   in7: string
 }
 
+type SortField = 'due_date' | 'published_date'
+type SortDir   = 'asc' | 'desc'
+
 export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
-  const [filterRelevant, setFilterRelevant] = useState(false)
   const [filterSource, setFilterSource] = useState('')
   const [filterDue, setFilterDue] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
@@ -22,6 +24,9 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showArchived, setShowArchived] = useState(false)
   const [localStatus, setLocalStatus] = useState<Map<string, string>>(new Map())
+  const [localFavorite, setLocalFavorite] = useState<Map<string, boolean>>(new Map())
+  const [sortField, setSortField] = useState<SortField | null>(null)
+  const [sortDir, setSortDir] = useState<SortDir>('asc')
 
   function archiveBid(e: React.MouseEvent, bidId: string) {
     e.stopPropagation()
@@ -35,7 +40,27 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     updateBidStatus(bidId, 'active')
   }
 
-  const t = new Date(today)
+  function handleFavorite(e: React.MouseEvent, bidId: string) {
+    e.stopPropagation()
+    const current = localFavorite.has(bidId)
+      ? localFavorite.get(bidId)!
+      : (bids.find(b => b.bid_id === bidId)?.is_favorite ?? false)
+    const next = !current
+    setLocalFavorite(m => new Map(m).set(bidId, next))
+    updateBidFavorite(bidId, next)
+  }
+
+  function toggleSort(field: SortField) {
+    if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
+    else { setSortField(field); setSortDir('asc') }
+  }
+
+  function sortIndicator(field: SortField) {
+    if (sortField !== field) return ' ↕'
+    return sortDir === 'asc' ? ' ↑' : ' ↓'
+  }
+
+  const t  = new Date(today)
   const d3 = new Date(in3)
   const d7 = new Date(in7)
 
@@ -47,12 +72,11 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     [bids, localStatus],
   )
 
-  const filtered = useMemo(() => {
-    return bids.filter(b => {
+  const displayBids = useMemo(() => {
+    const filtered = bids.filter(b => {
       const status = localStatus.get(b.bid_id) ?? b.bid_status
       if (showArchived) return status === 'no_bid' || status === 'expired'
       if (status === 'no_bid' || status === 'expired') return false
-      if (filterRelevant && !b.is_relevant) return false
       if (filterSource && b.source !== filterSource) return false
       if (search) {
         const q = search.toLowerCase()
@@ -75,7 +99,26 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       if (filterStatus && (b.bid_status ?? 'active') !== filterStatus) return false
       return true
     })
-  }, [bids, showArchived, filterRelevant, filterSource, filterDue, search, t, d3, d7])
+
+    // Sort by selected column (nulls to bottom)
+    if (sortField) {
+      filtered.sort((a, b) => {
+        const av = a[sortField] ?? null
+        const bv = b[sortField] ?? null
+        if (!av && !bv) return 0
+        if (!av) return 1
+        if (!bv) return -1
+        const cmp = av < bv ? -1 : av > bv ? 1 : 0
+        return sortDir === 'asc' ? cmp : -cmp
+      })
+    }
+
+    // Pin favorites to top, preserving sort order within each group
+    const isFav = (b: Bid) => localFavorite.get(b.bid_id) ?? b.is_favorite
+    const favs = filtered.filter(isFav)
+    const rest = filtered.filter(b => !isFav(b))
+    return [...favs, ...rest]
+  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, sortField, sortDir, localStatus, localFavorite, t, d3, d7])
 
   function urgencyColor(due_date: string | null): string {
     if (!due_date) return 'transparent'
@@ -120,20 +163,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           <option value="lost">Lost</option>
           <option value="no_bid">No Bid</option>
         </select>
-        <button
-          onClick={() => setFilterRelevant(r => !r)}
-          style={{
-            ...inputStyle,
-            background: filterRelevant ? 'var(--gold)' : 'var(--charcoal-soft)',
-            color: filterRelevant ? 'var(--charcoal)' : 'var(--white)',
-            cursor: 'pointer',
-            fontWeight: filterRelevant ? 600 : 400,
-          }}
-        >
-          {filterRelevant ? '★ Flooring only' : '☆ Flooring only'}
-        </button>
         <span style={{ color: 'var(--gray)', fontSize: 12, marginLeft: 'auto', fontFamily: 'IBM Plex Mono' }}>
-          {filtered.length} bids
+          {displayBids.length} bids
         </span>
       </div>
 
@@ -157,7 +188,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, fontFamily: 'IBM Plex Mono', color: 'var(--gray)' }}>
         <span><span style={{ color: 'var(--red)' }}>●</span> Due &lt;3 days</span>
         <span><span style={{ color: 'var(--orange)' }}>●</span> Due this week</span>
-        <span><span style={{ color: 'var(--star)' }}>★</span> Flooring relevant</span>
+        <span><span style={{ color: 'var(--star)' }}>★</span> Pinned favorite</span>
       </div>
 
       {/* Table */}
@@ -170,24 +201,35 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               <th style={thStyle}>Title</th>
               <th style={{ ...thStyle, width: 170 }}>Agency</th>
               <th style={{ ...thStyle, width: 110 }}>Source</th>
-              <th style={{ ...thStyle, width: 100 }}>Published</th>
-              <th style={{ ...thStyle, width: 100 }}>Due Date</th>
+              <th
+                onClick={() => toggleSort('published_date')}
+                style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }}
+              >
+                Published{sortIndicator('published_date')}
+              </th>
+              <th
+                onClick={() => toggleSort('due_date')}
+                style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }}
+              >
+                Due Date{sortIndicator('due_date')}
+              </th>
               <th style={{ ...thStyle, width: 80 }}>Status</th>
               <th style={{ ...thStyle, width: 64 }} />
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {displayBids.length === 0 ? (
               <tr>
                 <td colSpan={9} style={{ textAlign: 'center', padding: 40, color: 'var(--gray)' }}>
                   No bids match your filters.
                 </td>
               </tr>
-            ) : filtered.flatMap((b, i) => {
+            ) : displayBids.flatMap((b, i) => {
               const urg = urgencyColor(b.due_date)
               const isExpanded = expandedId === b.bid_id
               const hasSpec = !!b.spec
               const rowBg = i % 2 === 0 ? 'var(--charcoal)' : 'var(--charcoal-soft)'
+              const isFav = localFavorite.get(b.bid_id) ?? b.is_favorite
               return [
                 <tr
                   key={b.id}
@@ -200,7 +242,17 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   }}
                 >
                   <td style={{ ...tdStyle, width: 24, textAlign: 'center' }}>
-                    {b.is_relevant && <span style={{ color: 'var(--star)', fontSize: 13 }}>★</span>}
+                    <span
+                      onClick={e => handleFavorite(e, b.bid_id)}
+                      title={isFav ? 'Unpin from top' : 'Pin to top'}
+                      style={{
+                        cursor: 'pointer',
+                        color: isFav ? 'var(--star)' : 'var(--charcoal-mid)',
+                        fontSize: 14,
+                        transition: 'color 0.15s',
+                        display: 'inline-block',
+                      }}
+                    >★</span>
                   </td>
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, color: 'var(--gray)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <a

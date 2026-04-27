@@ -30,6 +30,7 @@ export type Bid = {
   due_date_raw: string | null
   url: string | null
   is_relevant: boolean
+  is_favorite: boolean
   search_keyword: string | null
   first_seen_at: string
   last_seen_at: string
