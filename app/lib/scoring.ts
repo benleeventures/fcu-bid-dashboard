@@ -27,7 +27,7 @@ type ScoringSpec = {
 
 export function scoreGoNoGo(bid: ScoringBid, spec: ScoringSpec): GoNoGoResult {
   const factors: ScoreFactor[] = []
-  let score = 50
+  let score = 55
 
   // ── 1. Flooring scope match ──────────────────────────────────────────────
   if (bid.is_relevant) {
@@ -89,24 +89,12 @@ export function scoreGoNoGo(bid: ScoringBid, spec: ScoringSpec): GoNoGoResult {
     score -= 10
   }
 
-  // ── 8. Due date ──────────────────────────────────────────────────────────
+  // ── 8. Due date — hard block only (system catches bids early by design) ──
   if (bid.due_date) {
     const daysOut = Math.round((new Date(bid.due_date).getTime() - Date.now()) / 86_400_000)
     if (daysOut < 0) {
-      factors.push({ label: 'Bid deadline', delta: -25, note: 'Past due — cannot bid' })
-      score -= 25
-    } else if (daysOut <= 3) {
-      factors.push({ label: 'Bid deadline', delta: -15, note: `${daysOut}d left — very tight turnaround` })
-      score -= 15
-    } else if (daysOut <= 7) {
-      factors.push({ label: 'Bid deadline', delta: -5, note: `${daysOut}d left — tight` })
-      score -= 5
-    } else if (daysOut <= 21) {
-      factors.push({ label: 'Bid deadline', delta: +5, note: `${daysOut}d left — comfortable` })
-      score += 5
-    } else {
-      factors.push({ label: 'Bid deadline', delta: +10, note: `${daysOut}d left — plenty of time` })
-      score += 10
+      factors.push({ label: 'Past due', delta: -100, note: 'Deadline passed — cannot submit' })
+      return { score: 0, verdict: 'no_go', factors, partial: !spec }
     }
   }
 

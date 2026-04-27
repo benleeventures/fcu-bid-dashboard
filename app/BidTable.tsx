@@ -40,15 +40,18 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const d7 = new Date(in7)
 
   const archivedCount = useMemo(
-    () => bids.filter(b => (localStatus.get(b.bid_id) ?? b.bid_status) === 'no_bid').length,
+    () => bids.filter(b => {
+      const s = localStatus.get(b.bid_id) ?? b.bid_status
+      return s === 'no_bid' || s === 'expired'
+    }).length,
     [bids, localStatus],
   )
 
   const filtered = useMemo(() => {
     return bids.filter(b => {
       const status = localStatus.get(b.bid_id) ?? b.bid_status
-      if (showArchived) return status === 'no_bid'
-      if (status === 'no_bid') return false
+      if (showArchived) return status === 'no_bid' || status === 'expired'
+      if (status === 'no_bid' || status === 'expired') return false
       if (filterRelevant && !b.is_relevant) return false
       if (filterSource && b.source !== filterSource) return false
       if (search) {
@@ -145,7 +148,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               padding: 0, textDecoration: 'underline', textUnderlineOffset: 3,
             }}
           >
-            {showArchived ? '← Back to active bids' : `Show ${archivedCount} archived (no bid)`}
+            {showArchived ? '← Back to active bids' : `Show ${archivedCount} archived (no bid / expired)`}
           </button>
         </div>
       )}
@@ -304,6 +307,7 @@ function StatusBadge({ status }: { status: BidStatus | 'active' }) {
     won:       { label: 'Won',        color: 'var(--green)' },
     lost:      { label: 'Lost',       color: 'var(--red)' },
     no_bid:    { label: 'No Bid',     color: '#636366' },
+    expired:   { label: 'Expired',    color: '#AAAAAA' },
   }
   const { label, color } = cfg[status] ?? cfg.active
   if (status === 'active') return null

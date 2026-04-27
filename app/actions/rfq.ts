@@ -122,7 +122,7 @@ export async function sendRFQEmails(
 </html>`
 
     if (!toEmail?.trim()) return { ok: false, error: 'Enter a recipient email first' }
-    const JOANNE_CC = 'gutarra.leonardo@gmail.com'
+    const JOANNE_CC = process.env.JOANNE_EMAIL ?? process.env.NOTIFY_EMAIL ?? ''
     const cc = [JOANNE_CC, ...(ccEmail?.trim() ? [ccEmail.trim()] : [])]
     await sendResend(
       [toEmail.trim()],
