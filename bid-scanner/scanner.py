@@ -1077,69 +1077,86 @@ async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
     return all_bids
 
 
-async def run_scan(keywords: list[str] = None) -> list[dict]:
+async def run_scan(keywords: list[str] = None, sources: list[str] = None) -> list[dict]:
     """
     Main scan entry point.
+
+    sources: list of source keys to run, or None for all.
+      Keys: bidnet, planetbids, caleprocure, opengov, planrooms, ccop, sam, qualitybidders
     Returns list of deduplicated bid dicts sorted by relevance + due date.
     """
     if keywords is None:
         keywords = SEARCH_KEYWORDS
 
+    def _want(key: str) -> bool:
+        return sources is None or key in sources
+
     all_bids = []
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent=USER_AGENT,
-            viewport={"width": 1280, "height": 900},
-            locale="en-US",
-        )
+    needs_browser = any(_want(k) for k in ["bidnet", "planetbids", "caleprocure", "opengov", "planrooms", "ccop"])
 
-        # --- BidNet Direct ---
-        print("Searching BidNet Direct (CA public bids)...")
-        page = await context.new_page()
-        for keyword in keywords:
-            bids = await _search_keyword(page, keyword)
-            for b in bids:
-                b.setdefault("source", "BidNet Direct")
-            all_bids.extend(bids)
-        await page.close()
+    if needs_browser:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            context = await browser.new_context(
+                user_agent=USER_AGENT,
+                viewport={"width": 1280, "height": 900},
+                locale="en-US",
+            )
 
-        # --- PlanetBids ---
-        pb_bids = await _search_planetbids(context, keywords)
-        all_bids.extend(pb_bids)
+            # --- BidNet Direct ---
+            if _want("bidnet"):
+                print("Searching BidNet Direct (CA public bids)...")
+                page = await context.new_page()
+                for keyword in keywords:
+                    bids = await _search_keyword(page, keyword)
+                    for b in bids:
+                        b.setdefault("source", "BidNet Direct")
+                    all_bids.extend(bids)
+                await page.close()
 
-        # --- Cal eProcure ---
-        cal_page = await context.new_page()
-        cal_bids = await _search_caleprocure(cal_page, keywords)
-        all_bids.extend(cal_bids)
-        await cal_page.close()
+            # --- PlanetBids (requires cookies + CAPTCHA for first auth) ---
+            if _want("planetbids"):
+                pb_bids = await _search_planetbids(context, keywords)
+                all_bids.extend(pb_bids)
 
-        # --- OpenGov ---
-        og_bids = await _search_opengov(context, keywords)
-        all_bids.extend(og_bids)
+            # --- Cal eProcure ---
+            if _want("caleprocure"):
+                cal_page = await context.new_page()
+                cal_bids = await _search_caleprocure(cal_page, keywords)
+                all_bids.extend(cal_bids)
+                await cal_page.close()
 
-        # --- Plan Rooms (SoCal + Crisp) ---
-        pr_page = await context.new_page()
-        pr_bids = await _search_plan_rooms(pr_page, keywords)
-        all_bids.extend(pr_bids)
-        await pr_page.close()
+            # --- OpenGov ---
+            if _want("opengov"):
+                og_bids = await _search_opengov(context, keywords)
+                all_bids.extend(og_bids)
 
-        # --- Caltrans CCOP ---
-        ccop_page = await context.new_page()
-        ccop_bids = await _search_ccop(ccop_page, keywords)
-        all_bids.extend(ccop_bids)
-        await ccop_page.close()
+            # --- Plan Rooms (SoCal + Crisp) ---
+            if _want("planrooms"):
+                pr_page = await context.new_page()
+                pr_bids = await _search_plan_rooms(pr_page, keywords)
+                all_bids.extend(pr_bids)
+                await pr_page.close()
 
-        await browser.close()
+            # --- Caltrans CCOP ---
+            if _want("ccop"):
+                ccop_page = await context.new_page()
+                ccop_bids = await _search_ccop(ccop_page, keywords)
+                all_bids.extend(ccop_bids)
+                await ccop_page.close()
 
-    # --- SAM.gov ---
-    sam_bids = await _search_samgov(keywords)
-    all_bids.extend(sam_bids)
+            await browser.close()
+
+    # --- SAM.gov (REST API, no browser needed) ---
+    if _want("sam"):
+        sam_bids = await _search_samgov(keywords)
+        all_bids.extend(sam_bids)
 
     # --- Quality Bidders ---
-    qb_bids = await _search_qualitybidders(keywords)
-    all_bids.extend(qb_bids)
+    if _want("qualitybidders"):
+        qb_bids = await _search_qualitybidders(keywords)
+        all_bids.extend(qb_bids)
 
     deduped = _dedup(all_bids)
 

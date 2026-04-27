@@ -9,10 +9,10 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>git -C ~/fcu pull --quiet &amp;&amp; cd ~/fcu/bid-scanner &amp;&amp; python main.py --source sam --headless</string>
+        <string>git -C ~/fcu pull --quiet &amp;&amp; cd ~/fcu/bid-scanner &amp;&amp; python main.py --source auto</string>
     </array>
 
-    <!-- Daily at 6:00am -->
+    <!-- Daily at 6:00am — runs all automated sources (skips PlanetBids which needs CAPTCHA) -->
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
@@ -39,7 +39,5 @@
 
     <key>RunAtLoad</key>
     <false/>
-    <key>StartInterval</key>
-    <integer>0</integer>
 </dict>
 </plist>
