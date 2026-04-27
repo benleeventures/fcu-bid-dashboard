@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fcu.jobwalk</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>git -C ~/fcu pull --quiet &amp;&amp; cd ~/fcu/bid-scanner &amp;&amp; python jobwalk.py</string>
+    </array>
+
+    <!-- Daily at 7:15am -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>7</integer>
+        <key>Minute</key>
+        <integer>15</integer>
+    </dict>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/YOUR_USERNAME/fcu/bid-scanner</string>
+
+    <key>StandardOutPath</key>
+    <string>/Users/YOUR_USERNAME/fcu/bid-scanner/logs/jobwalk.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/YOUR_USERNAME/fcu/bid-scanner/logs/jobwalk.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/YOUR_USERNAME</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

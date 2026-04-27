@@ -1,5 +1,5 @@
 # FCU — AI Bid Agent Roadmap
-**Last updated:** 2026-04-26 (palette + Phase 4 progress)
+**Last updated:** 2026-04-27 (infrastructure v1 plan)
 
 > Always read this before any bid agent work. Contains current build status, pricing rates, phase checklist, and portal coverage.
 
@@ -18,8 +18,8 @@
 | Job Walk Alert Email | ✅ Done | Fires via Resend when `walk_required=True` after parsing |
 | Compliance Alert Email | ✅ Done | Fires via Resend on `--save` when bid_bond/prevailing_wage/dvbe/dbe flags set |
 | RFQ Email Generator | ✅ Done | `--rfq <bid_id>` CLI + "Send RFQ →" button in dashboard; To (rep) + Joanne always CC'd |
-| Scheduler | ⬜ Skipped for now | Test manually first; add cron after validation |
-| BidNet Direct (public listing page) | ⚠ Partial | Headless browser blocked on listing page; doc download works via login |
+| Scheduler | 🔄 In progress | SAM.gov + BidNet: launchd cron 6am (headless). PlanetBids: manual CLI, headful Chrome, human solves CAPTCHA. |
+| BidNet Direct (public listing page) | ⛔ Login-only | Public listing page permanently login-gated; not automatable. Doc download via cookie-auth still works. |
 | LAUSD Portal | ⬜ Not connected | High priority — TOPO renewal 2027 |
 | AI RFQ Generator | ⬜ Phase 3 | |
 | Compliance Auto-Checker | ⬜ Phase 3 | Compliance fields exist in bid_specs, no alert yet |
@@ -110,9 +110,20 @@ Extend `bid_specs` with room-by-room breakdown for estimate pre-filling.
 
 ### Phase 4: Intelligence
 - [x] Bid results tracking and logging — status badges, win/loss, submitted/award amounts
-- [x] Go/no-go scoring model — 9-factor score (scope, SF, prevailing wage, deadline, DVBE, etc.) in table + detail
+- [x] Go/no-go scoring model — 8-factor score (scope, SF, prevailing wage, DVBE, etc.) — deadline proximity removed; system catches bids early
 - [ ] Competitive intelligence dashboard (win/loss by agency, job type)
 - [ ] Markup recommendation engine
+
+### Phase 5: Infrastructure (Mac Mini)
+- [ ] `agent_state.py` — shared heartbeat writer for all agents
+- [ ] `supervisor.py` — Ollama (llama3.2:3b) watchdog: heartbeats → restart | escalate to Claude API → email Leo
+- [ ] `digest.py` — daily 7am email to Joanne + Ben: new relevant bids since yesterday
+- [ ] `jobwalk.py` — daily 7:15am: GO-scored bids with walk_required → email Lenin once per bid
+- [ ] `expirer.py` — daily 7:30am: auto-archive past-due unbid bids (status=`expired`)
+- [ ] launchd plist files for all scheduled agents
+- [ ] Mac Mini setup runbook (`setup/mac-mini-setup.md`)
+- [ ] `walk_notified` column added to `bids` table in Supabase
+- [ ] All recipient emails as env vars (JOANNE_EMAIL, BEN_EMAIL, LENIN_EMAIL, ADMIN_EMAIL)
 
 ---
 
