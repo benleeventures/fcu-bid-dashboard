@@ -1,8 +1,9 @@
 """
 FCU Daily Digest — runs at 7:00am via launchd.
 
-Sends ONE daily email to Joanne + Ben summarizing all new relevant bids
-found since yesterday's run. If nothing new, skips silently.
+Sends ONE daily email to Joanne + Ben with new GO/MAYBE scored bids
+that have parsed spec documents. Bids without parsed specs are excluded
+(those go to ADMIN_EMAIL via parser.py's no-spec alert instead).
 
 Usage:
   python digest.py
@@ -21,23 +22,27 @@ except ImportError:
 
 sys.path.insert(0, str(Path(__file__).parent))
 from agent_state import heartbeat, set_idle
+from scoring import score_bid
 
 
 DASHBOARD_BASE = "https://bids.floorcoveringunlimited.com"
 
+VERDICT_LABEL = {"go": "GO", "maybe": "MAYBE", "no_go": "NO-GO"}
+VERDICT_COLOR = {"go": "#2A8A3E", "maybe": "#C8922A", "no_go": "#D93025"}
 
-def score_label(bid: dict, spec: dict | None) -> str:
-    """Quick label without importing TS scoring — mirrors the Python version in jobwalk.py."""
-    if not bid.get("is_relevant"):
-        return "Not flooring"
-    return "GO" if spec else "Pending"
+
+def _get_spec(row: dict) -> dict | None:
+    spec = row.get("spec")
+    if isinstance(spec, list):
+        return spec[0] if spec else None
+    return spec or None
 
 
 def build_digest_html(new_bids: list[dict], since: str) -> str:
     rows = ""
     for b in new_bids:
-        spec  = b.get("spec")
-        if isinstance(spec, list): spec = spec[0] if spec else None
+        spec   = _get_spec(b)
+        result = score_bid(b, spec)
         title  = b.get("title", "—")
         agency = b.get("agency", "—")
         due    = b.get("due_date_raw") or b.get("due_date") or "—"
@@ -48,6 +53,10 @@ def build_digest_html(new_bids: list[dict], since: str) -> str:
         pw     = "⚠ Prev. wage" if (spec and spec.get("prevailing_wage")) else ""
         walk   = "🚶 Job walk" if (spec and spec.get("walk_required")) else ""
         flags  = " · ".join(f for f in [pw, walk] if f)
+        verdict = result["verdict"]
+        score   = result["score"]
+        v_label = VERDICT_LABEL[verdict]
+        v_color = VERDICT_COLOR[verdict]
 
         rows += f"""
 <tr>
@@ -58,18 +67,21 @@ def build_digest_html(new_bids: list[dict], since: str) -> str:
   <td style="padding:12px 16px;border-bottom:1px solid #E5DDD0;font-size:13px;color:#6A6A70">{agency}</td>
   <td style="padding:12px 16px;border-bottom:1px solid #E5DDD0;font-family:monospace;font-size:12px;white-space:nowrap">{due}</td>
   <td style="padding:12px 16px;border-bottom:1px solid #E5DDD0;font-size:12px;color:#6A6A70">{sqft_s}</td>
+  <td style="padding:12px 16px;border-bottom:1px solid #E5DDD0;text-align:center">
+    <span style="background:{v_color}22;color:{v_color};padding:2px 7px;border-radius:4px;font-family:monospace;font-size:11px;font-weight:700">{v_label} {score}</span>
+  </td>
 </tr>"""
 
     return f"""
 <!DOCTYPE html>
 <html>
 <body style="background:#FAF7F2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;color:#1A1A1C">
-<div style="max-width:700px;margin:0 auto;padding:32px 24px">
+<div style="max-width:740px;margin:0 auto;padding:32px 24px">
 
   <div style="border-left:4px solid #C8922A;padding-left:16px;margin-bottom:28px">
     <p style="margin:0;font-size:11px;color:#6A6A70;letter-spacing:.08em;text-transform:uppercase">FCU Bid Agent · Daily Digest</p>
-    <h1 style="margin:6px 0 0;font-size:20px;font-weight:700">{len(new_bids)} new flooring bid{"s" if len(new_bids) != 1 else ""}</h1>
-    <p style="margin:4px 0 0;font-size:13px;color:#6A6A70">Found since {since}</p>
+    <h1 style="margin:6px 0 0;font-size:20px;font-weight:700">{len(new_bids)} new bid{"s" if len(new_bids) != 1 else ""} to review</h1>
+    <p style="margin:4px 0 0;font-size:13px;color:#6A6A70">GO and MAYBE scored · Found since {since}</p>
   </div>
 
   <table style="width:100%;border-collapse:collapse;background:#FFFFFF;border:1px solid #E5DDD0;border-radius:8px;overflow:hidden">
@@ -79,6 +91,7 @@ def build_digest_html(new_bids: list[dict], since: str) -> str:
         <th style="padding:10px 16px;text-align:left;font-size:11px;color:#6A6A70;letter-spacing:.05em;text-transform:uppercase">Agency</th>
         <th style="padding:10px 16px;text-align:left;font-size:11px;color:#6A6A70;letter-spacing:.05em;text-transform:uppercase">Due</th>
         <th style="padding:10px 16px;text-align:left;font-size:11px;color:#6A6A70;letter-spacing:.05em;text-transform:uppercase">Scope</th>
+        <th style="padding:10px 16px;text-align:center;font-size:11px;color:#6A6A70;letter-spacing:.05em;text-transform:uppercase">Score</th>
       </tr>
     </thead>
     <tbody>{rows}</tbody>
@@ -91,7 +104,7 @@ def build_digest_html(new_bids: list[dict], since: str) -> str:
   </div>
 
   <p style="margin-top:24px;font-size:12px;color:#6A6A70;text-align:center">
-    Floor Covering Unlimited · FCU Bid Agent · Automated daily digest
+    Floor Covering Unlimited · FCU Bid Agent · Daily digest — GO and MAYBE bids only
   </p>
 </div>
 </body>
@@ -115,7 +128,6 @@ def main():
         set_idle("digest")
         return
 
-    # New relevant bids added in the last 25 hours (overlap handles timing drift)
     since_dt  = (datetime.now(timezone.utc) - timedelta(hours=25)).isoformat()
     since_str = date.today().strftime("%B %d, %Y")
 
@@ -130,15 +142,21 @@ def main():
         .data or []
     )
 
-    print(f"Digest: {len(rows)} new relevant bids since {since_str}")
+    # Only bids with parsed spec documents
+    rows = [r for r in rows if _get_spec(r)]
+
+    # Only GO or MAYBE scored bids
+    rows = [r for r in rows if score_bid(r, _get_spec(r))["verdict"] in ("go", "maybe")]
+
+    print(f"Digest: {len(rows)} GO/MAYBE bids with docs since {since_str}")
 
     if not rows:
-        print("Nothing new — skipping email")
+        print("Nothing to send — skipping email")
         set_idle("digest")
         return
 
     html = build_digest_html(rows, since_str)
-    subject = f"[FCU] {len(rows)} new flooring bid{'s' if len(rows) != 1 else ''} — {since_str}"
+    subject = f"[FCU] {len(rows)} new bid{'s' if len(rows) != 1 else ''} to review — {since_str}"
 
     resp = requests.post(
         "https://api.resend.com/emails",

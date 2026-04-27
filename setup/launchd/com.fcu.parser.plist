@@ -12,14 +12,22 @@
         <string>git -C ~/fcu pull --quiet &amp;&amp; cd ~/fcu/bid-scanner &amp;&amp; python parser.py --auto</string>
     </array>
 
-    <!-- Daily at 6:30am -->
+    <!-- Daily at 6:30am and 1:00pm (catches portals that upload docs late morning) -->
     <key>StartCalendarInterval</key>
-    <dict>
-        <key>Hour</key>
-        <integer>6</integer>
-        <key>Minute</key>
-        <integer>30</integer>
-    </dict>
+    <array>
+        <dict>
+            <key>Hour</key>
+            <integer>6</integer>
+            <key>Minute</key>
+            <integer>30</integer>
+        </dict>
+        <dict>
+            <key>Hour</key>
+            <integer>13</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
 
     <key>WorkingDirectory</key>
     <string>/Users/YOUR_USERNAME/fcu/bid-scanner</string>

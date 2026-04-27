@@ -22,44 +22,7 @@ except ImportError:
 
 sys.path.insert(0, str(Path(__file__).parent))
 from agent_state import heartbeat, set_idle, set_error
-
-
-# ── Scoring (mirrors dashboard/app/lib/scoring.ts logic) ─────────────────────
-
-def score_go_no_go(bid: dict, spec: dict | None) -> dict:
-    score = 55
-    verdict = "maybe"
-
-    if bid.get("is_relevant"):
-        score += 20
-    else:
-        score -= 25
-
-    if spec:
-        sqft = spec.get("total_sqft") or 0
-        if sqft >= 20_000:   score += 15
-        elif sqft >= 5_000:  score += 10
-        elif sqft >= 1_000:  score += 3
-        else:                score -= 10
-
-        if spec.get("prevailing_wage") is True:  score -= 8
-        elif spec.get("prevailing_wage") is False: score += 5
-        if spec.get("bid_bond") is True:          score -= 5
-        if spec.get("walk_required") is True:     score -= 5
-        if spec.get("dvbe_required") is True:     score += 12
-        dbe = spec.get("dbe_goal_pct") or 0
-        if dbe > 0:                               score -= 10
-        score += 5  # spec parsed bonus
-
-    if bid.get("due_date"):
-        import math
-        days_out = math.floor((date.fromisoformat(bid["due_date"]) - date.today()).days)
-        if days_out < 0:
-            return {"score": 0, "verdict": "no_go"}
-
-    score = max(0, min(100, round(score)))
-    verdict = "go" if score >= 65 else ("maybe" if score >= 40 else "no_go")
-    return {"score": score, "verdict": verdict, "spec": spec}
+from scoring import score_bid as score_go_no_go
 
 
 # ── Email builder ─────────────────────────────────────────────────────────────

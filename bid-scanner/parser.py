@@ -734,11 +734,104 @@ def cmd_rfq(bid_id: str):
     send_rfq_emails(bid, spec, est)
 
 
+def _send_no_spec_alert(missing: list[dict]) -> None:
+    """Email ADMIN_EMAIL with a list of bids that still have no parsed spec after 48h."""
+    import requests
+    resend_key  = os.getenv("RESEND_API_KEY")
+    admin_email = os.getenv("ADMIN_EMAIL") or os.getenv("NOTIFY_EMAIL")
+    if not resend_key or not admin_email or not missing:
+        return
+
+    rows = "".join(
+        f'<tr>'
+        f'<td style="padding:8px 12px;border-bottom:1px solid #E5DDD0">'
+        f'<a href="{b.get("url","")}" style="color:#C8922A">{b.get("title","—")}</a></td>'
+        f'<td style="padding:8px 12px;border-bottom:1px solid #E5DDD0;color:#6A6A70">{b.get("agency","—")}</td>'
+        f'<td style="padding:8px 12px;border-bottom:1px solid #E5DDD0;color:#6A6A70">{b.get("source","—")}</td>'
+        f'</tr>'
+        for b in missing
+    )
+
+    html = f"""<!DOCTYPE html><html><body style="font-family:sans-serif;color:#1A1A1C;background:#FAF7F2">
+<div style="max-width:640px;margin:0 auto;padding:32px 24px">
+<div style="border-left:4px solid #D93025;padding-left:16px;margin-bottom:24px">
+  <p style="margin:0;font-size:11px;color:#6A6A70;text-transform:uppercase">FCU Bid Agent · Parser Alert</p>
+  <h1 style="margin:6px 0 0;font-size:18px">{len(missing)} bid{"s" if len(missing)!=1 else ""} with no extracted documents</h1>
+  <p style="margin:4px 0 0;font-size:13px;color:#6A6A70">Found over 48 hours ago — please check and retrieve manually</p>
+</div>
+<table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E5DDD0;border-radius:8px;overflow:hidden">
+  <thead><tr style="background:#E5DDD0">
+    <th style="padding:8px 12px;text-align:left;font-size:11px;color:#6A6A70">Title</th>
+    <th style="padding:8px 12px;text-align:left;font-size:11px;color:#6A6A70">Agency</th>
+    <th style="padding:8px 12px;text-align:left;font-size:11px;color:#6A6A70">Source</th>
+  </tr></thead>
+  <tbody>{rows}</tbody>
+</table>
+<p style="margin-top:20px;font-size:12px;color:#6A6A70">
+  Options: (1) Open the portal link and download PDFs manually, then run
+  <code>python parser.py --save &lt;bid_id&gt; '&lt;json&gt;'</code><br>
+  (2) If docs are unavailable, email Joanne/Ben to manually assess GO/NO-GO.
+</p>
+</div></body></html>"""
+
+    requests.post(
+        "https://api.resend.com/emails",
+        headers={"Authorization": f"Bearer {resend_key}", "Content-Type": "application/json"},
+        json={
+            "from": "FCU Bid Agent <agent@bids.benlee.ventures>",
+            "to": [admin_email],
+            "subject": f"[FCU Parser] {len(missing)} bid{'s' if len(missing)!=1 else ''} missing documents — review needed",
+            "html": html,
+        },
+        timeout=10,
+    )
+    print(f"  → No-spec alert sent to {admin_email} ({len(missing)} bids)")
+
+
+def cmd_auto():
+    """
+    Automated daily run (used by launchd via --auto flag).
+    1. Download all unprocessed bid PDFs.
+    2. Parse them via Ollama.
+    3. Alert ADMIN_EMAIL about any bids still missing docs after 48h.
+    """
+    from datetime import datetime, timezone, timedelta
+    print("Parser auto run — download + parse + alert")
+
+    asyncio.run(download_all())
+    cmd_parse_all(use_ollama=True)
+
+    # No-spec alert: relevant bids older than 48h still without a spec
+    sb = _sb()
+    cutoff = (datetime.now(timezone.utc) - timedelta(hours=48)).isoformat()
+    recent = (
+        sb.table("bids")
+        .select("bid_id, title, agency, source, url")
+        .eq("is_relevant", True)
+        .lte("first_seen_at", cutoff)
+        .execute().data or []
+    )
+    if recent:
+        ids = [b["bid_id"] for b in recent]
+        parsed_ids = set()
+        for i in range(0, len(ids), 200):
+            r = sb.table("bid_specs").select("bid_id").in_("bid_id", ids[i:i+200]).execute()
+            parsed_ids.update(row["bid_id"] for row in (r.data or []))
+        missing = [b for b in recent if b["bid_id"] not in parsed_ids]
+        if missing:
+            print(f"  ⚠ {len(missing)} bids still have no spec — sending alert")
+            _send_no_spec_alert(missing)
+        else:
+            print("  ✓ All older bids have parsed specs")
+
+
 if __name__ == "__main__":
     argv = sys.argv[1:]
 
     if not argv or "--list" in argv:
         cmd_list()
+    elif "--auto" in argv:
+        cmd_auto()
     elif "--download" in argv:
         asyncio.run(download_all())
     elif "--pending" in argv:

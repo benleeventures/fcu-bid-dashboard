@@ -46,6 +46,13 @@ RELEVANT_KEYWORDS = [
     "blinds", "shades", "curtain", "linoleum", "epoxy floor",
 ]
 
+# Titles matching these terms are excluded even if a relevant keyword matched.
+# Catches roofing tiles, pool tiles, and unrelated trades that share keywords.
+EXCLUDE_KEYWORDS = [
+    "roofing", "reroof", "re-roof", "roof tile", "roof repair", "re-roofing",
+    "pool tile", "swimming pool", "hvac", "plumbing", "electrical",
+]
+
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -54,6 +61,8 @@ USER_AGENT = (
 
 def _is_relevant(title: str) -> bool:
     t = title.lower()
+    if any(kw in t for kw in EXCLUDE_KEYWORDS):
+        return False
     return any(kw in t for kw in RELEVANT_KEYWORDS)
 
 
