@@ -37,9 +37,9 @@ async def main():
     print("FCU Bid Scanner")
     print("=" * 50)
 
-    # --- Cookie check (only when running PlanetBids) ---
+    # --- Cookie check (only for automated/full runs, not manual PlanetBids) ---
     pb_email = os.getenv("PLANETBIDS_EMAIL", "")
-    if pb_email and SOURCE in (None, "planetbids"):
+    if pb_email and SOURCE is None:
         valid, reason = check_planetbids_cookies()
         if not valid:
             send_notification(reason)
