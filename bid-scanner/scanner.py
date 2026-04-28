@@ -394,7 +394,18 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
 
         try:
             await page.goto(portal_url, wait_until="networkidle", timeout=20000)
-            await page.wait_for_timeout(2000)
+            # Wait up to 8s for API response to be captured
+            for _ in range(16):
+                if portal_id in captured:
+                    break
+                await page.wait_for_timeout(500)
+            # If still empty, reload once and wait again
+            if portal_id not in captured:
+                await page.reload(wait_until="networkidle", timeout=20000)
+                for _ in range(16):
+                    if portal_id in captured:
+                        break
+                    await page.wait_for_timeout(500)
         except Exception as e:
             print(f"    ⚠ navigation error: {e}")
             continue
