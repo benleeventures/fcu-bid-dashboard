@@ -277,71 +277,72 @@ async def _planetbids_login(page) -> bool:
 
 
 async def _search_planetbids_portal(page, portal_id: str, agency: str, keywords: list[str]) -> list[dict]:
-    """Search open bids in one PlanetBids portal by parsing table rows."""
-    search_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
+    """Fetch all bids from PlanetBids JSON API using the live browser session."""
+    api_url = f"https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid={portal_id}&dept_id=0&due_date_from=&due_date_to=&keyword=&page=1&per_page=500&sort_by=&sort_order=-1&stage_id=0"
+    portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
 
     try:
-        await page.goto(search_url, wait_until="networkidle", timeout=20000)
-        await page.wait_for_timeout(2000)
+        data = await page.evaluate(f"""async () => {{
+            const r = await fetch("{api_url}", {{
+                headers: {{ "Accept": "application/vnd.api+json" }}
+            }});
+            if (!r.ok) return {{ _error: r.status }};
+            return await r.json();
+        }}""")
 
-        body_text = await page.inner_text("body")
-        if "page not found" in body_text.lower() or "portal not found" in body_text.lower():
+        if not data or data.get("_error"):
             return []
 
-        # Parse all table rows — columns: posted | title | invitation# | due_date | remaining | stage | format
-        rows = await page.evaluate("""() => {
-            return Array.from(document.querySelectorAll('tr')).map(row => {
-                const cells = Array.from(row.querySelectorAll('td')).map(td => td.innerText.trim());
-                return cells;
-            }).filter(cells => cells.length >= 5);
-        }""")
+        records = data.get("data", [])
+        if not records:
+            return []
 
-        bids = []
         kw_lower = [k.lower() for k in keywords]
+        skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
+        bids = []
 
-        for cells in rows:
-            posted_raw = cells[0] if len(cells) > 0 else ""
-            title      = cells[1] if len(cells) > 1 else ""
-            inv_num    = cells[2] if len(cells) > 2 else ""
-            due_raw    = cells[3] if len(cells) > 3 else ""
-            stage      = cells[5] if len(cells) > 5 else ""
-
+        for rec in records:
+            attrs = rec.get("attributes", {})
+            title = (attrs.get("title") or "").strip()
             if not title or len(title) < 5:
                 continue
 
-            # Skip closed/canceled/awarded — only active bids
-            if stage.lower() in ("closed", "canceled", "cancelled", "awarded", "rejected"):
+            stage = (attrs.get("stageStr") or "").strip()
+            if stage.lower() in skip_stages:
                 continue
 
-            # Keyword filter on title
             title_lower = title.lower()
             if not any(kw in title_lower for kw in kw_lower):
                 continue
 
-            bid_id = f"PB-{portal_id}-{inv_num.replace(' ', '-')}"
-            due_date = _parse_date(due_raw.split(" ")[0]) if due_raw else None
-            published = _parse_date(posted_raw.split(" ")[0]) if posted_raw else None
+            bid_id     = rec.get("id", "")
+            inv_num    = attrs.get("invitationNum", "")
+            due_raw    = attrs.get("bidDueDate", "")
+            posted_raw = attrs.get("issueDate", "")
+
+            due_date  = _parse_date(str(due_raw)[:10]) if due_raw else None
+            published = _parse_date(str(posted_raw)[:10]) if posted_raw else None
 
             bids.append({
-                "bid_id": bid_id,
+                "bid_id": f"PB-{portal_id}-{bid_id}",
                 "title": title,
                 "agency": agency,
                 "state": "California",
                 "published_date": published.isoformat() if published else None,
-                "published_raw": posted_raw,
+                "published_raw": str(posted_raw),
                 "due_date": due_date.isoformat() if due_date else None,
-                "due_date_raw": due_raw,
+                "due_date_raw": str(due_raw),
                 "is_relevant": _is_relevant(title),
                 "search_keyword": next((kw for kw in keywords if kw.lower() in title_lower), keywords[0]),
-                "url": search_url,
+                "url": portal_url,
                 "source": "PlanetBids",
             })
+
+        return bids
 
     except Exception as e:
         print(f"    ⚠ PlanetBids portal {agency}: {e}")
         return []
-
-    return bids
 
 
 PLANETBIDS_COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.json")
@@ -349,37 +350,94 @@ PLANETBIDS_COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.json"
 
 async def _search_planetbids(browser_context, keywords: list[str], live_page=None) -> list[dict]:
     """
-    Search PlanetBids portals.
-    live_page: an already-verified Playwright page from the CAPTCHA session.
-               If provided, uses it directly (WAF already bypassed).
-               If None, attempts headless scrape with saved cookies (likely blocked).
+    Search PlanetBids portals using the live browser session.
+    Intercepts the browser's own API calls (auth handled automatically),
+    bumps per_page to 500, and captures all results.
     """
+    import re as _re
+
     print("\nSearching PlanetBids portals (CA agency bids)...")
 
-    if live_page is not None:
-        page = live_page
-        owns_page = False
-    else:
-        import json as _json
-        from pathlib import Path
-        cookies_path = Path(PLANETBIDS_COOKIES_FILE)
-        if not cookies_path.exists():
-            print("  PlanetBids skipped — no cookies.json found")
-            return []
-        cookies = _json.loads(cookies_path.read_text())
-        await browser_context.add_cookies(cookies)
-        page = await browser_context.new_page()
-        owns_page = True
+    page = live_page
 
+    # Captured API responses keyed by portal cid
+    captured: dict[str, list] = {}
+
+    async def handle_response(response):
+        if "api-external.prod.planetbids.com/papi/bids" in response.url:
+            m = _re.search(r'cid=(\d+)', response.url)
+            if m:
+                cid = m.group(1)
+                try:
+                    data = await response.json()
+                    captured.setdefault(cid, []).extend(data.get("data", []))
+                except Exception:
+                    pass
+
+    async def handle_route(route):
+        url = route.request.url
+        if "papi/bids" in url and "per_page=30" in url:
+            await route.continue_(url=url.replace("per_page=30", "per_page=500"))
+        else:
+            await route.continue_()
+
+    page.on("response", handle_response)
+    await page.route("**papi/bids**", handle_route)
+
+    kw_lower = [k.lower() for k in keywords]
+    skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
     all_bids: list[dict] = []
+
     for portal_id, agency in PLANETBIDS_PORTALS.items():
         print(f"  → {agency}...")
-        portal_bids = await _search_planetbids_portal(page, portal_id, agency, keywords)
-        print(f"    ✓ {len(portal_bids)} bids found")
+        portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
+
+        try:
+            await page.goto(portal_url, wait_until="networkidle", timeout=20000)
+            await page.wait_for_timeout(2000)
+        except Exception as e:
+            print(f"    ⚠ navigation error: {e}")
+            continue
+
+        records = captured.get(portal_id, [])
+        portal_bids = []
+
+        for rec in records:
+            attrs = rec.get("attributes", {})
+            title = (attrs.get("title") or "").strip()
+            if not title:
+                continue
+            stage = (attrs.get("stageStr") or "").lower()
+            if stage in skip_stages:
+                continue
+            title_lower = title.lower()
+            if not any(kw in title_lower for kw in kw_lower):
+                continue
+
+            bid_id     = rec.get("id", "")
+            due_raw    = attrs.get("bidDueDate", "")
+            posted_raw = attrs.get("issueDate", "")
+            due_date   = _parse_date(str(due_raw)[:10]) if due_raw else None
+            published  = _parse_date(str(posted_raw)[:10]) if posted_raw else None
+
+            portal_bids.append({
+                "bid_id": f"PB-{portal_id}-{bid_id}",
+                "title": title,
+                "agency": agency,
+                "state": "California",
+                "published_date": published.isoformat() if published else None,
+                "published_raw": str(posted_raw),
+                "due_date": due_date.isoformat() if due_date else None,
+                "due_date_raw": str(due_raw),
+                "is_relevant": _is_relevant(title),
+                "search_keyword": next((kw for kw in keywords if kw.lower() in title_lower), keywords[0]),
+                "url": portal_url,
+                "source": "PlanetBids",
+            })
+
+        print(f"    ✓ {len(portal_bids)} relevant bids")
         all_bids.extend(portal_bids)
 
-    if owns_page:
-        await page.close()
     return all_bids
 
 
