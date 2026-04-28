@@ -37,13 +37,19 @@ async def main():
     print("FCU Bid Scanner")
     print("=" * 50)
 
-    # --- Cookie check (only for automated/full runs, not manual PlanetBids) ---
+    # --- Cookie check ---
     pb_email = os.getenv("PLANETBIDS_EMAIL", "")
-    if pb_email and SOURCE is None:
+    if pb_email:
         valid, reason = check_planetbids_cookies()
         if not valid:
-            send_notification(reason)
-            sys.exit(1)
+            if SOURCE == "planetbids":
+                # Manual run — open Chrome and let user solve CAPTCHA
+                from test_planetbids import save_cookies
+                await save_cookies()
+            else:
+                # Automated run — email alert and abort
+                send_notification(reason)
+                sys.exit(1)
         elif "warning" in reason:
             print(f"⚠  Cookie warning: {reason}")
 

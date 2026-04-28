@@ -32,8 +32,6 @@ PASSWORD = "LVTFloors9601$"
 
 SCRIPT_DIR = Path(__file__).parent
 COOKIES_FILE = SCRIPT_DIR / "cookies.json"
-FLAG_NEEDED = SCRIPT_DIR / "captcha.flag"   # written by script → signals Chrome is open
-FLAG_DONE   = SCRIPT_DIR / "captcha.done"   # written by Claude → signals CAPTCHA solved
 
 UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -41,31 +39,12 @@ UA = (
 )
 
 
-async def _wait_for_done_flag(timeout: int = 600):
-    """Poll for captcha.done file. Claude creates it after user says 'done' in chat."""
-    elapsed = 0
-    print(f"  Waiting for captcha.done signal (timeout {timeout}s)...")
-    while elapsed < timeout:
-        await asyncio.sleep(3)
-        elapsed += 3
-        if FLAG_DONE.exists():
-            FLAG_DONE.unlink()
-            FLAG_NEEDED.unlink(missing_ok=True)
-            print("  ✓ captcha.done received — saving cookies")
-            return True
-    print("  ⚠ Timeout — saving whatever cookies exist now")
-    FLAG_NEEDED.unlink(missing_ok=True)
-    return False
-
-
 async def save_cookies():
     """
-    Open real Chrome, wait for user to solve CAPTCHA + log in, save cookies.
-    Supervised flow: Claude watches for captcha.flag, tells you Chrome is open,
-    you solve it, tell Claude 'done', Claude writes captcha.done, script continues.
+    Open Chrome, wait for user to solve CAPTCHA and press Enter, save cookies.
     """
     print("=" * 60)
-    print("SUPERVISED COOKIE COLLECTION")
+    print("PLANETBIDS — COOKIE SETUP")
     print("=" * 60)
 
     async with async_playwright() as p:
@@ -81,13 +60,9 @@ async def save_cookies():
         print(f"\nOpening Chrome → {target}")
         await page.goto(target, wait_until="domcontentloaded", timeout=30000)
 
-        # Signal Claude that Chrome is open and CAPTCHA needs solving
-        FLAG_DONE.unlink(missing_ok=True)  # clear any stale done flag
-        FLAG_NEEDED.write_text("Chrome open — CAPTCHA needed")
-        print("\n✓ captcha.flag written")
-        print("→ Tell Claude 'done' after solving the CAPTCHA and logging in.")
-
-        await _wait_for_done_flag()
+        print("\n→ Solve the CAPTCHA in the Chrome window.")
+        print("→ Press Enter here when done.")
+        await asyncio.get_event_loop().run_in_executor(None, input, "")
 
         cookies = await ctx.cookies()
         COOKIES_FILE.write_text(json.dumps(cookies, indent=2))
