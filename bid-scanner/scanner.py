@@ -362,26 +362,24 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
     # Captured API responses keyed by portal cid
     captured: dict[str, list] = {}
 
-    async def handle_response(response):
-        if "api-external.prod.planetbids.com/papi/bids" in response.url:
-            m = _re.search(r'cid=(\d+)', response.url)
-            if m:
-                cid = m.group(1)
-                try:
-                    data = await response.json()
-                    captured.setdefault(cid, []).extend(data.get("data", []))
-                except Exception:
-                    pass
-
     async def handle_route(route):
         url = route.request.url
-        if "papi/bids" in url and "per_page=30" in url:
-            await route.continue_(url=url.replace("per_page=30", "per_page=500"))
+        if "papi/bids" in url:
+            # Bump per_page and fetch synchronously so data is captured before page renders
+            modified_url = _re.sub(r'per_page=\d+', 'per_page=500', url)
+            try:
+                response = await route.fetch(url=modified_url)
+                data = await response.json()
+                m = _re.search(r'cid=(\d+)', url)
+                if m:
+                    captured.setdefault(m.group(1), []).extend(data.get("data", []))
+                await route.fulfill(response=response)
+            except Exception as e:
+                await route.continue_()
         else:
             await route.continue_()
 
-    page.on("response", handle_response)
-    await page.route("**papi/bids**", handle_route)
+    await page.route("**", handle_route)
 
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
@@ -393,18 +391,7 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
 
         try:
             await page.goto(portal_url, wait_until="networkidle", timeout=20000)
-            # Wait up to 8s for API response to be captured
-            for _ in range(16):
-                if portal_id in captured:
-                    break
-                await page.wait_for_timeout(500)
-            # If still empty, reload once and wait again
-            if portal_id not in captured:
-                await page.reload(wait_until="networkidle", timeout=20000)
-                for _ in range(16):
-                    if portal_id in captured:
-                        break
-                    await page.wait_for_timeout(500)
+            await page.wait_for_timeout(1000)
         except Exception as e:
             print(f"    ⚠ navigation error: {e}")
             continue
