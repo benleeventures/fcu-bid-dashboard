@@ -378,19 +378,27 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
         records = []
 
-        try:
-            async with page.expect_response(
-                lambda r, pid=portal_id: "papi/bids" in r.url and f"cid={pid}" in r.url,
-                timeout=12000
-            ) as resp_info:
-                await page.goto(portal_url, wait_until="domcontentloaded", timeout=20000)
+        for attempt in range(2):
+            try:
+                async with page.expect_response(
+                    lambda r, pid=portal_id: "papi/bids" in r.url and f"cid={pid}" in r.url,
+                    timeout=12000
+                ) as resp_info:
+                    if attempt == 0:
+                        await page.goto(portal_url, wait_until="domcontentloaded", timeout=20000)
+                    else:
+                        await page.reload(wait_until="domcontentloaded", timeout=20000)
 
-            resp = await resp_info.value
-            data = await resp.json()
-            records = data.get("data", [])
-        except Exception as e:
-            print(f"    ⚠ skipped ({type(e).__name__})")
-            continue
+                resp = await resp_info.value
+                data = await resp.json()
+                records = data.get("data", [])
+                break
+            except Exception:
+                if attempt == 0:
+                    print(f"    ↺ retrying...")
+                else:
+                    print(f"    ⚠ skipped after retry")
+                continue
         portal_bids = []
 
         for rec in records:
