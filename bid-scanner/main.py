@@ -2,8 +2,11 @@
 FCU Bid Scanner — entry point
 
 Usage:
-  python main.py                    # run full scan
-  python main.py --check-cookies    # just check if cookies are valid
+  python main.py                        # run full scan (all sources)
+  python main.py --source sam           # SAM.gov only (headless, no cookies needed)
+  python main.py --source planetbids    # PlanetBids only (requires cookies)
+  python main.py --headless             # suppress browser windows
+  python main.py --check-cookies        # just check if cookies are valid
 """
 
 import asyncio
@@ -11,6 +14,9 @@ import os
 import sys
 from datetime import date
 from pathlib import Path
+
+SOURCE = next((sys.argv[sys.argv.index("--source") + 1] for i, a in enumerate(sys.argv) if a == "--source"), None) if "--source" in sys.argv else None
+HEADLESS = "--headless" in sys.argv
 
 try:
     from dotenv import load_dotenv
@@ -31,9 +37,9 @@ async def main():
     print("FCU Bid Scanner")
     print("=" * 50)
 
-    # --- Cookie check before starting ---
+    # --- Cookie check (only when running PlanetBids) ---
     pb_email = os.getenv("PLANETBIDS_EMAIL", "")
-    if pb_email:
+    if pb_email and SOURCE in (None, "planetbids"):
         valid, reason = check_planetbids_cookies()
         if not valid:
             send_notification(reason)
@@ -44,7 +50,7 @@ async def main():
     print(f"Searching {len(SEARCH_KEYWORDS)} keyword groups across sources...\n")
 
     t_start = time.time()
-    bids = await run_scan()
+    bids = await run_scan(source=SOURCE, headless=HEADLESS)
     duration = time.time() - t_start
 
     if not bids:
