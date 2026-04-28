@@ -349,56 +349,72 @@ PLANETBIDS_COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.json"
 
 async def _search_planetbids(browser_context, keywords: list[str], live_page=None) -> list[dict]:
     """
-    Search PlanetBids portals using the live browser session.
-    Intercepts the browser's own API calls (auth handled automatically),
-    bumps per_page to 500, and captures all results.
+    Search all PlanetBids portals by capturing the OAuth token from the first page load,
+    then calling the API directly for each portal without navigating away.
+    No new CAPTCHA challenges — stays on the original page throughout.
     """
     import re as _re
+    import json as _json
 
     print("\nSearching PlanetBids portals (CA agency bids)...")
 
     page = live_page
+    access_token = None
 
-    # Modify per_page to 500 — browser still sends its own auth token
-    async def handle_route(route):
-        url = route.request.url
-        if "papi/bids" in url:
-            await route.continue_(url=_re.sub(r'per_page=\d+', 'per_page=500', url))
-        else:
+    # Capture the OAuth token from the browser's own request
+    async def capture_token(route):
+        nonlocal access_token
+        try:
+            response = await route.fetch()
+            data = await response.json()
+            access_token = data.get("access_token") or data.get("token") or data.get("accessToken")
+            await route.fulfill(response=response)
+        except Exception:
             await route.continue_()
 
-    await page.route("**papi/bids**", handle_route)
+    await page.route("**/papi/oauth/**", capture_token)
+
+    # Wait for token — reload page to trigger OAuth refresh
+    await page.reload(wait_until="networkidle", timeout=20000)
+    await page.wait_for_timeout(2000)
+
+    if not access_token:
+        print("  ⚠ Could not capture OAuth token — bids may be incomplete")
 
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
     all_bids: list[dict] = []
-    ctx = page.context
 
     for portal_id, agency in PLANETBIDS_PORTALS.items():
         print(f"  → {agency}...")
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
-        records = []
-        tab = await ctx.new_page()
 
-        # Route interceptor on each new tab
-        await tab.route("**papi/bids**", handle_route)
+        api_url = f"https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid={portal_id}&dept_id=0&due_date_from=&due_date_to=&keyword=&page=1&per_page=500&sort_by=&sort_order=-1&stage_id=0"
 
         try:
-            async with tab.expect_response(
-                lambda r, pid=portal_id: "papi/bids" in r.url and f"cid={pid}" in r.url,
-                timeout=15000
-            ) as resp_info:
-                await tab.goto(portal_url, wait_until="domcontentloaded", timeout=20000)
+            data = await page.evaluate(f"""async () => {{
+                const headers = {{
+                    "Accept": "application/vnd.api+json",
+                    "Content-Type": "application/vnd.api+json"
+                }};
+                if ("{access_token}") {{
+                    headers["Authorization"] = "Bearer {access_token}";
+                }}
+                const r = await fetch("{api_url}", {{ headers }});
+                if (!r.ok) return {{ _error: r.status }};
+                return await r.json();
+            }}""")
 
-            resp = await resp_info.value
-            data = await resp.json()
+            if not data or data.get("_error"):
+                print(f"    ⚠ API error {data.get('_error') if data else 'no response'}")
+                continue
+
             records = data.get("data", [])
-        except Exception:
-            print(f"    ⚠ skipped")
-        finally:
-            await tab.close()
-        portal_bids = []
+        except Exception as e:
+            print(f"    ⚠ skipped ({e})")
+            continue
 
+        portal_bids = []
         for rec in records:
             attrs = rec.get("attributes", {})
             title = (attrs.get("title") or "").strip()
