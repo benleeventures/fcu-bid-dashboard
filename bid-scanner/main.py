@@ -31,32 +31,22 @@ async def main():
     import time
     from scanner import run_scan, SEARCH_KEYWORDS
     from report import generate_report
-    from notify import check_planetbids_cookies, send_notification
     from db import upsert_bids, log_scan
 
     print("FCU Bid Scanner")
     print("=" * 50)
 
-    # --- Cookie check ---
-    pb_email = os.getenv("PLANETBIDS_EMAIL", "")
-    if pb_email:
-        valid, reason = check_planetbids_cookies()
-        if not valid:
-            if SOURCE == "planetbids":
-                # Manual run — open Chrome and let user solve CAPTCHA
-                from test_planetbids import save_cookies
-                await save_cookies()
-            else:
-                # Automated run — email alert and abort
-                send_notification(reason)
-                sys.exit(1)
-        elif "warning" in reason:
-            print(f"⚠  Cookie warning: {reason}")
-
     print(f"Searching {len(SEARCH_KEYWORDS)} keyword groups across sources...\n")
 
     t_start = time.time()
-    bids = await run_scan(source=SOURCE, headless=HEADLESS)
+
+    if SOURCE == "planetbids":
+        # Manual run — open real Chrome, user solves CAPTCHA, scrape in same session
+        from test_planetbids import run_with_live_browser
+        bids = await run_with_live_browser(SEARCH_KEYWORDS)
+    else:
+        bids = await run_scan(source=SOURCE, headless=HEADLESS)
+
     duration = time.time() - t_start
 
     if not bids:

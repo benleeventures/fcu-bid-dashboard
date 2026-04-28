@@ -286,7 +286,7 @@ async def _search_planetbids_portal(page, portal_id: str, agency: str, keywords:
         await page.wait_for_timeout(2000)
 
         body_text = await page.inner_text("body")
-        if "maintenance" in body_text.lower() or "not found" in body_text.lower():
+        if "page not found" in body_text.lower() or "portal not found" in body_text.lower():
             return []
 
         for keyword in keywords:
@@ -353,39 +353,29 @@ async def _search_planetbids_portal(page, portal_id: str, agency: str, keywords:
 PLANETBIDS_COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.json")
 
 
-async def _search_planetbids(browser_context, keywords: list[str]) -> list[dict]:
+async def _search_planetbids(browser_context, keywords: list[str], live_page=None) -> list[dict]:
     """
-    Search PlanetBids portals using saved cookies (cookies.json).
-    Run test_planetbids.py --save-cookies to refresh when expired.
+    Search PlanetBids portals.
+    live_page: an already-verified Playwright page from the CAPTCHA session.
+               If provided, uses it directly (WAF already bypassed).
+               If None, attempts headless scrape with saved cookies (likely blocked).
     """
-    import json as _json
-    from pathlib import Path
-
-    cookies_path = Path(PLANETBIDS_COOKIES_FILE)
-    if not cookies_path.exists():
-        print("\nPlanetBids skipped — no cookies.json found")
-        print("  Run: python test_planetbids.py --save-cookies")
-        return []
-
     print("\nSearching PlanetBids portals (CA agency bids)...")
 
-    cookies = _json.loads(cookies_path.read_text())
-    await browser_context.add_cookies(cookies)
-
-    page = await browser_context.new_page()
-
-    # Verify cookies are still valid
-    first_portal = next(iter(PLANETBIDS_PORTALS))
-    test_url = f"{PLANETBIDS_BASE}/portal/{first_portal}/bo/bo-search"
-    await page.goto(test_url, wait_until="domcontentloaded", timeout=20000)
-    await page.wait_for_timeout(2000)
-    title = await page.title()
-    if "verification" in title.lower() or "captcha" in title.lower() or "human" in title.lower():
-        print("  ⚠ PlanetBids cookies expired — run: python test_planetbids.py --save-cookies")
-        await page.close()
-        return []
-
-    print("  ✓ PlanetBids cookies valid")
+    if live_page is not None:
+        page = live_page
+        owns_page = False
+    else:
+        import json as _json
+        from pathlib import Path
+        cookies_path = Path(PLANETBIDS_COOKIES_FILE)
+        if not cookies_path.exists():
+            print("  PlanetBids skipped — no cookies.json found")
+            return []
+        cookies = _json.loads(cookies_path.read_text())
+        await browser_context.add_cookies(cookies)
+        page = await browser_context.new_page()
+        owns_page = True
 
     all_bids: list[dict] = []
     for portal_id, agency in PLANETBIDS_PORTALS.items():
@@ -394,7 +384,8 @@ async def _search_planetbids(browser_context, keywords: list[str]) -> list[dict]
         print(f"    ✓ {len(portal_bids)} bids found")
         all_bids.extend(portal_bids)
 
-    await page.close()
+    if owns_page:
+        await page.close()
     return all_bids
 
 
@@ -1077,10 +1068,11 @@ async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
     return all_bids
 
 
-async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True) -> list[dict]:
+async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True, live_page=None) -> list[dict]:
     """
     Main scan entry point.
     source: filter to a single source ("sam", "planetbids", "bidnet", etc.) or None for all.
+    live_page: verified Playwright page to use for PlanetBids (WAF already bypassed).
     Returns list of deduplicated bid dicts sorted by relevance + due date.
     """
     if keywords is None:
@@ -1111,7 +1103,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                 await page.close()
 
             if src in (None, "planetbids"):
-                pb_bids = await _search_planetbids(context, keywords)
+                pb_bids = await _search_planetbids(context, keywords, live_page=live_page)
                 all_bids.extend(pb_bids)
 
             if src in (None, "caleprocure"):
