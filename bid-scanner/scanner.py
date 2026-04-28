@@ -362,24 +362,37 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
     access_token = None
 
     # Capture the OAuth token from the browser's own request
+    token_response_keys = []
+
     async def capture_token(route):
         nonlocal access_token
         try:
             response = await route.fetch()
             data = await response.json()
-            access_token = data.get("access_token") or data.get("token") or data.get("accessToken")
+            token_response_keys.extend(data.keys() if isinstance(data, dict) else [])
+            access_token = (
+                data.get("access_token") or data.get("token") or
+                data.get("accessToken") or data.get("jwt") or
+                data.get("id_token")
+            )
             await route.fulfill(response=response)
         except Exception:
             await route.continue_()
 
     await page.route("**/papi/oauth/**", capture_token)
 
-    # Wait for token — reload page to trigger OAuth refresh
+    # Reload to trigger OAuth refresh, then wait up to 8s for token
     await page.reload(wait_until="networkidle", timeout=20000)
-    await page.wait_for_timeout(2000)
+    for _ in range(16):
+        if access_token:
+            break
+        await page.wait_for_timeout(500)
 
     if not access_token:
-        print("  ⚠ Could not capture OAuth token — bids may be incomplete")
+        print(f"  ⚠ OAuth token not captured (response keys: {token_response_keys})")
+        print("  ⚠ Continuing without token — some portals may return empty")
+    else:
+        print(f"  ✓ OAuth token captured")
 
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
