@@ -277,8 +277,7 @@ async def _planetbids_login(page) -> bool:
 
 
 async def _search_planetbids_portal(page, portal_id: str, agency: str, keywords: list[str]) -> list[dict]:
-    """Search open bids in one PlanetBids portal."""
-    bids = []
+    """Search open bids in one PlanetBids portal by parsing table rows."""
     search_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
 
     try:
@@ -289,63 +288,58 @@ async def _search_planetbids_portal(page, portal_id: str, agency: str, keywords:
         if "page not found" in body_text.lower() or "portal not found" in body_text.lower():
             return []
 
-        for keyword in keywords:
-            try:
-                # Look for a search input
-                search_input = await page.query_selector(
-                    'input[placeholder*="search" i], input[name*="search" i], input[id*="search" i], input[type="search"]'
-                )
-                if search_input:
-                    await search_input.fill(keyword)
-                    await search_input.press("Enter")
-                    await page.wait_for_load_state("networkidle", timeout=10000)
-                    await page.wait_for_timeout(1500)
+        # Parse all table rows — columns: posted | title | invitation# | due_date | remaining | stage | format
+        rows = await page.evaluate("""() => {
+            return Array.from(document.querySelectorAll('tr')).map(row => {
+                const cells = Array.from(row.querySelectorAll('td')).map(td => td.innerText.trim());
+                return cells;
+            }).filter(cells => cells.length >= 5);
+        }""")
 
-                # Collect bid links from this page
-                bid_links = await page.evaluate("""() => {
-                    const links = {};
-                    document.querySelectorAll('a[href*="/bo/bo-detail/"], a[href*="/bid/"]').forEach(a => {
-                        const m = a.href.match(/\\/bo-detail\\/(\\d+)|\\/bid\\/(\\d+)/);
-                        if (m) links[m[1] || m[2]] = a.href;
-                    });
-                    return links;
-                }""")
+        bids = []
+        kw_lower = [k.lower() for k in keywords]
 
-                body = await page.inner_text("body")
-                lines = [l.strip() for l in body.split("\n") if l.strip()]
+        for cells in rows:
+            posted_raw = cells[0] if len(cells) > 0 else ""
+            title      = cells[1] if len(cells) > 1 else ""
+            inv_num    = cells[2] if len(cells) > 2 else ""
+            due_raw    = cells[3] if len(cells) > 3 else ""
+            stage      = cells[5] if len(cells) > 5 else ""
 
-                # PlanetBids listing pattern: bid title + number + due date
-                # Parse what we can; fall back to link-only entries
-                for bid_id, url in bid_links.items():
-                    # Try to find title near this link in the DOM
-                    title_el = await page.query_selector(f'a[href*="{bid_id}"]')
-                    title = ""
-                    if title_el:
-                        title = (await title_el.inner_text()).strip()
+            if not title or len(title) < 5:
+                continue
 
-                    if not title or len(title) < 5:
-                        continue
+            # Skip closed/canceled/awarded — only active bids
+            if stage.lower() in ("closed", "canceled", "cancelled", "awarded", "rejected"):
+                continue
 
-                    bids.append({
-                        "bid_id": f"PB-{portal_id}-{bid_id}",
-                        "title": title,
-                        "agency": agency,
-                        "state": "California",
-                        "published_date": None,
-                        "published_raw": "",
-                        "due_date": None,
-                        "due_date_raw": "See portal",
-                        "is_relevant": _is_relevant(title),
-                        "search_keyword": keyword,
-                        "url": url if url.startswith("http") else PLANETBIDS_BASE + url,
-                        "source": "PlanetBids",
-                    })
+            # Keyword filter on title
+            title_lower = title.lower()
+            if not any(kw in title_lower for kw in kw_lower):
+                continue
 
-            except Exception as e:
-                print(f"    ⚠ PlanetBids '{keyword}' on {agency}: {e}")
+            bid_id = f"PB-{portal_id}-{inv_num.replace(' ', '-')}"
+            due_date = _parse_date(due_raw.split(" ")[0]) if due_raw else None
+            published = _parse_date(posted_raw.split(" ")[0]) if posted_raw else None
+
+            bids.append({
+                "bid_id": bid_id,
+                "title": title,
+                "agency": agency,
+                "state": "California",
+                "published_date": published.isoformat() if published else None,
+                "published_raw": posted_raw,
+                "due_date": due_date.isoformat() if due_date else None,
+                "due_date_raw": due_raw,
+                "is_relevant": _is_relevant(title),
+                "search_keyword": next((kw for kw in keywords if kw.lower() in title_lower), keywords[0]),
+                "url": search_url,
+                "source": "PlanetBids",
+            })
 
     except Exception as e:
         print(f"    ⚠ PlanetBids portal {agency}: {e}")
+        return []
 
     return bids
 
