@@ -359,27 +359,15 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
 
     page = live_page
 
-    # Captured API responses keyed by portal cid
-    captured: dict[str, list] = {}
-
+    # Modify per_page to 500 — browser still sends its own auth token
     async def handle_route(route):
         url = route.request.url
         if "papi/bids" in url:
-            # Bump per_page and fetch synchronously so data is captured before page renders
-            modified_url = _re.sub(r'per_page=\d+', 'per_page=500', url)
-            try:
-                response = await route.fetch(url=modified_url)
-                data = await response.json()
-                m = _re.search(r'cid=(\d+)', url)
-                if m:
-                    captured.setdefault(m.group(1), []).extend(data.get("data", []))
-                await route.fulfill(response=response)
-            except Exception as e:
-                await route.continue_()
+            await route.continue_(url=_re.sub(r'per_page=\d+', 'per_page=500', url))
         else:
             await route.continue_()
 
-    await page.route("**", handle_route)
+    await page.route("**papi/bids**", handle_route)
 
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
@@ -388,15 +376,21 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
     for portal_id, agency in PLANETBIDS_PORTALS.items():
         print(f"  → {agency}...")
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
+        records = []
 
         try:
-            await page.goto(portal_url, wait_until="networkidle", timeout=20000)
-            await page.wait_for_timeout(1000)
-        except Exception as e:
-            print(f"    ⚠ navigation error: {e}")
-            continue
+            async with page.expect_response(
+                lambda r, pid=portal_id: "papi/bids" in r.url and f"cid={pid}" in r.url,
+                timeout=12000
+            ) as resp_info:
+                await page.goto(portal_url, wait_until="domcontentloaded", timeout=20000)
 
-        records = captured.get(portal_id, [])
+            resp = await resp_info.value
+            data = await resp.json()
+            records = data.get("data", [])
+        except Exception as e:
+            print(f"    ⚠ skipped ({type(e).__name__})")
+            continue
         portal_bids = []
 
         for rec in records:
