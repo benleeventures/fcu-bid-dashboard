@@ -1,6 +1,7 @@
 # Secrets
 .env
 *.env
+.env.local
 cookies.json
 
 # Python
@@ -24,3 +25,6 @@ dashboard/.next/
 
 # Downloaded bid documents
 bid-scanner/output/
+
+# Vercel
+.vercel

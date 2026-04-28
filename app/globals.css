@@ -1,0 +1,26 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --charcoal:     #FAF7F2;   /* cream background */
+  --charcoal-soft:#FFFFFF;   /* white surface / cards */
+  --charcoal-mid: #E5DDD0;   /* warm border */
+  --gold:         #C8922A;
+  --gold-light:   #9A6C10;   /* darkened for contrast on light bg */
+  --star:         #F5C518;   /* review-star yellow */
+  --white:        #1A1A1C;   /* primary text */
+  --gray:         #6A6A70;   /* muted text */
+  --red:          #D93025;
+  --green:        #2A8A3E;
+  --orange:       #D4720A;
+}
+
+body {
+  background: var(--charcoal);
+  color: var(--white);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
