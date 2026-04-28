@@ -205,7 +205,6 @@ def _dedup(bids: list[dict]) -> list[dict]:
 PLANETBIDS_PORTALS = {
     # Original portals
     "21372": "LA Community College District",
-    "15810": "City of Long Beach",
     "19236": "Port of Long Beach",
     "25987": "Cal State LA",
     "61954": "LA County Office of Education",
