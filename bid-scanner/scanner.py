@@ -372,33 +372,31 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
     all_bids: list[dict] = []
+    ctx = page.context
 
     for portal_id, agency in PLANETBIDS_PORTALS.items():
         print(f"  → {agency}...")
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
         records = []
+        tab = await ctx.new_page()
 
-        for attempt in range(2):
-            try:
-                async with page.expect_response(
-                    lambda r, pid=portal_id: "papi/bids" in r.url and f"cid={pid}" in r.url,
-                    timeout=12000
-                ) as resp_info:
-                    if attempt == 0:
-                        await page.goto(portal_url, wait_until="domcontentloaded", timeout=20000)
-                    else:
-                        await page.reload(wait_until="domcontentloaded", timeout=20000)
+        # Route interceptor on each new tab
+        await tab.route("**papi/bids**", handle_route)
 
-                resp = await resp_info.value
-                data = await resp.json()
-                records = data.get("data", [])
-                break
-            except Exception:
-                if attempt == 0:
-                    print(f"    ↺ retrying...")
-                else:
-                    print(f"    ⚠ skipped after retry")
-                continue
+        try:
+            async with tab.expect_response(
+                lambda r, pid=portal_id: "papi/bids" in r.url and f"cid={pid}" in r.url,
+                timeout=15000
+            ) as resp_info:
+                await tab.goto(portal_url, wait_until="domcontentloaded", timeout=20000)
+
+            resp = await resp_info.value
+            data = await resp.json()
+            records = data.get("data", [])
+        except Exception:
+            print(f"    ⚠ skipped")
+        finally:
+            await tab.close()
         portal_bids = []
 
         for rec in records:
