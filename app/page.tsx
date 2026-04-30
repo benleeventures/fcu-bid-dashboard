@@ -100,9 +100,9 @@ export default async function Home() {
   const sources = Array.from(new Set(bids.map(b => b.source).filter(Boolean))) as string[]
 
   return (
-    <main style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
+    <main style={{ maxWidth: 1200, margin: '0 auto', padding: '16px 12px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
@@ -125,7 +125,7 @@ export default async function Home() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 28, gridAutoRows: 'auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 28 }}>
         {[
           { label: 'Total Bids', value: bids.length, accent: 'var(--gold)' },
           { label: 'Flooring Relevant', value: relevant.length, accent: 'var(--green)' },
