@@ -255,7 +255,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   if (!bid) return new Response('Bid not found', { status: 404 })
 
   const buffer = await renderToBuffer(
-    React.createElement(BidPackagePDF, { bid, spec, est })
+    React.createElement(BidPackagePDF, { bid, spec, est }) as React.ReactElement<any>
   )
 
   const safe = (bid.bid_id ?? bidId).replace(/[^a-zA-Z0-9-_]/g, '_')
