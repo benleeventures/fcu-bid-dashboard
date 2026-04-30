@@ -2,9 +2,9 @@
 FCU Bid Scanner — notification module.
 
 Channels:
+  - Scan summary:      send_scan_summary(bids, duration_secs)   ← fires every run
   - New bid digest:    send_new_bids_digest(bids)
-  - Job walk alert:    send_job_walk_alert(bid, spec)
-  - Cookie expired:    send_notification(reason)   ← existing, kept for scanner
+  - Cookie expired:    send_notification(reason)
 
 All email goes through Resend API (RESEND_API_KEY in .env).
 Recipient: NOTIFY_EMAIL (comma-separated for multiple).
@@ -35,12 +35,13 @@ def _send_resend(to: str | list[str], subject: str, html: str) -> bool:
 
     import requests as _req
 
+    from_addr = os.getenv("FROM_EMAIL", "FCU Bid Agent <bids@bids.benlee.ventures>")
     recipients = [to] if isinstance(to, str) else to
     try:
         resp = _req.post(
             "https://api.resend.com/emails",
             json={
-                "from": "FCU Bid Agent <onboarding@resend.dev>",
+                "from": from_addr,
                 "to": recipients,
                 "subject": subject,
                 "html": html,
@@ -62,6 +63,117 @@ def _send_resend(to: str | list[str], subject: str, html: str) -> bool:
 def _recipients() -> list[str]:
     raw = os.getenv("NOTIFY_EMAIL", "")
     return [r.strip() for r in raw.split(",") if r.strip()]
+
+
+# ─────────────────────────────────────────────
+# Scan Summary (fires every run)
+# ─────────────────────────────────────────────
+
+def send_scan_summary(bids: list[dict], duration_secs: float):
+    """
+    Email a per-source summary after every scanner run.
+    Lets you spot broken scrapers (0 total) at a glance.
+    """
+    recipients = _recipients()
+    if not recipients:
+        return
+
+    # Per-source stats — _is_new is set by upsert_bids before this is called
+    stats: dict[str, dict] = {}
+    for b in bids:
+        src = b.get("source") or "Unknown"
+        if src not in stats:
+            stats[src] = {"total": 0, "relevant": 0, "new": 0}
+        stats[src]["total"] += 1
+        if b.get("is_relevant"):
+            stats[src]["relevant"] += 1
+        if b.get("_is_new"):
+            stats[src]["new"] += 1
+
+    total   = len(bids)
+    relevant = sum(1 for b in bids if b.get("is_relevant"))
+    new      = sum(1 for b in bids if b.get("_is_new"))
+    mins, secs = divmod(int(duration_secs), 60)
+    duration_str = f"{mins}m {secs}s" if mins else f"{secs}s"
+
+    # Sort: sources with new bids first, then by relevant desc
+    sorted_sources = sorted(
+        stats.items(),
+        key=lambda x: (-x[1]["new"], -x[1]["relevant"], -x[1]["total"])
+    )
+
+    rows = ""
+    for src, s in sorted_sources:
+        has_new     = s["new"] > 0
+        is_zero     = s["total"] == 0
+        name_color  = "#F5F5F0" if not is_zero else "#8E8E93"
+        new_color   = "#C8922A" if has_new else "#8E8E93"
+        status_icon = "⚠" if is_zero else ("★" if has_new else "·")
+        status_color= "#FF9F0A" if is_zero else ("#C8922A" if has_new else "#3A3A3C")
+        rows += f"""
+        <tr>
+          <td style="padding:9px 14px;border-bottom:1px solid #2C2C2E;">
+            <span style="font-size:13px;color:{name_color};">{src}</span>
+          </td>
+          <td style="padding:9px 14px;border-bottom:1px solid #2C2C2E;text-align:right;font-family:monospace;font-size:13px;color:#8E8E93;">{s['total']}</td>
+          <td style="padding:9px 14px;border-bottom:1px solid #2C2C2E;text-align:right;font-family:monospace;font-size:13px;color:#8E8E93;">{s['relevant']}</td>
+          <td style="padding:9px 14px;border-bottom:1px solid #2C2C2E;text-align:right;font-family:monospace;font-size:13px;font-weight:{'700' if has_new else '400'};color:{new_color};">{s['new']}</td>
+          <td style="padding:9px 14px;border-bottom:1px solid #2C2C2E;text-align:center;font-size:14px;color:{status_color};">{status_icon}</td>
+        </tr>"""
+
+    subject = f"[FCU Scanner] {new} new · {relevant} relevant · {total} total — {datetime.now().strftime('%b %d')}"
+
+    html = f"""
+<!DOCTYPE html>
+<html>
+<body style="background:#1C1C1E;color:#F5F5F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;">
+  <div style="max-width:640px;margin:0 auto;padding:32px 24px;">
+
+    <div style="border-left:3px solid #C8922A;padding-left:16px;margin-bottom:24px;">
+      <p style="margin:0;font-size:11px;color:#8E8E93;letter-spacing:.08em;text-transform:uppercase;">FCU Bid Agent · Scan Complete</p>
+      <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;">{datetime.now().strftime('%B %d, %Y')} — {duration_str}</h1>
+    </div>
+
+    <!-- Quick stats -->
+    <div style="display:flex;gap:12px;margin-bottom:24px;">
+      <div style="flex:1;background:#2C2C2E;border-radius:8px;padding:14px 16px;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:#F5F5F0;">{total}</div>
+        <div style="font-size:11px;color:#8E8E93;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;">Total Bids</div>
+      </div>
+      <div style="flex:1;background:#2C2C2E;border-radius:8px;padding:14px 16px;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:#F5F5F0;">{relevant}</div>
+        <div style="font-size:11px;color:#8E8E93;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;">Relevant</div>
+      </div>
+      <div style="flex:1;background:#{'C8922A' if new > 0 else '2C2C2E'};border-radius:8px;padding:14px 16px;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:#{'1C1C1E' if new > 0 else 'F5F5F0'};">{new}</div>
+        <div style="font-size:11px;color:#{'1C1C1E' if new > 0 else '8E8E93'};text-transform:uppercase;letter-spacing:.06em;margin-top:3px;">New</div>
+      </div>
+    </div>
+
+    <!-- Per-source table -->
+    <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">
+      <thead>
+        <tr style="background:#3A3A3C;">
+          <th style="padding:9px 14px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Source</th>
+          <th style="padding:9px 14px;text-align:right;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Total</th>
+          <th style="padding:9px 14px;text-align:right;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Relevant</th>
+          <th style="padding:9px 14px;text-align:right;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">New</th>
+          <th style="padding:9px 14px;text-align:center;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Status</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+
+    <p style="margin-top:20px;font-size:11px;color:#555;line-height:1.6;">
+      ★ new bids found &nbsp;·&nbsp; ⚠ scraper returned 0 — may need attention<br>
+      <a href="https://fcu-dashboard.vercel.app" style="color:#C8922A;">Open Dashboard ↗</a>
+    </p>
+  </div>
+</body>
+</html>"""
+
+    _send_resend(recipients, subject, html)
+    print(f"  ✓ Scan summary sent ({len(sorted_sources)} sources)")
 
 
 # ─────────────────────────────────────────────
@@ -132,226 +244,6 @@ def send_new_bids_digest(new_bids: list[dict]):
 </html>"""
 
     _send_resend(recipients, subject, html)
-
-
-# ─────────────────────────────────────────────
-# Job Walk Alert
-# ─────────────────────────────────────────────
-
-_JOB_WALK_CHECKLIST = [
-    ("Site conditions", "Existing flooring removal complexity, subfloor condition, accessibility for material delivery"),
-    ("Scope accuracy", "Do the drawings match what's actually there? Any hidden scope not in specs?"),
-    ("Crew requirements", "How many workers needed? Any specialty skills? Difficult install conditions?"),
-    ("Timeline feasibility", "Is the project timeline realistic? Phasing requirements?"),
-    ("Material storage & staging", "Is there space on site? Distance from parking to work area?"),
-    ("Competition assessment", "Is this job likely to have 10+ bidders? Are we in a good position?"),
-    ("Overall profitability", "Gut check — does this feel like a job worth winning?"),
-]
-
-
-def send_job_walk_alert(bid: dict, spec: dict):
-    """
-    Email Lenny a job walk alert with pre-built checklist.
-    Called automatically after parser saves a spec with walk_required=True.
-    """
-    recipients = _recipients()
-    if not recipients:
-        print("  (Job walk alert skipped — set NOTIFY_EMAIL in .env)")
-        return
-
-    title = bid.get("title", "Unknown Job")
-    agency = bid.get("agency", "")
-    portal = bid.get("url", "")
-    walk_raw = spec.get("walk_date_raw") or spec.get("walk_date") or "Date TBD — check bid docs"
-    bid_due = bid.get("due_date_raw") or bid.get("due_date") or "—"
-
-    checklist_rows = "".join(
-        f"""<tr>
-          <td style="padding:10px 14px;border-bottom:1px solid #2C2C2E;vertical-align:top;">
-            <div style="width:18px;height:18px;border:2px solid #C8922A;border-radius:3px;display:inline-block;margin-right:10px;vertical-align:middle;"></div>
-            <strong style="color:#F5F5F0;">{item}</strong>
-          </td>
-          <td style="padding:10px 14px;border-bottom:1px solid #2C2C2E;color:#8E8E93;font-size:13px;">{desc}</td>
-        </tr>"""
-        for item, desc in _JOB_WALK_CHECKLIST
-    )
-
-    portal_link = f'<a href="{portal}" style="color:#C8922A;">{portal}</a>' if portal else "—"
-
-    subject = f"[Job Walk Required] {title[:60]} — {walk_raw}"
-
-    html = f"""
-<!DOCTYPE html>
-<html>
-<body style="background:#1C1C1E;color:#F5F5F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;">
-  <div style="max-width:680px;margin:0 auto;padding:32px 24px;">
-
-    <div style="background:#FF9F0A18;border:1px solid #FF9F0A;border-radius:8px;padding:16px 20px;margin-bottom:28px;">
-      <p style="margin:0;font-size:12px;color:#FF9F0A;font-weight:700;letter-spacing:.05em;text-transform:uppercase;">⚠ Mandatory Job Walk</p>
-      <h1 style="margin:8px 0 0;font-size:20px;font-weight:700;">{title}</h1>
-      <p style="margin:6px 0 0;font-size:14px;color:#8E8E93;">{agency}</p>
-    </div>
-
-    <table style="width:100%;border-collapse:collapse;margin-bottom:28px;">
-      <tr>
-        <td style="padding:8px 0;color:#8E8E93;font-size:13px;width:140px;">Walk Date</td>
-        <td style="padding:8px 0;font-size:14px;font-weight:700;color:#FF9F0A;">{walk_raw}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 0;color:#8E8E93;font-size:13px;">Bid Due</td>
-        <td style="padding:8px 0;font-size:14px;color:#F5F5F0;">{bid_due}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 0;color:#8E8E93;font-size:13px;">Portal</td>
-        <td style="padding:8px 0;font-size:13px;">{portal_link}</td>
-      </tr>
-    </table>
-
-    <h2 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Job Walk Checklist</h2>
-    <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">
-      <tbody>{checklist_rows}</tbody>
-    </table>
-
-    <div style="margin-top:24px;padding:16px;background:#2C2C2E;border-radius:8px;border-left:3px solid #C8922A;">
-      <p style="margin:0;font-size:13px;color:#8E8E93;">
-        After the walk, call Joanne with your recommendation: <strong style="color:#F5F5F0;">BID or NO BID</strong>.<br>
-        Relay any site-specific notes that affect scope or quantities.
-      </p>
-    </div>
-  </div>
-</body>
-</html>"""
-
-    _send_resend(recipients, subject, html)
-    print(f"  ✓ Job walk alert sent for: {title[:60]}")
-
-
-# ─────────────────────────────────────────────
-# Compliance Alert
-# ─────────────────────────────────────────────
-
-_COMPLIANCE_ACTIONS = {
-    "bid_bond":       ("Bid Bond",        "Joanne → Insurance Agent"),
-    "prevailing_wage":("Prevailing Wage",  "Joanne"),
-    "dvbe_required":  ("DVBE Required",    "Joanne"),
-    "dbe_goal_pct":   ("DBE Goal",         "Joanne + Lenny"),
-}
-
-
-def send_compliance_alert(bid: dict, spec: dict):
-    """
-    Email Joanne a compliance action list when a parsed bid has flags.
-    Fires automatically from parser.py --save when any flag is set.
-    raw_extract inside spec may carry dvbe_required / dbe_goal_pct.
-    """
-    recipients = _recipients()
-    if not recipients:
-        return
-
-    title     = bid.get("title", "Unknown Job")
-    agency    = bid.get("agency", "")
-    bid_due   = bid.get("due_date_raw") or bid.get("due_date") or "—"
-    portal    = bid.get("url", "")
-    raw       = spec.get("raw_extract") or spec  # extended fields live here
-
-    actions = []
-
-    if spec.get("bid_bond"):
-        pct = spec.get("bid_bond_pct")
-        pct_str = f" ({pct}%)" if pct else ""
-        actions.append({
-            "flag":   f"Bid Bond Required{pct_str}",
-            "who":    "Joanne → Insurance Agent",
-            "detail": f"Request bid bond certificate{pct_str}. Must be attached to bid package before submission.",
-            "urgent": True,
-        })
-
-    if spec.get("prevailing_wage"):
-        actions.append({
-            "flag":   "Prevailing Wage / Certified Payroll",
-            "who":    "Joanne",
-            "detail": "Estimate uses $108/hr Journeyman rate. Set up certified payroll system before award.",
-            "urgent": False,
-        })
-
-    if raw.get("dvbe_required"):
-        pct = raw.get("dvbe_pct", "")
-        pct_str = f" ({pct}%)" if pct else ""
-        actions.append({
-            "flag":   f"DVBE Participation Required{pct_str}",
-            "who":    "Joanne",
-            "detail": "Attach current DVBE certificate to bid package. Confirm cert expiry date.",
-            "urgent": True,
-        })
-
-    if raw.get("dbe_goal_pct"):
-        pct = raw.get("dbe_goal_pct")
-        actions.append({
-            "flag":   f"DBE Goal: {pct}%",
-            "who":    "Joanne + Lenny",
-            "detail": f"Must document {pct}% DBE participation. Identify a qualified DBE sub and get a quote.",
-            "urgent": True,
-        })
-
-    if not actions:
-        return
-
-    rows = "".join(f"""
-    <tr>
-      <td style="padding:12px 16px;border-bottom:1px solid #2C2C2E;vertical-align:top;width:220px;">
-        <div style="font-size:13px;font-weight:700;color:{'#FF9F0A' if a['urgent'] else '#F5F5F0'};">{a['flag']}</div>
-        <div style="font-size:11px;color:#8E8E93;margin-top:3px;">Owner: {a['who']}</div>
-      </td>
-      <td style="padding:12px 16px;border-bottom:1px solid #2C2C2E;font-size:13px;color:#8E8E93;">{a['detail']}</td>
-    </tr>""" for a in actions)
-
-    portal_link = f'<a href="{portal}" style="color:#C8922A;">{portal[:60]}</a>' if portal else "—"
-    flag_count  = len(actions)
-    urgent_count = sum(1 for a in actions if a["urgent"])
-    subject = f"[Compliance Alert] {title[:55]} — {flag_count} item{'s' if flag_count > 1 else ''} require action"
-
-    html = f"""
-<!DOCTYPE html>
-<html>
-<body style="background:#1C1C1E;color:#F5F5F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;">
-  <div style="max-width:700px;margin:0 auto;padding:32px 24px;">
-
-    <div style="background:#FF9F0A18;border:1px solid #FF9F0A;border-radius:8px;padding:16px 20px;margin-bottom:28px;">
-      <p style="margin:0;font-size:12px;color:#FF9F0A;font-weight:700;letter-spacing:.05em;text-transform:uppercase;">
-        ⚠ {urgent_count} urgent · {flag_count} total compliance item{'s' if flag_count > 1 else ''}
-      </p>
-      <h1 style="margin:8px 0 0;font-size:20px;font-weight:700;">{title}</h1>
-      <p style="margin:6px 0 0;font-size:14px;color:#8E8E93;">{agency}</p>
-    </div>
-
-    <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-      <tr>
-        <td style="padding:6px 0;color:#8E8E93;font-size:13px;width:120px;">Bid Due</td>
-        <td style="padding:6px 0;font-size:14px;font-weight:600;color:#F5F5F0;">{bid_due}</td>
-      </tr>
-      <tr>
-        <td style="padding:6px 0;color:#8E8E93;font-size:13px;">Portal</td>
-        <td style="padding:6px 0;font-size:13px;">{portal_link}</td>
-      </tr>
-    </table>
-
-    <h2 style="font-size:12px;font-weight:700;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">
-      Required Actions
-    </h2>
-    <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">
-      <tbody>{rows}</tbody>
-    </table>
-
-    <p style="margin-top:24px;font-size:12px;color:#8E8E93;">
-      Review the full bid in the
-      <a href="https://fcu-dashboard.vercel.app" style="color:#C8922A;">FCU Dashboard</a>.
-    </p>
-  </div>
-</body>
-</html>"""
-
-    _send_resend(recipients, subject, html)
-    print(f"  ✓ Compliance alert sent ({flag_count} item{'s' if flag_count > 1 else ''}) for: {title[:55]}")
 
 
 # ─────────────────────────────────────────────

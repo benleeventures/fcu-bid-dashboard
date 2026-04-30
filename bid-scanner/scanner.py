@@ -39,11 +39,25 @@ SEARCH_KEYWORDS = [
     "tile installation",
 ]
 
-# Keywords to flag a bid as "relevant" (flooring-specific)
+# Keywords to flag a bid as "relevant" (flooring-specific) — fast first pass
 RELEVANT_KEYWORDS = [
-    "flooring", "floor covering", "carpet", "resilient", "lvt", "vct",
-    "vinyl", "tile", "hardwood", "laminate", "window covering",
-    "blinds", "shades", "curtain", "linoleum", "epoxy floor",
+    "flooring", "floor covering", "floor repair", "floor replacement",
+    "floor install", "install floor", "new floor", "replace floor",
+    "carpet", "resilient", "lvt", "vct", "vinyl tile", "vinyl plank",
+    "hardwood", "laminate", "window covering", "blinds", "shades",
+    "curtain", "linoleum", "epoxy floor", "rubber floor",
+    "ceramic tile", "porcelain tile", "tile installation", "tile replacement",
+]
+
+# Construction bids that didn't match keywords → Ollama second-pass
+# (set OLLAMA_RELEVANCE=true in .env to enable)
+_CONSTRUCTION_TRIGGERS = [
+    "renovation", "remodel", "rehabilitation", "modernization", "retrofit",
+    "improvement", "upgrade", "repair", "replacement", "construction",
+    "classroom", "restroom", "locker room", "gymnasium", "gym ",
+    "dormitory", "barracks", "office space", "community center",
+    "hospital", "clinic", "library", "school", "university", "college",
+    "facility", "building interior", "interior ",
 ]
 
 USER_AGENT = (
@@ -52,13 +66,43 @@ USER_AGENT = (
 )
 
 
+def _ollama_relevance(title: str) -> bool:
+    """Ask Ollama if this construction bid likely needs commercial flooring work."""
+    try:
+        resp = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": os.getenv("OLLAMA_MODEL", "llama3.2:3b"),
+                "prompt": (
+                    "A commercial flooring contractor is reviewing public works bids. "
+                    "Does this bid likely require commercial flooring installation "
+                    "(carpet, vinyl, tile, hardwood, etc.)?\n"
+                    "Answer only YES or NO.\n\n"
+                    f'Bid title: "{title}"'
+                ),
+                "stream": False,
+                "options": {"temperature": 0, "num_predict": 5},
+            },
+            timeout=15,
+        )
+        return resp.json().get("response", "").strip().upper().startswith("YES")
+    except Exception:
+        return False
+
+
 def _is_relevant(title: str) -> bool:
     t = title.lower()
-    return any(kw in t for kw in RELEVANT_KEYWORDS)
+    # Fast keyword match
+    if any(kw in t for kw in RELEVANT_KEYWORDS):
+        return True
+    # Ollama second pass — only for construction bids, only if enabled
+    if os.getenv("OLLAMA_RELEVANCE") and any(kw in t for kw in _CONSTRUCTION_TRIGGERS):
+        return _ollama_relevance(title)
+    return False
 
 
 def _parse_date(s: str) -> date | None:
-    for fmt in ("%m/%d/%Y", "%m/%d/%y", "%Y-%m-%d"):
+    for fmt in ("%m/%d/%Y", "%m/%d/%y", "%Y-%m-%d", "%b %d, %Y", "%B %d, %Y"):
         try:
             return datetime.strptime(s.strip(), fmt).date()
         except ValueError:
@@ -1180,7 +1224,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                     all_bids.extend(bids)
                 await page.close()
 
-            if src in (None, "planetbids"):
+            if src == "planetbids" or (src is None and live_page is not None):
                 pb_bids = await _search_planetbids(context, keywords, live_page=live_page)
                 all_bids.extend(pb_bids)
 

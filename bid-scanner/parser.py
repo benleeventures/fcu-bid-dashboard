@@ -87,6 +87,13 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
     if spec.get("walk_date_raw"):
         walk_date = _parse_date(spec["walk_date_raw"])
 
+    # Fetch bid for scoring
+    bid_resp = sb.table("bids").select("is_relevant,due_date").eq("bid_id", bid_id).limit(1).execute()
+    bid = (bid_resp.data or [{}])[0]
+
+    from scoring import score_go_no_go
+    go = score_go_no_go(bid, spec)
+
     row = {
         "bid_id":          bid_id,
         "flooring_types":  spec.get("flooring_types") or [],
@@ -101,9 +108,11 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
         "summary":         (spec.get("summary") or "")[:1000],
         "raw_extract":     spec,
         "pdf_filename":    Path(pdf_path).name if pdf_path else None,
+        "go_score":        go["score"],
+        "go_verdict":      go["verdict"],
     }
     sb.table("bid_specs").upsert(row, on_conflict="bid_id").execute()
-    print(f"✓ Saved spec for {bid_id}")
+    print(f"✓ Saved spec for {bid_id}  [{go['verdict'].upper()} {go['score']}]")
 
 
 def _parse_date(raw: str) -> str | None:
@@ -137,19 +146,32 @@ async def download_all():
     SPECS_DIR.mkdir(parents=True, exist_ok=True)
     bids = get_unprocessed_bids()
 
-    # Skip bids already downloaded
+    # Skip bids already downloaded or past their due date
+    from datetime import date as _date
+    today = _date.today()
     pending = []
     already = []
+    skipped_due = []
     for b in bids:
         pdf_path = SPECS_DIR / f"{b['bid_id']}.pdf"
         if pdf_path.exists():
             already.append(b)
-        else:
-            pending.append(b)
+            continue
+        due = b.get("due_date")
+        if due:
+            try:
+                if _date.fromisoformat(str(due)) < today:
+                    skipped_due.append(b)
+                    continue
+            except ValueError:
+                pass
+        pending.append(b)
 
     print(f"Unprocessed relevant bids: {len(bids)}")
     if already:
         print(f"  {len(already)} already downloaded (run --pending to list)")
+    if skipped_due:
+        print(f"  {len(skipped_due)} skipped — past due date (expirer will archive)")
     if not pending:
         print("Nothing new to download.")
         return
@@ -169,7 +191,6 @@ async def download_all():
 
         # Sources that block headless scraping — skip PDF download, flag for manual review
         BLOCKED_SOURCES = {
-            "Caltrans CCOP":  "Requires login (CaleProcure account)",
             "OpenGov":        "Cloudflare Turnstile — blocks all automation",
         }
 
@@ -184,6 +205,18 @@ async def download_all():
             else:
                 print("  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env")
             await bidnet_page.close()
+
+        # Log in to CaleProcure once if any CCOP bids need downloading
+        ccop_pending = [b for b in pending if b.get("source") == "Caltrans CCOP"]
+        ccop_logged_in = False
+        if ccop_pending:
+            ccop_page = await context.new_page()
+            ccop_logged_in = await _caleprocure_login(ccop_page)
+            if ccop_logged_in:
+                print(f"  ✓ CaleProcure: logged in — {len(ccop_pending)} bids to download")
+            else:
+                print("  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env")
+            await ccop_page.close()
 
         for b in pending:
             bid_id = b["bid_id"]
@@ -224,6 +257,40 @@ async def download_all():
                     await page.close()
                 continue
 
+            # Caltrans CCOP — needs CaleProcure login, then generic PDF search
+            if source == "Caltrans CCOP":
+                if not ccop_logged_in:
+                    print("    ⚠ SKIP — CaleProcure login failed\n")
+                    continue
+                page = await context.new_page()
+                try:
+                    await page.goto(url, timeout=30000, wait_until="domcontentloaded")
+                    await page.wait_for_timeout(2000)
+                    pdf_href = await _find_generic_pdf(page)
+                    if not pdf_href:
+                        print("    ⚠ No PDF link found\n")
+                    else:
+                        pdf_href = urllib.parse.urljoin(page.url, pdf_href)
+                        resp = await context.request.get(pdf_href, timeout=30000)
+                        data = await resp.body()
+                        if data and b"%PDF" in data[:10]:
+                            out.write_bytes(data)
+                            print(f"    ✓ Saved {out.name} ({len(data)//1024} KB)\n")
+                        elif data and data[:2] == b"PK":
+                            content, ext = _extract_best_pdf_from_zip(data, bid_id)
+                            if content:
+                                (SPECS_DIR / f"{bid_id}{ext}").write_bytes(content)
+                                print(f"    ✓ Extracted from ZIP → {bid_id}{ext}\n")
+                            else:
+                                print("    ⚠ ZIP contained no usable content\n")
+                        else:
+                            print("    ⚠ Not a valid PDF\n")
+                except Exception as e:
+                    print(f"    ⚠ CCOP error: {e}\n")
+                finally:
+                    await page.close()
+                continue
+
             page = await context.new_page()
             try:
                 await page.goto(url, timeout=30000, wait_until="domcontentloaded")
@@ -243,13 +310,24 @@ async def download_all():
 
                 pdf_href = urllib.parse.urljoin(page.url, pdf_href)
                 resp = await context.request.get(pdf_href, timeout=30000)
-                ct = resp.headers.get("content-type", "")
-                if "pdf" not in ct and not pdf_href.lower().endswith(".pdf"):
-                    print(f"    ⚠ Not a PDF ({ct})\n"); await page.close(); continue
-
                 data = await resp.body()
-                if not data or b"%PDF" not in data[:10]:
-                    print("    ⚠ Response is not a valid PDF\n"); await page.close(); continue
+                if not data:
+                    print("    ⚠ Empty response\n"); await page.close(); continue
+
+                if data[:2] == b"PK":
+                    # ZIP or DOCX — extract best content
+                    content, ext = _extract_best_pdf_from_zip(data, bid_id)
+                    if content:
+                        save_path = SPECS_DIR / f"{bid_id}{ext}"
+                        save_path.write_bytes(content)
+                        print(f"    ✓ Extracted from ZIP → {save_path.name} ({len(content)//1024} KB)\n")
+                    else:
+                        print("    ⚠ ZIP contained no usable content\n")
+                    await page.close(); continue
+
+                if b"%PDF" not in data[:10]:
+                    ct = resp.headers.get("content-type", "unknown")
+                    print(f"    ⚠ Not a valid PDF (content-type: {ct})\n"); await page.close(); continue
 
                 out.write_bytes(data)
                 print(f"    ✓ Saved {out.name} ({len(data)//1024} KB)\n")
@@ -263,6 +341,29 @@ async def download_all():
 
     print(f"Done. PDFs saved to {SPECS_DIR}/")
     print("Now run: python parser.py --pending  to see what needs parsing")
+
+
+async def _caleprocure_login(page) -> bool:
+    """Log in to CaleProcure (CA eProcure). Page renders via JS — needs networkidle."""
+    user     = os.getenv("CALEPROCURE_USER", "")
+    password = os.getenv("CALEPROCURE_PASSWORD", "")
+    if not user or not password:
+        print("  ⚠ CALEPROCURE_USER / CALEPROCURE_PASSWORD not set in .env")
+        return False
+    try:
+        await page.goto("https://caleprocure.ca.gov/pages/BS3/login.aspx",
+                        wait_until="networkidle", timeout=30000)
+        await page.wait_for_timeout(3000)
+        await page.fill('#userid', user)
+        await page.fill('#pwd', password)
+        await page.click('input[name="Submit"], button:has-text("Login")')
+        await page.wait_for_load_state("networkidle", timeout=20000)
+        await page.wait_for_timeout(2000)
+        still_on_login = await page.query_selector('#userid')
+        return still_on_login is None
+    except Exception as e:
+        print(f"  ⚠ CaleProcure login error: {e}")
+        return False
 
 
 async def _bidnet_login(page) -> bool:
@@ -284,9 +385,13 @@ async def _bidnet_login(page) -> bool:
         await page.wait_for_load_state("domcontentloaded", timeout=20000)
         await page.wait_for_timeout(3000)
 
-        # If password field is still visible, login failed
-        still_on_login = await page.query_selector('input[type="password"]')
-        return still_on_login is None
+        # If still on login page, login failed — check URL since query_selector
+        # can crash if a post-login navigation destroys the execution context
+        try:
+            still_on_login = await page.query_selector('input[type="password"]')
+            return still_on_login is None
+        except Exception:
+            return "login" not in page.url.lower()
     except Exception as e:
         print(f"  ⚠ BidNet login error: {e}")
         return False
@@ -389,6 +494,59 @@ async def _download_bidnet_docs(page, context, bid_id: str, bid_url: str) -> lis
             print(f"    ⚠ Failed {doc['filename']}: {e}")
 
     return downloaded
+
+
+def _extract_best_pdf_from_zip(zip_data: bytes, bid_id: str) -> tuple[bytes | None, str]:
+    """
+    Open a ZIP in memory and return (content_bytes, extension).
+    Tries PDFs first, falls back to extracting text from DOCX.
+    Returns (None, '') if nothing usable found.
+    """
+    import io, zipfile, xml.etree.ElementTree as ET
+
+    def _score(name: str) -> int:
+        n = name.lower()
+        s = 0
+        if any(k in n for k in ["sow", "scope", "specification", "rfp", "ifb", "itb", "solicitation"]):
+            s += 10
+        if any(k in n for k in ["carpet", "floor", "resilient", "09_68", "09_65"]):
+            s += 8
+        if any(k in n for k in ["amend", "acm", "environmental", "guide"]):
+            s -= 5
+        return s
+
+    try:
+        with zipfile.ZipFile(io.BytesIO(zip_data)) as zf:
+            names = zf.namelist()
+
+            # 1. Try PDFs first
+            pdf_names = [n for n in names if n.lower().endswith(".pdf")]
+            if pdf_names:
+                best = max(pdf_names, key=_score)
+                data = zf.read(best)
+                if b"%PDF" in data[:10]:
+                    print(f"    ↳ ZIP: picked PDF {best} ({len(data)//1024} KB)")
+                    return data, ".pdf"
+
+            # 2. DOCX — extract plain text from word/document.xml
+            if "word/document.xml" in names:
+                xml_bytes = zf.read("word/document.xml")
+                root = ET.fromstring(xml_bytes)
+                W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                paragraphs = []
+                for para in root.iter(f"{{{W}}}p"):
+                    text = "".join(t.text or "" for t in para.iter(f"{{{W}}}t"))
+                    if text.strip():
+                        paragraphs.append(text)
+                text_content = "\n".join(paragraphs)
+                if text_content.strip():
+                    print(f"    ↳ ZIP: extracted DOCX text ({len(text_content)//1024} KB)")
+                    return text_content.encode("utf-8"), ".txt"
+
+            return None, ""
+    except Exception as e:
+        print(f"    ⚠ ZIP extract error: {e}")
+        return None, ""
 
 
 async def _find_samgov_pdf(page, context) -> str | None:
@@ -502,19 +660,19 @@ def cmd_pending():
         print("No specs directory yet. Run --download first.")
         return
     bids = {b["bid_id"]: b for b in get_unprocessed_bids()}
-    pdfs = sorted(SPECS_DIR.glob("*.pdf"))
-    if not pdfs:
-        print("No PDFs downloaded yet.")
+    docs = sorted([*SPECS_DIR.glob("*.pdf"), *SPECS_DIR.glob("*.txt")])
+    if not docs:
+        print("No documents downloaded yet.")
         return
-    pending = [p for p in pdfs if p.stem in bids]
+    pending = [p for p in docs if p.stem in bids]
     if not pending:
-        print("✓ All downloaded PDFs have been parsed.")
+        print("✓ All downloaded documents have been parsed.")
         return
-    print(f"{len(pending)} PDFs ready to parse:\n")
+    print(f"{len(pending)} documents ready to parse:\n")
     for p in pending:
         bid = bids.get(p.stem, {})
         size = p.stat().st_size // 1024
-        print(f"  {p.stem}  ({size} KB)  {bid.get('title','')[:50]}")
+        print(f"  {p.stem}  ({size} KB)  [{p.suffix}]  {bid.get('title','')[:50]}")
         print(f"    → {p}")
     print(f"\nFor each, read the PDF and run:")
     print(f"  python parser.py --save <bid_id> '<json>'")
@@ -534,30 +692,9 @@ def cmd_save(args: list[str], trigger_alerts: bool = True):
     pdf_path = str(SPECS_DIR / f"{bid_id}.pdf")
     save_spec(bid_id, spec, pdf_path)
 
-    if trigger_alerts:
-        _post_parse_alerts(bid_id, spec)
-
-
-def _post_parse_alerts(bid_id: str, spec: dict):
-    """Fire compliance + job walk alerts after a spec is saved."""
-    try:
-        sb = _sb()
-        resp = sb.table("bids").select("*").eq("bid_id", bid_id).limit(1).execute()
-        bids = resp.data or []
-        if not bids:
-            return
-        bid = bids[0]
-        from notify import send_compliance_alert, send_job_walk_alert
-        send_compliance_alert(bid, spec)
-        if spec.get("walk_required"):
-            send_job_walk_alert(bid, spec)
-    except Exception as e:
-        print(f"  ⚠ Post-parse alerts failed: {e}")
-
-
-# kept as alias for backward compat
-def _trigger_job_walk_alert(bid_id: str, spec: dict):
-    _post_parse_alerts(bid_id, spec)
+    # Alerts removed — handled by daily scheduled agents:
+    #   digest.py  (7:00am) — compliance flags + parsed specs
+    #   jobwalk.py (7:15am) — upcoming job walks (GO only, consolidated)
 
 
 # ─────────────────────────────────────────────
@@ -589,6 +726,76 @@ Important:
 - For flooring_types, use lowercase: carpet, lvt, vct, tile, hardwood, window_coverings, blinds, resilient."""
 
 
+def _parse_with_claude(pdf_path: Path) -> dict | None:
+    """
+    Fallback for scanned PDFs: convert pages to images and send to Claude Haiku vision.
+    Only called when pdfplumber extracts no text and ANTHROPIC_API_KEY is set.
+    """
+    try:
+        import anthropic
+        import base64
+        from pdf2image import convert_from_path
+    except ImportError as e:
+        missing = str(e).split("'")[1] if "'" in str(e) else str(e)
+        print(f"  ⚠ Missing dependency: {missing}")
+        if "pdf2image" in str(e):
+            print("     Install with: pip install pdf2image && brew install poppler")
+        elif "anthropic" in str(e):
+            print("     Install with: pip install anthropic")
+        return None
+
+    try:
+        images = convert_from_path(str(pdf_path), dpi=150, first_page=1, last_page=8)
+    except Exception as e:
+        print(f"  ⚠ PDF→image conversion failed: {e}")
+        return None
+
+    # Build content blocks: prompt + each page as base64 image
+    content = [{"type": "text", "text": f"{_EXTRACTION_PROMPT}\n\nThis is a scanned PDF. Extract the spec from the document images below."}]
+    for img in images:
+        import io
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=85)
+        content.append({
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": base64.b64encode(buf.getvalue()).decode(),
+            },
+        })
+
+    try:
+        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        msg = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": content}],
+        )
+        raw = msg.content[0].text.strip()
+    except Exception as e:
+        print(f"  ⚠ Claude API error: {e}")
+        return None
+
+    # Reuse same JSON parser as Ollama path
+    start = raw.find("{")
+    end = raw.rfind("}") + 1
+    if start != -1 and end > start:
+        try:
+            return json.loads(raw[start:end])
+        except Exception:
+            pass
+    if "```" in raw:
+        for part in raw.split("```"):
+            part = part.strip().lstrip("json").strip()
+            try:
+                return json.loads(part)
+            except Exception:
+                continue
+    print(f"  ⚠ Claude returned invalid JSON: {raw[:200]}")
+    return None
+
+
 def _parse_with_ollama(pdf_path: Path) -> dict | None:
     """
     Send PDF text to local Ollama for structured extraction.
@@ -603,24 +810,31 @@ def _parse_with_ollama(pdf_path: Path) -> dict | None:
         print("  ⚠ pdfplumber not installed — run: pip install pdfplumber")
         return None
 
-    # Extract text from PDF
+    # Extract text — PDF or pre-extracted .txt
     try:
-        with pdfplumber.open(pdf_path) as pdf:
-            pages = pdf.pages[:20]  # cap at 20 pages to stay within context
-            text = "\n".join(p.extract_text() or "" for p in pages).strip()
+        if str(pdf_path).endswith(".txt"):
+            text = pdf_path.read_text(encoding="utf-8").strip()
+        else:
+            with pdfplumber.open(pdf_path) as pdf:
+                pages = pdf.pages[:20]
+                text = "\n".join(p.extract_text() or "" for p in pages).strip()
     except Exception as e:
-        print(f"  ⚠ PDF text extraction failed: {e}")
+        print(f"  ⚠ Text extraction failed: {e}")
         return None
 
     if not text:
-        print("  ⚠ No text extracted from PDF (may be a scanned image)")
+        print("  ⚠ No text extracted (may be a scanned image)")
+        api_key = os.getenv("ANTHROPIC_API_KEY", "")
+        if api_key and api_key != "your_key_here" and not str(pdf_path).endswith(".txt"):
+            print("  → Falling back to Claude vision API...")
+            return _parse_with_claude(pdf_path)
         return None
 
     # Truncate to ~12K chars to stay within typical context limits
     text = text[:12000]
 
     base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    model = os.getenv("OLLAMA_MODEL", "llama3")
+    model = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
 
     payload = json.dumps({
         "model": model,
@@ -629,29 +843,70 @@ def _parse_with_ollama(pdf_path: Path) -> dict | None:
         "options": {"temperature": 0.1},
     }).encode()
 
-    req = urllib.request.Request(
-        f"{base_url}/api/generate",
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
+    def _call_ollama(prompt: str) -> str | None:
+        payload = json.dumps({
+            "model": model,
+            "prompt": prompt,
+            "stream": False,
+            "options": {"temperature": 0.1},
+        }).encode()
+        req = urllib.request.Request(
+            f"{base_url}/api/generate",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                return json.loads(resp.read()).get("response", "").strip()
+        except Exception as e:
+            print(f"  ⚠ Ollama error: {e}")
+            return None
 
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            result = json.loads(resp.read())
-            raw = result.get("response", "").strip()
-            # Strip markdown code fences if present
-            if raw.startswith("```"):
-                raw = raw.split("```")[1]
-                if raw.startswith("json"):
-                    raw = raw[4:]
-            return json.loads(raw)
-    except json.JSONDecodeError as e:
-        print(f"  ⚠ Ollama returned invalid JSON: {e}")
+    def _clean_and_parse(raw: str) -> dict | None:
+        if not raw:
+            return None
+        # Strip markdown fences
+        if "```" in raw:
+            parts = raw.split("```")
+            for part in parts:
+                part = part.strip().lstrip("json").strip()
+                try:
+                    return json.loads(part)
+                except Exception:
+                    continue
+        # Find the outermost JSON object
+        start = raw.find("{")
+        end   = raw.rfind("}") + 1
+        if start != -1 and end > start:
+            try:
+                return json.loads(raw[start:end])
+            except Exception:
+                pass
         return None
-    except Exception as e:
-        print(f"  ⚠ Ollama error: {e}")
-        return None
+
+    first_prompt = f"{_EXTRACTION_PROMPT}\n\n---\nBID DOCUMENT TEXT:\n{text}"
+    raw = _call_ollama(first_prompt)
+    result = _clean_and_parse(raw)
+    if result:
+        return result
+
+    # Retry with a stricter prompt showing just the required keys
+    print("  ↻ Retrying with strict JSON prompt...")
+    retry_prompt = (
+        "Return ONLY a valid JSON object with these exact keys. No explanation, no markdown.\n\n"
+        '{"flooring_types":[],"total_sqft":null,"rooms":"","prevailing_wage":null,'
+        '"bid_bond":null,"bid_bond_pct":null,"walk_required":false,"walk_date_raw":"",'
+        '"dvbe_required":null,"dvbe_pct":null,"dbe_goal_pct":null,"summary":""}\n\n'
+        f"BID DOCUMENT TEXT:\n{text[:6000]}"
+    )
+    raw = _call_ollama(retry_prompt)
+    result = _clean_and_parse(raw)
+    if result:
+        return result
+
+    print(f"  ⚠ Ollama failed after retry — raw response: {(raw or '')[:200]}")
+    return None
 
 
 def cmd_parse_all(use_ollama: bool = False):
@@ -668,11 +923,11 @@ def cmd_parse_all(use_ollama: bool = False):
         return
 
     bids = {b["bid_id"]: b for b in get_unprocessed_bids()}
-    pdfs = sorted(SPECS_DIR.glob("*.pdf"))
-    pending = [p for p in pdfs if p.stem in bids]
+    docs = sorted([*SPECS_DIR.glob("*.pdf"), *SPECS_DIR.glob("*.txt")])
+    pending = [p for p in docs if p.stem in bids]
 
     if not pending:
-        print("✓ All downloaded PDFs have been parsed (or no PDFs yet — run --download).")
+        print("✓ All downloaded documents have been parsed (or none yet — run --download).")
         return
 
     print(f"{len(pending)} PDF(s) to parse:\n")
@@ -689,8 +944,6 @@ def cmd_parse_all(use_ollama: bool = False):
             spec = _parse_with_ollama(pdf_path)
             if spec:
                 save_spec(bid_id, spec, str(pdf_path))
-                if spec.get("walk_required"):
-                    _trigger_job_walk_alert(bid_id, spec)
                 print()
             else:
                 print(f"  ⚠ Parse failed — run manually:\n    python parser.py --save {bid_id} '<json>'\n")
@@ -706,6 +959,34 @@ def cmd_parse_all(use_ollama: bool = False):
         print(_EXTRACTION_PROMPT.split("\n\n")[0])
         print()
         print("Tip: In Claude Code, use Read tool on each PDF path shown above.")
+
+
+def cmd_recalculate():
+    """Recompute go_score + go_verdict for all existing bid_specs."""
+    sb = _sb()
+    specs_resp = sb.table("bid_specs").select("bid_id,total_sqft,prevailing_wage,bid_bond,walk_required,raw_extract").execute()
+    specs = specs_resp.data or []
+    if not specs:
+        print("No specs found.")
+        return
+
+    bid_ids = [s["bid_id"] for s in specs]
+    bids_resp = sb.table("bids").select("bid_id,is_relevant,due_date").in_("bid_id", bid_ids).execute()
+    bids_by_id = {b["bid_id"]: b for b in (bids_resp.data or [])}
+
+    from scoring import score_go_no_go
+    updated = 0
+    for spec in specs:
+        bid = bids_by_id.get(spec["bid_id"], {})
+        go = score_go_no_go(bid, spec)
+        sb.table("bid_specs").update({
+            "go_score":   go["score"],
+            "go_verdict": go["verdict"],
+        }).eq("bid_id", spec["bid_id"]).execute()
+        print(f"  {spec['bid_id']}  [{go['verdict'].upper()} {go['score']}]")
+        updated += 1
+
+    print(f"\n✓ Recalculated {updated} specs")
 
 
 def cmd_rfq(bid_id: str):
@@ -748,6 +1029,8 @@ if __name__ == "__main__":
     elif "--save" in argv:
         idx = argv.index("--save")
         cmd_save(argv[idx+1:])
+    elif "--recalculate" in argv:
+        cmd_recalculate()
     elif "--rfq" in argv:
         idx = argv.index("--rfq")
         if idx + 1 >= len(argv):

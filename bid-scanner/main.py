@@ -69,16 +69,17 @@ async def main():
     else:
         print("\n  (Supabase not configured — set SUPABASE_URL + SUPABASE_KEY in .env to persist)")
 
-    # --- New-bid email digest ---
-    if new_count > 0:
-        new_relevant = [b for b in bids if b.get("is_relevant") and b.get("_is_new")]
-        if new_relevant:
-            print(f"\nSending new-bid digest ({len(new_relevant)} relevant)...")
-            from notify import send_new_bids_digest
-            send_new_bids_digest(new_relevant)
-        elif os.getenv("NOTIFY_EMAIL"):
-            # No new relevant bids this run — skip silently
-            pass
+    # --- Scan summary (always fires) + new-bid digest ---
+    if os.getenv("NOTIFY_EMAIL"):
+        print("\nSending scan summary...")
+        from notify import send_scan_summary, send_new_bids_digest
+        send_scan_summary(bids, duration)
+
+        if new_count > 0:
+            new_relevant = [b for b in bids if b.get("is_relevant") and b.get("_is_new")]
+            if new_relevant:
+                print(f"Sending new-bid digest ({len(new_relevant)} relevant)...")
+                send_new_bids_digest(new_relevant)
 
     # --- HTML report ---
     os.makedirs(OUTPUT_DIR, exist_ok=True)
