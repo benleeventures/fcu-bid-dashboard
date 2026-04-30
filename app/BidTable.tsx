@@ -210,7 +210,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
             <tr style={{ background: 'var(--charcoal-soft)', borderBottom: '1px solid var(--charcoal-mid)' }}>
               <th style={{ ...thStyle, width: 28 }} />
               <th style={{ ...thStyle, width: 140 }}>Bid ID</th>
-              <th style={{ ...thStyle, minWidth: 180 }}>Title</th>
+              <th style={{ ...thStyle, width: 220 }}>Title</th>
               <th style={{ ...thStyle, width: 170 }}>Agency</th>
               <th style={{ ...thStyle, width: 110 }}>Source</th>
               <th
@@ -278,7 +278,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       {b.bid_id}
                     </a>
                   </td>
-                  <td style={{ ...tdStyle, maxWidth: 340 }}>
+                  <td style={{ ...tdStyle, overflow: 'hidden' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <span style={{ color: 'var(--white)' }}>{b.title}</span>
                       {b.search_keyword && (
@@ -296,7 +296,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       <ScorePill bid={b} spec={b.spec ?? null} />
                     </div>
                   </td>
-                  <td style={{ ...tdStyle, color: 'var(--gray)', maxWidth: 180 }}>{b.agency || '—'}</td>
+                  <td style={{ ...tdStyle, color: 'var(--gray)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.agency || '—'}</td>
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
                     <span style={{
                       padding: '2px 7px', borderRadius: 4,
