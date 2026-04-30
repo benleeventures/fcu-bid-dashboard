@@ -20,6 +20,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [filterSource, setFilterSource] = useState('')
   const [filterDue, setFilterDue] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
+  const [filterRelevant, setFilterRelevant] = useState('')
   const [search, setSearch] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showArchived, setShowArchived] = useState(false)
@@ -75,8 +76,9 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const displayBids = useMemo(() => {
     const filtered = bids.filter(b => {
       const status = localStatus.get(b.bid_id) ?? b.bid_status
-      if (showArchived) return status === 'no_bid' || status === 'expired'
-      if (status === 'no_bid' || status === 'expired') return false
+      const isArchived = status === 'no_bid' || status === 'expired'
+      if (showArchived && !isArchived) return false
+      if (!showArchived && isArchived) return false
       if (filterSource && b.source !== filterSource) return false
       if (search) {
         const q = search.toLowerCase()
@@ -97,6 +99,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
         if (d < t || d > d3) return false
       }
       if (filterStatus && (b.bid_status ?? 'active') !== filterStatus) return false
+      if (filterRelevant === 'yes' && !b.is_relevant) return false
+      if (filterRelevant === 'no' && b.is_relevant) return false
       return true
     })
 
@@ -118,15 +122,17 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     const favs = filtered.filter(isFav)
     const rest = filtered.filter(b => !isFav(b))
     return [...favs, ...rest]
-  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, sortField, sortDir, localStatus, localFavorite, t, d3, d7])
+  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, filterRelevant, sortField, sortDir, localStatus, localFavorite, t, d3, d7])
 
-  function urgencyColor(due_date: string | null): string {
-    if (!due_date) return 'transparent'
+  function urgencyBadge(due_date: string | null): { label: string; color: string } | null {
+    if (!due_date) return null
     const d = new Date(due_date)
-    if (d < t) return 'var(--gray)'
-    if (d <= d3) return 'var(--red)'
-    if (d <= d7) return 'var(--orange)'
-    return 'transparent'
+    const diffDays = Math.ceil((d.getTime() - t.getTime()) / 86400000)
+    if (d < t)        return { label: 'Overdue', color: 'var(--gray)' }
+    if (diffDays <= 1) return { label: 'Tomorrow', color: 'var(--red)' }
+    if (diffDays <= 3) return { label: `${diffDays}d left`, color: 'var(--red)' }
+    if (diffDays <= 7) return { label: `${diffDays}d left`, color: 'var(--orange)' }
+    return null
   }
 
   function formatDate(s: string | null): string {
@@ -163,6 +169,11 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           <option value="lost">Lost</option>
           <option value="no_bid">No Bid</option>
         </select>
+        <select value={filterRelevant} onChange={e => setFilterRelevant(e.target.value)} style={inputStyle}>
+          <option value="">All bids</option>
+          <option value="yes">Flooring relevant</option>
+          <option value="no">Not relevant</option>
+        </select>
         <span style={{ color: 'var(--gray)', fontSize: 12, marginLeft: 'auto', fontFamily: 'IBM Plex Mono' }}>
           {displayBids.length} bids
         </span>
@@ -185,20 +196,21 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       )}
 
       {/* Legend */}
-      <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, fontFamily: 'IBM Plex Mono', color: 'var(--gray)' }}>
-        <span><span style={{ color: 'var(--red)' }}>●</span> Due &lt;3 days</span>
-        <span><span style={{ color: 'var(--orange)' }}>●</span> Due this week</span>
+      <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', flexWrap: 'wrap' }}>
+        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: 'var(--red)', marginRight: 4, verticalAlign: 'middle' }} />Due &lt;3 days</span>
+        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: 'var(--orange)', marginRight: 4, verticalAlign: 'middle' }} />Due this week</span>
+        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: 'rgba(48,209,88,0.35)', marginRight: 4, verticalAlign: 'middle' }} />Flooring relevant</span>
         <span><span style={{ color: 'var(--star)' }}>★</span> Pinned favorite</span>
       </div>
 
       {/* Table */}
       <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid var(--charcoal-mid)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+        <table style={{ width: '100%', minWidth: 820, borderCollapse: 'collapse', tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ background: 'var(--charcoal-soft)', borderBottom: '1px solid var(--charcoal-mid)' }}>
               <th style={{ ...thStyle, width: 28 }} />
               <th style={{ ...thStyle, width: 140 }}>Bid ID</th>
-              <th style={thStyle}>Title</th>
+              <th style={{ ...thStyle, minWidth: 180 }}>Title</th>
               <th style={{ ...thStyle, width: 170 }}>Agency</th>
               <th style={{ ...thStyle, width: 110 }}>Source</th>
               <th
@@ -225,19 +237,22 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                 </td>
               </tr>
             ) : displayBids.flatMap((b, i) => {
-              const urg = urgencyColor(b.due_date)
+              const badge = urgencyBadge(b.due_date)
               const isExpanded = expandedId === b.bid_id
               const hasSpec = !!b.spec
-              const rowBg = i % 2 === 0 ? 'var(--charcoal)' : 'var(--charcoal-soft)'
+              const rowBg = isExpanded
+                ? 'var(--charcoal-mid)'
+                : b.is_relevant
+                  ? 'rgba(48, 209, 88, 0.05)'
+                  : (i % 2 === 0 ? 'var(--charcoal)' : 'var(--charcoal-soft)')
               const isFav = localFavorite.get(b.bid_id) ?? b.is_favorite
               return [
                 <tr
                   key={b.id}
                   onClick={() => setExpandedId(isExpanded ? null : b.bid_id)}
                   style={{
-                    background: isExpanded ? 'var(--charcoal-mid)' : rowBg,
+                    background: rowBg,
                     borderBottom: isExpanded ? 'none' : '1px solid var(--charcoal-mid)',
-                    borderLeft: urg !== 'transparent' ? `3px solid ${urg}` : '3px solid transparent',
                     cursor: 'pointer',
                   }}
                 >
@@ -292,8 +307,17 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <td style={{ ...tdStyle, color: 'var(--gray)', fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
                     {formatDate(b.published_date)}
                   </td>
-                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: urg !== 'transparent' ? urg : 'var(--white)' }}>
-                    {b.due_date_raw || formatDate(b.due_date)}
+                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
+                    {badge && (
+                      <span style={{
+                        display: 'inline-block', padding: '1px 6px', borderRadius: 4, marginRight: 6,
+                        background: badge.color + '28', color: badge.color,
+                        fontSize: 10, fontWeight: 700, verticalAlign: 'middle',
+                      }}>{badge.label}</span>
+                    )}
+                    <span style={{ color: badge ? badge.color : 'var(--white)' }}>
+                      {b.due_date_raw || formatDate(b.due_date)}
+                    </span>
                   </td>
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
