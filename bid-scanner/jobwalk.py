@@ -111,27 +111,29 @@ def run():
 
     def _row(s: dict, urgent: bool) -> str:
         bid      = bids_by_id[s["bid_id"]]
-        title    = bid.get("title", s["bid_id"])[:55]
+        title    = bid.get("title", s["bid_id"])[:60]
         agency   = bid.get("agency", "")[:50]
         bid_due  = _fmt_date(bid["due_date"]) if bid.get("due_date") else "—"
         portal   = bid.get("url", "")
-        link     = f'<a href="{portal}" style="color:#C8922A;text-decoration:none;">View ↗</a>' if portal else "—"
+        link     = f'<a href="{portal}" style="color:#C8922A;text-decoration:none;font-size:12px;">View ↗</a>' if portal else "—"
         walk_raw = s.get("walk_date_raw") or _fmt_date(s.get("walk_date", "")) or "TBD"
         score    = s.get("go_score", "—")
 
-        walk_color = "#FF9F0A" if urgent else "#F5F5F0"
-        row_bg     = "#FF9F0A0A" if urgent else "transparent"
+        walk_color = "#FF9F0A" if urgent else "#4CD964"
+        row_bg     = "rgba(255,159,10,0.04)" if urgent else "transparent"
 
+        # Walk date lives inside the BID cell — eliminates the wide 5th column
+        # that overflows on mobile. 3 right-side cells stay narrow and don't wrap.
         return f"""
         <tr style="background:{row_bg}">
-          <td style="padding:12px 14px;border-bottom:1px solid #3A3A3C;vertical-align:top;width:38%;">
-            <div style="font-size:13px;font-weight:600;color:#F5F5F0;line-height:1.3;">{title}</div>
-            <div style="font-size:11px;color:#8E8E93;margin-top:3px;">{agency}</div>
+          <td style="padding:12px 14px;border-bottom:1px solid #3A3A3C;vertical-align:top;">
+            <div style="font-size:13px;font-weight:700;color:#F5F5F0;line-height:1.35;">{title}</div>
+            <div style="font-size:11px;color:#8E8E93;margin-top:2px;">{agency}</div>
+            <div style="font-size:12px;font-weight:700;color:{walk_color};margin-top:6px;">{walk_raw}</div>
+            <div style="margin-top:6px;">{link}</div>
           </td>
-          <td style="padding:12px 14px;border-bottom:1px solid #3A3A3C;font-size:13px;font-weight:700;color:{walk_color};white-space:nowrap;vertical-align:top;width:28%;">{walk_raw}</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #3A3A3C;font-size:12px;color:#8E8E93;white-space:nowrap;vertical-align:top;width:14%;text-align:center;">{bid_due}</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #3A3A3C;font-size:12px;color:#30D158;font-weight:700;vertical-align:top;width:10%;text-align:center;white-space:nowrap;">GO&nbsp;{score}</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #3A3A3C;font-size:12px;vertical-align:top;width:10%;text-align:center;">{link}</td>
+          <td style="padding:12px 10px;border-bottom:1px solid #3A3A3C;font-size:12px;color:#8E8E93;white-space:nowrap;vertical-align:top;text-align:center;width:64px;">{bid_due}</td>
+          <td style="padding:12px 10px;border-bottom:1px solid #3A3A3C;font-size:12px;color:#30D158;font-weight:700;vertical-align:top;text-align:center;white-space:nowrap;width:56px;">GO&nbsp;{score}</td>
         </tr>"""
 
     def _section(title: str, walks: list, urgent: bool) -> str:
@@ -141,14 +143,12 @@ def run():
         rows = "".join(_row(s, urgent) for s in walks)
         return f"""
         <h2 style="font-size:11px;font-weight:700;color:{header_color};letter-spacing:.08em;text-transform:uppercase;margin:24px 0 10px;">{title}</h2>
-        <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;table-layout:fixed;">
+        <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">
           <thead>
             <tr style="background:#3A3A3C;">
-              <th style="padding:8px 14px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:38%;">Bid</th>
-              <th style="padding:8px 14px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:28%;">Walk Date</th>
-              <th style="padding:8px 14px;text-align:center;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:14%;">Bid Due</th>
-              <th style="padding:8px 14px;text-align:center;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:10%;">Score</th>
-              <th style="padding:8px 14px;text-align:center;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:10%;">Portal</th>
+              <th style="padding:8px 14px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Bid &amp; Walk Date</th>
+              <th style="padding:8px 10px;text-align:center;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:64px;">Due</th>
+              <th style="padding:8px 10px;text-align:center;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;width:56px;">Score</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
