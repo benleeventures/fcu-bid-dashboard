@@ -206,8 +206,11 @@ async def download_all():
                 print("  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env")
             await bidnet_page.close()
 
-        # Log in to CaleProcure once if any CCOP bids need downloading
+        # Log in to CaleProcure once and keep the page open for all CCOP downloads.
+        # CaleProcure stores the auth token in sessionStorage, which is lost when a
+        # new tab is opened — reusing the same page preserves the session.
         ccop_pending = [b for b in pending if b.get("source") == "Caltrans CCOP"]
+        ccop_page = None
         ccop_logged_in = False
         if ccop_pending:
             ccop_page = await context.new_page()
@@ -216,7 +219,8 @@ async def download_all():
                 print(f"  ✓ CaleProcure: logged in — {len(ccop_pending)} bids to download")
             else:
                 print("  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env")
-            await ccop_page.close()
+                await ccop_page.close()
+                ccop_page = None
 
         for b in pending:
             bid_id = b["bid_id"]
@@ -257,38 +261,17 @@ async def download_all():
                     await page.close()
                 continue
 
-            # Caltrans CCOP — needs CaleProcure login, then generic PDF search
+            # Caltrans CCOP — reuse the authenticated ccop_page (same tab = same sessionStorage)
             if source == "Caltrans CCOP":
-                if not ccop_logged_in:
+                if not ccop_logged_in or ccop_page is None:
                     print("    ⚠ SKIP — CaleProcure login failed\n")
                     continue
-                page = await context.new_page()
                 try:
-                    await page.goto(url, timeout=30000, wait_until="domcontentloaded")
-                    await page.wait_for_timeout(2000)
-                    pdf_href = await _find_generic_pdf(page)
-                    if not pdf_href:
-                        print("    ⚠ No PDF link found\n")
-                    else:
-                        pdf_href = urllib.parse.urljoin(page.url, pdf_href)
-                        resp = await context.request.get(pdf_href, timeout=30000)
-                        data = await resp.body()
-                        if data and b"%PDF" in data[:10]:
-                            out.write_bytes(data)
-                            print(f"    ✓ Saved {out.name} ({len(data)//1024} KB)\n")
-                        elif data and data[:2] == b"PK":
-                            content, ext = _extract_best_pdf_from_zip(data, bid_id)
-                            if content:
-                                (SPECS_DIR / f"{bid_id}{ext}").write_bytes(content)
-                                print(f"    ✓ Extracted from ZIP → {bid_id}{ext}\n")
-                            else:
-                                print("    ⚠ ZIP contained no usable content\n")
-                        else:
-                            print("    ⚠ Not a valid PDF\n")
+                    saved = await _download_caleprocure_docs(ccop_page, context, bid_id, url)
+                    if not saved:
+                        print(f"    ⚠ No documents saved for {bid_id}\n")
                 except Exception as e:
                     print(f"    ⚠ CCOP error: {e}\n")
-                finally:
-                    await page.close()
                 continue
 
             page = await context.new_page()
@@ -337,10 +320,268 @@ async def download_all():
             finally:
                 await page.close()
 
+        if ccop_page:
+            await ccop_page.close()
+
         await browser.close()
 
     print(f"Done. PDFs saved to {SPECS_DIR}/")
     print("Now run: python parser.py --pending  to see what needs parsing")
+
+
+async def _download_caleprocure_docs(page, context, bid_id: str, url: str) -> bool:
+    """
+    Download all attachments from a CaleProcure/CCOP event after login.
+
+    Flow: event details (direct AUC_RESP_INQ_DTL URL) → "View Event Package"
+          → attachments page → per-file: download icon → "Your file is ready"
+          modal → "Download Attachment" popup → capture PDF bytes → save.
+
+    The shortlink (/event/{BU}/{AUC_ID}) redirects to BIDDER_ID=BID0000001 (guest)
+    when resolved server-side. Navigate to AUC_RESP_INQ_DTL directly with FCU's
+    BIDDER_ID so PeopleSoft loads the authenticated vendor view.
+    """
+    import re as _re
+
+    PKG_BTN_SEL = (
+        'button:has-text("View Event Package"), '
+        'a:has-text("View Event Package"), '
+        'input[value*="Event Package" i]'
+    )
+    BIDDER_ID = os.getenv("CALEPROCURE_BIDDER_ID", "0000026084")
+
+    out_dir = SPECS_DIR / bid_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    saved_any = False
+
+    # Extract AUC_ID: stored URL is caleprocure.ca.gov/event/2660/08A3992
+    m = _re.search(r'/event/\d+/(\w+)', url or "")
+    auc_id = m.group(1) if m else bid_id.replace("CCOP-", "")
+
+    # Use the direct AUC_RESP_INQ_DTL URL — prevents the guest-BIDDER_ID redirect
+    # that the shortlink causes when no PS session cookie exists.
+    nav_url = (
+        "https://caleprocure.ca.gov/pages/Events-BS3/event-details.aspx"
+        f"?Page=AUC_RESP_INQ_DTL&Action=U&AUC_ID={auc_id}&AUC_ROUND=1"
+        f"&BIDDER_ID={BIDDER_ID}&BIDDER_LOC=MAIN&BIDDER_SETID=STATE"
+        f"&BIDDER_TYPE=V&BUSINESS_UNIT=2660"
+    )
+
+    try:
+        # domcontentloaded — avoids networkidle timeout on pages with long-polling
+        await page.goto(nav_url, wait_until="domcontentloaded", timeout=45000)
+        await page.wait_for_timeout(5000)  # give Angular time to fully render
+
+        title = await page.title()
+        if "oops" in title.lower() or "error" in title.lower() or "403" in title:
+            print(f"    ⚠ Page error (title: '{title}') — BIDDER_ID or session issue\n")
+            return False
+
+        # CaleProcure requires vendors to Subscribe to an event before the
+        # PeopleSoft backend will serve attachments. Click Subscribe if present.
+        try:
+            sub_sel = 'button:has-text("Subscribe"), a:has-text("Subscribe")'
+            sub_btn = await page.query_selector(sub_sel)
+            if sub_btn:
+                await page.click(sub_sel)
+                await page.wait_for_timeout(3000)
+                print(f"    → Subscribed to event {auc_id}")
+        except Exception as _sub_err:
+            print(f"    ↷ Subscribe step skipped: {_sub_err}")
+
+        pkg_btn = await page.query_selector(PKG_BTN_SEL)
+        if not pkg_btn:
+            print(f"    ⚠ 'View Event Package' not found (title: '{title}')\n")
+            return False
+
+        # Use page.click() (string selector) to avoid stale element reference
+        # if the SPA re-renders between query_selector and click
+        await page.click(PKG_BTN_SEL)
+        await page.wait_for_load_state("domcontentloaded", timeout=15000)
+
+        # Poll up to 10s for Angular to populate the attachments table.
+        # Fixed 3s wait was sometimes insufficient.
+        JS_GET_ROWS = """() => {
+            const results = [];
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                const cells = tr.querySelectorAll('td');
+                if (cells.length < 2) return;
+                const filename = cells[0].innerText.trim();
+                // Must look like a filename (has an extension)
+                if (!filename || !filename.match(/\\.[a-z]{2,5}$/i)) return;
+                const lastCell = cells[cells.length - 1];
+                const btn = lastCell.querySelector('button, a, input[type="image"]');
+                if (btn) results.push(filename);
+            });
+            return results;
+        }"""
+        row_info = []
+        for _poll in range(10):
+            row_info = await page.evaluate(JS_GET_ROWS)
+            if row_info:
+                break
+            await page.wait_for_timeout(1000)
+
+        # Attachments table: "Attached File | Attachment Description | Download"
+        # Only collect rows that have an actual filename (skip header/footer rows
+        # with empty first cells or non-file content like "Delete" rows).
+
+        if not row_info:
+            print("    ⚠ No downloadable attachments found on attachments page\n")
+            return False
+
+        print(f"    Found {len(row_info)} attachment(s): {row_info}")
+
+        # Collect row data including any direct href URLs in the last cell.
+        # PeopleSoft sometimes exposes viewredirect links directly as <a href>.
+        JS_GET_ROW_DATA = """() => {
+            const results = [];
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                const cells = tr.querySelectorAll('td');
+                if (cells.length < 2) return;
+                const filename = cells[0].innerText.trim();
+                if (!filename || !filename.match(/\\.[a-z]{2,5}$/i)) return;
+                const lastCell = cells[cells.length - 1];
+                const btn = lastCell.querySelector('button, a, input[type="image"]');
+                if (!btn) return;
+                const href = btn.tagName === 'A' ? (btn.getAttribute('href') || '') : '';
+                results.push({ filename, href });
+            });
+            return results;
+        }"""
+        row_data = await page.evaluate(JS_GET_ROW_DATA)
+
+        for i, row in enumerate(row_data):
+            filename = row["filename"]
+            direct_href = row.get("href", "")
+            safe_name = _re.sub(r"[^\w\-.]", "_", filename) or f"attachment_{i}.pdf"
+            if not safe_name.lower().endswith(".pdf"):
+                safe_name += ".pdf"
+
+            try:
+                pdf_bytes: list[bytes] = []
+
+                # Fast path: if the button is a plain anchor with a URL, fetch directly
+                if direct_href and ("viewredirect" in direct_href or direct_href.startswith("http")):
+                    full_url = direct_href if direct_href.startswith("http") else (
+                        "https://caleprocure.ca.gov" + direct_href
+                    )
+                    try:
+                        r = await context.request.get(full_url, timeout=30000)
+                        body = await r.body()
+                        if body and b"%PDF" in body[:10]:
+                            pdf_bytes.append(body)
+                    except Exception as _e:
+                        print(f"    ↷ Direct href fetch failed: {_e}")
+
+                if not pdf_bytes:
+                    # Click the nth download button — same filename-filter as above
+                    clicked = await page.evaluate(f"""() => {{
+                        const btns = [];
+                        document.querySelectorAll('tbody tr').forEach(tr => {{
+                            const cells = tr.querySelectorAll('td');
+                            if (cells.length < 2) return;
+                            const filename = cells[0].innerText.trim();
+                            if (!filename || !filename.match(/\\.[a-z]{{2,5}}$/i)) return;
+                            const lastCell = cells[cells.length - 1];
+                            const btn = lastCell.querySelector('button, a, input[type="image"]');
+                            if (btn) btns.push(btn);
+                        }});
+                        if (btns[{i}]) {{ btns[{i}].click(); return true; }}
+                        return false;
+                    }}""")
+
+                    if not clicked:
+                        print(f"    ⚠ Download button {i} not found\n")
+                        continue
+
+                    # Wait for #downloadButton (the "Download Attachment" modal button).
+                    # PeopleSoft hides this via data-if until the server confirms the
+                    # file is ready. Subscribe (above) should unlock it.
+                    download_visible = False
+                    try:
+                        await page.wait_for_selector('#downloadButton', state='visible', timeout=20000)
+                        download_visible = True
+                    except Exception:
+                        print(f"    ⚠ #downloadButton never became visible for '{filename}'")
+
+                    if download_visible:
+                        # "Download Attachment" opens a popup with the PDF viewredirect URL.
+                        try:
+                            async with page.expect_popup(timeout=15000) as popup_info:
+                                await page.evaluate("document.getElementById('downloadButton').click()")
+                            popup = await popup_info.value
+
+                            captured: list[bytes] = []
+
+                            async def _on_response(resp):
+                                ct = resp.headers.get("content-type", "")
+                                if resp.status == 200 and (
+                                    "pdf" in ct.lower()
+                                    or "octet-stream" in ct.lower()
+                                    or "viewredirect" in resp.url
+                                ):
+                                    try:
+                                        body = await resp.body()
+                                        if body and b"%PDF" in body[:10]:
+                                            captured.append(body)
+                                    except Exception:
+                                        pass
+
+                            popup.on("response", _on_response)
+                            await popup.wait_for_load_state("networkidle", timeout=20000)
+                            await popup.wait_for_timeout(1000)
+
+                            if not captured:
+                                file_url = popup.url
+                                try:
+                                    r = await context.request.get(file_url, timeout=30000)
+                                    body = await r.body()
+                                    if body and b"%PDF" in body[:10]:
+                                        captured.append(body)
+                                except Exception:
+                                    pass
+
+                            await popup.close()
+                            pdf_bytes.extend(captured)
+                        except Exception as _popup_err:
+                            print(f"    ⚠ Popup error for '{filename}': {_popup_err}")
+                    else:
+                        # Modal never appeared — log the page state for diagnosis
+                        dl_btn_html = await page.evaluate(
+                            "() => document.getElementById('downloadButton')?.outerHTML || '(not in DOM)'"
+                        )
+                        print(f"    ⚠ #downloadButton state: {dl_btn_html[:200]}")
+
+                # Dismiss modal if still open so the next download button is clickable
+                try:
+                    await page.click('button:has-text("Close")', timeout=2000)
+                    await page.wait_for_timeout(300)
+                except Exception:
+                    pass
+
+                if not pdf_bytes:
+                    print(f"    ⚠ No PDF bytes captured for '{filename}'\n")
+                    continue
+
+                data = pdf_bytes[0]
+                (out_dir / safe_name).write_bytes(data)
+                print(f"    ✓ {safe_name} ({len(data) // 1024} KB)")
+                saved_any = True
+
+                # Primary doc → also save as flat {bid_id}.pdf for the parser
+                if i == 0:
+                    (SPECS_DIR / f"{bid_id}.pdf").write_bytes(data)
+
+            except Exception as e:
+                print(f"    ⚠ Error downloading '{filename}': {e}")
+
+    except Exception as e:
+        print(f"    ⚠ CaleProcure download error: {e}")
+
+    if saved_any:
+        print(f"    ✓ All attachments saved to {out_dir}/\n")
+    return saved_any
 
 
 async def _caleprocure_login(page) -> bool:

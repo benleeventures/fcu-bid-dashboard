@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fcu.supervisor</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/leo-claude/.pyenv/versions/3.11.9/bin/python3</string>
+        <string>/Users/leo-claude/fcu/bid-scanner/supervisor.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/leo-claude/fcu/bid-scanner</string>
+
+    <!-- Every 2 minutes -->
+    <key>StartInterval</key>
+    <integer>120</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/leo-claude/fcu/bid-scanner/logs/supervisor.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/leo-claude/fcu/bid-scanner/logs/supervisor.log</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

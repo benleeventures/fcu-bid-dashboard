@@ -5,9 +5,15 @@ Channels:
   - Scan summary:      send_scan_summary(bids, duration_secs)   ← fires every run
   - New bid digest:    send_new_bids_digest(bids)
   - Cookie expired:    send_notification(reason)
+  - Job walk:          jobwalk.py
+  - Daily digest:      digest.py
 
-All email goes through Resend API (RESEND_API_KEY in .env).
-Recipient: NOTIFY_EMAIL (comma-separated for multiple).
+Recipient routing (env vars):
+  ADMIN_EMAIL    — all emails (scanner summary, digest, cookie alerts, supervisor)
+  BEN_EMAIL      — job walks + new-bid alerts
+  JOANNE_EMAIL   — job walks + new-bid alerts + RFQ drafts
+  TEAM_EMAIL     — job walks + new-bid alerts
+  NOTIFY_EMAIL   — legacy fallback if the above are not set
 
 Cookie alerts also fire macOS desktop notification + terminal printout.
 """
@@ -60,9 +66,37 @@ def _send_resend(to: str | list[str], subject: str, html: str) -> bool:
         return False
 
 
+def _parse_emails(*env_vars: str) -> list[str]:
+    """Collect unique non-empty addresses from one or more env vars (comma-separated)."""
+    seen: set[str] = set()
+    result: list[str] = []
+    for var in env_vars:
+        for addr in os.getenv(var, "").split(","):
+            addr = addr.strip()
+            if addr and addr not in seen:
+                seen.add(addr)
+                result.append(addr)
+    return result
+
+
+def _admin_recipients() -> list[str]:
+    """Admin only — scanner summary, digest, cookie alerts, supervisor failures."""
+    return _parse_emails("ADMIN_EMAIL") or _parse_emails("NOTIFY_EMAIL")
+
+
+def _operational_recipients() -> list[str]:
+    """Field/ops team — job walks + new-bid alerts. Ben, Joanne, Team, and Admin."""
+    return _parse_emails("BEN_EMAIL", "JOANNE_EMAIL", "TEAM_EMAIL", "ADMIN_EMAIL") or _parse_emails("NOTIFY_EMAIL")
+
+
+def _joanne_and_admin() -> list[str]:
+    """Joanne + Admin — RFQ drafts (Joanne forwards to material reps)."""
+    return _parse_emails("JOANNE_EMAIL", "ADMIN_EMAIL") or _parse_emails("NOTIFY_EMAIL")
+
+
 def _recipients() -> list[str]:
-    raw = os.getenv("NOTIFY_EMAIL", "")
-    return [r.strip() for r in raw.split(",") if r.strip()]
+    """Legacy alias — resolves to operational list."""
+    return _operational_recipients()
 
 
 # ─────────────────────────────────────────────
@@ -74,7 +108,7 @@ def send_scan_summary(bids: list[dict], duration_secs: float):
     Email a per-source summary after every scanner run.
     Lets you spot broken scrapers (0 total) at a glance.
     """
-    recipients = _recipients()
+    recipients = _admin_recipients()
     if not recipients:
         return
 
@@ -185,9 +219,9 @@ def send_new_bids_digest(new_bids: list[dict]):
     Email a digest of newly discovered relevant bids.
     new_bids: list of bid dicts from the scanner (title, agency, source, due_date, url).
     """
-    recipients = _recipients()
+    recipients = _operational_recipients()
     if not recipients:
-        print("  (New-bid digest skipped — set NOTIFY_EMAIL in .env)")
+        print("  (New-bid digest skipped — set BEN_EMAIL/JOANNE_EMAIL/TEAM_EMAIL/ADMIN_EMAIL in .env)")
         return
     if not new_bids:
         return
@@ -256,9 +290,9 @@ def send_rfq_emails(bid: dict, spec: dict, estimate: dict):
     Called from parser.py --rfq <bid_id> or from the dashboard Send RFQ button.
     estimate: dict with line_items (list of LineItem dicts).
     """
-    recipients = _recipients()
+    recipients = _joanne_and_admin()
     if not recipients:
-        print("  (RFQ skipped — set NOTIFY_EMAIL in .env)")
+        print("  (RFQ skipped — set JOANNE_EMAIL/ADMIN_EMAIL in .env)")
         return
 
     title     = bid.get("title", "Unknown Job")
@@ -416,7 +450,7 @@ def send_notification(reason: str):
     _notify_terminal(reason)
     _notify_mac(reason)
 
-    recipients = _recipients()
+    recipients = _admin_recipients()
     if recipients:
         html = f"""
 <div style="font-family:monospace;padding:20px;background:#1C1C1E;color:#F5F5F0;border-radius:8px;">

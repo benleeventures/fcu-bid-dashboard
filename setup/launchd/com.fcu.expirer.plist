@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fcu.expirer</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>git -C /Users/leo-claude/fcu pull --quiet && /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu/bid-scanner/expirer.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/leo-claude/fcu/bid-scanner</string>
+
+    <!-- Mon–Fri 7:30 AM -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
+        <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
+        <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
+        <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
+        <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>
