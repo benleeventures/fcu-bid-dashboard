@@ -326,7 +326,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                     </span>
                   </td>
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: 'var(--gray)' }}>
-                    {b.spec?.walk_date_raw || formatDate(b.spec?.walk_date ?? null)}
+                    {formatDate(b.spec?.walk_date ?? null)}
                   </td>
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
