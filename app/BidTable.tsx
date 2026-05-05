@@ -13,7 +13,7 @@ type Props = {
   in7: string
 }
 
-type SortField = 'due_date' | 'published_date'
+type SortField = 'due_date' | 'published_date' | 'walk_date'
 type SortDir   = 'asc' | 'desc'
 
 export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
@@ -107,8 +107,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     // Sort by selected column (nulls to bottom)
     if (sortField) {
       filtered.sort((a, b) => {
-        const av = a[sortField] ?? null
-        const bv = b[sortField] ?? null
+        const av = sortField === 'walk_date' ? (a.spec?.walk_date ?? null) : (a[sortField as 'due_date' | 'published_date'] ?? null)
+        const bv = sortField === 'walk_date' ? (b.spec?.walk_date ?? null) : (b[sortField as 'due_date' | 'published_date'] ?? null)
         if (!av && !bv) return 0
         if (!av) return 1
         if (!bv) return -1
@@ -225,6 +225,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               >
                 Due Date{sortIndicator('due_date')}
               </th>
+              <th
+                onClick={() => toggleSort('walk_date')}
+                style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }}
+              >
+                Job Walk{sortIndicator('walk_date')}
+              </th>
               <th style={{ ...thStyle, width: 80 }}>Status</th>
               <th style={{ ...thStyle, width: 64 }} />
             </tr>
@@ -319,6 +325,9 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       {b.due_date_raw || formatDate(b.due_date)}
                     </span>
                   </td>
+                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: 'var(--gray)' }}>
+                    {b.spec?.walk_date_raw || formatDate(b.spec?.walk_date ?? null)}
+                  </td>
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
@@ -342,7 +351,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                 </tr>,
                 isExpanded && (
                   <tr key={`${b.id}-detail`} style={{ background: 'var(--charcoal-mid)', borderBottom: '1px solid var(--charcoal-mid)' }}>
-                    <td colSpan={9} style={{ padding: '0 14px 16px 14px' }}>
+                    <td colSpan={10} style={{ padding: '0 14px 16px 14px' }}>
                       {hasSpec ? <SpecPanel spec={b.spec!} /> : (
                         <div style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', padding: '8px 0' }}>
                           No spec parsed yet. Run <code style={{ background: 'var(--charcoal-soft)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --bid-id={b.bid_id}</code> to extract.
