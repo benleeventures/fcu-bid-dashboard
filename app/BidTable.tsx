@@ -205,7 +205,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
 
       {/* Table */}
       <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid var(--charcoal-mid)' }}>
-        <table style={{ width: '100%', minWidth: 820, borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+        <table style={{ width: '100%', minWidth: 920, borderCollapse: 'collapse', tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ background: 'var(--charcoal-soft)', borderBottom: '1px solid var(--charcoal-mid)' }}>
               <th style={{ ...thStyle, width: 28 }} />
@@ -221,13 +221,13 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               </th>
               <th
                 onClick={() => toggleSort('due_date')}
-                style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }}
+                style={{ ...thStyle, width: 120, cursor: 'pointer', userSelect: 'none' }}
               >
                 Due Date{sortIndicator('due_date')}
               </th>
               <th
                 onClick={() => toggleSort('walk_date')}
-                style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }}
+                style={{ ...thStyle, width: 110, cursor: 'pointer', userSelect: 'none' }}
               >
                 Job Walk{sortIndicator('walk_date')}
               </th>
@@ -315,15 +315,15 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   </td>
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
                     {badge && (
-                      <span style={{
-                        display: 'inline-block', padding: '1px 6px', borderRadius: 4, marginRight: 6,
+                      <div style={{
+                        display: 'inline-block', padding: '1px 6px', borderRadius: 4, marginBottom: 3,
                         background: badge.color + '28', color: badge.color,
-                        fontSize: 10, fontWeight: 700, verticalAlign: 'middle',
-                      }}>{badge.label}</span>
+                        fontSize: 10, fontWeight: 700,
+                      }}>{badge.label}</div>
                     )}
-                    <span style={{ color: badge ? badge.color : 'var(--white)' }}>
+                    <div style={{ color: badge ? badge.color : 'var(--white)' }}>
                       {b.due_date_raw || formatDate(b.due_date)}
-                    </span>
+                    </div>
                   </td>
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: 'var(--gray)' }}>
                     {formatDate(b.spec?.walk_date ?? null)}
