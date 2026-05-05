@@ -206,6 +206,18 @@ async def download_all():
                 print("  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env")
             await bidnet_page.close()
 
+        # Log in to Crisp Plan Room once if any CRISP bids need downloading
+        crisp_pending = [b for b in pending if b.get("source") == "Crisp Plan Room"]
+        crisp_logged_in = False
+        if crisp_pending:
+            crisp_login_page = await context.new_page()
+            crisp_logged_in = await _crisp_login(crisp_login_page)
+            if crisp_logged_in:
+                print(f"  ✓ Crisp Plan Room: logged in — {len(crisp_pending)} bids to download")
+            else:
+                print("  ⚠ Crisp Plan Room: login failed — check CRISP_USER / CRISP_PASSWORD in .env")
+            await crisp_login_page.close()
+
         # Log in to CaleProcure once and keep the page open for all CCOP downloads.
         # CaleProcure stores the auth token in sessionStorage, which is lost when a
         # new tab is opened — reusing the same page preserves the session.
@@ -242,7 +254,7 @@ async def download_all():
             if source == "Crisp Plan Room":
                 page = await context.new_page()
                 try:
-                    saved = await _download_crisp_docs(page, context, bid_id, url)
+                    saved = await _download_crisp_docs(page, context, bid_id, url, logged_in=crisp_logged_in)
                     if not saved:
                         print(f"    ⚠ No documents found\n")
                 except Exception as e:
@@ -620,6 +632,33 @@ async def _caleprocure_login(page) -> bool:
         return False
 
 
+async def _crisp_login(page) -> bool:
+    """Log in to Crisp Plan Room with username/password."""
+    user     = os.getenv("CRISP_USER", "")
+    password = os.getenv("CRISP_PASSWORD", "")
+    if not user or not password:
+        print("  ⚠ CRISP_USER / CRISP_PASSWORD not set in .env")
+        return False
+    try:
+        await page.goto("https://www.crispplanroom.com/login", wait_until="domcontentloaded", timeout=20000)
+        await page.wait_for_timeout(1500)
+
+        await page.fill(
+            'input[name="username"], input[name="user"], input[id="username"], input[type="text"]',
+            user,
+        )
+        await page.fill('input[name="password"], input[type="password"]', password)
+        await page.click('button[type="submit"], input[type="submit"]')
+        await page.wait_for_load_state("domcontentloaded", timeout=20000)
+        await page.wait_for_timeout(2000)
+
+        still_on_login = await page.query_selector('input[type="password"]')
+        return still_on_login is None
+    except Exception as e:
+        print(f"  ⚠ Crisp login error: {e}")
+        return False
+
+
 async def _bidnet_login(page) -> bool:
     """Log in to BidNet Direct with email/password. No CAPTCHA — fully automated."""
     email    = os.getenv("BIDNET_EMAIL", "")
@@ -861,14 +900,13 @@ async def _find_samgov_pdf(page, context) -> str | None:
     return candidates[0][1]
 
 
-async def _download_crisp_docs(page, context, bid_id: str, bid_url: str) -> bool:
+async def _download_crisp_docs(page, context, bid_id: str, bid_url: str, logged_in: bool = False) -> bool:
     """
-    Download CRISP plan room docs via the public web viewer (no login required).
+    Download CRISP plan room docs via the inline web viewer (free, never the paid download).
 
-    Each file in the specs/plans tab has a Livewire wvopen button with section
-    and file IDs embedded in the onclick. We parse these directly from the HTML,
-    construct the public /webviewer/{proj}/{section}/{file} URL, then intercept
-    the per-page JPEG responses that the Apryse viewer streams.
+    Scans all wvopen buttons from the specs/plans tab, scores them for flooring
+    relevance, and screenshots up to MAX_FILES × MAX_PAGES images. If Ollama is
+    running and there are many files, it asks the LLM to pick the best ones.
 
     URL pattern: /projects/{id}/details/{slug} → /projects/{id}/specs/{slug}
     Viewer:      /webviewer/{project_id}/{section_id}/{file_id}
@@ -877,106 +915,143 @@ async def _download_crisp_docs(page, context, bid_id: str, bid_url: str) -> bool
 
     CRISP_BASE = "https://www.crispplanroom.com"
     MAX_PAGES = 8
+    MAX_FILES = 2  # screenshots at most 2 files to keep cost+time low
 
-    # Extract project numeric ID from the bid URL
     proj_match = _re.search(r"/projects/(\d+)/", bid_url)
     if not proj_match:
         print("    ⚠ Cannot parse project ID from URL")
         return False
     proj_id = proj_match.group(1)
 
-    # Try specs tab first, fall back to plans tab
     slug = bid_url.split("/details/")[-1].rstrip("/")
+    buttons: list[tuple[str, str, str]] = []
+
     for tab in ("specs", "plans"):
         tab_url = f"{CRISP_BASE}/projects/{proj_id}/{tab}/{slug}"
         await page.goto(tab_url, wait_until="networkidle", timeout=30000)
         await page.wait_for_timeout(1500)
 
         html = await page.content()
-        # Each file button: onclick="Livewire.dispatch('wvopen', { section: NNN, file: NNN})"
-        buttons = _re.findall(
+        # wvopen buttons: Livewire.dispatch('wvopen', { section: NNN, file: NNN})...>label</button>
+        found = _re.findall(
             r"Livewire\.dispatch\('wvopen',\s*\{[^}]*section:\s*(\d+),\s*file:\s*(\d+)[^}]*\}\).*?>(.*?)</button>",
-            html, _re.S
+            html, _re.S,
         )
-        if buttons:
+        if found:
+            buttons = found
             break
-    else:
+
+    if not buttons:
         print("    ⚠ No viewer-trigger buttons found in specs or plans tab")
         return False
 
-    # Pick best file: prefer "spec" or "sow" in name; avoid addenda/gameon/install-guide
-    def _score_file(name: str) -> int:
+    # Strip HTML tags from labels
+    def _clean(s: str) -> str:
+        return _re.sub(r"<[^>]+>", "", s).strip()
+
+    labeled = [(sec, fid, _clean(label)) for sec, fid, label in buttons]
+
+    # Score each file for flooring relevance
+    def _score(name: str) -> int:
         n = name.lower()
-        if any(x in n for x in ["spec", "sow", "scope"]):
-            return 10
-        if any(x in n for x in ["addend", "game", "install guide", "pricelist"]):
+        # Admin/process docs — not useful for scope estimation
+        if any(x in n for x in [
+            "rfi", "request for info", "modification procedure", "contract modification",
+            "submittal", "transmittal", "substitution request", "meeting minute",
+            "progress schedule", "safety plan", "insurance", "bonds", "liquidated",
+            "prevailing wage", "payroll", "permit", "warranty form", "punch list",
+        ]):
+            return -15
+        # Division 09 = Finishes — always the flooring spec section
+        if _re.search(r"\b09\s*[-–]\s*\d|div\s*0?9\b|09\s*finish|section\s*09", n):
+            return 25
+        if any(x in n for x in ["floor", "carpet", "lvt", "vct", "vinyl", "tile",
+                                  "resilient", "turf", "synthetic", "athletic surface"]):
+            return 20
+        if any(x in n for x in ["sow", "scope of work", "summary of work", "01 11", "011100",
+                                  "summary of the work"]):
+            return 15
+        if _re.search(r"\b01\s*[-–]\s*\d|div\s*0?1\b", n):
+            return 8
+        if any(x in n for x in ["spec", "specification", "bid spec", "project manual"]):
+            return 6
+        if any(x in n for x in ["addend", "gameon", "install guide", "pricelist"]):
             return -5
         return 0
 
-    buttons_scored = [
-        (_score_file(_re.sub(r"<[^>]+>", "", label).strip()), section_id, file_id,
-         _re.sub(r"<[^>]+>", "", label).strip())
-        for section_id, file_id, label in buttons
-    ]
-    buttons_scored.sort(key=lambda x: x[0], reverse=True)
-    _, section_id, file_id, file_label = buttons_scored[0]
+    scored = sorted(
+        [((_score(label), sec, fid, label)) for sec, fid, label in labeled],
+        key=lambda x: x[0], reverse=True,
+    )
 
-    print(f"    File: {file_label[:60]}  (section={section_id} file={file_id})")
+    # If Ollama is running and there are many candidates, ask it to pick
+    top_files: list[tuple[str, str, str]] = []
+    if len(scored) > 5 and os.getenv("OLLAMA_RELEVANCE"):
+        top_files = _ollama_pick_crisp_files([(sec, fid, label) for _, sec, fid, label in scored])
+    if not top_files:
+        top_files = [(sec, fid, label) for _, sec, fid, label in scored[:MAX_FILES]]
 
-    viewer_url = f"{CRISP_BASE}/webviewer/{proj_id}/{section_id}/{file_id}"
-    viewer_page = await context.new_page()
-    page_images: list[bytes] = []
+    print(f"    {len(labeled)} file(s) found — downloading top {len(top_files)}: "
+          + ", ".join(f'"{label[:40]}"' for _, _, label in top_files))
 
-    async def capture_page_image(response):
-        url = response.url
-        if "viewer.onlineplanroom.com" in url and "/pageimg" in url and ".jpg" in url:
-            try:
-                body = await response.body()
-                if body:
-                    page_images.append(body)
-            except Exception:
-                pass
+    bid_dir = SPECS_DIR / bid_id
+    bid_dir.mkdir(parents=True, exist_ok=True)
 
-    viewer_page.on("response", capture_page_image)
-    try:
-        await viewer_page.goto(viewer_url, wait_until="networkidle", timeout=30000)
-        await viewer_page.wait_for_timeout(6000)
+    all_images: list[bytes] = []
+    page_offset = 0
 
-        if not page_images:
-            # Native/vector PDF → viewer renders via XOD client-side; screenshot pages instead
-            print("    (native PDF — capturing viewer screenshots)")
-            for _ in range(MAX_PAGES):
-                container = await viewer_page.query_selector("#preview-container")
-                if not container:
-                    break
-                shot = await container.screenshot(type="jpeg", quality=85)
-                if shot:
-                    page_images.append(shot)
-                # Advance to next page via keyboard
-                await viewer_page.keyboard.press("ArrowRight")
-                await viewer_page.wait_for_timeout(1200)
-    finally:
-        viewer_page.remove_listener("response", capture_page_image)
-        await viewer_page.close()
+    for sec_id, file_id, file_label in top_files:
+        viewer_url = f"{CRISP_BASE}/webviewer/{proj_id}/{sec_id}/{file_id}"
+        viewer_page = await context.new_page()
+        page_images: list[bytes] = []
 
-    if not page_images:
+        async def capture_page_image(response, _imgs=page_images):
+            if "viewer.onlineplanroom.com" in response.url and "/pageimg" in response.url and ".jpg" in response.url:
+                try:
+                    body = await response.body()
+                    if body:
+                        _imgs.append(body)
+                except Exception:
+                    pass
+
+        viewer_page.on("response", capture_page_image)
+        try:
+            await viewer_page.goto(viewer_url, wait_until="networkidle", timeout=30000)
+            await viewer_page.wait_for_timeout(6000)
+
+            if not page_images:
+                print(f"    File: {file_label[:60]}  (section={sec_id} file={file_id})")
+                print("    (native PDF — capturing viewer screenshots)")
+                for _ in range(MAX_PAGES):
+                    container = await viewer_page.query_selector("#preview-container")
+                    if not container:
+                        break
+                    shot = await container.screenshot(type="jpeg", quality=85)
+                    if shot:
+                        page_images.append(shot)
+                    await viewer_page.keyboard.press("ArrowRight")
+                    await viewer_page.wait_for_timeout(1200)
+        finally:
+            viewer_page.remove_listener("response", capture_page_image)
+            await viewer_page.close()
+
+        pages_this = page_images[:MAX_PAGES]
+        print(f"    File: {file_label[:60]}  → {len(pages_this)} page(s)")
+        for i, img_bytes in enumerate(pages_this):
+            (bid_dir / f"page{page_offset + i:03d}.jpg").write_bytes(img_bytes)
+        all_images.extend(pages_this)
+        page_offset += len(pages_this)
+
+    if not all_images:
         print("    ⚠ No page images captured from viewer")
         return False
 
-    pages_to_use = page_images[:MAX_PAGES]
-    print(f"    ✓ Captured {len(page_images)} page images, using first {len(pages_to_use)}")
+    print(f"    ✓ Captured {len(all_images)} total page image(s)")
 
-    # Persist images
-    bid_dir = SPECS_DIR / bid_id
-    bid_dir.mkdir(parents=True, exist_ok=True)
-    for i, img_bytes in enumerate(pages_to_use):
-        (bid_dir / f"page{i:03d}.jpg").write_bytes(img_bytes)
-
-    # Parse immediately with Claude vision if API key present
     api_key = os.getenv("ANTHROPIC_API_KEY", "")
     if api_key and api_key != "your_key_here":
         print("    → Parsing with Claude vision...")
-        spec = _parse_with_claude_images(pages_to_use)
+        spec = _parse_with_claude_images(all_images[:MAX_PAGES])
         if spec:
             save_spec(bid_id, spec, str(bid_dir / "page000.jpg"))
             print(f"    ✓ Spec saved\n")
@@ -986,6 +1061,46 @@ async def _download_crisp_docs(page, context, bid_id: str, bid_url: str) -> bool
         print(f"    ✓ Images saved to {bid_dir} — set ANTHROPIC_API_KEY to auto-parse\n")
 
     return True
+
+
+def _ollama_pick_crisp_files(
+    files: list[tuple[str, str, str]], max_pick: int = 2
+) -> list[tuple[str, str, str]]:
+    """
+    Ask Ollama to select the most flooring-relevant files from a CRISP listing.
+    Returns a subset of (section_id, file_id, label) tuples, or [] on failure.
+    """
+    try:
+        import requests as _req
+        import json as _json
+
+        names = [label for _, _, label in files]
+        numbered = "\n".join(f"{i+1}. {n}" for i, n in enumerate(names))
+        prompt = (
+            "A commercial flooring contractor needs to review a public works bid. "
+            f"Below are documents available in the bid package. "
+            f"Pick the {max_pick} most relevant for estimating flooring work "
+            "(carpet, vinyl, LVT, VCT, tile, epoxy, hardwood). "
+            "Focus on specs, scope of work, and Division 09 Finishes sections. "
+            "Reply with only the numbers, comma-separated (e.g. '2,5').\n\n"
+            f"{numbered}"
+        )
+        resp = _req.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": os.getenv("OLLAMA_MODEL", "llama3.2:3b"),
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0, "num_predict": 20},
+            },
+            timeout=20,
+        )
+        raw = resp.json().get("response", "").strip()
+        import re as _re
+        indices = [int(x) - 1 for x in _re.findall(r"\d+", raw) if 0 < int(x) <= len(files)]
+        return [files[i] for i in indices[:max_pick]] if indices else []
+    except Exception:
+        return []
 
 
 def _parse_with_claude_images(images: list[bytes]) -> dict | None:
