@@ -319,125 +319,24 @@ async def _planetbids_login(page) -> bool:
         return False
 
 
-async def _search_planetbids_portal(page, portal_id: str, agency: str, keywords: list[str]) -> list[dict]:
-    """Fetch all bids from PlanetBids JSON API using the live browser session."""
-    api_url = f"https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid={portal_id}&dept_id=0&due_date_from=&due_date_to=&keyword=&page=1&per_page=500&sort_by=&sort_order=-1&stage_id=0"
-    portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
-
-    try:
-        data = await page.evaluate(f"""async () => {{
-            const r = await fetch("{api_url}", {{
-                headers: {{ "Accept": "application/vnd.api+json" }}
-            }});
-            if (!r.ok) return {{ _error: r.status }};
-            return await r.json();
-        }}""")
-
-        if not data or data.get("_error"):
-            return []
-
-        records = data.get("data", [])
-        if not records:
-            return []
-
-        kw_lower = [k.lower() for k in keywords]
-        skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
-        bids = []
-
-        for rec in records:
-            attrs = rec.get("attributes", {})
-            title = (attrs.get("title") or "").strip()
-            if not title or len(title) < 5:
-                continue
-
-            stage = (attrs.get("stageStr") or "").strip()
-            if stage.lower() in skip_stages:
-                continue
-
-            title_lower = title.lower()
-            if not any(kw in title_lower for kw in kw_lower):
-                continue
-
-            bid_id     = rec.get("id", "")
-            inv_num    = attrs.get("invitationNum", "")
-            due_raw    = attrs.get("bidDueDate", "")
-            posted_raw = attrs.get("issueDate", "")
-
-            due_date  = _parse_date(str(due_raw)[:10]) if due_raw else None
-            published = _parse_date(str(posted_raw)[:10]) if posted_raw else None
-
-            bids.append({
-                "bid_id": f"PB-{portal_id}-{bid_id}",
-                "title": title,
-                "agency": agency,
-                "state": "California",
-                "published_date": published.isoformat() if published else None,
-                "published_raw": str(posted_raw),
-                "due_date": due_date.isoformat() if due_date else None,
-                "due_date_raw": str(due_raw),
-                "is_relevant": _is_relevant(title),
-                "search_keyword": next((kw for kw in keywords if kw.lower() in title_lower), keywords[0]),
-                "url": portal_url,
-                "source": "PlanetBids",
-            })
-
-        return bids
-
-    except Exception as e:
-        print(f"    ⚠ PlanetBids portal {agency}: {e}")
-        return []
-
-
-PLANETBIDS_COOKIES_FILE = os.path.join(os.path.dirname(__file__), "cookies.json")
-
-
 async def _search_planetbids(browser_context, keywords: list[str], live_page=None) -> list[dict]:
     """
-    Search all PlanetBids portals by capturing the OAuth token from the first page load,
-    then calling the API directly for each portal without navigating away.
-    No new CAPTCHA challenges — stays on the original page throughout.
+    Navigate to each PlanetBids portal and capture the /papi/bids JSON response
+    from the browser's own request.
+
+    Why navigate instead of calling the API directly:
+      - The /papi/bids endpoint requires custom headers (em-version, company-id,
+        visit-id, etc.) that are set by the page's JS — not easily replicated.
+      - Navigating lets the browser handle all headers and WAF cookies automatically.
+      - After the initial CAPTCHA solve on portal 1, the aws-waf-token cookie
+        remains valid for all subsequent vendors.planetbids.com navigations.
+      - This was confirmed working across 3 portals with no additional CAPTCHAs.
     """
-    import re as _re
-    import json as _json
+    from urllib.parse import urlparse, parse_qs
 
     print("\nSearching PlanetBids portals (CA agency bids)...")
 
     page = live_page
-    access_token = None
-
-    # Capture the OAuth token from the browser's own request
-    token_response_keys = []
-
-    async def capture_token(route):
-        nonlocal access_token
-        try:
-            response = await route.fetch()
-            data = await response.json()
-            token_response_keys.extend(data.keys() if isinstance(data, dict) else [])
-            access_token = (
-                data.get("access_token") or data.get("token") or
-                data.get("accessToken") or data.get("jwt") or
-                data.get("id_token")
-            )
-            await route.fulfill(response=response)
-        except Exception:
-            await route.continue_()
-
-    await page.route("**/papi/oauth/**", capture_token)
-
-    # Reload to trigger OAuth refresh, then wait up to 8s for token
-    await page.reload(wait_until="networkidle", timeout=20000)
-    for _ in range(16):
-        if access_token:
-            break
-        await page.wait_for_timeout(500)
-
-    if not access_token:
-        print(f"  ⚠ OAuth token not captured (response keys: {token_response_keys})")
-        print("  ⚠ Continuing without token — some portals may return empty")
-    else:
-        print(f"  ✓ OAuth token captured")
-
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
     all_bids: list[dict] = []
@@ -446,30 +345,34 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
         print(f"  → {agency}...")
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
 
-        api_url = f"https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid={portal_id}&dept_id=0&due_date_from=&due_date_to=&keyword=&page=1&per_page=500&sort_by=&sort_order=-1&stage_id=0"
+        # Set up response listener before navigating so we don't miss the response
+        loop = asyncio.get_event_loop()
+        captured: asyncio.Future = loop.create_future()
 
+        async def on_response(response, cid=portal_id):
+            if "/papi/bids" in response.url and not captured.done():
+                params = parse_qs(urlparse(response.url).query)
+                if params.get("cid", [""])[0] == cid:
+                    try:
+                        data = await response.json()
+                        captured.set_result(data)
+                    except Exception as exc:
+                        if not captured.done():
+                            captured.set_exception(exc)
+
+        page.on("response", on_response)
         try:
-            data = await page.evaluate(f"""async () => {{
-                const headers = {{
-                    "Accept": "application/vnd.api+json",
-                    "Content-Type": "application/vnd.api+json"
-                }};
-                if ("{access_token}") {{
-                    headers["Authorization"] = "Bearer {access_token}";
-                }}
-                const r = await fetch("{api_url}", {{ headers }});
-                if (!r.ok) return {{ _error: r.status }};
-                return await r.json();
-            }}""")
-
-            if not data or data.get("_error"):
-                print(f"    ⚠ API error {data.get('_error') if data else 'no response'}")
-                continue
-
+            await page.goto(portal_url, wait_until="domcontentloaded", timeout=30000)
+            data = await asyncio.wait_for(captured, timeout=20)
             records = data.get("data", [])
+        except asyncio.TimeoutError:
+            print(f"    ⚠ Timed out waiting for bids — skipped")
+            records = []
         except Exception as e:
-            print(f"    ⚠ skipped ({e})")
-            continue
+            print(f"    ⚠ Error: {e}")
+            records = []
+        finally:
+            page.remove_listener("response", on_response)
 
         portal_bids = []
         for rec in records:
@@ -1041,8 +944,8 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
 
 PLAN_ROOMS = [
     ("https://www.southerncaliforniabuildersplanroom.com", "SoCal Plan Room"),
-    ("https://www.crispplanroom.com", "Crisp Plan Room"),
 ]
+CRISP_BASE = "https://www.crispplanroom.com"
 
 
 async def _search_plan_room(page, base_url: str, source_name: str) -> list[dict]:
@@ -1178,8 +1081,86 @@ async def _search_ccop(page, keywords: list[str]) -> list[dict]:
     return all_bids
 
 
+async def _search_crisp(page) -> list[dict]:
+    """Scrape Crisp Plan Room — server-rendered, fully public listing."""
+    all_bids: list[dict] = []
+    page_num = 1
+    _urgency_re = re.compile(r'^bids due|\d{1,2}/\d{1,2}/\d{2,4}', re.I)
+
+    print("\nSearching Crisp Plan Room...")
+    try:
+        while True:
+            url = f"{CRISP_BASE}/projects/public?status=bidding&page={page_num}"
+            await page.goto(url, wait_until="networkidle", timeout=20000)
+            await page.wait_for_timeout(1000)
+
+            body_text = await page.inner_text("body")
+            page_match = re.search(r'Page\s+\d+\s+of\s+(\d+)', body_text)
+            total_pages = int(page_match.group(1)) if page_match else 1
+
+            rows = await page.query_selector_all('a.row[href*="/projects/"]')
+            for row in rows:
+                href = await row.get_attribute("href") or ""
+                m = re.search(r'/projects/(\d+)/details/', href)
+                if not m:
+                    continue
+                proj_id = m.group(1)
+
+                # Title = actual project description (always last meaningful line)
+                desc_el = await row.query_selector('.description')
+                title = (await desc_el.inner_text()).strip() if desc_el else ""
+                if not title:
+                    continue
+
+                # Due date from dedicated element
+                bid_date_el = await row.query_selector('.bid-date')
+                due_raw = (await bid_date_el.inner_text()).strip() if bid_date_el else ""
+
+                # Agency: Playwright inner_text structure is always:
+                # [0] "Bids due in N days"  [1] date  [2] short_name  [3] AGENCY  [...] description
+                raw_lines = [l.strip() for l in (await row.inner_text()).split("\n") if l.strip()]
+                agency = raw_lines[3] if len(raw_lines) >= 5 else ""
+
+                # Normalize "5/14/26 10:00am" → "5/14/2026"
+                date_m = re.search(r'(\d{1,2}/\d{1,2}/(\d{2,4}))', due_raw)
+                if date_m:
+                    due_str = date_m.group(1)
+                    if len(date_m.group(2)) == 2:
+                        p = due_str.split("/")
+                        due_str = f"{p[0]}/{p[1]}/20{p[2]}"
+                else:
+                    due_str = ""
+
+                url_full = href if href.startswith("http") else CRISP_BASE + href
+                all_bids.append({
+                    "bid_id":         f"CRISP-{proj_id}",
+                    "title":          title,
+                    "agency":         agency,
+                    "state":          "California",
+                    "published_date": None,
+                    "published_raw":  "",
+                    "due_date":       _parse_date(due_str),
+                    "due_date_raw":   due_str,
+                    "is_relevant":    _is_relevant(title),
+                    "search_keyword": "open bids",
+                    "url":            url_full,
+                    "source":         "Crisp Plan Room",
+                })
+
+            if page_num >= total_pages:
+                break
+            page_num += 1
+
+    except Exception as e:
+        print(f"  ⚠ Crisp Plan Room error: {e}")
+
+    relevant = sum(1 for b in all_bids if b["is_relevant"])
+    print(f"  ✓ {len(all_bids)} open bids fetched, {relevant} flooring-relevant")
+    return all_bids
+
+
 async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
-    """Scrape all configured CyberCopy plan rooms."""
+    """Scrape all configured CyberCopy plan rooms + Crisp."""
     all_bids: list[dict] = []
     for base_url, source_name in PLAN_ROOMS:
         print(f"\nSearching {source_name}...")
@@ -1187,6 +1168,7 @@ async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
         relevant = sum(1 for b in bids if b["is_relevant"])
         print(f"  ✓ {len(bids)} open bids ({relevant} flooring-relevant)")
         all_bids.extend(bids)
+    all_bids.extend(await _search_crisp(page))
     return all_bids
 
 
@@ -1234,7 +1216,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                 all_bids.extend(cal_bids)
                 await cal_page.close()
 
-            if src in (None, "opengov"):
+            if src == "opengov":
                 og_bids = await _search_opengov(context, keywords)
                 all_bids.extend(og_bids)
 
