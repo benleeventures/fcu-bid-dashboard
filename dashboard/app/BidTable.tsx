@@ -19,6 +19,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [filterStatus, setFilterStatus] = useState('')
   const [search, setSearch] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [sortKey, setSortKey] = useState<'due_date' | 'walk_date' | null>(null)
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const t = new Date(today)
   const d3 = new Date(in3)
@@ -48,8 +50,32 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       }
       if (filterStatus && (b.bid_status ?? 'active') !== filterStatus) return false
       return true
+    }).sort((a, b) => {
+      if (!sortKey) return 0
+      const aVal = sortKey === 'walk_date' ? (a.spec?.walk_date ?? null) : a.due_date
+      const bVal = sortKey === 'walk_date' ? (b.spec?.walk_date ?? null) : b.due_date
+      if (!aVal && !bVal) return 0
+      if (!aVal) return 1
+      if (!bVal) return -1
+      return sortDir === 'asc'
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal)
     })
-  }, [bids, filterRelevant, filterSource, filterDue, search, t, d3, d7])
+  }, [bids, filterRelevant, filterSource, filterDue, search, t, d3, d7, sortKey, sortDir])
+
+  function toggleSort(key: 'due_date' | 'walk_date') {
+    if (sortKey === key) {
+      setSortDir((d: 'asc' | 'desc') => d === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  function sortIndicator(key: 'due_date' | 'walk_date') {
+    if (sortKey !== key) return <span style={{ color: 'var(--charcoal-mid)', marginLeft: 4 }}>⇅</span>
+    return <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '↑' : '↓'}</span>
+  }
 
   function urgencyColor(due_date: string | null): string {
     if (!due_date) return 'transparent'
@@ -129,7 +155,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               <th style={{ ...thStyle, width: 170 }}>Agency</th>
               <th style={{ ...thStyle, width: 110 }}>Source</th>
               <th style={{ ...thStyle, width: 100 }}>Published</th>
-              <th style={{ ...thStyle, width: 100 }}>Due Date</th>
+              <th style={{ ...thStyle, width: 110, cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('due_date')}>
+                Due Date{sortIndicator('due_date')}
+              </th>
+              <th style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('walk_date')}>
+                Job Walk{sortIndicator('walk_date')}
+              </th>
               <th style={{ ...thStyle, width: 80 }}>Status</th>
               <th style={{ ...thStyle, width: 28 }} />
             </tr>
@@ -201,6 +232,9 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: urg !== 'transparent' ? urg : 'var(--white)' }}>
                     {b.due_date_raw || formatDate(b.due_date)}
                   </td>
+                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: 'var(--gray)' }}>
+                    {b.spec?.walk_date_raw || formatDate(b.spec?.walk_date ?? null)}
+                  </td>
                   <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
@@ -210,7 +244,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                 </tr>,
                 isExpanded && (
                   <tr key={`${b.id}-detail`} style={{ background: 'var(--charcoal-mid)', borderBottom: '1px solid var(--charcoal-mid)' }}>
-                    <td colSpan={9} style={{ padding: '0 14px 16px 14px' }}>
+                    <td colSpan={10} style={{ padding: '0 14px 16px 14px' }}>
                       {hasSpec ? <SpecPanel spec={b.spec!} /> : (
                         <div style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', padding: '8px 0' }}>
                           No spec parsed yet. Run <code style={{ background: 'var(--charcoal-soft)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --bid-id={b.bid_id}</code> to extract.
