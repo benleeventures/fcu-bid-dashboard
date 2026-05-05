@@ -238,6 +238,19 @@ async def download_all():
             if not url:
                 print("    ⚠ No URL\n"); continue
 
+            # Crisp Plan Room — fetch page images from public web viewer
+            if source == "Crisp Plan Room":
+                page = await context.new_page()
+                try:
+                    saved = await _download_crisp_docs(page, context, bid_id, url)
+                    if not saved:
+                        print(f"    ⚠ No documents found\n")
+                except Exception as e:
+                    print(f"    ⚠ Crisp error: {e}\n")
+                finally:
+                    await page.close()
+                continue
+
             # BidNet Direct — download all documents from Documents tab
             if source == "BidNet Direct":
                 if not bidnet_logged_in:
@@ -846,6 +859,186 @@ async def _find_samgov_pdf(page, context) -> str | None:
         return None
     candidates.sort(key=lambda x: x[0], reverse=True)
     return candidates[0][1]
+
+
+async def _download_crisp_docs(page, context, bid_id: str, bid_url: str) -> bool:
+    """
+    Download CRISP plan room docs via the public web viewer (no login required).
+
+    Each file in the specs/plans tab has a Livewire wvopen button with section
+    and file IDs embedded in the onclick. We parse these directly from the HTML,
+    construct the public /webviewer/{proj}/{section}/{file} URL, then intercept
+    the per-page JPEG responses that the Apryse viewer streams.
+
+    URL pattern: /projects/{id}/details/{slug} → /projects/{id}/specs/{slug}
+    Viewer:      /webviewer/{project_id}/{section_id}/{file_id}
+    """
+    import re as _re
+
+    CRISP_BASE = "https://www.crispplanroom.com"
+    MAX_PAGES = 8
+
+    # Extract project numeric ID from the bid URL
+    proj_match = _re.search(r"/projects/(\d+)/", bid_url)
+    if not proj_match:
+        print("    ⚠ Cannot parse project ID from URL")
+        return False
+    proj_id = proj_match.group(1)
+
+    # Try specs tab first, fall back to plans tab
+    slug = bid_url.split("/details/")[-1].rstrip("/")
+    for tab in ("specs", "plans"):
+        tab_url = f"{CRISP_BASE}/projects/{proj_id}/{tab}/{slug}"
+        await page.goto(tab_url, wait_until="networkidle", timeout=30000)
+        await page.wait_for_timeout(1500)
+
+        html = await page.content()
+        # Each file button: onclick="Livewire.dispatch('wvopen', { section: NNN, file: NNN})"
+        buttons = _re.findall(
+            r"Livewire\.dispatch\('wvopen',\s*\{[^}]*section:\s*(\d+),\s*file:\s*(\d+)[^}]*\}\).*?>(.*?)</button>",
+            html, _re.S
+        )
+        if buttons:
+            break
+    else:
+        print("    ⚠ No viewer-trigger buttons found in specs or plans tab")
+        return False
+
+    # Pick best file: prefer "spec" or "sow" in name; avoid addenda/gameon/install-guide
+    def _score_file(name: str) -> int:
+        n = name.lower()
+        if any(x in n for x in ["spec", "sow", "scope"]):
+            return 10
+        if any(x in n for x in ["addend", "game", "install guide", "pricelist"]):
+            return -5
+        return 0
+
+    buttons_scored = [
+        (_score_file(_re.sub(r"<[^>]+>", "", label).strip()), section_id, file_id,
+         _re.sub(r"<[^>]+>", "", label).strip())
+        for section_id, file_id, label in buttons
+    ]
+    buttons_scored.sort(key=lambda x: x[0], reverse=True)
+    _, section_id, file_id, file_label = buttons_scored[0]
+
+    print(f"    File: {file_label[:60]}  (section={section_id} file={file_id})")
+
+    viewer_url = f"{CRISP_BASE}/webviewer/{proj_id}/{section_id}/{file_id}"
+    viewer_page = await context.new_page()
+    page_images: list[bytes] = []
+
+    async def capture_page_image(response):
+        url = response.url
+        if "viewer.onlineplanroom.com" in url and "/pageimg" in url and ".jpg" in url:
+            try:
+                body = await response.body()
+                if body:
+                    page_images.append(body)
+            except Exception:
+                pass
+
+    viewer_page.on("response", capture_page_image)
+    try:
+        await viewer_page.goto(viewer_url, wait_until="networkidle", timeout=30000)
+        await viewer_page.wait_for_timeout(6000)
+
+        if not page_images:
+            # Native/vector PDF → viewer renders via XOD client-side; screenshot pages instead
+            print("    (native PDF — capturing viewer screenshots)")
+            for _ in range(MAX_PAGES):
+                container = await viewer_page.query_selector("#preview-container")
+                if not container:
+                    break
+                shot = await container.screenshot(type="jpeg", quality=85)
+                if shot:
+                    page_images.append(shot)
+                # Advance to next page via keyboard
+                await viewer_page.keyboard.press("ArrowRight")
+                await viewer_page.wait_for_timeout(1200)
+    finally:
+        viewer_page.remove_listener("response", capture_page_image)
+        await viewer_page.close()
+
+    if not page_images:
+        print("    ⚠ No page images captured from viewer")
+        return False
+
+    pages_to_use = page_images[:MAX_PAGES]
+    print(f"    ✓ Captured {len(page_images)} page images, using first {len(pages_to_use)}")
+
+    # Persist images
+    bid_dir = SPECS_DIR / bid_id
+    bid_dir.mkdir(parents=True, exist_ok=True)
+    for i, img_bytes in enumerate(pages_to_use):
+        (bid_dir / f"page{i:03d}.jpg").write_bytes(img_bytes)
+
+    # Parse immediately with Claude vision if API key present
+    api_key = os.getenv("ANTHROPIC_API_KEY", "")
+    if api_key and api_key != "your_key_here":
+        print("    → Parsing with Claude vision...")
+        spec = _parse_with_claude_images(pages_to_use)
+        if spec:
+            save_spec(bid_id, spec, str(bid_dir / "page000.jpg"))
+            print(f"    ✓ Spec saved\n")
+        else:
+            print("    ⚠ Claude vision parsing failed — images saved, parse manually\n")
+    else:
+        print(f"    ✓ Images saved to {bid_dir} — set ANTHROPIC_API_KEY to auto-parse\n")
+
+    return True
+
+
+def _parse_with_claude_images(images: list[bytes]) -> dict | None:
+    """Send a list of JPEG page images to Claude Haiku vision for spec extraction."""
+    try:
+        import anthropic
+        import base64
+    except ImportError:
+        print("  ⚠ anthropic not installed — run: pip install anthropic")
+        return None
+
+    content = [{
+        "type": "text",
+        "text": f"{_EXTRACTION_PROMPT}\n\nThis is a scanned document. Extract the spec from the page images below.",
+    }]
+    for img_bytes in images:
+        content.append({
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": base64.b64encode(img_bytes).decode(),
+            },
+        })
+
+    try:
+        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        msg = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": content}],
+        )
+        raw = msg.content[0].text.strip()
+    except Exception as e:
+        print(f"  ⚠ Claude API error: {e}")
+        return None
+
+    start = raw.find("{")
+    end = raw.rfind("}") + 1
+    if start != -1 and end > start:
+        try:
+            return json.loads(raw[start:end])
+        except Exception:
+            pass
+    if "```" in raw:
+        for part in raw.split("```"):
+            part = part.strip().lstrip("json").strip()
+            try:
+                return json.loads(part)
+            except Exception:
+                continue
+    print(f"  ⚠ Claude returned invalid JSON: {raw[:200]}")
+    return None
 
 
 async def _find_generic_pdf(page) -> str | None:
