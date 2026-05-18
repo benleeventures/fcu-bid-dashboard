@@ -66,38 +66,56 @@ USER_AGENT = (
 )
 
 
-def _ollama_relevance(title: str) -> bool:
-    """Ask Ollama if this construction bid likely needs commercial flooring work."""
+def _claude_relevance(title: str, description: str = "") -> bool:
+    """
+    Ask Claude Haiku whether flooring is the PRIMARY scope of this bid.
+    Stricter than the old Ollama check — rejects bids where flooring is
+    incidental (e.g. aquatic center with tile floors, street improvements).
+    """
+    api_key = os.getenv("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        return False
     try:
-        resp = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": os.getenv("OLLAMA_MODEL", "llama3.2:3b"),
-                "prompt": (
-                    "A commercial flooring contractor is reviewing public works bids. "
-                    "Does this bid likely require commercial flooring installation "
-                    "(carpet, vinyl, tile, hardwood, etc.)?\n"
-                    "Answer only YES or NO.\n\n"
-                    f'Bid title: "{title}"'
+        import anthropic
+        client = anthropic.Anthropic(api_key=api_key)
+        context = f'Title: "{title}"'
+        if description:
+            context += f'\nDescription: "{description[:600]}"'
+        msg = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=5,
+            temperature=0,
+            messages=[{
+                "role": "user",
+                "content": (
+                    "You are filtering bids for a commercial flooring contractor "
+                    "(Floor Covering Unlimited). They ONLY bid on projects where "
+                    "flooring installation (carpet, vinyl, LVT, VCT, tile, hardwood, "
+                    "rubber, epoxy, window coverings, blinds) is the PRIMARY and "
+                    "dominant scope of work — not a minor component of a larger project.\n\n"
+                    "Examples that should be YES: 'Flooring Replacement at City Hall', "
+                    "'Carpet Installation Gymnasium', 'VCT Tile Replacement School'.\n"
+                    "Examples that should be NO: 'Aquatic Center Improvements', "
+                    "'Street Improvements', 'Restroom Rehabilitation', "
+                    "'Building Renovation' (flooring is incidental).\n\n"
+                    f"{context}\n\n"
+                    "Is commercial flooring the PRIMARY scope? Answer YES or NO only."
                 ),
-                "stream": False,
-                "options": {"temperature": 0, "num_predict": 5},
-            },
-            timeout=15,
+            }],
         )
-        return resp.json().get("response", "").strip().upper().startswith("YES")
+        return msg.content[0].text.strip().upper().startswith("YES")
     except Exception:
         return False
 
 
-def _is_relevant(title: str) -> bool:
+def _is_relevant(title: str, description: str = "") -> bool:
     t = title.lower()
-    # Fast keyword match
+    # Fast keyword match — unambiguous flooring titles pass immediately
     if any(kw in t for kw in RELEVANT_KEYWORDS):
         return True
-    # Ollama second pass — only for construction bids, only if enabled
-    if os.getenv("OLLAMA_RELEVANCE") and any(kw in t for kw in _CONSTRUCTION_TRIGGERS):
-        return _ollama_relevance(title)
+    # Claude second pass for construction-adjacent titles
+    if any(kw in t for kw in _CONSTRUCTION_TRIGGERS):
+        return _claude_relevance(title, description)
     return False
 
 
@@ -402,7 +420,10 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
                 "published_raw": str(posted_raw),
                 "due_date": due_date.isoformat() if due_date else None,
                 "due_date_raw": str(due_raw),
-                "is_relevant": _is_relevant(title),
+                "is_relevant": _is_relevant(title, (
+                    attrs.get("description") or attrs.get("scope") or
+                    attrs.get("bidDescription") or ""
+                ).strip()),
                 "search_keyword": next((kw for kw in keywords if kw.lower() in title_lower), keywords[0]),
                 "url": portal_url,
                 "source": "PlanetBids",
@@ -992,7 +1013,7 @@ async def _search_plan_room(page, base_url: str, source_name: str) -> list[dict]
                     "published_raw": "",
                     "due_date": _parse_date(due_raw),
                     "due_date_raw": due_raw,
-                    "is_relevant": _is_relevant(title) or _is_relevant(raw),
+                    "is_relevant": _is_relevant(title, raw),
                     "search_keyword": "open bids",
                     "url": url_full,
                     "source": source_name,
@@ -1053,7 +1074,7 @@ async def _search_ccop(page, keywords: list[str]) -> list[dict]:
                 status   = lines[i + 5] if lines[i + 4] == "Status:" else ""
                 desc     = lines[i + 6] if i + 6 < len(lines) else ""
 
-                if _is_relevant(desc) or _is_relevant(proj_id):
+                if _is_relevant(desc):
                     url = bid_links.get(proj_id, CCOP_URL)
                     all_bids.append({
                         "bid_id": f"CCOP-{proj_id}",

@@ -157,7 +157,13 @@ async def _scan_awarded_portal(page, portal_id: str, agency: str) -> list[dict]:
             continue
         total_awarded += 1
         title = (attrs.get("title") or "").strip()
-        if not title or not _is_relevant(title):
+        if not title:
+            continue
+        description = (
+            attrs.get("description") or attrs.get("scope") or
+            attrs.get("bidDescription") or attrs.get("projectDescription") or ""
+        ).strip()
+        if not _is_relevant(title, description):
             continue
         awarded.append({
             "portal_id":      portal_id,
