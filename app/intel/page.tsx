@@ -56,7 +56,7 @@ async function getIntelData(): Promise<IntelBid[]> {
           vendor:vendors ( canonical_name )
         )
       `)
-      .order('awarded_at', { ascending: false })
+      .order('created_at', { ascending: false })
       .limit(500)
 
     if (error) {
@@ -211,7 +211,7 @@ export default async function IntelPage() {
           color: 'var(--gray)', fontFamily: 'IBM Plex Mono', fontSize: 13
         }}>
           <div style={{ fontSize: 32, marginBottom: 16 }}>📭</div>
-          <div style={{ fontWeight: 500, marginBottom: 8 }}>No intel data yet (rows: {intel.length})</div>
+          <div style={{ fontWeight: 500, marginBottom: 8 }}>No intel data yet</div>
           <div>Run <code style={{ color: 'var(--gold)' }}>python main.py --intel</code> to scan PlanetBids awarded bids</div>
         </div>
       ) : (
