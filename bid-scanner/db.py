@@ -222,7 +222,6 @@ def upsert_vendor(canonical_name: str) -> str:
         resp = (
             sb.table("vendors")
             .upsert({"canonical_name": canonical_name}, on_conflict="canonical_name")
-            .select("id")
             .execute()
         )
         return (resp.data or [{}])[0].get("id", "")
@@ -279,7 +278,6 @@ def upsert_intel_award(award: dict, submissions: list[dict]):
                 {**award, "last_synced_at": now},
                 on_conflict="portal_id,numeric_bid_id",
             )
-            .select("id")
             .execute()
         )
         intel_id = (resp.data or [{}])[0].get("id")

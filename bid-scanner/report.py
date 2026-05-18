@@ -62,6 +62,11 @@ def calculate_score(bid: dict) -> int:
 def _days_until(d) -> int | None:
     if not d:
         return None
+    if isinstance(d, str):
+        try:
+            d = date.fromisoformat(d[:10])
+        except ValueError:
+            return None
     return (d - date.today()).days
 
 
@@ -598,7 +603,14 @@ def _build_row(bid: dict) -> str:
     days = _days_until(bid.get("due_date"))
 
     # Due date cell
-    due_str = bid["due_date"].strftime("%b %d, %Y") if bid.get("due_date") else bid.get("due_date_raw") or "TBD"
+    _dd = bid.get("due_date")
+    if _dd:
+        if isinstance(_dd, str):
+            try:
+                _dd = date.fromisoformat(_dd[:10])
+            except ValueError:
+                _dd = None
+    due_str = _dd.strftime("%b %d, %Y") if _dd else bid.get("due_date_raw") or "TBD"
     if days is None:
         due_class, due_extra = "due-normal", ""
     elif days < 0:
@@ -662,9 +674,19 @@ def generate_report(bids: list[dict], output_path: str) -> str:
     new_count = len(bids)  # all freshly scanned
 
     # Sort: by score desc, then due date asc
+    def _sort_date(d):
+        if not d:
+            return date(9999, 1, 1)
+        if isinstance(d, str):
+            try:
+                return date.fromisoformat(d[:10])
+            except ValueError:
+                return date(9999, 1, 1)
+        return d
+
     sorted_bids = sorted(
         bids,
-        key=lambda b: (-calculate_score(b), b.get("due_date") or date(9999, 1, 1)),
+        key=lambda b: (-calculate_score(b), _sort_date(b.get("due_date"))),
     )
 
     # Build rows
