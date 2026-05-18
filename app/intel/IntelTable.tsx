@@ -116,9 +116,17 @@ export default function IntelTable({ bids, agencies }: Props) {
     e.stopPropagation()
     if (!confirm('Remove this bid from intel?')) return
     setDeleting(prev => new Set(prev).add(id))
-    await fetch(`/api/intel/${id}`, { method: 'DELETE' })
-    setDeleting(prev => { const s = new Set(prev); s.delete(id); return s })
-    router.refresh()
+    try {
+      const res = await fetch(`/api/intel/${id}`, { method: 'DELETE' })
+      const json = await res.json()
+      if (!res.ok) {
+        alert(`Delete failed: ${json.error ?? res.status}`)
+        return
+      }
+      router.refresh()
+    } finally {
+      setDeleting(prev => { const s = new Set(prev); s.delete(id); return s })
+    }
   }
 
   const filtered = bids.filter(b => {
