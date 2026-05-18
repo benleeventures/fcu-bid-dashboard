@@ -1,6 +1,7 @@
 'use client'
 
 import { Fragment, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { IntelBid, IntelSubmission } from './page'
 
 type Props = {
@@ -105,9 +106,20 @@ function SubmissionRows({ submissions, winnerAmount }: {
 }
 
 export default function IntelTable({ bids, agencies }: Props) {
+  const router = useRouter()
   const [search, setSearch]     = useState('')
   const [agency, setAgency]     = useState('')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [deleting, setDeleting] = useState<Set<string>>(new Set())
+
+  async function deleteRow(id: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!confirm('Remove this bid from intel?')) return
+    setDeleting(prev => new Set(prev).add(id))
+    await fetch(`/api/intel/${id}`, { method: 'DELETE' })
+    setDeleting(prev => { const s = new Set(prev); s.delete(id); return s })
+    router.refresh()
+  }
 
   const filtered = bids.filter(b => {
     if (agency && b.agency !== agency) return false
@@ -236,13 +248,28 @@ export default function IntelTable({ bids, agencies }: Props) {
                     <td style={{ padding: '10px 14px', fontFamily: 'IBM Plex Mono', fontSize: 12, color: 'var(--gray)' }}>
                       {fmtDate(bid.awarded_at)}
                     </td>
-                    <td style={{ padding: '10px 14px' }} onClick={e => e.stopPropagation()}>
-                      {bid.url && (
-                        <a href={bid.url} target="_blank" rel="noopener noreferrer"
-                          style={{ color: 'var(--gold-light)', fontSize: 11, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
-                          view ↗
-                        </a>
-                      )}
+                    <td style={{ padding: '10px 14px', whiteSpace: 'nowrap' }} onClick={e => e.stopPropagation()}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        {bid.url && (
+                          <a href={bid.url} target="_blank" rel="noopener noreferrer"
+                            style={{ color: 'var(--gold-light)', fontSize: 11, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
+                            view ↗
+                          </a>
+                        )}
+                        <button
+                          onClick={e => deleteRow(bid.id, e)}
+                          disabled={deleting.has(bid.id)}
+                          style={{
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            color: 'var(--gray)', fontSize: 13, padding: '2px 4px',
+                            opacity: deleting.has(bid.id) ? 0.4 : 1,
+                            lineHeight: 1,
+                          }}
+                          title="Remove from intel"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </td>
                   </tr>
                   {isOpen && (
