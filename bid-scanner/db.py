@@ -116,6 +116,66 @@ def upsert_bids(bids: list[dict]) -> tuple[int, int]:
     return new_count, updated_count
 
 
+def fetch_undigested_opengov() -> list[dict]:
+    """
+    Return OpenGov bids saved during a manual run that haven't been
+    included in a scheduled digest yet (digested_at IS NULL).
+    """
+    sb = get_client()
+    if not sb:
+        return []
+    try:
+        resp = (
+            sb.table("bids")
+            .select("*")
+            .eq("source", "OpenGov")
+            .is_("digested_at", "null")
+            .execute()
+        )
+        return resp.data or []
+    except Exception as e:
+        print(f"  ⚠ DB fetch undigested OpenGov error: {e}")
+        return []
+
+
+def fetch_undigested_planetbids() -> list[dict]:
+    """
+    Return PlanetBids bids saved during a manual run that haven't been
+    included in a scheduled digest yet (digested_at IS NULL).
+    """
+    sb = get_client()
+    if not sb:
+        return []
+    try:
+        resp = (
+            sb.table("bids")
+            .select("*")
+            .eq("source", "PlanetBids")
+            .is_("digested_at", "null")
+            .execute()
+        )
+        return resp.data or []
+    except Exception as e:
+        print(f"  ⚠ DB fetch undigested error: {e}")
+        return []
+
+
+def mark_digested(bid_ids: list[str]):
+    """Mark bids as included in a digest so they aren't re-sent."""
+    sb = get_client()
+    if not sb or not bid_ids:
+        return
+    try:
+        now = datetime.utcnow().isoformat()
+        chunk_size = 100
+        for i in range(0, len(bid_ids), chunk_size):
+            sb.table("bids").update({"digested_at": now}).in_(
+                "bid_id", bid_ids[i:i + chunk_size]
+            ).execute()
+    except Exception as e:
+        print(f"  ⚠ DB mark digested error: {e}")
+
+
 def log_scan(total: int, relevant: int, new_bids: int, sources: dict, duration_secs: float):
     """Write a scan run record to scan_log."""
     sb = get_client()
@@ -131,3 +191,116 @@ def log_scan(total: int, relevant: int, new_bids: int, sources: dict, duration_s
         }).execute()
     except Exception as e:
         print(f"  ⚠ DB scan log error: {e}")
+
+
+# ---------------------------------------------------------------------------
+# Competitive Intelligence — vendors + bid_intel + bid_intel_submissions
+# ---------------------------------------------------------------------------
+
+def fetch_all_vendors() -> list[dict]:
+    """Return all vendor records for name resolution."""
+    sb = get_client()
+    if not sb:
+        return []
+    try:
+        resp = sb.table("vendors").select("id, canonical_name, aliases").execute()
+        return resp.data or []
+    except Exception as e:
+        print(f"  ⚠ DB fetch vendors error: {e}")
+        return []
+
+
+def upsert_vendor(canonical_name: str) -> str:
+    """
+    Insert a new vendor (or return existing on conflict).
+    Returns the vendor's UUID.
+    """
+    sb = get_client()
+    if not sb:
+        return ""
+    try:
+        resp = (
+            sb.table("vendors")
+            .upsert({"canonical_name": canonical_name}, on_conflict="canonical_name")
+            .select("id")
+            .execute()
+        )
+        return (resp.data or [{}])[0].get("id", "")
+    except Exception as e:
+        print(f"  ⚠ DB upsert vendor error: {e}")
+        return ""
+
+
+def add_vendor_alias(vendor_id: str, alias: str):
+    """Append a new raw name variant to vendors.aliases[]."""
+    sb = get_client()
+    if not sb or not vendor_id:
+        return
+    try:
+        # Fetch current aliases first to avoid duplicates
+        resp = sb.table("vendors").select("aliases").eq("id", vendor_id).single().execute()
+        current = resp.data.get("aliases") or []
+        if alias.lower() not in [a.lower() for a in current]:
+            current.append(alias)
+            sb.table("vendors").update({"aliases": current}).eq("id", vendor_id).execute()
+    except Exception as e:
+        print(f"  ⚠ DB add vendor alias error: {e}")
+
+
+def fetch_existing_intel_keys() -> set[tuple[str, str]]:
+    """Return set of (portal_id, numeric_bid_id) already in bid_intel."""
+    sb = get_client()
+    if not sb:
+        return set()
+    try:
+        resp = sb.table("bid_intel").select("portal_id, numeric_bid_id").execute()
+        return {(r["portal_id"], r["numeric_bid_id"]) for r in (resp.data or [])}
+    except Exception as e:
+        print(f"  ⚠ DB fetch intel keys error: {e}")
+        return set()
+
+
+def upsert_intel_award(award: dict, submissions: list[dict]):
+    """
+    Upsert one bid_intel row and replace its bid_intel_submissions.
+    award keys: portal_id, numeric_bid_id, agency, title, awarded_at,
+                winner_vendor_id, winner_amount, total_bidders
+    submission keys: vendor_id, raw_vendor_name, bid_amount, is_winner, rank
+    """
+    sb = get_client()
+    if not sb:
+        return
+
+    try:
+        now = datetime.utcnow().isoformat()
+        resp = (
+            sb.table("bid_intel")
+            .upsert(
+                {**award, "last_synced_at": now},
+                on_conflict="portal_id,numeric_bid_id",
+            )
+            .select("id")
+            .execute()
+        )
+        intel_id = (resp.data or [{}])[0].get("id")
+        if not intel_id:
+            return
+
+        if submissions:
+            # Replace existing submissions for this bid
+            sb.table("bid_intel_submissions").delete().eq("intel_id", intel_id).execute()
+            rows = [
+                {
+                    "intel_id":        intel_id,
+                    "vendor_id":       s.get("vendor_id"),
+                    "raw_vendor_name": s.get("raw_vendor_name", "")[:300],
+                    "bid_amount":      s.get("bid_amount"),
+                    "is_winner":       bool(s.get("is_winner", False)),
+                    "rank":            s.get("rank"),
+                }
+                for s in submissions
+            ]
+            sb.table("bid_intel_submissions").insert(rows).execute()
+
+    except Exception as e:
+        print(f"  ⚠ DB upsert intel award error: {e}")
