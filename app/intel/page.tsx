@@ -46,7 +46,9 @@ async function getIntelData(): Promise<IntelBid[]> {
   if (!url || !key) return []
 
   try {
-    const sb = createClient(url, key)
+    const sb = createClient(url, key, {
+      global: { fetch: (u, o) => fetch(u, { ...o, cache: 'no-store' }) },
+    })
     const { data, error } = await sb
       .from('bid_intel')
       .select(`
