@@ -13,16 +13,22 @@ export async function GET() {
 
   const sb = createClient(url, key)
 
-  // Simple count first
-  const count = await sb.from('bid_intel').select('id', { count: 'exact', head: true })
-  // Simple select without joins
-  const simple = await sb.from('bid_intel').select('id, agency, title').limit(3)
+  // Test the exact join query used by the intel page
+  const joined = await sb
+    .from('bid_intel')
+    .select(`
+      id, agency, title,
+      winner_vendor:vendors!winner_vendor_id ( canonical_name ),
+      submissions:bid_intel_submissions (
+        id, bid_amount, is_winner, rank, raw_vendor_name,
+        vendor:vendors ( canonical_name )
+      )
+    `)
+    .limit(1)
 
   return NextResponse.json({
-    count_data: count.count,
-    count_error: count.error?.message,
-    simple_data: simple.data,
-    simple_error: simple.error?.message,
-    url_prefix: url.slice(0, 30),
+    joined_data: joined.data,
+    joined_error: joined.error?.message,
+    joined_status: joined.status,
   })
 }
