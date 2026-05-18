@@ -119,10 +119,8 @@ export default function IntelTable({ bids, agencies }: Props) {
     try {
       const res = await fetch(`/api/intel/${id}`, { method: 'DELETE' })
       const json = await res.json()
-      if (!res.ok) {
-        alert(`Delete failed: ${json.error ?? res.status}`)
-        return
-      }
+      alert(JSON.stringify(json, null, 2))
+      if (json.error) return
       router.refresh()
     } finally {
       setDeleting(prev => { const s = new Set(prev); s.delete(id); return s })
