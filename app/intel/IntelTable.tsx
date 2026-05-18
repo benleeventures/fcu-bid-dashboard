@@ -1,7 +1,6 @@
 'use client'
 
 import { Fragment, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import type { IntelBid, IntelSubmission } from './page'
 
 type Props = {
@@ -106,7 +105,6 @@ function SubmissionRows({ submissions, winnerAmount }: {
 }
 
 export default function IntelTable({ bids, agencies }: Props) {
-  const router = useRouter()
   const [search, setSearch]     = useState('')
   const [agency, setAgency]     = useState('')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -119,9 +117,8 @@ export default function IntelTable({ bids, agencies }: Props) {
     try {
       const res = await fetch(`/api/intel/${id}`, { method: 'DELETE' })
       const json = await res.json()
-      alert(JSON.stringify(json, null, 2))
-      if (json.error) return
-      router.refresh()
+      if (json.error) { alert(`Delete failed: ${json.error}`); return }
+      window.location.reload()
     } finally {
       setDeleting(prev => { const s = new Set(prev); s.delete(id); return s })
     }
