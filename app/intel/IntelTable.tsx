@@ -179,7 +179,7 @@ export default function IntelTable({ bids, agencies }: Props) {
           <thead>
             <tr style={{ background: 'var(--charcoal)' }}>
               <th style={{ width: 32 }} />
-              {['Agency', 'Title', 'Winner', 'Winning Bid', '# Bidders', 'Award Date'].map(h => (
+              {['Agency', 'Title', 'Winner', 'Winning Bid', '# Bidders', 'Award Date', ''].map(h => (
                 <th key={h} style={{
                   padding: '10px 14px', textAlign: 'left',
                   color: 'var(--gray)', fontWeight: 500, fontSize: 11,
@@ -235,6 +235,14 @@ export default function IntelTable({ bids, agencies }: Props) {
                     </td>
                     <td style={{ padding: '10px 14px', fontFamily: 'IBM Plex Mono', fontSize: 12, color: 'var(--gray)' }}>
                       {fmtDate(bid.awarded_at)}
+                    </td>
+                    <td style={{ padding: '10px 14px' }} onClick={e => e.stopPropagation()}>
+                      {bid.url && (
+                        <a href={bid.url} target="_blank" rel="noopener noreferrer"
+                          style={{ color: 'var(--gold-light)', fontSize: 11, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
+                          view ↗
+                        </a>
+                      )}
                     </td>
                   </tr>
                   {isOpen && (

@@ -21,6 +21,7 @@ export type IntelBid = {
   awarded_at: string | null
   winner_amount: number | null
   total_bidders: number | null
+  url: string | null
   winner_vendor: { canonical_name: string } | null
   submissions: IntelSubmission[]
 }
@@ -49,7 +50,7 @@ async function getIntelData(): Promise<IntelBid[]> {
     const { data, error } = await sb
       .from('bid_intel')
       .select(`
-        id, portal_id, agency, title, awarded_at, winner_amount, total_bidders,
+        id, portal_id, agency, title, awarded_at, winner_amount, total_bidders, url,
         winner_vendor:vendors!winner_vendor_id ( canonical_name ),
         submissions:bid_intel_submissions (
           id, bid_amount, is_winner, rank, raw_vendor_name,

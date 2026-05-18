@@ -268,15 +268,17 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
         first_attrs = (records[0].get("attributes", {}) if isinstance(records[0], dict) else {})
 
         # Submissions endpoint: records have vendor + amount fields
-        vendor_fields = {"vendorName", "companyName", "company_name", "name", "vendorId"}
+        # Exclude "name" — too generic, matches bid line-item descriptions
+        vendor_fields = {"vendorName", "companyName", "company_name", "vendorId"}
         amount_fields = {"bidAmount", "amount", "totalBid", "bidTotal", "totalAmount"}
 
-        if vendor_fields & set(first_attrs.keys()) or amount_fields & set(first_attrs.keys()):
-            for i, rec in enumerate(records):
+        # Only treat as submissions if a real vendor field is present
+        if vendor_fields & set(first_attrs.keys()):
+            for rec in records:
                 a = rec.get("attributes", {})
                 vendor = (
                     a.get("vendorName") or a.get("companyName") or
-                    a.get("company_name") or a.get("name") or ""
+                    a.get("company_name") or ""
                 ).strip()
                 amount_raw = (
                     a.get("bidAmount") or a.get("amount") or
@@ -287,7 +289,7 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
                     submissions.append({
                         "raw_vendor_name": vendor,
                         "bid_amount": amount,
-                        "rank": i + 1,
+                        "rank": None,
                         "is_winner": False,
                     })
 
@@ -318,6 +320,28 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
         if not awarded_at:
             awarded_at = awarded_at_dom
 
+    # Deduplicate by vendor name — multi-item bids produce one row per line item;
+    # collapse them by summing amounts so each vendor appears once with their total.
+    if submissions:
+        vendor_totals: dict[str, float | None] = {}
+        for s in submissions:
+            key = s["raw_vendor_name"].lower()
+            amt = s["bid_amount"]
+            if key not in vendor_totals:
+                vendor_totals[key] = amt
+            elif amt is not None:
+                vendor_totals[key] = (vendor_totals[key] or 0) + amt
+
+        # Rebuild deduplicated list preserving original casing
+        seen: dict[str, bool] = {}
+        deduped = []
+        for s in submissions:
+            key = s["raw_vendor_name"].lower()
+            if key not in seen:
+                seen[key] = True
+                deduped.append({**s, "bid_amount": vendor_totals[key]})
+        submissions = deduped
+
     # Sort by amount to assign rank
     if submissions:
         with_amount = sorted(
@@ -341,6 +365,7 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
         "winner_amount":  winner_amount,
         "awarded_at":     awarded_at,
         "total_bidders":  len(submissions),
+        "url":            detail_url,
     }
 
 
@@ -537,6 +562,7 @@ async def run_intel_scan(live_page) -> dict:
                 "winner_vendor_id": winner_vendor_id,
                 "winner_amount":    detail.get("winner_amount"),
                 "total_bidders":    detail.get("total_bidders") or len(resolved_subs),
+                "url":              detail.get("url"),
             }
 
             upsert_intel_award(award, resolved_subs)
