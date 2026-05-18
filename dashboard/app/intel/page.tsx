@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import IntelTable from './IntelTable'
 import IntelOverview from './IntelOverview'
 
-export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 export type IntelSubmission = {
   id: string
@@ -44,35 +44,40 @@ async function getIntelData(): Promise<IntelBid[]> {
   const key  = process.env.SUPABASE_KEY
   if (!url || !key) return []
 
-  const sb = createClient(url, key)
-  const { data, error } = await sb
-    .from('bid_intel')
-    .select(`
-      id, portal_id, agency, title, awarded_at, winner_amount, total_bidders,
-      winner_vendor:vendors!winner_vendor_id ( canonical_name ),
-      submissions:bid_intel_submissions (
-        id, bid_amount, is_winner, rank, raw_vendor_name,
-        vendor:vendors ( canonical_name )
-      )
-    `)
-    .order('awarded_at', { ascending: false })
-    .limit(500)
+  try {
+    const sb = createClient(url, key)
+    const { data, error } = await sb
+      .from('bid_intel')
+      .select(`
+        id, portal_id, agency, title, awarded_at, winner_amount, total_bidders,
+        winner_vendor:vendors!winner_vendor_id ( canonical_name ),
+        submissions:bid_intel_submissions (
+          id, bid_amount, is_winner, rank, raw_vendor_name,
+          vendor:vendors ( canonical_name )
+        )
+      `)
+      .order('awarded_at', { ascending: false })
+      .limit(500)
 
-  if (error) {
-    console.error('Intel fetch error:', error.message)
+    if (error) {
+      console.error('Intel fetch error:', error.message)
+      return []
+    }
+
+    return ((data ?? []) as any[]).map(row => ({
+      ...row,
+      winner_vendor: Array.isArray(row.winner_vendor)
+        ? (row.winner_vendor[0] ?? null)
+        : row.winner_vendor,
+      submissions: (row.submissions ?? []).sort(
+        (a: IntelSubmission, b: IntelSubmission) =>
+          (a.rank ?? 999) - (b.rank ?? 999)
+      ),
+    })) as IntelBid[]
+  } catch (e) {
+    console.error('Intel page error:', e)
     return []
   }
-
-  return ((data ?? []) as any[]).map(row => ({
-    ...row,
-    winner_vendor: Array.isArray(row.winner_vendor)
-      ? (row.winner_vendor[0] ?? null)
-      : row.winner_vendor,
-    submissions: (row.submissions ?? []).sort(
-      (a: IntelSubmission, b: IntelSubmission) =>
-        (a.rank ?? 999) - (b.rank ?? 999)
-    ),
-  })) as IntelBid[]
 }
 
 function computeCompetitors(intel: IntelBid[]): CompetitorStat[] {
@@ -171,7 +176,6 @@ export default async function IntelPage() {
   const intel = await getIntelData()
   const competitors = computeCompetitors(intel)
   const pricing = computePricingInsights(intel)
-  const lastSynced = intel[0]?.awarded_at ?? null
   const agencies = Array.from(new Set(intel.map(b => b.agency).filter(Boolean))) as string[]
 
   return (
