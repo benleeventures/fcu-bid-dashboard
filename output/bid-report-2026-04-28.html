@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCU Bid Dashboard — April 28, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --charcoal: #1a1a1a;
+  --charcoal-light: #2a2a2a;
+  --charcoal-mid: #3a3a3a;
+  --gold: #c9a84c;
+  --gold-dim: #b8963a;
+  --cream: #f5f0e8;
+  --cream-dark: #e4ddd0;
+  --white: #ffffff;
+  --green: #34c759;
+  --red: #ff3b30;
+  --blue: #007aff;
+  --blue-dim: rgba(0,122,255,0.12);
+  --gray: #8e8e93;
+  --gray-light: #c7c7cc;
+  --font: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--cream);
+  color: var(--charcoal);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--charcoal);
+  color: var(--cream);
+  padding: 0 28px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-logo {
+  width: 30px;
+  height: 30px;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--charcoal);
+  letter-spacing: -0.3px;
+  flex-shrink: 0;
+}
+.header-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+.header-count {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--gray);
+}
+
+/* ── Stats row ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--cream-dark);
+  background: var(--white);
+}
+.stat-box {
+  padding: 20px 24px;
+  border-right: 1px solid var(--cream-dark);
+}
+.stat-box:last-child { border-right: none; }
+.stat-num {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--charcoal);
+}
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gray);
+  font-family: var(--mono);
+}
+
+/* ── Filter bar ── */
+.filters {
+  background: var(--white);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.filter-search {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cream);
+  border: 1px solid var(--cream-dark);
+  padding: 8px 12px;
+}
+.filter-search svg {
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+.filter-search input {
+  border: none;
+  background: transparent;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--charcoal);
+  outline: none;
+  width: 100%;
+}
+.filter-search input::placeholder { color: var(--gray); }
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+.filter-select {
+  border: 1px solid var(--cream-dark);
+  background: var(--cream);
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--charcoal);
+  padding: 8px 28px 8px 12px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238e8e93'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+/* ── Tab bar ── */
+.tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 0 28px;
+  display: flex;
+  gap: 0;
+}
+.tab {
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  user-select: none;
+}
+.tab.active {
+  color: var(--charcoal);
+  border-bottom-color: var(--charcoal);
+}
+
+/* ── Table ── */
+.table-wrap {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  min-width: 900px;
+}
+thead tr {
+  background: var(--charcoal);
+  color: var(--cream);
+}
+th {
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+th:hover { color: var(--gold); }
+th.sorted { color: var(--gold); }
+th .sort-arrow { margin-left: 4px; opacity: 0.5; }
+th.sorted .sort-arrow { opacity: 1; }
+
+td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--cream-dark);
+  vertical-align: middle;
+}
+tr:hover td { background: rgba(201,168,76,0.04); }
+tr.hidden { display: none; }
+
+/* ── Score badge ── */
+.score-badge {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+/* ── Bid/Agency cell ── */
+.bid-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--charcoal);
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.bid-agency {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── Due date ── */
+.due-normal { color: var(--charcoal); font-family: var(--mono); font-size: 12px; }
+.due-soon { color: #e8a030; font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.due-urgent { color: var(--red); font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.due-expired { color: var(--gray); font-family: var(--mono); font-size: 12px; text-decoration: line-through; }
+
+/* ── Status badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-new { background: var(--blue-dim); color: var(--blue); }
+.badge-soon { background: rgba(255,59,48,0.1); color: var(--red); }
+
+/* ── Source tag ── */
+.source-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--blue);
+  white-space: nowrap;
+}
+
+/* ── Trade tag ── */
+.trade-tag {
+  font-size: 12px;
+  color: var(--gray);
+  white-space: nowrap;
+}
+.trade-tag.flooring { color: var(--gold-dim); font-weight: 500; }
+
+/* ── Empty state ── */
+.empty-row td {
+  text-align: center;
+  padding: 48px;
+  color: var(--gray);
+  font-size: 14px;
+  font-family: var(--mono);
+}
+
+/* ── Footer ── */
+.footer {
+  padding: 20px 28px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid var(--cream-dark);
+}
+
+@media (max-width: 768px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .header { padding: 0 16px; }
+  .filters { padding: 10px 16px; }
+  .tabs { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">FCU</div>
+    <span class="header-title">Bid Dashboard</span>
+  </div>
+  <span class="header-count" id="display-count">148 of 148 bids</span>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat-box">
+    <div class="stat-num">148</div>
+    <div class="stat-label">Total Bids</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">148</div>
+    <div class="stat-label">New</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Due in 7 Days</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">42</div>
+    <div class="stat-label">Flooring Relevant</div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+  <span class="filter-label">Search</span>
+  <div class="filter-search">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <circle cx="6" cy="6" r="5" stroke="#1a1a1a" stroke-width="1.5"/>
+      <path d="M10 10l3 3" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input type="text" id="search-input" placeholder="title, agency, trade..." oninput="applyFilters()">
+  </div>
+  <span class="filter-label">Trade</span>
+  <select class="filter-select" id="trade-filter" onchange="applyFilters()">
+    <option value="">All Trades</option>
+    <option value="carpet">Carpet</option>
+    <option value="epoxy flooring">Epoxy Flooring</option>
+    <option value="flooring">Flooring</option>
+    <option value="tile">Tile</option>
+    <option value="window coverings">Window Coverings</option>
+    <option value="wood flooring">Wood Flooring</option>
+  </select>
+  <span class="filter-label">Due</span>
+  <select class="filter-select" id="due-filter" onchange="applyFilters()">
+    <option value="">Any Date</option>
+    <option value="7">Next 7 days</option>
+    <option value="14">Next 14 days</option>
+    <option value="30">Next 30 days</option>
+  </select>
+  <span class="filter-label">Source</span>
+  <select class="filter-select" id="source-filter" onchange="applyFilters()">
+    <option value="">All Sources</option>
+    <option value="bidnet direct">BidNet Direct</option>
+    <option value="sam.gov">SAM.gov</option>
+    <option value="planetbids">PlanetBids</option>
+    <option value="cal eprocure">Cal eProcure</option>
+    <option value="opengov">OpenGov</option>
+    <option value="bid locker">Bid Locker</option>
+    <option value="quality bidders">Quality Bidders</option>
+    <option value="socal plan room">SoCal Plan Room</option>
+    <option value="crisp plan room">Crisp Plan Room</option>
+    <option value="caltrans ccop">Caltrans CCOP</option>
+  </select>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" data-tab="all" onclick="switchTab(this)">All (<span class="tab-count-all">148</span>)</div>
+  <div class="tab" data-tab="flooring" onclick="switchTab(this)">Flooring (<span class="tab-count-flooring">42</span>)</div>
+  <div class="tab" data-tab="expiring" onclick="switchTab(this)">Expiring Soon (<span id="tab-count-expiring">0</span>)</div>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+<table id="bids-table">
+  <thead>
+    <tr>
+      <th style="width:52px;" onclick="sortTable('score')">SCORE <span class="sort-arrow">↕</span></th>
+      <th onclick="sortTable('title')">BID / AGENCY <span class="sort-arrow">↕</span></th>
+      <th style="width:60px;">STATE</th>
+      <th style="width:160px;" onclick="sortTable('trade')">TRADE <span class="sort-arrow">↕</span></th>
+      <th style="width:80px;">VALUE</th>
+      <th style="width:130px;" onclick="sortTable('due')" class="sorted">DUE DATE <span class="sort-arrow">↑</span></th>
+      <th style="width:80px;">STATUS</th>
+      <th style="width:140px;">SOURCE</th>
+    </tr>
+  </thead>
+  <tbody id="bids-tbody">
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Asbestos Abatement & Install New Flooring (Athens, GA)" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Asbestos Abatement & Install New Flooring (Athens, GA)</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/84325bf7a3c14471bead612495370b2f/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Building 51 Painting and Flooring Replacement" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Building 51 Painting and Flooring Replacement</div><div class="bid-agency">COMMERCE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 30, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2b35586522004f019b260b37d669902e/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Building FC371 and FC372 Paint and Flooring Repairs" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Building FC371 and FC372 Paint and Flooring Repairs</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">June 11, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/f5ee61538eb3411db3cc69dc86feeb57/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Z1DA--Replace Flooring in Critical Areas 583-26-504" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Z1DA--Replace Flooring in Critical Areas 583-26-504</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 08, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/b3b7bb2ed07f468ea59f572a6b9650ef/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Flooring Repair Buildings RR631-RR-633-RR635" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Flooring Repair Buildings RR631-RR-633-RR635</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 04, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/ae025ea1997a47538cef93cb928b6953/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 and 1D Reno, NV Project # 654-22-003 Reno, NV" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 and 1D Reno, NV Proje…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">June 16, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/fc14c794c648420fa867ab474d5c7ecc/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Building HP275 and HP465 paint and Flooring Repairs" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Building HP275 and HP465 paint and Flooring Repairs</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 26, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/99e988bc36424998b5f2912c250bcaff/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Fabricate and Install New Structural Steel Flooring System at the Watervliet Arsenal, NY" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Fabricate and Install New Structural Steel Flooring System at the Watervliet Ars…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/f40d8fd9a63a40b8a354fbe8f1cdce3e/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Flooring Repairs Buildings 24 and 8" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Flooring Repairs Buildings 24 and 8</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 27, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/9bcf23588f1145a3b4716492930f29b0/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Painting and Flooring Bldgs S960, S962, 1069, etc." data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Painting and Flooring Bldgs S960, S962, 1069, etc.</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 29, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/ad520fb5e73a41ef858b2945ad62e248/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="B1122 Carpet Replacement" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">B1122 Carpet Replacement</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 06, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/5506da9c75d640f4af3633bbeebd757f/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Replace Carpet at USCG Base Alameda" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Replace Carpet at USCG Base Alameda</div><div class="bid-agency">HOMELAND SECURITY, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 08, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/61120b4aa28f432aa9b7d64544f2c4c9/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="7220--Carpet and Luxury Vinyl Tiles" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">7220--Carpet and Luxury Vinyl Tiles</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/4d401ac202c448da8686a047779ac422/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="B334 Repair Kitchen Flooring" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">B334 Repair Kitchen Flooring</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 04, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2b35ec42f4614afbbf1730973c588a9a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="USCG Station Brunswick Flooring Replacement" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">USCG Station Brunswick Flooring Replacement</div><div class="bid-agency">HOMELAND SECURITY, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/14bca84b8b2a4294bb0bec00c809e014/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Z2DA--Flooring Renovation, Installation, and Repalcement Services SATOC/IDIQ" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Z2DA--Flooring Renovation, Installation, and Repalcement Services SATOC/IDIQ</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 31, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/3caea63f43d84746be719ba7ecfd25ea/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Repair Flooring Student Pilot Housing, Multiple Facilities" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Repair Flooring Student Pilot Housing, Multiple Facilities</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/e66ecd36d6d7485ca74ff9dc5eb0e9c6/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="HQ Flooring and Kitchen Remodel" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">HQ Flooring and Kitchen Remodel</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/61c5bccf3d4c4d848bf391b846c4dfef/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="7220--Replacement of Ceiling Tiles" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">7220--Replacement of Ceiling Tiles</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 21, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/f9c9dadae54e4b038a7301c28bb26659/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Flooring Replacement Services (Chapel, BLDG 15, BLDG 30), Gulf Coast Veterans Health Care System, Engineering Service, 400 Veterans Avenue, Biloxi, MS 39531" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Flooring Replacement Services (Chapel, BLDG 15, BLDG 30), Gulf Coast Veterans He…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/01f42ad0d6a54184a4eb24d873652538/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Flooring Removal and Installation Services" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Flooring Removal and Installation Services</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/b0a5ae1402b1433b97e645c6d0e6cdf8/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Z--OLYM - CHRISTIANSON AND MORA HOUSE FLOORING" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Z--OLYM - CHRISTIANSON AND MORA HOUSE FLOORING</div><div class="bid-agency">INTERIOR, DEPARTMENT OF THE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/15140d07188340319cd1db940d40dbd5/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Z1AA--Durham Asbestos-Containing Floor Tile and Mastic Removal" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Z1AA--Durham Asbestos-Containing Floor Tile and Mastic Removal</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 09, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/525470150e5544edaadf8ad0b8e914c0/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="146 CES Install Sim Bldg Flooring B700" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">146 CES Install Sim Bldg Flooring B700</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 18, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/8041eaea0f7e48dbb481620e8c499203/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="1232SA26Q0410 Combination Synopsis/Solicitation for Carpet Replacement USDA-ARS-MWA Madison WI" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">1232SA26Q0410 Combination Synopsis/Solicitation for Carpet Replacement USDA-ARS-…</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/68674fdf35184c46afcaabc4afaae16b/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="S--GAOA BOISE DISTRICT FUELS BLDG CARPET REPLACEMENT" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">S--GAOA BOISE DISTRICT FUELS BLDG CARPET REPLACEMENT</div><div class="bid-agency">INTERIOR, DEPARTMENT OF THE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 02, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/13dc73e80d8944728d212af61e341130/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Seeking Sources-Flooring Replacement Services (Chapel, BLDG 15, BLDG 30), Gulf Coast Veterans Health Care System, Engineering Service, 400 Veterans Avenue, Biloxi, MS 39531" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Seeking Sources-Flooring Replacement Services (Chapel, BLDG 15, BLDG 30), Gulf C…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 26, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/fad0bc9803fc420ab06dc3d36dddbb8c/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Wood Flooring Restoration Services" data-trade="Wood Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Wood Flooring Restoration Services</div><div class="bid-agency">STATE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Wood Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 09, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a8d90c53a0c8480f8266cb820431af6c/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Open-End Flooring USAG-HI (8a)" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Open-End Flooring USAG-HI (8a)</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 31, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d304a778323441e9b08ca1e778b4581e/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Y1AB--FY 26 - Hines Flooring Replacement (VA-26-00039700)" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Y1AB--FY 26 - Hines Flooring Replacement (VA-26-00039700)</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 31, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/560a28d4ca7f4502acf9284fbd53d75a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Acquisition of Wood Flooring and Adhesives" data-trade="Wood Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Acquisition of Wood Flooring and Adhesives</div><div class="bid-agency">STATE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Wood Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/dd188c281da44648a6439ec5a9ddfaa6/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="S--KIMAMA & ROGERSON GUARD STATIONS FLOORING" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">S--KIMAMA & ROGERSON GUARD STATIONS FLOORING</div><div class="bid-agency">INTERIOR, DEPARTMENT OF THE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 16, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c87861a601b44f868cb0a44e0ca07869/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="S--MAVA REPLACE FIRST FLOOR CARPETING" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">S--MAVA REPLACE FIRST FLOOR CARPETING</div><div class="bid-agency">INTERIOR, DEPARTMENT OF THE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/0a489211b14d4563a4d5a278516fc8fe/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="USNS APALACHICOLA CARPET AND DOORWAY MATERIAL" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">USNS APALACHICOLA CARPET AND DOORWAY MATERIAL</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/61ed2e94f2084260b99783b196e96913/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="CRTC Carpet Tiles" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">CRTC Carpet Tiles</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 20, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c9e9ee657a044fe9aa1e30e9611300c2/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Walk Off Carpet Service - Rome NY" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Walk Off Carpet Service - Rome NY</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/1548e8817723466a91a0bc5a1c2dccf1/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Replace Carpet at Chapel, Bldg 260, Camp Walker" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Replace Carpet at Chapel, Bldg 260, Camp Walker</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/640043ea4f94485092a87f1fa3f55bbe/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Carpet Tile" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Carpet Tile</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">August 27, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/0d473c5542114088a2a117ee2e5e14f9/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="Annual Carpet Cleaning Services for 81st RD Fort Jackson, SC" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">Annual Carpet Cleaning Services for 81st RD Fort Jackson, SC</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 05, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/10daa0741c584b1fad38c6c58756a4c4/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="56--CARPET REPLACEMENT" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">56--CARPET REPLACEMENT</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/af272060f0f7fe4fdf95fdc55eec1912/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="7230--Window Shades - New Bldg 05 (WTS Campus), IND" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">7230--Window Shades - New Bldg 05 (WTS Campus), IND</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/aa3234001dfb4762a0b8ef17a42edfb1/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="60" data-days="" data-relevant="1" data-title="F108--Air Monitoring for Asbestos-Containing Floor Tile and Mastic Removal" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#e8a030">60</div></td>
+      <td><div class="bid-title">F108--Air Monitoring for Asbestos-Containing Floor Tile and Mastic Removal</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag flooring">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 09, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/0bbb09c883574d2991279eadb7879606/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="45" data-days="" data-relevant="0" data-title="8945--VA Long Beach Sandwiches" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">45</div></td>
+      <td><div class="bid-title">8945--VA Long Beach Sandwiches</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2fd11bf8eb654443919283d4f1753d28/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Santa Fe and Taos-Picuris IHC Lab and Rx Casework Improvements" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Santa Fe and Taos-Picuris IHC Lab and Rx Casework Improvements</div><div class="bid-agency">HEALTH AND HUMAN SERVICES, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/22296fb0e1d347dd8acc51b2450bf5ba/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Remodel Dietetics Kitchen, Phoenix VA Campus" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Remodel Dietetics Kitchen, Phoenix VA Campus</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 11, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d78da47b4f314d66ade1b6219519aaa9/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Office Renovations" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Office Renovations</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/af50157e5f944e6580856afeebdaef25/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z2AA--Commercial Floor Replacement - Boise (347) RO" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z2AA--Commercial Floor Replacement - Boise (347) RO</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 30, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/13d349b3c7524c6e9915ebeb751a9ae0/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Binghamton New York First Floor Buildout Solicitation" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Binghamton New York First Floor Buildout Solicitation</div><div class="bid-agency">California</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 04, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/811a96891a6d4d868bc9af3db5125c5f/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Janitorial Services - Mercedes" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Janitorial Services - Mercedes</div><div class="bid-agency">INTERNATIONAL BOUNDARY AND WATER COMMISSION: U.S.-MEXICO</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 11, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/49a2920109084fcd8598521c6873abe7/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Pool Deck and Locker Room Floor Repair at Base Alameda" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Pool Deck and Locker Room Floor Repair at Base Alameda</div><div class="bid-agency">HOMELAND SECURITY, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/51ee679c0d85476388c2315518fee800/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Install New Floor in Men’s Locker Room in Building 48 at Base Alameda" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Install New Floor in Men’s Locker Room in Building 48 at Base Alameda</div><div class="bid-agency">HOMELAND SECURITY, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/b6a0530bbb734020baa76591bda801da/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="NAVSUP FLC Norfolk CEP 200 Floor Replacement" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">NAVSUP FLC Norfolk CEP 200 Floor Replacement</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 05, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/7a4deafb04764297979d5789d07af26d/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="JFY 2022 PROJECT J-875, BATTLE STAFF TRAINING FACILITY, U.S. NAVSUPPACT MCB CAMP BLAZ, GUAM" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">JFY 2022 PROJECT J-875, BATTLE STAFF TRAINING FACILITY, U.S. NAVSUPPACT MCB CAMP…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">June 17, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/b3cee25cdb6740fb9466f0011b4f99cc/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Land Port of Entry Facility Expansion and Modernization Trout River, New York" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Land Port of Entry Facility Expansion and Modernization Trout River, New York</div><div class="bid-agency">GENERAL SERVICES ADMINISTRATION</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/fd7748d2165a475d9d9b5335debd4806/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="187th MXG Hanger Floor Resurfacing" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">187th MXG Hanger Floor Resurfacing</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 29, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c9e5e8c967584802af88f8d59d8e1a43/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z1DA--578-26-016 Donation Renovations Building 217 Phase 2 CON" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z1DA--578-26-016 Donation Renovations Building 217 Phase 2 CON</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">July 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/25be9b87a63e4c5e8b913f2e8c520131/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="2026 Toyota Hilux SR Single Cab 4x4 – Closed Box Body Configuration" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">2026 Toyota Hilux SR Single Cab 4x4 – Closed Box Body Configuration</div><div class="bid-agency">STATE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 23, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/5e373ef54dd84c75824019cb6db531ae/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Ramey School Floor Replacement" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Ramey School Floor Replacement</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/661b9d9fa8ee41278fbef3347906eca2/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Pre-Solicitation - KENTUCKY LOCK CONFERENCING TRAILER CONSTRUCTION CONTRACT" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Pre-Solicitation - KENTUCKY LOCK CONFERENCING TRAILER CONSTRUCTION CONTRACT</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/7b80b6da8a514e64be74fe2a07940bc4/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Refinishing of Gymnasium Floors" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Refinishing of Gymnasium Floors</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 21, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/45c71294a2fb4412ab3204c0a40df168/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z2DA--Presolicitation Notice No. 36C26126R0041 Project 593-26-103, Renovate Education Building Training Hub" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z2DA--Presolicitation Notice No. 36C26126R0041 Project 593-26-103, Renovate Educ…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/32f214b831f14985baf3b3a1fa630ee6/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Sources Sought - Refinish Basketball Courts for Building 7706, Ellsworth AFB, SD" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Sources Sought - Refinish Basketball Courts for Building 7706, Ellsworth AFB, SD</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 27, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/79359b04ed0640d387b898da3ef06ec0/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Repair Fire Damage, Building 608, Room 207, USAG Bavaria, Grafenwoehr Military Community – Rose Barracks" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Repair Fire Damage, Building 608, Room 207, USAG Bavaria, Grafenwoehr Military C…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 06, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/08bcb56c8d804fc69b31808cdff1d6aa/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Notice of Intent to Sole Source- LRS Zone 4 BANAIR Storage Racks, Misawa Airbase" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Notice of Intent to Sole Source- LRS Zone 4 BANAIR Storage Racks, Misawa Airbase</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 21, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/ccc0411ee15e4cf794a58767849510df/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Bldg_Subfloor Removal & Epoxy Coating" data-trade="Epoxy Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Bldg_Subfloor Removal & Epoxy Coating</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Epoxy Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 04, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/b025759aea1d4539a7cbf00624ce952c/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Lab Upgrade & Bldg Renovation" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Lab Upgrade & Bldg Renovation</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 04, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/564475d87737457b9cb1787f32ab10a0/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DA--NP Refurbish Audiometric Suites" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DA--NP Refurbish Audiometric Suites</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 29, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c39e6d0068e84888b74ae5c455b36c64/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DZ--Electronic Health Record Modernization - Infrastructure Upgrades - Togus Veteran's Affairs Medical Center, Augusta Maine - Project # 402-22-700" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DZ--Electronic Health Record Modernization - Infrastructure Upgrades - Togus V…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">June 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/599698f59d684ea886aa558adaee425e/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="TWO-PHASE DESIGN/BUILD REPAIR BUILDING 322 CEREBRO LABORATORY, KIRTLAND AIR FORCE BASE, BERNALILLO COUNTY, NEW MEXICO" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">TWO-PHASE DESIGN/BUILD REPAIR BUILDING 322 CEREBRO LABORATORY, KIRTLAND AIR FORC…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a64cef9bd63b48caba413e478817bff2/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Lame Deer Heliport and Concrete Support Structure Remediation" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Lame Deer Heliport and Concrete Support Structure Remediation</div><div class="bid-agency">HEALTH AND HUMAN SERVICES, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 08, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/06419caa59294f1cbd5dcd630db0802a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Repair Engine Shop Floors, Bldg. 822" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Repair Engine Shop Floors, Bldg. 822</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 05, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/387a27c3df7d4c11815d80fc9c9e1205/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Repair Basketball Court B1700" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Repair Basketball Court B1700</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a6f0be8293c24c559e6bc5980a795a98/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Building 32 Renovation, Defense Supply Center Richmond, Virginia" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Building 32 Renovation, Defense Supply Center Richmond, Virginia</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c3f89b714ca04fe8b7014fc07b06ef95/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z1DA--460-26-006 Four East Shower Refurbish" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z1DA--460-26-006 Four East Shower Refurbish</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/221df9078eae41e6ad4f299caca319a8/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1AA--528A4-26-202 CLINIC RENOVATIONS BATAVIA VAMC" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1AA--528A4-26-202 CLINIC RENOVATIONS BATAVIA VAMC</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 19, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/5d658e97d0f844f094dc38702f288c06/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DA--CON-NRM-668-25-105 Replace Grease Traps" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DA--CON-NRM-668-25-105 Replace Grease Traps</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 29, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/23f815ba3a864a0e9e7077478eac6374/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="USCGC Joseph Gerczak Dockside Wet Deck Resealing" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">USCGC Joseph Gerczak Dockside Wet Deck Resealing</div><div class="bid-agency">HOMELAND SECURITY, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 24, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/52a75f084a3a4c8dbeba365fd5e5c1fc/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 26, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/ab70e50271134be2b03b186b7c5ea001/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="6520--DENTAL FURNITURE FOR THE HARRY S. TRUMAN ROLLA, MO CBOC" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">6520--DENTAL FURNITURE FOR THE HARRY S. TRUMAN ROLLA, MO CBOC</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 02, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/18f324eb01f24c639eccf9847fb20e0a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Repair Secure Area" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Repair Secure Area</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 20, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/7569cc10253441ac953ba87066f3d5ec/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Building 7 Suite 3 Floor Repair" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Building 7 Suite 3 Floor Repair</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 11, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d0458cc5986541e385e3fbf0a79d93c2/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="TechNet 2026 Cyber Conference-Baltimore MD" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">TechNet 2026 Cyber Conference-Baltimore MD</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d30e3cbd48cf42b8b25e23c662a6bd1a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Construct Arabian Leopard Exhibit at the Smithsonian National Zoological Park" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Construct Arabian Leopard Exhibit at the Smithsonian National Zoological Park</div><div class="bid-agency">SMITHSONIAN INSTITUTION</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/61aa32c1c6744dd1aa50c9aab1ce1bc5/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="MODERNIZE NATCHEZ MAINTENANCE FACILITY" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">MODERNIZE NATCHEZ MAINTENANCE FACILITY</div><div class="bid-agency">INTERIOR, DEPARTMENT OF THE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 05, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/8520afd877d54603b3d09c88ab569ebf/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="C1DA--A/E Design - Infusion/Specialty Care Clinic Renovation Project 626-26-501 Nashville TVHS" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">C1DA--A/E Design - Infusion/Specialty Care Clinic Renovation Project 626-26-501 …</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 30, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/6c6f5eb5ce194ce7b420a45e79e341f4/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Rock Island Arsenal - Base Operations Support Services" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Rock Island Arsenal - Base Operations Support Services</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 31, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d97f6dcaaea44c8b89affd6419e4fe82/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="J056--Repair/Replace Bldg Expansion Joints Flrs 1,2 & 4" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">J056--Repair/Replace Bldg Expansion Joints Flrs 1,2 & 4</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 25, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/e1df4b574d5943fe9251c1066eb45a3b/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DA--531-25-102 | Expand Emergency Room | Sources Sought" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DA--531-25-102 | Expand Emergency Room | Sources Sought</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 15, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/e36ad1faf8de4d2d9ccee677d9e696cd/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DZ--B3-Fourth Floor PACT Renovation Project # 659-26-800" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DZ--B3-Fourth Floor PACT Renovation Project # 659-26-800</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 27, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/70cfb3250f104932947cc2bf2d8e5e4b/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z1DA--Renovate Main Lobby" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z1DA--Renovate Main Lobby</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/1b754536f1b6475fa872884536d1dc2d/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z2DA--FY26: NRM (PROJ 673-21-153) BB Renovate Ground Floor Halls and Walls" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z2DA--FY26: NRM (PROJ 673-21-153) BB Renovate Ground Floor Halls and Walls</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 31, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/f2b49f4b6b9548a993a4a25d5b0d9634/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z1DA--Albany VAMC 528A8-21-812 A Wing Facade Repair" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z1DA--Albany VAMC 528A8-21-812 A Wing Facade Repair</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/06e42b3ff4f6419c9c76b3c4e6c5ab60/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z1DA--Project No. 583-23-102 - Replace Patient Care Sanitary Pipe in Interstitial Space 3rd and 5th Floor." data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z1DA--Project No. 583-23-102 - Replace Patient Care Sanitary Pipe in Interstitia…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 19, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2844b35cb6ca410f9dc237a49cd1d42a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="6520--DENTAL FURNITURE" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">6520--DENTAL FURNITURE</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 10, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/69a8c2adaaf94c9683a2d5f363c31af8/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DA--NRM-CONST 630-26-101 CONSTRUCTION ONCOLOGY PHARMACY CHILLER USP 800" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DA--NRM-CONST 630-26-101 CONSTRUCTION ONCOLOGY PHARMACY CHILLER USP 800</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 03, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/58b4d2d22d58423d9adf6ff3b58c6e43/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z1DA--636-26-2-5058-0091 - Service - Repair/Replace Bldg Expansion Joints Flrs 1,2 & 4 - NWI" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z1DA--636-26-2-5058-0091 - Service - Repair/Replace Bldg Expansion Joints Flrs 1…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">February 24, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/7e2505d6e2fb45fb9c765360201e2e68/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DA--PROJECT 528A5-25-509 HFC and WholeHealth in OPC CANANDAIGUA VAMC" data-trade="Flooring" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DA--PROJECT 528A5-25-509 HFC and WholeHealth in OPC CANANDAIGUA VAMC</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Flooring</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/67942989c31f407db27ace3e858809ae/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="USDA Forest Service Janitorial Services on the Blacksburg/New Castle WC, Jefferson NFs, VA" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">USDA Forest Service Janitorial Services on the Blacksburg/New Castle WC, Jeffers…</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a331c38037c84287b84888bdf82ed66f/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Combined Project-Billings Cellblock refresh, Bozeman Wall addition, Bozeman Freezer HVAC" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Combined Project-Billings Cellblock refresh, Bozeman Wall addition, Bozeman Free…</div><div class="bid-agency">California</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/ece5d16b315c4bc4be6a0a40f46c5cf5/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="National Museum of the United States Marine Corps (NMMC) Exhibit Preservation and Fabrication Services Follow-On" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">National Museum of the United States Marine Corps (NMMC) Exhibit Preservation an…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/892705f2efe544e2886a3ef2e545fd17/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Travis AFB MACC BOA" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Travis AFB MACC BOA</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 16, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/83c5b42d5cb34616a874316a4e67fd82/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="PEWARS Office Upgrades" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">PEWARS Office Upgrades</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 17, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/66136094a2f642bf95909697bf0e9509/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Retail Space to Lease – Santee, California" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Retail Space to Lease – Santee, California</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 16, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/5b03f80a632a4941a97e104b86e1dbb7/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="RFI- PdM FSS Conference Room Upgrade" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">RFI- PdM FSS Conference Room Upgrade</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/4bb528a1781a4cf497dbb55220ce74f3/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Repair Interior B768" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Repair Interior B768</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 16, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d647adde8c3945a7ad7842f53fcf1764/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="S205--Trash Removal Services Grand Junction, Colorado" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">S205--Trash Removal Services Grand Junction, Colorado</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d8e3c5dd15b94494bab615a843996a2a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Custodial Services, Seymour Johnson Air Force Base" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Custodial Services, Seymour Johnson Air Force Base</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 08, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2bf813e48ce142c5aa45228f8b4fa614/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Lease for office space in Casper, WY - 1,140 - 1,425 Sq Ft Required" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Lease for office space in Casper, WY - 1,140 - 1,425 Sq Ft Required</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 17, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/6760f8b0d491403997081e9add4116e6/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="P001U Hazardous Storage Facility" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">P001U Hazardous Storage Facility</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/8a7c283bbacd4d928250f211f9d2198c/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Classroom Fixed Seating" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Classroom Fixed Seating</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/06df25c4c04d4a60aea90e66365c6f02/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Retail Space to Lease – Lemon Grove/ Le Mesa, California" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Retail Space to Lease – Lemon Grove/ Le Mesa, California</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2d4ac980aaf1434d881b1c77b2ac45ba/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Modular Field Office for the United States Merchant Marine Academy (USMMA) Infrastructure Program Office (IPO)" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Modular Field Office for the United States Merchant Marine Academy (USMMA) Infra…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/2249d5bf026a496c8c28428c9671be10/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="J065--EMS Equipment Maintenance | Chalmers P. Wylie Ambulatory Care Center" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">J065--EMS Equipment Maintenance | Chalmers P. Wylie Ambulatory Care Center</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/28ceceb8d1c240a1a57e4533821723d8/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="C1NZ--659-26-700 | AE Replace Steam and Condensate Piping | Salisbury VAMC" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">C1NZ--659-26-700 | AE Replace Steam and Condensate Piping | Salisbury VAMC</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 06, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c7763e471e5e47e4aec953d2009a8176/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="6 HORSE TRAILER" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">6 HORSE TRAILER</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">February 17, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/74b954ac63734d469d95e232ff621b11/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Y1DA--NRM-CONST- 561A4-26-501 Replace Roof Building 143 - Design-Build" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Y1DA--NRM-CONST- 561A4-26-501 Replace Roof Building 143 - Design-Build</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">February 17, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/b492eecf0d9642978d875fb3b5cf852f/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Multiple Award Indefinite-Delivery Indefinite-Quantity (IDIQ) Task Order Contract for Construction, Repair, and Alteration, with Design-Build and incidental Abatement for GSA/PBS Region 7" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Multiple Award Indefinite-Delivery Indefinite-Quantity (IDIQ) Task Order Contrac…</div><div class="bid-agency">GENERAL SERVICES ADMINISTRATION</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">October 16, 2024</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/ba8d0b1dc79f434283e9a03b75805cac/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Multiple Award Schedule" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Multiple Award Schedule</div><div class="bid-agency">GENERAL SERVICES ADMINISTRATION</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 24, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a4064d14268e4dad85618c15d672f5b1/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Reconfigure B1052" data-trade="Carpet" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Reconfigure B1052</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Carpet</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/30a374c620dd478891fe143fe2a08df9/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="S201--Window Washing - NWI" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">S201--Window Washing - NWI</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/998cedb0438d41ebb24157089b0755f1/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="RFI FOR INSTALLATIONS SERVICES AND CASE GOODS" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">RFI FOR INSTALLATIONS SERVICES AND CASE GOODS</div><div class="bid-agency">JUSTICE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/69ec264c37ee4b9baa68c3f48d3f70d2/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="BLRI-STAIN REPAIR CHINKING B828,832,545" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">BLRI-STAIN REPAIR CHINKING B828,832,545</div><div class="bid-agency">INTERIOR, DEPARTMENT OF THE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/5551b2cef680418eb470f3496e1ce62c/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Willamette Valley Project (WVP) Rough Mow Services" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Willamette Valley Project (WVP) Rough Mow Services</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 08, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a46d2a3a24924185805fab11ac5108ab/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Big Piney Ranger District Janitorial" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Big Piney Ranger District Janitorial</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/a9e4375268e04144bd91240ea72706c6/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="DSCR B47 ADA Door Operator Install Project" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">DSCR B47 ADA Door Operator Install Project</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 22, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/63dddc7425434df48cd6b13de5f75e01/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z2DA--660-26-220 - Replace Furniture, Fixtures & Equipment for IPU for VAMC in Salt Lake City, UT" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z2DA--660-26-220 - Replace Furniture, Fixtures & Equipment for IPU for VAMC in S…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 06, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/3e90bcc864f0490895b8b1798525897d/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z2DA--Replace Window Seals B330 552-23-512" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z2DA--Replace Window Seals B330 552-23-512</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 06, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d401b4ee3d9748809ed6729fa27a0186/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Tiny Home" data-trade="Window Coverings" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Tiny Home</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Window Coverings</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">January 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/aa77a50788b24cddb289c5cccdbc48a3/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="FY26 REPAIR WHOLE HOUSE, BUILDING 1255, MCAS IWAKUNI, JAPAN" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">FY26 REPAIR WHOLE HOUSE, BUILDING 1255, MCAS IWAKUNI, JAPAN</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">May 28, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/e6f38de652434968b781ebdf2a863a36/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="DUTCH GAP AQUATIC ECOSYSTEM RESTORATION, ANTIOCH, LAKE COUNTY, ILLINOIS" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">DUTCH GAP AQUATIC ECOSYSTEM RESTORATION, ANTIOCH, LAKE COUNTY, ILLINOIS</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d4b860996b0241868ad343ce9b163555/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="6515--L51K ultrasound probe" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">6515--L51K ultrasound probe</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 29, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/d007014a889543778cd0e52448dbfe6d/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="FORREST SHERMAN FY26 DMP 38N" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">FORREST SHERMAN FY26 DMP 38N</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">TBD</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/6d61d189cc6b4b2f913c96ea5c425aee/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="F108--Emergency flood services Blanket Purchase Agreement" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">F108--Emergency flood services Blanket Purchase Agreement</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 10, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/6fdd872c74cc47398c2434a4167b7aaf/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Audio Visual (AV) Equipment & Installation Camp Shelby, MS (BLDG 1450)" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Audio Visual (AV) Equipment & Installation Camp Shelby, MS (BLDG 1450)</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 14, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/5d4c9315a2904162a1651d5218edb16c/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Tatanka Hotshots Base Fire Alarm Upgrades, Custer, South Dakota" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Tatanka Hotshots Base Fire Alarm Upgrades, Custer, South Dakota</div><div class="bid-agency">AGRICULTURE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 13, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/469cbe595df94ccc9b5129c547b832ac/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Design/Build P-Wing Flat Roofs Replacement - U.S. Consulate General Frankfurt, Germany" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Design/Build P-Wing Flat Roofs Replacement - U.S. Consulate General Frankfurt, G…</div><div class="bid-agency">STATE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 24, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/53260bc6c94d4ee4a3604d6fbba73ec9/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Buckley SFB - Portable Air Conditioning Equipment" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Buckley SFB - Portable Air Conditioning Equipment</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">April 01, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/222ae48ba9ed439c807108a0511a13c9/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Z2DA--554-26-101 Reslope Shower Floors in Bldg H&K Patient Rooms (VA-26-00013277)" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Z2DA--554-26-101 Reslope Shower Floors in Bldg H&K Patient Rooms (VA-26-00013277…</div><div class="bid-agency">VETERANS AFFAIRS, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 04, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/e9cb1499892b47b7a8057d7b281e8cd7/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="SLING LOAD BLOCKS" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">SLING LOAD BLOCKS</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">January 07, 2026</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/34af979e18a445d1bcff2db6707e1f4b/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="L-Shaped Wall Retainer" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">L-Shaped Wall Retainer</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">August 29, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/decc3ec829d24747a5c834daaf27ba28/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="CC-45 Cable Concrete Mats with Cable Clamps" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">CC-45 Cable Concrete Mats with Cable Clamps</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">August 29, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/1bf397295777435f840d4d4c00a4cf01/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="8200-LUMEN PRO LCD Laser Installation Projector with 4K Support" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">8200-LUMEN PRO LCD Laser Installation Projector with 4K Support</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">August 27, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/74feb944ceba40e29e81878fbea1ae63/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Bin Blocks" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Bin Blocks</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">August 25, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/008b3422a9994aa7a93318f330786b5e/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Solicitation - W912HN25B4003 Repair/Renovate Southwest Annex B125 Robins Air Base, GA" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Solicitation - W912HN25B4003 Repair/Renovate Southwest Annex B125 Robins Air Bas…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">July 24, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/c3f763c8ad9c406db1ebd4023d1f12d7/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Concrete SIT Target coffins" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Concrete SIT Target coffins</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">July 15, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/8d2c33d3703e4f029a3060b63933720f/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="MARKET SURVEY/SOURCES SOUGHT for Dutch Gap Aquatic Ecosystem Restoration, Antioch, Lake County, Illinois" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">MARKET SURVEY/SOURCES SOUGHT for Dutch Gap Aquatic Ecosystem Restoration, Antioc…</div><div class="bid-agency">DEPT OF DEFENSE</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">March 21, 2025</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/4e1ea1b8818b4afaab07fbb7e19b1948/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Unrestricted-Department of State Overseas Systems Furniture" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Unrestricted-Department of State Overseas Systems Furniture</div><div class="bid-agency">STATE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">January 18, 2024</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/8b6a741bb08643128ae18349e2c9e38a/view" target="_blank">SAM.gov</a></td>
+    </tr>
+    <tr data-bid="1" data-score="40" data-days="" data-relevant="0" data-title="Department of State Overseas Systems Furniture Sources Sought" data-trade="Tile" data-source="sam.gov">
+      <td><div class="score-badge" style="background:#8e8e93">40</div></td>
+      <td><div class="bid-title">Department of State Overseas Systems Furniture Sources Sought</div><div class="bid-agency">STATE, DEPARTMENT OF</div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">CA</td>
+      <td><span class="trade-tag">Tile</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--gray)">—</td>
+      <td><span class="due-normal">January 11, 2024</span></td>
+      <td><span class="badge badge-new">New</span></td>
+      <td><a class="source-tag" href="https://sam.gov/workspace/contract/opp/9d42955e45f745a4b0f6cd42bad87078/view" target="_blank">SAM.gov</a></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <span>FCU Bid Dashboard · Generated 2026-04-28 19:23 · Sources: SAM.gov (148)</span>
+  <span>Verify all bids on source portals before submitting.</span>
+</div>
+
+<script>
+const allRows = Array.from(document.querySelectorAll('#bids-tbody tr[data-bid]'));
+let currentTab = 'all';
+let sortCol = 'due';
+let sortDir = 1;
+
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = el.dataset.tab;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const trade = document.getElementById('trade-filter').value.toLowerCase();
+  const dueMax = parseInt(document.getElementById('due-filter').value) || null;
+  const source = document.getElementById('source-filter').value.toLowerCase();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let visible = 0;
+  allRows.forEach(row => {
+    const title = (row.dataset.title || '').toLowerCase();
+    const rowTrade = (row.dataset.trade || '').toLowerCase();
+    const rowSource = (row.dataset.source || '').toLowerCase();
+    const relevant = row.dataset.relevant === '1';
+    const daysVal = parseInt(row.dataset.days);
+
+    let show = true;
+    if (q && !title.includes(q)) show = false;
+    if (trade && !rowTrade.includes(trade)) show = false;
+    if (source && !rowSource.includes(source)) show = false;
+    if (dueMax !== null && (isNaN(daysVal) || daysVal < 0 || daysVal > dueMax)) show = false;
+    if (currentTab === 'flooring' && !relevant) show = false;
+    if (currentTab === 'expiring' && (isNaN(daysVal) || daysVal < 0 || daysVal > 7)) show = false;
+
+    row.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+
+  document.getElementById('display-count').textContent = visible + ' of 148 bids';
+}
+
+function sortTable(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+
+  const tbody = document.getElementById('bids-tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr[data-bid]'));
+
+  rows.sort((a, b) => {
+    let av, bv;
+    if (col === 'score') { av = parseInt(a.dataset.score)||0; bv = parseInt(b.dataset.score)||0; }
+    else if (col === 'due') { av = parseInt(a.dataset.days ?? 9999); bv = parseInt(b.dataset.days ?? 9999); }
+    else if (col === 'trade') { av = a.dataset.trade||''; bv = b.dataset.trade||''; return sortDir * av.localeCompare(bv); }
+    else { av = (a.dataset.title||''); bv = (b.dataset.title||''); return sortDir * av.localeCompare(bv); }
+    return sortDir * (av - bv);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
+  document.querySelectorAll('th .sort-arrow').forEach(s => s.textContent = '↕');
+  const thIndex = {score:0, title:1, trade:3, due:5}[col];
+  if (thIndex !== undefined) {
+    const th = document.querySelectorAll('th')[thIndex];
+    th.classList.add('sorted');
+    th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '↑' : '↓';
+  }
+}
+</script>
+</body>
+</html>

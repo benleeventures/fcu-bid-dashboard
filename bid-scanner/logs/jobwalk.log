@@ -1,0 +1,258 @@
+2026-04-29 13:58:27,112 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-04-29&walk_date=lte.2026-05-06&order=walk_date.asc "HTTP/2 200 OK"
+2026-04-29 13:58:27,350 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-04-29 13:58:27,351 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-04-29 13:58:28,124 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-04-29 16:15:07,255 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-04-29&walk_date=lte.2026-05-06&order=walk_date.asc "HTTP/2 200 OK"
+2026-04-29 16:15:07,255 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-04-29&walk_date=lte.2026-05-06&order=walk_date.asc "HTTP/2 200 OK"
+2026-04-29 16:15:07,661 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-04-29 16:15:07,661 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-04-29 16:15:07,662 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-04-29 16:15:07,662 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-04-29 16:15:08,275 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-04-29 16:15:08,275 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['gutarra.leonardo@gmail.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-04-30 16:15:02,470 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-04-30&walk_date=lte.2026-05-07&order=walk_date.asc "HTTP/2 200 OK"
+2026-04-30 16:15:02,470 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-04-30&walk_date=lte.2026-05-07&order=walk_date.asc "HTTP/2 200 OK"
+2026-04-30 16:15:02,980 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-1-2025-0155%2CQB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-04-30 16:15:02,980 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-1-2025-0155%2CQB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-04-30 16:15:02,982 INFO Qualifying walks: 0 tomorrow, 4 upcoming
+2026-04-30 16:15:02,982 INFO Qualifying walks: 0 tomorrow, 4 upcoming
+2026-04-30 16:15:03,399 INFO Job walk email sent — 0 tomorrow, 4 upcoming
+2026-04-30 16:15:03,399 INFO Job walk email sent — 0 tomorrow, 4 upcoming
+  ✓ Email sent to ['gutarra.leonardo@gmail.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 4 upcoming)
+2026-05-01 16:15:03,940 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-01&walk_date=lte.2026-05-08&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-01 16:15:03,940 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-01&walk_date=lte.2026-05-08&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-01 16:15:04,341 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-01 16:15:04,341 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-01 16:15:04,343 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-01 16:15:04,343 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-01 16:15:04,760 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+2026-05-01 16:15:04,760 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+  ✓ Email sent to ['gutarra.leonardo@gmail.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 3 upcoming)
+2026-05-01 16:50:28,816 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-01&walk_date=lte.2026-05-08&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-01 16:50:29,173 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-01 16:50:29,174 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-01 16:50:29,558 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+2026-05-04 16:15:04,046 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-04&walk_date=lte.2026-05-11&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-04 16:15:04,046 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-04&walk_date=lte.2026-05-11&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-04 16:15:04,556 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-04 16:15:04,556 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-2026-03%2CQB-0445-470%2C443980684888%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-04 16:15:04,557 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-04 16:15:04,557 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-04 16:15:05,377 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+2026-05-04 16:15:05,377 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msm.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 3 upcoming)
+2026-05-05 16:15:02,759 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-05&walk_date=lte.2026-05-12&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-05 16:15:02,759 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-05&walk_date=lte.2026-05-12&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-05 16:15:03,161 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%2CQB-26-07%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-05 16:15:03,161 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%2CQB-26-07%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-05 16:15:03,163 INFO Qualifying walks: 1 tomorrow, 1 upcoming
+2026-05-05 16:15:03,163 INFO Qualifying walks: 1 tomorrow, 1 upcoming
+2026-05-05 16:15:03,563 INFO Job walk email sent — 1 tomorrow, 1 upcoming
+2026-05-05 16:15:03,563 INFO Job walk email sent — 1 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (1 tomorrow, 1 upcoming)
+2026-05-06 16:15:09,552 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-06&walk_date=lte.2026-05-13&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-06 16:15:09,552 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-06&walk_date=lte.2026-05-13&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-06 16:15:10,472 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%2CQB-26-07%2C444001744567%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-06 16:15:10,472 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443980684888%2CQB-26-07%2C444001744567%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-06 16:15:10,473 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-06 16:15:10,473 INFO Qualifying walks: 0 tomorrow, 3 upcoming
+2026-05-06 16:15:10,984 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+2026-05-06 16:15:10,984 INFO Job walk email sent — 0 tomorrow, 3 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 3 upcoming)
+2026-05-07 16:15:02,626 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-07&walk_date=lte.2026-05-14&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-07 16:15:02,626 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-07&walk_date=lte.2026-05-14&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-07 16:15:03,030 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-07 16:15:03,030 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-07 16:15:03,032 INFO Qualifying walks: 0 tomorrow, 2 upcoming
+2026-05-07 16:15:03,032 INFO Qualifying walks: 0 tomorrow, 2 upcoming
+2026-05-07 16:15:03,442 INFO Job walk email sent — 0 tomorrow, 2 upcoming
+2026-05-07 16:15:03,442 INFO Job walk email sent — 0 tomorrow, 2 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 2 upcoming)
+2026-05-08 16:15:05,720 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-08&walk_date=lte.2026-05-15&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-08 16:15:05,720 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-08&walk_date=lte.2026-05-15&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-08 16:15:06,232 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2C443984755808%2CSAM-36C24426R0121%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-08 16:15:06,232 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2C443984755808%2CSAM-36C24426R0121%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-08 16:15:06,234 INFO Qualifying walks: 0 tomorrow, 16 upcoming
+2026-05-08 16:15:06,234 INFO Qualifying walks: 0 tomorrow, 16 upcoming
+2026-05-08 16:15:06,614 INFO Job walk email sent — 0 tomorrow, 16 upcoming
+2026-05-08 16:15:06,614 INFO Job walk email sent — 0 tomorrow, 16 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 16 upcoming)
+2026-05-11 16:15:05,176 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-11&walk_date=lte.2026-05-18&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-11 16:15:05,176 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-11&walk_date=lte.2026-05-18&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-11 16:15:05,588 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2C443984755808%2CSAM-W50S8A26BA010%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-11 16:15:05,588 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2C443984755808%2CSAM-W50S8A26BA010%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-11 16:15:05,591 INFO Qualifying walks: 1 tomorrow, 16 upcoming
+2026-05-11 16:15:05,591 INFO Qualifying walks: 1 tomorrow, 16 upcoming
+2026-05-11 16:15:09,067 INFO Job walk email sent — 1 tomorrow, 16 upcoming
+2026-05-11 16:15:09,067 INFO Job walk email sent — 1 tomorrow, 16 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (1 tomorrow, 16 upcoming)
+2026-05-12 16:15:04,672 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-12&walk_date=lte.2026-05-19&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-12 16:15:04,672 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-12&walk_date=lte.2026-05-19&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-12 16:15:05,104 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2C443984755808%2CSAM-W50S8A26BA010%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-12 16:15:05,104 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28QB-26-07%2C444001744567%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2C443984755808%2CSAM-W50S8A26BA010%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-12 16:15:05,107 INFO Qualifying walks: 1 tomorrow, 16 upcoming
+2026-05-12 16:15:05,107 INFO Qualifying walks: 1 tomorrow, 16 upcoming
+2026-05-12 16:15:05,457 INFO Job walk email sent — 1 tomorrow, 16 upcoming
+2026-05-12 16:15:05,457 INFO Job walk email sent — 1 tomorrow, 16 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (1 tomorrow, 16 upcoming)
+2026-05-13 16:15:05,741 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-13&walk_date=lte.2026-05-20&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-13 16:15:05,741 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-13&walk_date=lte.2026-05-20&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-13 16:15:06,252 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28444001744567%2C444015234256%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2C443984755808%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2CSAM-W50S8A26BA010%2CSAM-FA481426Q0014%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-13 16:15:06,252 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28444001744567%2C444015234256%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2C443984755808%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2CSAM-W50S8A26BA010%2CSAM-FA481426Q0014%2C443989746148%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-13 16:15:06,254 INFO Qualifying walks: 1 tomorrow, 15 upcoming
+2026-05-13 16:15:06,254 INFO Qualifying walks: 1 tomorrow, 15 upcoming
+2026-05-13 16:15:06,969 INFO Job walk email sent — 1 tomorrow, 15 upcoming
+2026-05-13 16:15:06,969 INFO Job walk email sent — 1 tomorrow, 15 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (1 tomorrow, 15 upcoming)
+2026-05-14 16:15:08,328 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-14&walk_date=lte.2026-05-21&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-14 16:15:08,328 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-14&walk_date=lte.2026-05-21&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-14 16:15:09,659 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28444015234256%2C443989746148%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2CSAM-W50S8A26BA010%2C443984755808%2CSAM-FA483026Q0029%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-14 16:15:09,659 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28444015234256%2C443989746148%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2CSAM-W50S8A26BA010%2C443984755808%2CSAM-FA483026Q0029%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-14 16:15:09,661 INFO Qualifying walks: 15 tomorrow, 1 upcoming
+2026-05-14 16:15:09,661 INFO Qualifying walks: 15 tomorrow, 1 upcoming
+2026-05-14 16:15:10,176 INFO Job walk email sent — 15 tomorrow, 1 upcoming
+2026-05-14 16:15:10,176 INFO Job walk email sent — 15 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (15 tomorrow, 1 upcoming)
+2026-05-15 16:15:03,339 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-15&walk_date=lte.2026-05-22&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-15 16:15:03,339 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-15&walk_date=lte.2026-05-22&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-15 16:15:03,851 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443984755808%2C443989746148%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2CSAM-W50S8A26BA010%2CSAM-FA483026Q0029%2CSAM-PR15988793%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-15 16:15:03,851 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28443984755808%2C443989746148%2CSAM-36C24626Q0499%2CSAM-36S79726Q0005%2CSAM-N40085-26-R-9039%2CQB-0445-416%2C443996623264%2CSAM-N4008526R9037%2CSAM-FA481426Q0014%2CSAM-PANMCC26P0000041287%2CSAM-FA446026Q0009%2CSAM-W50S9F26QA013%2C444006141675%2CQB-052226-10%2CSAM-36C24426R0121%2CQB-PHS2026-%23001%2CSAM-W50S8A26BA010%2CSAM-FA483026Q0029%2CSAM-PR15988793%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-15 16:15:03,853 INFO Qualifying walks: 0 tomorrow, 15 upcoming
+2026-05-15 16:15:03,853 INFO Qualifying walks: 0 tomorrow, 15 upcoming
+2026-05-15 16:15:04,375 INFO Job walk email sent — 0 tomorrow, 15 upcoming
+2026-05-15 16:15:04,375 INFO Job walk email sent — 0 tomorrow, 15 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 15 upcoming)
+2026-05-18 16:15:03,521 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-18&walk_date=lte.2026-05-25&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-18 16:15:03,521 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-18&walk_date=lte.2026-05-25&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-18 16:15:03,525 INFO No qualifying GO walks in next 7 days
+2026-05-18 16:15:03,525 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-05-19 16:15:07,641 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-19&walk_date=lte.2026-05-26&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-19 16:15:07,641 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-19&walk_date=lte.2026-05-26&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-19 16:15:07,644 INFO No qualifying GO walks in next 7 days
+2026-05-19 16:15:07,644 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-05-20 16:15:03,259 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-20&walk_date=lte.2026-05-27&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-20 16:15:03,259 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-20&walk_date=lte.2026-05-27&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-20 16:15:03,700 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-20 16:15:03,700 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-20 16:15:03,702 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-05-20 16:15:03,702 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-05-20 16:15:04,281 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-05-20 16:15:04,281 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-05-21 16:15:04,028 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-21&walk_date=lte.2026-05-28&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-21 16:15:04,028 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-21&walk_date=lte.2026-05-28&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-21 16:15:04,538 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-21 16:15:04,538 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-21 16:15:04,539 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-05-21 16:15:04,539 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-05-21 16:15:04,949 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-05-21 16:15:04,949 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-05-22 16:15:06,138 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-22&walk_date=lte.2026-05-29&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-22 16:15:06,138 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-22&walk_date=lte.2026-05-29&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-22 16:15:06,574 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%2C444032978615%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-22 16:15:06,574 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%2C444032978615%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-22 16:15:06,575 INFO Qualifying walks: 0 tomorrow, 2 upcoming
+2026-05-22 16:15:06,575 INFO Qualifying walks: 0 tomorrow, 2 upcoming
+2026-05-22 16:15:07,049 INFO Job walk email sent — 0 tomorrow, 2 upcoming
+2026-05-22 16:15:07,049 INFO Job walk email sent — 0 tomorrow, 2 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 2 upcoming)
+2026-05-25 16:15:03,000 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-25&walk_date=lte.2026-06-01&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-25 16:15:03,000 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-25&walk_date=lte.2026-06-01&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-25 16:15:03,509 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%2C444032978615%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-25 16:15:03,509 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%2C444032978615%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-25 16:15:03,511 INFO Qualifying walks: 0 tomorrow, 2 upcoming
+2026-05-25 16:15:03,511 INFO Qualifying walks: 0 tomorrow, 2 upcoming
+2026-05-25 16:15:04,038 INFO Job walk email sent — 0 tomorrow, 2 upcoming
+2026-05-25 16:15:04,038 INFO Job walk email sent — 0 tomorrow, 2 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 2 upcoming)
+2026-05-26 16:15:05,095 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-26&walk_date=lte.2026-06-02&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-26 16:15:05,095 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-05-26&walk_date=lte.2026-06-02&order=walk_date.asc "HTTP/2 200 OK"
+2026-05-26 16:15:05,606 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%2C444032978615%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-26 16:15:05,606 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-70Z03326Q31190045%2C444032978615%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-05-26 16:15:05,608 INFO Qualifying walks: 2 tomorrow, 0 upcoming
+2026-05-26 16:15:05,608 INFO Qualifying walks: 2 tomorrow, 0 upcoming
+2026-05-26 16:15:06,018 INFO Job walk email sent — 2 tomorrow, 0 upcoming
+2026-05-26 16:15:06,018 INFO Job walk email sent — 2 tomorrow, 0 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (2 tomorrow, 0 upcoming)
+2026-06-08 07:15:05,372 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-08&walk_date=lte.2026-06-15&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-08 07:15:05,372 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-08&walk_date=lte.2026-06-15&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-08 07:15:05,777 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-08 07:15:05,777 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-08 07:15:05,778 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-08 07:15:05,778 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-08 07:15:06,191 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-06-08 07:15:06,191 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-06-09 07:15:04,485 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-09&walk_date=lte.2026-06-16&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-09 07:15:04,485 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-09&walk_date=lte.2026-06-16&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-09 07:15:04,998 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-09 07:15:04,998 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-09 07:15:05,000 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-09 07:15:05,000 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-09 07:15:05,336 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-06-09 07:15:05,336 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-06-10 07:15:03,722 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-10&walk_date=lte.2026-06-17&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-10 07:15:03,722 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-10&walk_date=lte.2026-06-17&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-10 07:15:04,129 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-10 07:15:04,129 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-10 07:15:04,131 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-10 07:15:04,131 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-10 07:15:04,538 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-06-10 07:15:04,538 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-06-11 07:15:04,697 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-11&walk_date=lte.2026-06-18&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-11 07:15:04,697 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-11&walk_date=lte.2026-06-18&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-11 07:15:06,026 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-11 07:15:06,026 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-11 07:15:06,027 INFO Qualifying walks: 1 tomorrow, 0 upcoming
+2026-06-11 07:15:06,027 INFO Qualifying walks: 1 tomorrow, 0 upcoming
+2026-06-11 07:15:06,448 INFO Job walk email sent — 1 tomorrow, 0 upcoming
+2026-06-11 07:15:06,448 INFO Job walk email sent — 1 tomorrow, 0 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (1 tomorrow, 0 upcoming)
+2026-06-12 07:15:04,136 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-12&walk_date=lte.2026-06-19&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-12 07:15:04,136 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-12&walk_date=lte.2026-06-19&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-12 07:15:04,649 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-12 07:15:04,649 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19NL80-26-Q-0015%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-06-12 07:15:04,649 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-12 07:15:04,649 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-06-12 07:15:05,092 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-06-12 07:15:05,092 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-06-15 07:15:03,278 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-15&walk_date=lte.2026-06-22&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-15 07:15:03,278 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-15&walk_date=lte.2026-06-22&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-15 07:15:03,280 INFO No qualifying GO walks in next 7 days
+2026-06-15 07:15:03,280 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-06-16 07:15:03,837 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-16&walk_date=lte.2026-06-23&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-16 07:15:03,837 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-06-16&walk_date=lte.2026-06-23&order=walk_date.asc "HTTP/2 200 OK"
+2026-06-16 07:15:03,839 INFO No qualifying GO walks in next 7 days
+2026-06-16 07:15:03,839 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report

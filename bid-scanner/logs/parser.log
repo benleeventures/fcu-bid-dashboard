@@ -1,0 +1,4523 @@
+Unprocessed relevant bids: 34
+  34 to download
+
+  ⚠ BidNet login error: Page.query_selector: Execution context was destroyed, most likely because of a navigation
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W911PT26CA006  [SAM.gov]  VARIOUS BUILDING REPAIRS, FLOORING & FURNITURE RELOCATI
+    ⚠ No PDF link found
+
+→ SAM-W9123726QA020  [SAM.gov]  Marietta Repair Station Office Flooring; W91237-26-Q-A0
+    ⚠ No PDF link found
+
+→ 443984755803  [BidNet Direct]  Re-Bid 1 Seamless Flooring Installation, Correctional C
+    ⚠ SKIP — BidNet login failed
+
+→ 443984755808  [BidNet Direct]  Carpet Removal, Replacement and Painting Services, Los 
+    ⚠ SKIP — BidNet login failed
+
+→ 443989489403  [BidNet Direct]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ SKIP — BidNet login failed
+
+→ 443990112397  [BidNet Direct]  Flooring Services in Napa and Sonoma Counties
+    ⚠ SKIP — BidNet login failed
+
+→ CCOP-08A3992  [Caltrans CCOP]  IFB Synthetic Flooring Services in San Bernardino Count
+    ⚠ SKIP — Requires login (CaleProcure account)
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ SKIP — Requires login (CaleProcure account)
+
+→ SAM-140L2626Q0005  [SAM.gov]  S--KIMAMA & ROGERSON GUARD STATIONS FLOORING
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-19JA8026Q0017  [SAM.gov]  Acquisition of Wood Flooring and Adhesives
+    ⚠ No PDF link found
+
+→ SAM-36C24126Q0423  [SAM.gov]  7220--Replacement of Ceiling Tiles
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-36C24626Q0499  [SAM.gov]  F108--Air Monitoring for Asbestos-Containing Floor Tile
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-36C24626Q0500  [SAM.gov]  Z1AA--Durham Asbestos-Containing Floor Tile and Mastic 
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-31090PR260000146  [SAM.gov]  Replace Carpet at USCG Base Alameda
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-140P4526Q0002  [SAM.gov]  S--MAVA REPLACE FIRST FLOOR CARPETING
+    ⚠ No PDF link found
+
+→ SAM-36C25026Q0463  [SAM.gov]  7230--Window Shades - New Bldg 05 (WTS Campus), IND
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-36C25626Q0405  [SAM.gov]  7220--Carpet and Luxury Vinyl Tiles
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-36C25626Q0577  [SAM.gov]  Flooring Replacement Services (Chapel, BLDG 15, BLDG 30
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-36C25726P0432  [SAM.gov]  Carpet Removal and Installation of Flooring - CTXVA Tem
+    ⚠ No PDF link found
+
+→ SAM-36C26026R0068  [SAM.gov]  Z2DA--Flooring Renovation, Installation, and Repalcemen
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-36S79726Q0005  [SAM.gov]  Y1AB--FY 26 - Hines Flooring Replacement (VA-26-0003970
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-3003660  [SAM.gov]  Walk Off Carpet Service - Rome NY
+    ⚠ No PDF link found
+
+→ SAM-FA303026R0005  [SAM.gov]  B334 Repair Kitchen Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q1011  [SAM.gov]  Repair Flooring Student Pilot Housing, Multiple Facilit
+    ⚠ No PDF link found
+
+→ SAM-N0040618Q0170  [SAM.gov]  56--CARPET REPLACEMENT
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9036  [SAM.gov]  Building FC371 and FC372 Paint and Flooring Repairs
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-W90VN926RA026  [SAM.gov]  Replace Carpet at Chapel, Bldg 260, Camp Walker
+    ⚠ No PDF link found
+
+→ SAM-W911S225U1340  [SAM.gov]  Carpet Tile
+    ⚠ No PDF link found
+
+→ SAM-W911SA25QA138  [SAM.gov]  Annual Carpet Cleaning Services for 81st RD Fort Jackso
+    ⚠ No PDF link found
+
+→ SAM-W912CN-26-B-A00X1  [SAM.gov]  Open-End Flooring USAG-HI (8a)
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9039  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ Not a PDF (application/octet-stream)
+
+→ SAM-W50S7526QA016  [SAM.gov]  146 CES Install Sim Bldg Flooring B700
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+✓ All downloaded PDFs have been parsed (or no PDFs yet — run --download).
+Unprocessed relevant bids: 53
+  53 to download
+
+  ✓ BidNet Direct: logged in — 2 bids to download
+  ✓ CaleProcure: logged in — 5 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CCOP-03A4129  [Caltrans CCOP]  IFPQ General Building Repairs in El Dorado County
+    ⚠ No PDF link found
+
+→ QB-040726-1  [Quality Bidders]  Foothill High School Culinary Classroom Remodel Project
+    ✓ Saved QB-040726-1.pdf (952 KB)
+
+→ QB-0445-416  [Quality Bidders]  0445-416  John Still K-8 Modernization
+    ↳ ZIP: extracted DOCX text (2 KB)
+    ✓ Extracted from ZIP → QB-0445-416.txt (2 KB)
+
+→ CCOP-06A3268  [Caltrans CCOP]  General Building Repair in Fresno County
+    ⚠ No PDF link found
+
+→ QB-03-26  [Quality Bidders]  TBP TK Improvements Project
+    ✓ Saved QB-03-26.pdf (2745 KB)
+
+→ QB-041526-1  [Quality Bidders]  FC Joyce TK-8 School Room 12 Restroom Improvements Proj
+    ✓ Saved QB-041526-1.pdf (57506 KB)
+
+→ QB-033026-1  [Quality Bidders]  Dry Creek Elementary School SCOE TK Classroom Refresh P
+    ✓ Saved QB-033026-1.pdf (1576 KB)
+
+→ QB-1187  [Quality Bidders]  SCUSD Pool Upgrades Project Wilcox High School
+    ✓ Saved QB-1187.pdf (143 KB)
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ QB-0151-468  [Quality Bidders]  0151-468 Leonard da Vinci TK Classrooms
+    ↳ ZIP: extracted DOCX text (1 KB)
+    ✓ Extracted from ZIP → QB-0151-468.txt (1 KB)
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W911PT26CA006  [SAM.gov]  VARIOUS BUILDING REPAIRS, FLOORING & FURNITURE RELOCATI
+    ⚠ No PDF link found
+
+→ QB-Q7-26  [Quality Bidders]  Lompoc USD - Manzanita Public Charter Modernization and
+    ✓ Saved QB-Q7-26.pdf (152 KB)
+
+→ QB-1-2025-0155  [Quality Bidders]  Western High School, Room 50 Conversion
+    ✓ Saved QB-1-2025-0155.pdf (5904 KB)
+
+→ SAM-W9123726QA020  [SAM.gov]  Marietta Repair Station Office Flooring; W91237-26-Q-A0
+    ⚠ No PDF link found
+
+→ SAM-31110PR260000003  [SAM.gov]  USCG BASE NCR FACILITIES CARPET AND TILE REPLACEMENT
+    ✓ Saved SAM-31110PR260000003.pdf (47 KB)
+
+→ QB-03-2026-01  [Quality Bidders]  Gabilan and San Vicente Elementary School Classroom Pro
+    ✓ Saved QB-03-2026-01.pdf (76 KB)
+
+→ QB-2026-03  [Quality Bidders]  Sunnyvale School District Office Exterior Improvements
+    ✓ Saved QB-2026-03.pdf (86 KB)
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ SAM-36C24726Q0448  [SAM.gov]  Z1AA--RFQ Flooring Maintenance (VA-26-00051754)
+    ↳ ZIP: extracted DOCX text (170 KB)
+    ✓ Extracted from ZIP → SAM-36C24726Q0448.txt (171 KB)
+
+→ SAM-70Z027-26-R-00007  [SAM.gov]  Interior Space Renovation
+    ✓ Saved SAM-70Z027-26-R-00007.pdf (117 KB)
+
+→ SAM-042925CYCT  [SAM.gov]  CJIS - Yuma Carpet Tiles
+    ✓ Saved SAM-042925CYCT.pdf (619 KB)
+
+→ QB-26-51  [Quality Bidders]  McCardle Elementary School Playground Replacements and 
+    ✓ Saved QB-26-51.pdf (202 KB)
+
+→ QB-0445-470  [Quality Bidders]  0445-470 John Still K-8 Gymnasium Upgrades
+    ↳ ZIP: extracted DOCX text (1 KB)
+    ✓ Extracted from ZIP → QB-0445-470.txt (1 KB)
+
+→ QB-0151-470 & 0450-470  [Quality Bidders]  0151-470 & 0450-470 LDV & Umoja Gym Upgrades and EV Cha
+    ↳ ZIP: extracted DOCX text (1 KB)
+    ✓ Extracted from ZIP → QB-0151-470 & 0450-470.txt (1 KB)
+
+→ CRISP-854  [Crisp Plan Room]  Santa Ana USD - Willard Intermediate School
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ CCOP error: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://caleprocure.ca.gov/event/2660/03A4138", waiting until "domcontentloaded"
+
+
+→ QB-26-49  [Quality Bidders]  Fresno High School New Maintenance Building
+    ✓ Saved QB-26-49.pdf (199 KB)
+
+→ QB-2025-12  [Quality Bidders]  Indianola Parking Lot Improvements
+    ✓ Saved QB-2025-12.pdf (346 KB)
+
+→ QB-2526-01  [Quality Bidders]  Swanston Preschool Demolition Project
+    ✓ Saved QB-2526-01.pdf (86 KB)
+
+→ QB-7060  [Quality Bidders]  West High School: P.E. Classroom Building
+    ✓ Saved QB-7060.pdf (109 KB)
+
+→ QB-Bid No. 7072  [Quality Bidders]  East Bakersfield High School: Building 200 Ceiling Abat
+    ✓ Saved QB-Bid No. 7072.pdf (123 KB)
+
+→ QB-26-015  [Quality Bidders]  Highlands Elementary School Track & Field
+    ✓ Saved QB-26-015.pdf (92 KB)
+
+→ QB-26.38.MM  [Quality Bidders]  Webster Elementary School Relocatables Replacement
+    ✓ Saved QB-26.38.MM.pdf (228 KB)
+
+→ SAM-N40085-26-R-9040  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ✓ Saved SAM-N40085-26-R-9040.pdf (144 KB)
+
+→ QB-040626-1  [Quality Bidders]  Dry Creek Elementary School SCOE TK Exterior Site Impro
+    ✓ Saved QB-040626-1.pdf (6427 KB)
+
+→ 8770067214  [BidNet Direct]  20(25-26)FP - Renovation of Science Labs at Garey High 
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ 8807236670  [BidNet Direct]  Acquisition, Rehabilitation, Resale Project
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-W50S7526QA016  [SAM.gov]  146 CES Install Sim Bldg Flooring B700
+    ⚠ No PDF link found
+
+→ CCOP-08A3992  [Caltrans CCOP]  IFB Synthetic Flooring Services in San Bernardino Count
+    ⚠ No PDF link found
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ CCOP error: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://caleprocure.ca.gov/event/2660/04A7527", waiting until "domcontentloaded"
+
+
+→ SAM-19JA8026Q0017  [SAM.gov]  Acquisition of Wood Flooring and Adhesives
+    ⚠ No PDF link found
+
+→ SAM-140P4526Q0002  [SAM.gov]  S--MAVA REPLACE FIRST FLOOR CARPETING
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0432  [SAM.gov]  Carpet Removal and Installation of Flooring - CTXVA Tem
+    ⚠ No PDF link found
+
+→ SAM-3003660  [SAM.gov]  Walk Off Carpet Service - Rome NY
+    ⚠ No PDF link found
+
+→ SAM-FA303026R0005  [SAM.gov]  B334 Repair Kitchen Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q1011  [SAM.gov]  Repair Flooring Student Pilot Housing, Multiple Facilit
+    ⚠ No PDF link found
+
+→ SAM-N0040618Q0170  [SAM.gov]  56--CARPET REPLACEMENT
+    ⚠ No PDF link found
+
+→ SAM-W90VN926RA026  [SAM.gov]  Replace Carpet at Chapel, Bldg 260, Camp Walker
+    ⚠ No PDF link found
+
+→ SAM-W911S225U1340  [SAM.gov]  Carpet Tile
+    ⚠ No PDF link found
+
+→ SAM-W911SA25QA138  [SAM.gov]  Annual Carpet Cleaning Services for 81st RD Fort Jackso
+    ⚠ No PDF link found
+
+→ SAM-W912CN-26-B-A00X1  [SAM.gov]  Open-End Flooring USAG-HI (8a)
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+27 PDF(s) to parse:
+
+→ QB-0151-468  (1 KB)  0151-468 Leonard da Vinci TK Classrooms
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-0151-468  [GO 80]
+
+→ QB-0151-470 & 0450-470  (1 KB)  0151-470 & 0450-470 LDV & Umoja Gym Upgrades and EV Chargers
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-0151-470 & 0450-470  [GO 80]
+
+→ QB-03-2026-01  (76 KB)  Gabilan and San Vicente Elementary School Classroom Project
+  Sending to Ollama...
+✓ Saved spec for QB-03-2026-01  [GO 80]
+
+→ QB-03-26  (2745 KB)  TBP TK Improvements Project
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-03-26  [GO 80]
+
+→ QB-033026-1  (1576 KB)  Dry Creek Elementary School SCOE TK Classroom Refresh Projec
+  Sending to Ollama...
+✓ Saved spec for QB-033026-1  [GO 80]
+
+→ QB-040626-1  (6427 KB)  Dry Creek Elementary School SCOE TK Exterior Site Improvemen
+  Sending to Ollama...
+✓ Saved spec for QB-040626-1  [GO 75]
+
+→ QB-040726-1  (952 KB)  Foothill High School Culinary Classroom Remodel Project
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-040726-1  [GO 80]
+
+→ QB-041526-1  (57506 KB)  FC Joyce TK-8 School Room 12 Restroom Improvements Project
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-041526-1  [GO 80]
+
+→ QB-0445-416  (2 KB)  0445-416  John Still K-8 Modernization
+  Sending to Ollama...
+✓ Saved spec for QB-0445-416  [GO 75]
+
+→ QB-0445-470  (1 KB)  0445-470 John Still K-8 Gymnasium Upgrades
+  Sending to Ollama...
+✓ Saved spec for QB-0445-470  [GO 75]
+
+→ QB-1-2025-0155  (5904 KB)  Western High School, Room 50 Conversion
+  Sending to Ollama...
+✓ Saved spec for QB-1-2025-0155  [GO 75]
+
+→ QB-1187  (143 KB)  SCUSD Pool Upgrades Project Wilcox High School
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-1187  [GO 80]
+
+→ QB-2025-12  (346 KB)  Indianola Parking Lot Improvements
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-2025-12  [GO 80]
+
+→ QB-2026-03  (86 KB)  Sunnyvale School District Office Exterior Improvements
+  Sending to Ollama...
+✓ Saved spec for QB-2026-03  [GO 75]
+
+→ QB-2526-01  (86 KB)  Swanston Preschool Demolition Project
+  Sending to Ollama...
+✓ Saved spec for QB-2526-01  [GO 75]
+
+→ QB-26-015  (92 KB)  Highlands Elementary School Track & Field
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-26-015  [GO 80]
+
+→ QB-26-49  (199 KB)  Fresno High School New Maintenance Building
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-26-49  [GO 80]
+
+→ QB-26-51  (202 KB)  McCardle Elementary School Playground Replacements and New S
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-26-51  [GO 80]
+
+→ QB-26.38.MM  (228 KB)  Webster Elementary School Relocatables Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-26.38.MM  [GO 80]
+
+→ QB-7060  (109 KB)  West High School: P.E. Classroom Building
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-7060  [GO 80]
+
+→ QB-Bid No. 7072  (123 KB)  East Bakersfield High School: Building 200 Ceiling Abatement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-Bid No. 7072  [GO 80]
+
+→ QB-Q7-26  (152 KB)  Lompoc USD - Manzanita Public Charter Modernization and New 
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-Q7-26  [GO 80]
+
+→ SAM-042925CYCT  (619 KB)  CJIS - Yuma Carpet Tiles
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-042925CYCT  [GO 80]
+
+→ SAM-31110PR260000003  (47 KB)  USCG BASE NCR FACILITIES CARPET AND TILE REPLACEMENT
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-31110PR260000003  [GO 83]
+
+→ SAM-36C24726Q0448  (171 KB)  Z1AA--RFQ Flooring Maintenance (VA-26-00051754)
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C24726Q0448  [GO 80]
+
+→ SAM-70Z027-26-R-00007  (117 KB)  Interior Space Renovation
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-70Z027-26-R-00007  [GO 80]
+
+→ SAM-N40085-26-R-9040  (144 KB)  Building M457 & M458 Paint and Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N40085-26-R-9040  [GO 80]
+
+Unprocessed relevant bids: 14
+  14 to download
+
+  ✓ BidNet Direct: logged in — 2 bids to download
+  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CCOP-06A3268  [Caltrans CCOP]  General Building Repair in Fresno County
+    ⚠ SKIP — CaleProcure login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ CCOP-02A2499  [Caltrans CCOP]  SB Minor B 02A2499 / Stormwater Improvement In Shasta C
+    ⚠ SKIP — CaleProcure login failed
+
+→ 443947090924  [BidNet Direct]  Dry Creek Elementary School SCOE TK Classroom Refresh P
+    ✓ 2.pdf (5339 KB)
+    ✓ 1_Package.pdf (22759 KB)
+    ✓ Package.pdf (1205 KB)
+    ✓ Maintenance_Specifications.pdf (1576 KB)
+    ✓ Maintenance_Plans.pdf (8690 KB)
+→ 443995865768  [BidNet Direct]  Tenant Improvements for Multiple Rooms at Anaheim Campu
+    ✓ Bid Info.docx (46 KB)
+→ QB-219-980044-080  [Quality Bidders]  Prospect High School Restroom Modernization
+    ✓ Saved QB-219-980044-080.pdf (86 KB)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ CRISP-854  [Crisp Plan Room]  Santa Ana USD - Willard Intermediate School
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ SKIP — CaleProcure login failed
+
+→ CCOP-08A3992  [Caltrans CCOP]  IFB Synthetic Flooring Services in San Bernardino Count
+    ⚠ SKIP — CaleProcure login failed
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ SKIP — CaleProcure login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+3 PDF(s) to parse:
+
+→ 443947090924  (5339 KB)  Dry Creek Elementary School SCOE TK Classroom Refresh Projec
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 443947090924  [GO 80]
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ QB-219-980044-080  (86 KB)  Prospect High School Restroom Modernization
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-219-980044-080  [GO 80]
+
+Unprocessed relevant bids: 18
+  1 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 3 bids to download
+  ✓ CaleProcure: logged in — 4 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CCOP-06A3268  [Caltrans CCOP]  General Building Repair in Fresno County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-06A3268
+
+→ PB-21372-139636  [PlanetBids]  Purchase Agreement for Window Covering Solutions
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ SAM-N4008526R9037  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ✓ Saved SAM-N4008526R9037.pdf (197 KB)
+
+→ SAM-N4008526R9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring Re
+    ✓ Saved SAM-N4008526R9038.pdf (198 KB)
+
+→ 443996623264  [BidNet Direct]  Replacement Hospital Tower (California Tower)
+    ✓ sr-03-framing-drywall-ad.pdf (341 KB)
+→ 443995805861  [BidNet Direct]  Main Jail – Medical Flooring Replacement (Floor 2)
+    ✓ Bid Info.docx (38 KB)
+→ 22538303429  [BidNet Direct]  Liberty High School New Classroom Buildings
+    ✓ Bid Clarification 3 8-22-22.pdf (12744 KB)
+    ✓ 5471-1.pdf (3166 KB)
+    ✓ LUHSD - Addendum 1.pdf (16730 KB)
+    ✓ Bid Info.docx (666 KB)
+    ✓ SPC_V3.pdf (18257 KB)
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ CRISP-854  [Crisp Plan Room]  Santa Ana USD - Willard Intermediate School
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ CaleProcure download error: Page.title: Execution context was destroyed, most likely because of a navigation
+    ⚠ No documents saved for CCOP-03A4138
+
+→ CCOP-08A3992  [Caltrans CCOP]  IFB Synthetic Flooring Services in San Bernardino Count
+    → Subscribed to event 08A3992
+    Found 3 attachment(s): ['IFB_Solicitation_08A3992.pdf', 'Addendum__1_08A3992.pdf', 'Addendum__2_08A3992.pdf']
+    ⚠ #downloadButton never became visible for 'IFB_Solicitation_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'IFB_Solicitation_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__1_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__1_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__2_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__2_08A3992.pdf'
+
+    ⚠ No documents saved for CCOP-08A3992
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    Found 3 attachment(s): ['IFB_Solicitation_08A3992.pdf', 'Addendum__1_08A3992.pdf', 'Addendum__2_08A3992.pdf']
+    ⚠ #downloadButton never became visible for 'IFB_Solicitation_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'IFB_Solicitation_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__1_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__1_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__2_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__2_08A3992.pdf'
+
+    ⚠ No documents saved for CCOP-04A7527
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+6 PDF(s) to parse:
+
+→ 22538303429  (12744 KB)  Liberty High School New Classroom Buildings
+  Sending to Ollama...
+✓ Saved spec for 22538303429  [GO 80]
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443996623264  (341 KB)  Replacement Hospital Tower (California Tower)
+  Sending to Ollama...
+✓ Saved spec for 443996623264  [GO 67]
+
+→ SAM-N4008526R9037  (197 KB)  Building FC478 and FC481 Paint and Flooring Repairs
+  Sending to Ollama...
+✓ Saved spec for SAM-N4008526R9037  [GO 75]
+
+→ SAM-N4008526R9038  (198 KB)  Buildings RR139, RR140, and RR141 Paint and Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N4008526R9038  [GO 80]
+
+Unprocessed relevant bids: 22
+  2 already downloaded (run --pending to list)
+  20 to download
+
+  ✓ BidNet Direct: logged in — 4 bids to download
+  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CCOP-06A3268  [Caltrans CCOP]  General Building Repair in Fresno County
+    ⚠ SKIP — CaleProcure login failed
+
+→ 444001744567  [BidNet Direct]  City Hall Balcony and Exterior Rehabilitation
+    ✓ 1478.pdf (1807 KB)
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ 443946978464  [BidNet Direct]  RENOVATION OF CITY FACILITY AT 800 WEST SECOND STREET
+    ✓ 1532.pdf (182 KB)
+    ✓ 1473.pdf (5165 KB)
+    ✓ 1390.pdf (1255 KB)
+    ✓ 1273.pdf (131 KB)
+→ 444001171597  [BidNet Direct]  High School Gym Floor Replacement Project
+    ✓ Bid Info.docx (102 KB)
+→ 443998078095  [BidNet Direct]  Brea Olinda High School Gym Floor Replacement
+    ✓ Bid Info.docx (17 KB)
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ QB-26-07  [Quality Bidders]  FIESTA GARDENS/TURNBULL CHILD DEVELOPMENT CENTER FIRE A
+    ✓ Saved QB-26-07.pdf (236 KB)
+
+→ SAM-FA486126R0010  [SAM.gov]  Carpet Cleaning BPA
+    ✓ Saved SAM-FA486126R0010.pdf (1770 KB)
+
+→ SAM-PANMCC26P0000039984  [SAM.gov]  Building 54 McNair Chimneys Repair JBM-HH
+    ✓ Saved SAM-PANMCC26P0000039984.pdf (696 KB)
+
+→ SAM-PANMCC26P0000041287  [SAM.gov]  JBMHH Building 205, Rooms 207-208, 210-211, 212-213 Car
+    ↳ ZIP: extracted DOCX text (10 KB)
+    ✓ Extracted from ZIP → SAM-PANMCC26P0000041287.txt (10 KB)
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ SAM-FA481426Q0014  [SAM.gov]  FY26 Flooring Installation Services IDIQ, MacDill AFB/A
+    ✓ Saved SAM-FA481426Q0014.pdf (441 KB)
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ CRISP-854  [Crisp Plan Room]  Santa Ana USD - Willard Intermediate School
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ SKIP — CaleProcure login failed
+
+→ CCOP-08A3992  [Caltrans CCOP]  IFB Synthetic Flooring Services in San Bernardino Count
+    ⚠ SKIP — CaleProcure login failed
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ SKIP — CaleProcure login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+11 PDF(s) to parse:
+
+→ 443946978464  (182 KB)  RENOVATION OF CITY FACILITY AT 800 WEST SECOND STREET
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443946978464 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444001744567  (1807 KB)  City Hall Balcony and Exterior Rehabilitation
+  Sending to Ollama...
+✓ Saved spec for 444001744567  [GO 75]
+
+→ QB-26-07  (236 KB)  FIESTA GARDENS/TURNBULL CHILD DEVELOPMENT CENTER FIRE ALARM 
+  Sending to Ollama...
+✓ Saved spec for QB-26-07  [GO 75]
+
+→ SAM-FA481426Q0014  (441 KB)  FY26 Flooring Installation Services IDIQ, MacDill AFB/Avon P
+  Sending to Ollama...
+✓ Saved spec for SAM-FA481426Q0014  [GO 75]
+
+→ SAM-FA486126R0010  (1770 KB)  Carpet Cleaning BPA
+  Sending to Ollama...
+✓ Saved spec for SAM-FA486126R0010  [GO 80]
+
+→ SAM-PANMCC26P0000039984  (696 KB)  Building 54 McNair Chimneys Repair JBM-HH
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-PANMCC26P0000039984  [GO 80]
+
+→ SAM-PANMCC26P0000041287  (10 KB)  JBMHH Building 205, Rooms 207-208, 210-211, 212-213 Carpet R
+  Sending to Ollama...
+✓ Saved spec for SAM-PANMCC26P0000041287  [GO 75]
+
+Unprocessed relevant bids: 22
+  5 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 3 bids to download
+  ✓ CaleProcure: logged in — 4 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-FA500026Q0031  [SAM.gov]  JBER Flooring Project
+    ✓ Saved SAM-FA500026Q0031.pdf (120 KB)
+
+→ 444001171586  [BidNet Direct]  890/32F District Education Center Interior Improvement
+    ✓ Bid Info.docx (104 KB)
+→ SAM-W50S9F26QA013  [SAM.gov]  Repair B424 Entrance (Project XGFG262010)
+    ✓ Saved SAM-W50S9F26QA013.pdf (3275 KB)
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ SAM-FA446026Q0009  [SAM.gov]  B854 Blinds and Drapes
+    ✓ Saved SAM-FA446026Q0009.pdf (566 KB)
+
+→ 444002134573  [BidNet Direct]  Police Department Flooring Replacement Project
+    ✓ Bid Info.docx (23 KB)
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ CCOP-06A3268  [Caltrans CCOP]  General Building Repair in Fresno County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-06A3268
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ CCOP-08A3992  [Caltrans CCOP]  IFB Synthetic Flooring Services in San Bernardino Count
+    → Subscribed to event 08A3992
+    Found 4 attachment(s): ['IFB_Solicitation_08A3992.pdf', 'Addendum__1_08A3992.pdf', 'Addendum__2_08A3992.pdf', 'Addendum__3_08A3992.pdf']
+    ⚠ #downloadButton never became visible for 'IFB_Solicitation_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'IFB_Solicitation_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__1_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__1_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__2_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__2_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__3_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__3_08A3992.pdf'
+
+    ⚠ No documents saved for CCOP-08A3992
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    → Subscribed to event 04A7527
+    Found 4 attachment(s): ['IFB_Solicitation_08A3992.pdf', 'Addendum__1_08A3992.pdf', 'Addendum__2_08A3992.pdf', 'Addendum__3_08A3992.pdf']
+    ⚠ #downloadButton never became visible for 'IFB_Solicitation_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'IFB_Solicitation_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__1_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__1_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__2_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__2_08A3992.pdf'
+
+    ⚠ #downloadButton never became visible for 'Addendum__3_08A3992.pdf'
+    ⚠ #downloadButton state: <a id="downloadButton" target="_blank" href="#" onclick="clearAttachmentWrapper();" class="btn btn-primary" data-if-container-label="attachmentWrapper" data-if-label="attachmentLink" data-if-source=".
+    ⚠ No PDF bytes captured for 'Addendum__3_08A3992.pdf'
+
+    ⚠ No documents saved for CCOP-04A7527
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+10 PDF(s) to parse:
+
+→ 443946978464  (182 KB)  RENOVATION OF CITY FACILITY AT 800 WEST SECOND STREET
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443946978464 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ SAM-FA446026Q0009  (566 KB)  B854 Blinds and Drapes
+  Sending to Ollama...
+✓ Saved spec for SAM-FA446026Q0009  [GO 75]
+
+→ SAM-FA500026Q0031  (120 KB)  JBER Flooring Project
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA500026Q0031  [GO 80]
+
+→ SAM-W50S9F26QA013  (3275 KB)  Repair B424 Entrance (Project XGFG262010)
+  Sending to Ollama...
+✓ Saved spec for SAM-W50S9F26QA013  [GO 75]
+
+Unprocessed relevant bids: 24
+  6 already downloaded (run --pending to list)
+  18 to download
+
+  ✓ BidNet Direct: logged in — 6 bids to download
+  ✓ CaleProcure: logged in — 2 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444006141673  [BidNet Direct]  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 
+    ✓ Bid Info.docx (69 KB)
+→ QB-IFB-002.2026  [Quality Bidders]  Farallone View Elementary School Playground and Civil S
+    ✓ Saved QB-IFB-002.2026.pdf (4 KB)
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-052226-10  [Quality Bidders]  NEW BALL WALL CJ MORRIS ELEMENTARY SCHOOL NEW BALL WALL
+    ✓ Saved QB-052226-10.pdf (132 KB)
+
+→ 444004120527  [BidNet Direct]  Districtwide Carpet Cleaning Services
+    ✓ Bid Info.docx (31 KB)
+→ 444004219505  [BidNet Direct]  1939 Market Street 90%CD Bid Package - Flooring
+    ✓ EXT_MOH___1939_Market_Street_90_CD_Bid_Package.pdf (24 KB)
+→ 444002351947  [BidNet Direct]  101 Gough/120 Page Rehab - Flooring
+    ✓ EXT_MOH___101_Gough_120_Page_Rehab.pdf (34 KB)
+→ 444006141675  [BidNet Direct]  B250023 JOC Bid Solicitation Flooring
+    ✓ B250023 Flooring NTC ST 050426.pdf (211 KB)
+    ✓ B250023 Flooring Bid 050626.pdf (2149 KB)
+→ QB-2025-4  [Quality Bidders]  Tenaya Middle School Sports Field Renovation
+    ✓ Saved QB-2025-4.pdf (160 KB)
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ CaleProcure download error: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("button:has-text(\"View Event Package\"), a:has-text(\"View Event Package\"), input[value*=\"Event Package\" i]")
+    - locator resolved to <button data-if-label="viewPackage" data-if-ps-clickable="true" data-if-hide-when-absent="." data-if-content="id name disabled title" data-if-source="#RESP_INQ_DL0_WK_AUC_DOWNLOAD_PB" class="btn btn-primary white-space-normal btn-block mb-10">↵                View Event Package              </button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is not visible
+  - retrying click action
+    - waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
+
+    ⚠ No documents saved for CCOP-04A7527
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+14 PDF(s) to parse:
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444002351947  (34 KB)  101 Gough/120 Page Rehab - Flooring
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444002351947  [GO 80]
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444004219505  (24 KB)  1939 Market Street 90%CD Bid Package - Flooring
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444004219505  [GO 80]
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444006141675  (211 KB)  B250023 JOC Bid Solicitation Flooring
+  Sending to Ollama...
+✓ Saved spec for 444006141675  [GO 67]
+
+→ QB-052226-10  (132 KB)  NEW BALL WALL CJ MORRIS ELEMENTARY SCHOOL NEW BALL WALL CAST
+  Sending to Ollama...
+✓ Saved spec for QB-052226-10  [GO 75]
+
+→ QB-2025-4  (160 KB)  Tenaya Middle School Sports Field Renovation
+  Sending to Ollama...
+✓ Saved spec for QB-2025-4  [GO 75]
+
+→ QB-IFB-002.2026  (4 KB)  Farallone View Elementary School Playground and Civil Site W
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-IFB-002.2026  [GO 80]
+
+Unprocessed relevant bids: 25
+  8 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 3 bids to download
+  ✓ CaleProcure: logged in — 2 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-25192  [SAM.gov]  Carpet Rework
+    ✓ Saved SAM-25192.pdf (139 KB)
+
+→ SAM-FA487726QA083  [SAM.gov]  Engine Room Reflooring - Nellis Air Force Base, NV
+    ✓ Saved SAM-FA487726QA083.pdf (116 KB)
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 444006979314  [BidNet Direct]  Flooring Services
+    ✓ Agreement.pdf (902 KB)
+    ✓ Affidavit.pdf (86 KB)
+    ✓ 26-1151M_RFP_Flooring_Draft.pdf (284 KB)
+    ✓ 05_Flooring_Scope_Draft_Flooring.pdf (94 KB)
+→ 444006906972  [BidNet Direct]  Carpet Cleaning Services
+    ✓ Agreement.pdf (902 KB)
+    ✓ Affidavit.pdf (86 KB)
+    ✓ 26-1168M_RFP_Carpet_Cleaning_Draft.pdf (285 KB)
+    ✓ 19_Carpet_Cleaning_Scope_Draft_Carpet_Cleaning.pdf (95 KB)
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ QB-050726-1  [Quality Bidders]  Woodridge Elementary School Admin Office Reconfiguratio
+    ✓ Saved QB-050726-1.pdf (14337 KB)
+
+→ SAM-36C24426R0121  [SAM.gov]  C1DA--NRM | 460-23-008 | Renovate 5 East | NCO 4 Constr
+    ↳ ZIP: extracted DOCX text (48 KB)
+    ✓ Extracted from ZIP → SAM-36C24426R0121.txt (48 KB)
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-26-030-02  [Quality Bidders]  District Office Tenant Improvements Lease Leaseback
+    ✓ Saved QB-26-030-02.pdf (94 KB)
+
+→ QB-22-25/26  [Quality Bidders]  Altadena Outdoor Learning & Campus Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-22-25/26.pdf'
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-04A7527
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+15 PDF(s) to parse:
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444006906972  (902 KB)  Carpet Cleaning Services
+  Sending to Ollama...
+✓ Saved spec for 444006906972  [GO 75]
+
+→ 444006979314  (902 KB)  Flooring Services
+  Sending to Ollama...
+✓ Saved spec for 444006979314  [GO 80]
+
+→ QB-050726-1  (14337 KB)  Woodridge Elementary School Admin Office Reconfiguration Pro
+  Sending to Ollama...
+  ⚠ Ollama error: timed out
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-050726-1  [GO 80]
+
+→ QB-26-030-02  (94 KB)  District Office Tenant Improvements Lease Leaseback
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for QB-26-030-02  [GO 80]
+
+→ SAM-25192  (139 KB)  Carpet Rework
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-25192  [GO 80]
+
+→ SAM-36C24426R0121  (48 KB)  C1DA--NRM | 460-23-008 | Renovate 5 East | NCO 4 Constructio
+  Sending to Ollama...
+✓ Saved spec for SAM-36C24426R0121  [GO 75]
+
+→ SAM-FA487726QA083  (116 KB)  Engine Room Reflooring - Nellis Air Force Base, NV
+  Sending to Ollama...
+✓ Saved spec for SAM-FA487726QA083  [GO 80]
+
+Unprocessed relevant bids: 25
+  8 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 3 bids to download
+  ✓ CaleProcure: logged in — 2 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-36C26226Q0789  [SAM.gov]  S214--Annual Carpet Cleaning 2026-2031
+    ↳ ZIP: extracted DOCX text (16 KB)
+    ✓ Extracted from ZIP → SAM-36C26226Q0789.txt (16 KB)
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S8A26BA010  [SAM.gov]  OFFICE SPACE RENOVATION BLDG 145
+    ✓ Saved SAM-W50S8A26BA010.pdf (83 KB)
+
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ 444008420231  [BidNet Direct]  Flooring and Painting Project
+    ✓ MCOE Flooring & Painting Bid Pkg.pdf (10396 KB)
+→ 444008483187  [BidNet Direct]  Woodridge Elementary School Admin Office Reconfiguratio
+    ✓ Frontends.pdf (1199 KB)
+    ✓ 8130.pdf (11143 KB)
+    ✓ 8131.pdf (14337 KB)
+→ SAM-SP4703-26-Q-0042  [SAM.gov]  Defense Supply Center of Richmond (DSCR) Basketball Cou
+    ✓ Saved SAM-SP4703-26-Q-0042.pdf (1059 KB)
+
+→ QB-PHS2026-#001  [Quality Bidders]  Parlier High School Stadium Replacement
+    ↳ ZIP: extracted DOCX text (4 KB)
+    ✓ Extracted from ZIP → QB-PHS2026-#001.txt (4 KB)
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ CaleProcure download error: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("button:has-text(\"View Event Package\"), a:has-text(\"View Event Package\"), input[value*=\"Event Package\" i]")
+    - locator resolved to <button data-if-label="viewPackage" data-if-ps-clickable="true" data-if-hide-when-absent="." data-if-content="id name disabled title" data-if-source="#RESP_INQ_DL0_WK_AUC_DOWNLOAD_PB" class="btn btn-primary white-space-normal btn-block mb-10">↵                View Event Package              </button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    - waiting for element to be visible, enabled and stable
+    - element is not visible
+  - retrying click action
+    - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
+    - waiting for" https://caleprocure.ca.gov/pages/error.aspx" navigation to finish...
+    - navigated to "https://caleprocure.ca.gov/pages/error.aspx"
+
+    ⚠ No documents saved for CCOP-04A7527
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+14 PDF(s) to parse:
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444008420231  (10396 KB)  Flooring and Painting Project
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444008420231  [GO 80]
+
+→ 444008483187  (1199 KB)  Woodridge Elementary School Admin Office Reconfiguration Pro
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444008483187  [GO 80]
+
+→ QB-PHS2026-#001  (4 KB)  Parlier High School Stadium Replacement
+  Sending to Ollama...
+✓ Saved spec for QB-PHS2026-#001  [GO 67]
+
+→ SAM-36C26226Q0789  (16 KB)  S214--Annual Carpet Cleaning 2026-2031
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C26226Q0789  [GO 80]
+
+→ SAM-SP4703-26-Q-0042  (1059 KB)  Defense Supply Center of Richmond (DSCR) Basketball Court Re
+  Sending to Ollama...
+✓ Saved spec for SAM-SP4703-26-Q-0042  [GO 75]
+
+→ SAM-W50S8A26BA010  (83 KB)  OFFICE SPACE RENOVATION BLDG 145
+  Sending to Ollama...
+✓ Saved spec for SAM-W50S8A26BA010  [GO 75]
+
+Unprocessed relevant bids: 25
+  8 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 4 bids to download
+  ✓ CaleProcure: logged in — 2 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ PB-32461-141339  [PlanetBids]  COMMUNITY CENTER FLOORING - DEMOLITION AND INSTALLATION
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ CCOP-04A7527  [Caltrans CCOP]  Flooring Services in Napa and Sonoma Counties.
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-04A7527
+
+→ 444012965426  [BidNet Direct]  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.7
+    ✓ Bid Info.docx (14 KB)
+→ 444014653418  [BidNet Direct]  Walker Creek Ranch Renovation Phase 2 REBID
+    ✓ WCR Sequoia Lodge P2 REBID Bid Pkg.pdf (19035 KB)
+→ SAM-FA704626QRJS1  [SAM.gov]  Carpet Purchasing, Installation, and Painting
+    ✓ Saved SAM-FA704626QRJS1.pdf (112 KB)
+
+→ 444013010152  [BidNet Direct]  ROSEMEAD HIGH SCHOOL AND EL MONTE HIGH SCHOOL FLOORING 
+    ✓ RHS Dance Room Flooring Scope of Work.pdf (176 KB)
+    ✓ NOTICE INVITING INFORMAL BIDS.pdf (167 KB)
+    ✓ EMHS Gym Floor Resurface Scope of Work.pdf (184 KB)
+    ✓ Bid Docs.pdf (1177 KB)
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ SAM-70Z03326Q31190045  [SAM.gov]  USCG Base Astoria 985 ALAMEDA AVE, Astoria, OR 97103 St
+    ✓ Saved SAM-70Z03326Q31190045.pdf (377 KB)
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+13 PDF(s) to parse:
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444012965426  (14 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444012965426 '<json>'
+
+→ 444013010152  (176 KB)  ROSEMEAD HIGH SCHOOL AND EL MONTE HIGH SCHOOL FLOORING PROJE
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444013010152  [GO 83]
+
+→ 444014653418  (19035 KB)  Walker Creek Ranch Renovation Phase 2 REBID
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444014653418  [GO 80]
+
+→ SAM-70Z03326Q31190045  (377 KB)  USCG Base Astoria 985 ALAMEDA AVE, Astoria, OR 97103 Stair R
+  Sending to Ollama...
+✓ Saved spec for SAM-70Z03326Q31190045  [GO 75]
+
+→ SAM-FA704626QRJS1  (112 KB)  Carpet Purchasing, Installation, and Painting
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA704626QRJS1  [GO 80]
+
+Unprocessed relevant bids: 24
+  9 already downloaded (run --pending to list)
+  15 to download
+
+  ✓ BidNet Direct: logged in — 4 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444015724264  [BidNet Direct]  Flooring Installation
+    ✓ Bid Info.docx (104 KB)
+→ 444015234256  [BidNet Direct]  McClatchy HS Team Room Renovation
+    ✓ 0510-462CKMTeamRmProjectManual.pdf (494 KB)
+    ✓ 0510-462CKMTeamRmEXHIBITA_ProjectDescription.pdf (74 KB)
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 444015724277  [BidNet Direct]  Marin County Office of Education Flooring and Painting 
+    ✓ Bid Info.docx (104 KB)
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-70Z027Q260000002  [SAM.gov]  REPAIR INTERIOR FINISHES DAWSON HALL
+    ✓ Saved SAM-70Z027Q260000002.pdf (55 KB)
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-26-RR-02  [Quality Bidders]  3500 Tamarack Portable Relocation and Parking Lot Impro
+    ⚠ Not a valid PDF (content-type: image/jpeg)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+13 PDF(s) to parse:
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444012965426  (14 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444012965426 '<json>'
+
+→ 444015234256  (494 KB)  McClatchy HS Team Room Renovation
+  Sending to Ollama...
+✓ Saved spec for 444015234256  [GO 67]
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+Unprocessed relevant bids: 27
+  12 already downloaded (run --pending to list)
+  15 to download
+
+  ✓ BidNet Direct: logged in — 2 bids to download
+  ✓ Crisp Plan Room: logged in — 1 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-FA483026Q0029  [SAM.gov]  347 OSS Carpet Replacement
+    ✓ Saved SAM-FA483026Q0029.pdf (464 KB)
+
+→ CRISP-862  [Crisp Plan Room]  Garden Grove ES - Green Shoolyard Improvement
+    1 file(s) found — downloading top 1: "2610080-SPECS"
+    File: 2610080-SPECS  → 8 page(s)
+    ✓ Captured 8 total page image(s)
+    → Parsing with Claude vision...
+✓ Saved spec for CRISP-862  [GO 80]
+    ✓ Spec saved
+
+→ QB-008  [Quality Bidders]  Tulare Union High School Gym Modernization
+    ✓ Saved QB-008.pdf (140 KB)
+
+→ 2690396672  [BidNet Direct]  Z1DB--Replace Dietetics and Cath Lab Flooring, Building
+    ✓ 2690396672.pdf (11 KB)
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+    ↩ Already exists: 2690396672.pdf
+→ SAM-FA486126R0004  [SAM.gov]  732 OG Heritage Room Renovation
+    ✓ Saved SAM-FA486126R0004.pdf (484 KB)
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+16 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444012965426  (14 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444012965426 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ QB-008  (140 KB)  Tulare Union High School Gym Modernization
+  Sending to Ollama...
+✓ Saved spec for QB-008  [GO 67]
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-FA483026Q0029  (464 KB)  347 OSS Carpet Replacement
+  Sending to Ollama...
+✓ Saved spec for SAM-FA483026Q0029  [GO 75]
+
+→ SAM-FA486126R0004  (484 KB)  732 OG Heritage Room Renovation
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA486126R0004  [GO 80]
+
+Unprocessed relevant bids: 30
+  13 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 5 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-PR15988793  [SAM.gov]  Expression of Interest – Residential Curtain Cleaning P
+    ↳ ZIP: extracted DOCX text (4 KB)
+    ✓ Extracted from ZIP → SAM-PR15988793.txt (4 KB)
+
+→ 2691047432  [BidNet Direct]  BEALE AFB ATRIUM SHADE CANOPY REPLACEMENT
+    ✓ 2691047432.pdf (505 KB)
+    ↩ Already exists: 2691047432.pdf
+    ↩ Already exists: 2691047432.pdf
+    ↩ Already exists: 2691047432.pdf
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 444020883860  [BidNet Direct]  On-Call General Construction Services
+    ✓ bid Info.docx (22 KB)
+→ 2691088232  [BidNet Direct]  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23
+    ✓ 2691088232.pdf (30 KB)
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+    ↩ Already exists: 2691088232.pdf
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-W911SG26RA011  [SAM.gov]  Remove and Install Vinyl Composite Tile (VCT) Flooring 
+    ✓ Saved SAM-W911SG26RA011.pdf (345 KB)
+
+→ 444018425719  [BidNet Direct]  McKee Fisk Anthropology Research Lab Retrofit Project
+    ✓ Bid Info.docx (80 KB)
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+→ CCOP-03A4138  [Caltrans CCOP]  IFPQ General Building Repairs, Nevada County
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-03A4138
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+19 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691047432  (505 KB)  BEALE AFB ATRIUM SHADE CANOPY REPLACEMENT
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 2691047432  [GO 80]
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444012965426  (14 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444012965426 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-PR15988793  (4 KB)  Expression of Interest – Residential Curtain Cleaning PR1598
+  Sending to Ollama...
+✓ Saved spec for SAM-PR15988793  [GO 75]
+
+→ SAM-W911SG26RA011  (345 KB)  Remove and Install Vinyl Composite Tile (VCT) Flooring BLDG 
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-W911SG26RA011  [GO 80]
+
+Unprocessed relevant bids: 34
+  16 already downloaded (run --pending to list)
+  18 to download
+
+  ✓ BidNet Direct: logged in — 6 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+→ 444021433260  [BidNet Direct]  Restroom Remodel and Repairs in Orange County
+    ✓ IFPQ_Solicitation_Package_12A2383.pdf (7152 KB)
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-12A2383
+
+→ SAM-FA309926Q0010  [SAM.gov]  Repair Flooring Student Pilot Housing, Multiple Facilit
+    ✓ Saved SAM-FA309926Q0010.pdf (761 KB)
+
+→ 444025524726  [BidNet Direct]  City Hall Renovation Project
+    ✓ Bid Info.docx (97 KB)
+→ SAM-W912HNA044275  [SAM.gov]  Construction and Alteration of Polygraph Office at Ft. 
+    ✓ Saved SAM-W912HNA044275.pdf (138 KB)
+
+→ 444025570427  [BidNet Direct]  Gibson Senior Center Interior Improvement Project
+    ✓ Bid Info.docx (27 KB)
+→ 444016845045  [BidNet Direct]  EXT MOH | Treasure Island BHB GMP Bid - Flooring
+    ✓ EXT_MOH___Treasure_Island_BHB_GMP_Bid.pdf (26 KB)
+→ 444021460614  [BidNet Direct]  Flooring Services
+    ✓ RFP-26146-330A-Flooring-Services-FINAL-5-13-26.pdf (2816 KB)
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+23 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444012965426  (14 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444012965426 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444016845045  (26 KB)  EXT MOH | Treasure Island BHB GMP Bid - Flooring
+  Sending to Ollama...
+✓ Saved spec for 444016845045  [GO 80]
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444021433260  (7152 KB)  Restroom Remodel and Repairs in Orange County
+  Sending to Ollama...
+✓ Saved spec for 444021433260  [GO 80]
+
+→ 444021460614  (2816 KB)  Flooring Services
+  Sending to Ollama...
+✓ Saved spec for 444021460614  [GO 75]
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-FA309926Q0010  (761 KB)  Repair Flooring Student Pilot Housing, Multiple Facilities
+  Sending to Ollama...
+✓ Saved spec for SAM-FA309926Q0010  [GO 80]
+
+→ SAM-W912HNA044275  (138 KB)  Construction and Alteration of Polygraph Office at Ft. Gordo
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-W912HNA044275  [GO 80]
+
+Unprocessed relevant bids: 30
+  17 already downloaded (run --pending to list)
+  13 to download
+
+  ✓ BidNet Direct: logged in — 2 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ 444026020031  [BidNet Direct]  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.7
+    ✓ Bid Info.docx (29 KB)
+→ SAM-EEPZ255011  [SAM.gov]  B926 OSI Flooring
+    ✓ Saved SAM-EEPZ255011.pdf (578 KB)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ 'View Event Package' not found (title: '')
+
+    ⚠ No documents saved for CCOP-12A2383
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+19 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444006141673  (69 KB)  CUPCCAA 10-Day Informal Bid Betty Reid Soskin Building 300 F
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444006141673 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444026020031  (29 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444026020031 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-EEPZ255011  (578 KB)  B926 OSI Flooring
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-EEPZ255011  [GO 80]
+
+Unprocessed relevant bids: 37
+  17 already downloaded (run --pending to list)
+  20 to download
+
+  ✓ BidNet Direct: logged in — 5 bids to download
+  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ SKIP — CaleProcure login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ 2692305857  [BidNet Direct]  Sources Sought Notice for Flooring Services
+    ✓ 2692305857.pdf (3806 KB)
+→ SAM-36C26326B0036  [SAM.gov]  Y1DA--PN: 636-26-502, Replace CLC Flooring (GI) PR: 636
+    ↳ ZIP: extracted DOCX text (5 KB)
+    ✓ Extracted from ZIP → SAM-36C26326B0036.txt (5 KB)
+
+→ SAM-36C24526Q0546  [SAM.gov]  N055--FLOORING INSTALLATION
+    ↳ ZIP: extracted DOCX text (8 KB)
+    ✓ Extracted from ZIP → SAM-36C24526Q0546.txt (8 KB)
+
+→ SAM-36C26326B0032  [SAM.gov]  Y1DA--656-26-201 Replace Carpet FY26 NRM 36C263-26-AP-2
+    ⚠ Error: APIRequestContext.get: socket hang up
+Call log:
+  - → GET https://sam.gov/api/prod/opps/v3/opportunities/resources/files/00cceeff6f9d435aa0a5d07547ba2d11/download?api_key=null&token=
+    - user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+    - accept: */*
+    - accept-encoding: gzip,deflate,br
+    - cookie: _ga=GA1.1.345082616.1779283833; lastVisitedRoute=%2Fopp%2F9b9c637530c748a1b81268e6b03b3e3f%2Fview; _ga_CSLL4ZEK4L=GS2.1.s1779283832$o1$g1$t1779283880$j12$l0$h0; MYSESSIONID=72DF1F1E53EB0C0BF845D1B4F31E86FD; _dd_s=aid=1e2f1385-a620-4665-8d7f-3f3f92416ee6&rum=0&expire=1779284783579
+  - ← 303 See Other
+    - content-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    - content-length: 0
+    - connection: keep-alive
+    - date: Wed, 20 May 2026 13:31:25 GMT
+    - server: istio-envoy
+    - access-control-allow-origin: *
+    - access-control-allow-methods: GET, POST, OPTIONS, PUT, DELETE, PATCH
+    - access-control-max-age: 3600
+    - access-control-allow-headers: Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token, Cache-Control, Pragma, Expires, Location
+    - access-control-expose-headers: Location
+    - location: https://iae-fbo-attachments.s3.amazonaws.com/fbo/files/00c/00cceeff6f9d435aa0a5d07547ba2d11.docx?response-content-disposition=attachment%3B%20filename%3D36C26326B0032_1.docx&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260520T133125Z&X-Amz-SignedHeaders=host&X-Amz-Expires=9&X-Amz-Credential=AKIAY3LPYEEXZ5J7ESLR%2F20260520%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=aeed85df1b546416a410b205bfa09dbd874e84d0ed0fc991feb38f1835a60949
+    - content-disposition: attachment; filename="36C26326B0032_1.docx"
+    - x-envoy-upstream-service-time: 22
+    - strict-transport-security: max-age=31536000; includeSubDomains; preload
+    - x-cache: Miss from cloudfront
+    - via: 1.1 95e3cc9e14ff093ad937f013959268c0.cloudfront.net (CloudFront)
+    - x-amz-cf-pop: TXL50-P4
+    - x-amz-cf-id: ZJ06E2TE2YvT3ZmE_tmwo0r4kTunuLCaFjU3yFWJP4MnR0D0zMFHoA==
+  - → GET https://iae-fbo-attachments.s3.amazonaws.com/fbo/files/00c/00cceeff6f9d435aa0a5d07547ba2d11.docx?response-content-disposition=attachment%3B%20filename%3D36C26326B0032_1.docx&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260520T133125Z&X-Amz-SignedHeaders=host&X-Amz-Expires=9&X-Amz-Credential=AKIAY3LPYEEXZ5J7ESLR%2F20260520%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=aeed85df1b546416a410b205bfa09dbd874e84d0ed0fc991feb38f1835a60949
+    - user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+    - accept: */*
+    - accept-encoding: gzip,deflate,br
+
+
+→ 2692288262  [BidNet Direct]  Replace Flooring Bldg 102 & Bldg 110
+    ✓ 2692288262.pdf (409 KB)
+    ↩ Already exists: 2692288262.pdf
+    ↩ Already exists: 2692288262.pdf
+    ↩ Already exists: 2692288262.pdf
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ 444028217346  [BidNet Direct]  FS Zellerbach Hall Mezzanine Flooring Replacement
+    ✓ 19077A_LF_AD FOR BIDS_3-31-20 Virtual or OnSit.pdf (189 KB)
+→ 444028582344  [BidNet Direct]  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+    ✓ Bid Info.docx (102 KB)
+→ SAM-19SP5026Q0016  [SAM.gov]  SUPPLY AND INSTALLATION OF HARDWOOD FLOORS INCHIEF OF M
+    ✓ Saved SAM-19SP5026Q0016.pdf (870 KB)
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+24 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 2692288262  (409 KB)  Replace Flooring Bldg 102 & Bldg 110
+  Sending to Ollama...
+✓ Saved spec for 2692288262  [GO 75]
+
+→ 2692305857  (3806 KB)  Sources Sought Notice for Flooring Services
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 2692305857  [GO 80]
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444026020031  (29 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444026020031 '<json>'
+
+→ 444028217346  (189 KB)  FS Zellerbach Hall Mezzanine Flooring Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444028217346  [GO 80]
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ SAM-19SP5026Q0016  (870 KB)  SUPPLY AND INSTALLATION OF HARDWOOD FLOORS INCHIEF OF MISSIO
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-19SP5026Q0016  [GO 80]
+
+→ SAM-36C24526Q0546  (8 KB)  N055--FLOORING INSTALLATION
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C24526Q0546  [GO 80]
+
+→ SAM-36C26326B0036  (5 KB)  Y1DA--PN: 636-26-502, Replace CLC Flooring (GI) PR: 636-26-3
+  Sending to Ollama...
+✓ Saved spec for SAM-36C26326B0036  [GO 80]
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+Unprocessed relevant bids: 36
+  18 already downloaded (run --pending to list)
+  18 to download
+
+  ✓ BidNet Direct: logged in — 2 bids to download
+  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ QB-CUPCCAA Bid F450-000-26  [Quality Bidders]  District Wide Gym Floor Refinishing
+    ✓ Saved QB-CUPCCAA Bid F450-000-26.pdf (4458 KB)
+
+→ SAM-140A0926Q0017  [SAM.gov]  Flooring Replacement for BIA, Navajo Region, Build
+    ✓ Saved SAM-140A0926Q0017.pdf (177 KB)
+
+→ SAM-JFSD260019  [SAM.gov]  Flooring IDR Sources Sought
+    ✓ Saved SAM-JFSD260019.pdf (123 KB)
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-140P6026Q0019  [SAM.gov]  S--Purchase and Install Visitor Center Carpet - ULSG
+    ✓ Saved SAM-140P6026Q0019.pdf (4991 KB)
+
+→ 444031270985  [BidNet Direct]  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+    ✓ Bid Info.docx (55 KB)
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ SKIP — CaleProcure login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C26326B0032  [SAM.gov]  Y1DA--656-26-201 Replace Carpet FY26 NRM 36C263-26-AP-2
+    ↳ ZIP: extracted DOCX text (4 KB)
+    ✓ Extracted from ZIP → SAM-36C26326B0032.txt (4 KB)
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+24 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443995865768  (46 KB)  Tenant Improvements for Multiple Rooms at Anaheim Campus
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995865768 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444026020031  (29 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444026020031 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ QB-CUPCCAA Bid F450-000-26  (4458 KB)  District Wide Gym Floor Refinishing
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save QB-CUPCCAA Bid F450-000-26 '<json>'
+
+→ SAM-140A0926Q0017  (177 KB)  Flooring Replacement for BIA, Navajo Region, Build
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-140A0926Q0017  [GO 80]
+
+→ SAM-140P6026Q0019  (4991 KB)  S--Purchase and Install Visitor Center Carpet - ULSG
+  Sending to Ollama...
+✓ Saved spec for SAM-140P6026Q0019  [GO 75]
+
+→ SAM-36C26326B0032  (4 KB)  Y1DA--656-26-201 Replace Carpet FY26 NRM 36C263-26-AP-2448
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C26326B0032  [GO 80]
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-JFSD260019  (123 KB)  Flooring IDR Sources Sought
+  Sending to Ollama...
+✓ Saved spec for SAM-JFSD260019  [GO 80]
+
+Unprocessed relevant bids: 36
+  19 already downloaded (run --pending to list)
+  17 to download
+
+  ✓ BidNet Direct: logged in — 4 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-FA850126Q0041  [SAM.gov]  PZI Middle Bay Blinds
+    ✓ Saved SAM-FA850126Q0041.pdf (509 KB)
+
+→ 444032978615  [BidNet Direct]  Annual Carpet and VCT Cleaning Services
+    ✓ Invitation_for_Bid_(IFB)_No._127986.pdf (11057 KB)
+→ 444032978616  [BidNet Direct]  Drapery and Blinds Cleaning and Maintenance Services
+    ✓ IFB_26-20040_Drapery_and_Blinds_Cleaning_and_M.pdf (3340 KB)
+    ✓ DSH-Metropolitan_Map.pdf (9293 KB)
+→ 444031376261  [BidNet Direct]  Carpet Cleaning Service
+    ✓ Maintenance service agreement (1).pdf (217 KB)
+    ✓ 2026 Carpet cleaning Services RFP planetbid.pdf (542 KB)
+→ SAM-70Z03326QSEAT0006  [SAM.gov]  USCG Base Astoria Hanger Carpet and Flooring Project
+    ✓ Saved SAM-70Z03326QSEAT0006.pdf (84 KB)
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-12A2383
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+24 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171586  (104 KB)  890/32F District Education Center Interior Improvement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171586 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444026020031  (29 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444026020031 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ 444031376261  (217 KB)  Carpet Cleaning Service
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for 444031376261  [GO 80]
+
+→ 444032978615  (11057 KB)  Annual Carpet and VCT Cleaning Services
+  Sending to Ollama...
+✓ Saved spec for 444032978615  [GO 75]
+
+→ 444032978616  (3340 KB)  Drapery and Blinds Cleaning and Maintenance Services
+  Sending to Ollama...
+✓ Saved spec for 444032978616  [GO 80]
+
+→ QB-CUPCCAA Bid F450-000-26  (4458 KB)  District Wide Gym Floor Refinishing
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save QB-CUPCCAA Bid F450-000-26 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA850126Q0041  (509 KB)  PZI Middle Bay Blinds
+  Sending to Ollama...
+✓ Saved spec for SAM-FA850126Q0041  [GO 75]
+
+Unprocessed relevant bids: 31
+  19 already downloaded (run --pending to list)
+  12 to download
+
+  ✓ BidNet Direct: logged in — 1 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-12A2383
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+19 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444026020031  (29 KB)  PANEL - FLOORING, PHENOLIC, FOR A650, 56" X 59.5" X 0.71", O
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444026020031 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ QB-CUPCCAA Bid F450-000-26  (4458 KB)  District Wide Gym Floor Refinishing
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save QB-CUPCCAA Bid F450-000-26 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+Unprocessed relevant bids: 30
+  18 already downloaded (run --pending to list)
+  12 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+  ⚠ CaleProcure: login failed — check CALEPROCURE_USER / CALEPROCURE_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ SKIP — CaleProcure login failed
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+18 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ QB-CUPCCAA Bid F450-000-26  (4458 KB)  District Wide Gym Floor Refinishing
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save QB-CUPCCAA Bid F450-000-26 '<json>'
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+Unprocessed relevant bids: 56
+  18 already downloaded (run --pending to list)
+  38 to download
+
+  ✓ BidNet Direct: logged in — 4 bids to download
+  ✓ CaleProcure: logged in — 1 bids to download
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ 8878781951  [BidNet Direct]  SCLA – Center for Training, Employment & Entrepreneursh
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-19NL80-26-Q-0015  [SAM.gov]  Carpet Removal and Parquet Installation Residential Pro
+    ✓ Saved SAM-19NL80-26-Q-0015.pdf (1923 KB)
+
+→ SAM-70Z03326Q2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ✓ Saved SAM-70Z03326Q2019000003.pdf (943 KB)
+
+→ SAM-70Z03326QSEAT0008  [SAM.gov]  Station Chetco River Replacement Flooring
+    ✓ Saved SAM-70Z03326QSEAT0008.pdf (172 KB)
+
+→ SAM-FA452826R0001  [SAM.gov]  Minot AFB Flooring MACC FY26
+    ✓ Saved SAM-FA452826R0001.pdf (274 KB)
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA480026Q0056  [SAM.gov]  BLDG 1302 Carpet Replacement
+    ✓ Saved SAM-FA480026Q0056.pdf (269 KB)
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-PANNWD26P0000029389  [SAM.gov]  Sources Sought for Renovation Work on the Challenger Do
+    ⚠ No PDF link found
+
+→ SAM-SPE4A726T425P  [SAM.gov]  16--CARPET,AIRCRAFT
+    ⚠ No PDF link found
+
+→ SAM-SS-Flooring-2026  [SAM.gov]  Sources Sought Notice for Flooring Services
+    ✓ Saved SAM-SS-Flooring-2026.pdf (3806 KB)
+
+→ SAM-W15QKN-26-R-A054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26QA115  [SAM.gov]  DEP-29101-4P Vinyl Floor Tile Replacement Fort Devens M
+    ✓ Saved SAM-W15QKN26QA115.pdf (1514 KB)
+
+→ SAM-W50S6T26QA021  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ✓ Saved SAM-W50S6T26QA021.pdf (409 KB)
+
+→ 444048233353  [BidNet Direct]  PANEL - FLOORING
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-140A2326Q0168  [SAM.gov]  Carpet Replacement for Red Rock Day School
+    ✓ Saved SAM-140A2326Q0168.pdf (1278 KB)
+
+→ SAM-W50S9H26QA018  [SAM.gov]  VOLK FIELD BILLETING BLIND REPLACEMENT - MULTIPLE BUILD
+    ✓ Saved SAM-W50S9H26QA018.pdf (179 KB)
+
+→ SAM-W5A11A25D0001  [SAM.gov]  NOTICE OF INTENT TO SOLE SOURCE: IDIQ CEILING INCREASE 
+    ✓ Saved SAM-W5A11A25D0001.pdf (801 KB)
+
+→ QB-Bid 1-26/27  [Quality Bidders]  Dunlap Elementary School Kitchen Modernization Project
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-Bid 1-26/27.pdf'
+
+→ SAM-FA460826QC066  [SAM.gov]  2 MUNS - B7306 Carpet Replacement
+    ✓ Saved SAM-FA460826QC066.pdf (631 KB)
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ SAM-19SP5026Q0016QUESTIONSANDANSWERS1AMENDMENT1  [SAM.gov]  SUPPLY AND INSTALLATION OF HARDWOOD FLOORS IN CHIEF OF 
+    ✓ Saved SAM-19SP5026Q0016QUESTIONSANDANSWERS1AMENDMENT1.pdf (188 KB)
+
+→ CCOP-12A2383  [Caltrans CCOP]  IFPQ Restroom Remodel and Repairs, Orange County.
+    ⚠ Page error (title: 'Oops!') — BIDDER_ID or session issue
+
+    ⚠ No documents saved for CCOP-12A2383
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ QB-n/a  [Quality Bidders]  Vichy TK-8 School Portable Classrooms Site Improvements
+    ⚠ Error: [Errno 2] No such file or directory: '/Users/leo-claude/fcu/bid-scanner/output/specs/QB-n/a.pdf'
+
+→ SAM-140P6226B0002  [SAM.gov]  Z--Pullman NHP - Renovation and Build-out
+    ⚠ No PDF link found
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ No documents found (tab may not have loaded)
+    ⚠ No documents found
+
+→ SAM-W912PL26S0026  [SAM.gov]  Renovate 4C/4D Inpatient Ward at Phoenix VA Hospital
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+31 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 443995805861  (38 KB)  Main Jail – Medical Flooring Replacement (Floor 2)
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443995805861 '<json>'
+
+→ 443998078095  (17 KB)  Brea Olinda High School Gym Floor Replacement
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 443998078095 '<json>'
+
+→ 444001171597  (102 KB)  High School Gym Floor Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444001171597 '<json>'
+
+→ 444002134573  (23 KB)  Police Department Flooring Replacement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444002134573 '<json>'
+
+→ 444004120527  (31 KB)  Districtwide Carpet Cleaning Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444004120527 '<json>'
+
+→ 444015724264  (104 KB)  Flooring Installation
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724264 '<json>'
+
+→ 444015724277  (104 KB)  Marin County Office of Education Flooring and Painting Proje
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444015724277 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025524726  (97 KB)  City Hall Renovation Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025524726 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ QB-CUPCCAA Bid F450-000-26  (4458 KB)  District Wide Gym Floor Refinishing
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save QB-CUPCCAA Bid F450-000-26 '<json>'
+
+→ SAM-140A2326Q0168  (1278 KB)  Carpet Replacement for Red Rock Day School
+  Sending to Ollama...
+✓ Saved spec for SAM-140A2326Q0168  [GO 80]
+
+→ SAM-19NL80-26-Q-0015  (1923 KB)  Carpet Removal and Parquet Installation Residential Property
+  Sending to Ollama...
+✓ Saved spec for SAM-19NL80-26-Q-0015  [GO 75]
+
+→ SAM-19SP5026Q0016QUESTIONSANDANSWERS1AMENDMENT1  (188 KB)  SUPPLY AND INSTALLATION OF HARDWOOD FLOORS IN CHIEF OF MISSI
+  Sending to Ollama...
+✓ Saved spec for SAM-19SP5026Q0016QUESTIONSANDANSWERS1AMENDMENT1  [GO 75]
+
+→ SAM-70Z027Q260000002  (55 KB)  REPAIR INTERIOR FINISHES DAWSON HALL
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z027Q260000002 '<json>'
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-70Z03326QSEAT0008  (172 KB)  Station Chetco River Replacement Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-70Z03326QSEAT0008  [GO 75]
+
+→ SAM-FA452826R0001  (274 KB)  Minot AFB Flooring MACC FY26
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA452826R0001  [GO 80]
+
+→ SAM-FA460826QC066  (631 KB)  2 MUNS - B7306 Carpet Replacement
+  Sending to Ollama...
+✓ Saved spec for SAM-FA460826QC066  [GO 80]
+
+→ SAM-FA480026Q0056  (269 KB)  BLDG 1302 Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA480026Q0056  [GO 80]
+
+→ SAM-SS-Flooring-2026  (3806 KB)  Sources Sought Notice for Flooring Services
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-SS-Flooring-2026  [GO 80]
+
+→ SAM-W15QKN26QA115  (1514 KB)  DEP-29101-4P Vinyl Floor Tile Replacement Fort Devens MA
+  Sending to Ollama...
+✓ Saved spec for SAM-W15QKN26QA115  [GO 75]
+
+→ SAM-W50S6T26QA021  (409 KB)  Replace Flooring Bldg 102 & Bldg 110
+  Sending to Ollama...
+✓ Saved spec for SAM-W50S6T26QA021  [GO 75]
+
+→ SAM-W50S9H26QA018  (179 KB)  VOLK FIELD BILLETING BLIND REPLACEMENT - MULTIPLE BUILDINGS
+  Sending to Ollama...
+✓ Saved spec for SAM-W50S9H26QA018  [GO 75]
+
+→ SAM-W5A11A25D0001  (801 KB)  NOTICE OF INTENT TO SOLE SOURCE: IDIQ CEILING INCREASE FOR E
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-W5A11A25D0001  [GO 80]
+
+Unprocessed relevant bids: 30
+  9 already downloaded (run --pending to list)
+  21 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444048233353  [BidNet Direct]  PANEL - FLOORING
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ 444037800201  [BidNet Direct]  Canyon Crest Academy Learning Commons Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C25726Q0431  [SAM.gov]  Z1DA--36C257-26-AP-2152 | Replace LVT Flooring (Amarill
+    ↳ ZIP: extracted DOCX text (1 KB)
+    ✓ Extracted from ZIP → SAM-36C25726Q0431.txt (1 KB)
+
+→ SAM-FA481421D0003P00006  [SAM.gov]  MacDill AFB Flooring IDIQ Ceiling Adjustment
+    ✓ Saved SAM-FA481421D0003P00006.pdf (454 KB)
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+11 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ SAM-36C25726Q0431  (1 KB)  Z1DA--36C257-26-AP-2152 | Replace LVT Flooring (Amarillo) | 
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C25726Q0431  [GO 80]
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 33
+  10 already downloaded (run --pending to list)
+  23 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-042075  [SAM.gov]  Carpet Rework
+    ✓ Saved SAM-042075.pdf (139 KB)
+
+→ QB-2026-MOT-4  [Quality Bidders]  Carpet and LVT Installation at Various Sites
+    ✓ Saved QB-2026-MOT-4.pdf (517 KB)
+
+→ 444054899892  [BidNet Direct]  Carpet Replacement and Installation Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ 444048233353  [BidNet Direct]  PANEL - FLOORING
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ 444037800201  [BidNet Direct]  Canyon Crest Academy Learning Commons Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+12 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ QB-2026-MOT-4  (517 KB)  Carpet and LVT Installation at Various Sites
+  Sending to Ollama...
+✓ Saved spec for QB-2026-MOT-4  [GO 75]
+
+→ SAM-042075  (139 KB)  Carpet Rework
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-042075  [GO 80]
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 31
+  10 already downloaded (run --pending to list)
+  21 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444048233353  [BidNet Direct]  PANEL - FLOORING
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ 444054899892  [BidNet Direct]  Carpet Replacement and Installation Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ 444037800201  [BidNet Direct]  Canyon Crest Academy Learning Commons Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+10 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 36
+  10 already downloaded (run --pending to list)
+  26 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-70US0926Q70092737  [SAM.gov]  Hunting Blinds
+    ✓ Saved SAM-70US0926Q70092737.pdf (463 KB)
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-FA527026PKA02  [SAM.gov]  Gym Floor Covers
+    ⚠ No PDF link found
+
+→ SAM-832674426  [SAM.gov]  Flooring Tile Epoxy Application Services
+    ✓ Saved SAM-832674426.pdf (1101 KB)
+
+→ SAM-36C25926Q0486  [SAM.gov]  Z1DA--Demo, Remove, Replace Flooring 8N Mental Health
+    ✓ Saved SAM-36C25926Q0486.pdf (330 KB)
+
+→ SAM-H9225726RE017  [SAM.gov]  Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ 444057881711  [BidNet Direct]  Flooring Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ 444054899892  [BidNet Direct]  Carpet Replacement and Installation Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+13 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444020883860  (22 KB)  On-Call General Construction Services
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444020883860 '<json>'
+
+→ 444025570427  (27 KB)  Gibson Senior Center Interior Improvement Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444025570427 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ SAM-36C25926Q0486  (330 KB)  Z1DA--Demo, Remove, Replace Flooring 8N Mental Health
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C25926Q0486  [GO 80]
+
+→ SAM-70US0926Q70092737  (463 KB)  Hunting Blinds
+  Sending to Ollama...
+✓ Saved spec for SAM-70US0926Q70092737  [GO 75]
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-832674426  (1101 KB)  Flooring Tile Epoxy Application Services
+  Sending to Ollama...
+✓ Saved spec for SAM-832674426  [GO 75]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 32
+  8 already downloaded (run --pending to list)
+  24 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-FA527026PKA02  [SAM.gov]  Gym Floor Covers
+    ⚠ No PDF link found
+
+→ SAM-H9225726RE017  [SAM.gov]  Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ 444054899892  [BidNet Direct]  Carpet Replacement and Installation Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444059163451  [BidNet Direct]  Floor Repair, Inspection, and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444057881711  [BidNet Direct]  Flooring Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+8 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 36
+  8 already downloaded (run --pending to list)
+  28 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-140A2326Q0174  [SAM.gov]  REPLACE WINDOW BLINDS - NENAHNEZAD
+    ✓ Saved SAM-140A2326Q0174.pdf (716 KB)
+
+→ SAM-36C26226Q0763  [SAM.gov]  S214--Annual Carpet Cleaning Services
+    ↳ ZIP: extracted DOCX text (156 KB)
+    ✓ Extracted from ZIP → SAM-36C26226Q0763.txt (157 KB)
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA663326QA007  [SAM.gov]  Replace Carpet Multiple Buildings
+    ✓ Saved SAM-FA663326QA007.pdf (238 KB)
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q1115  [SAM.gov]  LSD-47, CHEMICAL RESISTANT FLOORING IN 02-43-2-L; REPAI
+    ⚠ No PDF link found
+
+→ SAM-H9225726RE017  [SAM.gov]  Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-FA527026PKA02  [SAM.gov]  Gym Floor Covers
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ 444059163451  [BidNet Direct]  Floor Repair, Inspection, and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ 444054899892  [BidNet Direct]  Carpet Replacement and Installation Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA282326R0016  [SAM.gov]  Flooring Removal and Installation Services
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444057881711  [BidNet Direct]  Flooring Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+11 PDF(s) to parse:
+
+→ 2690396672  (11 KB)  Z1DB--Replace Dietetics and Cath Lab Flooring, Buildings 1 a
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2690396672 '<json>'
+
+→ 2691088232  (30 KB)  Z1DA--Solicitation No. 36C26126R0049 Project No. 570-23-223,
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 2691088232 '<json>'
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ SAM-140A2326Q0174  (716 KB)  REPLACE WINDOW BLINDS - NENAHNEZAD
+  Sending to Ollama...
+✓ Saved spec for SAM-140A2326Q0174  [GO 80]
+
+→ SAM-36C26226Q0763  (157 KB)  S214--Annual Carpet Cleaning Services
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C26226Q0763  [GO 80]
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA663326QA007  (238 KB)  Replace Carpet Multiple Buildings
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA663326QA007  [GO 80]
+

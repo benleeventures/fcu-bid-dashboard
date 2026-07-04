@@ -3,6 +3,7 @@
 *.env
 .env.local
 cookies.json
+cookies_opengov.json
 
 # Python
 __pycache__/
