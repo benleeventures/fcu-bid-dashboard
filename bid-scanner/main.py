@@ -169,16 +169,23 @@ async def main():
     # Merge queued manual bids into the full list for email
     all_bids = bids + queued_pb_bids + queued_og_bids
 
+    new_relevant = [b for b in all_bids if b.get("is_relevant") and b.get("_is_new")]
+
     # --- Scan summary (always fires) + new-bid digest ---
     from notify import send_scan_summary, send_new_bids_digest, _admin_recipients
     if _admin_recipients():
         print("\nSending scan summary...")
         send_scan_summary(all_bids, duration)
 
-        new_relevant = [b for b in all_bids if b.get("is_relevant") and b.get("_is_new")]
         if new_relevant:
             print(f"  Sending new-bid digest ({len(new_relevant)} relevant)...")
             send_new_bids_digest(new_relevant)
+
+    if new_relevant and os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
+        from airtable_sync import sync_new_bids
+        print("\nSyncing new relevant bids to Airtable tracker...")
+        added = sync_new_bids(new_relevant)
+        print(f"  ✓ {added} new row(s) added to Opportunities")
 
     # Mark queued manual bids as digested now that the email has been sent
     if queued_pb_bids:

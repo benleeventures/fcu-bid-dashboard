@@ -114,6 +114,11 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
     sb.table("bid_specs").upsert(row, on_conflict="bid_id").execute()
     print(f"✓ Saved spec for {bid_id}  [{go['verdict'].upper()} {go['score']}]")
 
+    if os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
+        from airtable_sync import update_job_walk
+        if update_job_walk(bid_id, spec.get("walk_required"), walk_date):
+            print(f"  ✓ Airtable Job Walk fields updated")
+
 
 def _parse_date(raw: str) -> str | None:
     import re as _re
