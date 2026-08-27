@@ -46,11 +46,17 @@ async function getBids(): Promise<Bid[]> {
   if (!url || !key) return []
 
   const sb = createClient(url, key)
+  // The table is dominated by ~900 past-due "expired" rows. The old query
+  // ordered by due_date asc + limit 500, so those expired rows filled the
+  // entire window and starved the view of every current bid. Exclude expired
+  // at the query level (BidTable's archive toggle covered them anyway) and
+  // order by recency. PostgREST hard-caps responses at 1000 rows.
   const { data, error } = await sb
     .from('bids')
     .select('*, spec:bid_specs(flooring_types,total_sqft,rooms,prevailing_wage,bid_bond,bid_bond_pct,walk_required,walk_date,walk_date_raw,summary)')
-    .order('due_date', { ascending: true, nullsFirst: false })
-    .limit(500)
+    .neq('bid_status', 'expired')
+    .order('first_seen_at', { ascending: false })
+    .limit(1000)
 
   if (error) {
     console.error('Supabase error:', error.message)

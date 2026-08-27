@@ -40,14 +40,18 @@ def run(dry_run: bool = False):
 
     today = date.today().isoformat()
 
+    # Only auto-expire bids that are still "active". Never touch bids that were
+    # manually moved to submitted/won/lost/no_bid — clobbering those to "expired"
+    # destroys win/loss tracking history.
+    KEEP_STATUSES = ("submitted", "won", "lost", "no_bid", "expired")
+
     resp = (
         sb.table("bids")
-        .select("bid_id,title,agency,due_date,source")
+        .select("bid_id,title,agency,due_date,source,bid_status")
         .lt("due_date", today)
-        .neq("bid_status", "expired")
         .execute()
     )
-    past_due = resp.data or []
+    past_due = [b for b in (resp.data or []) if (b.get("bid_status") or "active") not in KEEP_STATUSES]
 
     if not past_due:
         log.info("No past-due relevant bids — nothing to expire")
