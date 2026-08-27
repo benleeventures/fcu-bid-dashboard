@@ -27,5 +27,8 @@ dashboard/.next/
 # Downloaded bid documents
 bid-scanner/output/
 
+# Runtime logs
+bid-scanner/logs/
+
 # Vercel
 .vercel
