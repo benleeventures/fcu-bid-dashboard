@@ -4521,3 +4521,4452 @@ Now run: python parser.py --pending  to see what needs parsing
   ↻ Retrying with strict JSON prompt...
 ✓ Saved spec for SAM-FA663326QA007  [GO 80]
 
+Unprocessed relevant bids: 56
+  6 already downloaded (run --pending to list)
+  50 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 444042228982  [BidNet Direct]  Flooring Materials and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q1115  [SAM.gov]  LSD-47, CHEMICAL RESISTANT FLOORING IN 02-43-2-L; REPAI
+    ⚠ No PDF link found
+
+→ SAM-H9225726RE017  [SAM.gov]  Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-FA527026PKA02  [SAM.gov]  Gym Floor Covers
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ 444059163451  [BidNet Direct]  Floor Repair, Inspection, and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ 444039035300  [BidNet Direct]  Blinds for 200 W. Pontiac Way
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-19AR2026Q0027  [SAM.gov]  FAC - Exterior flooring replacement
+    ⚠ No PDF link found
+
+→ 444054899892  [BidNet Direct]  Carpet Replacement and Installation Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA469026Q0029  [SAM.gov]  Dorm Carpet Cleaning
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444057881711  [BidNet Direct]  Flooring Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444029729380  [BidNet Direct]  Alameda Hospital 2030 Seismic and Operational Upgrades 
+    ⚠ SKIP — BidNet login failed
+
+→ 444040630709  [BidNet Direct]  Flooring Procurement and Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W911S226U3437  [SAM.gov]  Updated carpet squares/broadloom
+    ⚠ No PDF link found
+
+→ SAM-FA251726QA024  [SAM.gov]  SS - Airfield and Weather Flight Carpet Replacement
+    ↳ ZIP: extracted DOCX text (16 KB)
+    ✓ Extracted from ZIP → SAM-FA251726QA024.txt (16 KB)
+
+→ SAM-140P5326Q0025  [SAM.gov]  S--MACA - REPLACEMENT OF VC EXHIBIT CARPET
+    ✓ Saved SAM-140P5326Q0025.pdf (4526 KB)
+
+→ SAM-PR16068545  [SAM.gov]  Request for Pricing Proposal – Replacement of carpeting
+    ↳ ZIP: extracted DOCX text (4 KB)
+    ✓ Extracted from ZIP → SAM-PR16068545.txt (4 KB)
+
+→ 444062882410  [BidNet Direct]  Carpet Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W912DR26QA051  [SAM.gov]  Janitorial and Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W911SG26CA012  [SAM.gov]  Remove and Install Vinyl Composite Tile (VCT) Flooring 
+    ✓ Saved SAM-W911SG26CA012.pdf (402 KB)
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-6010026003  [SAM.gov]  Change out leaking shower flooring
+    ↳ ZIP: extracted DOCX text (4 KB)
+    ✓ Extracted from ZIP → SAM-6010026003.txt (4 KB)
+
+→ SAM-PANMCC25P0000016028  [SAM.gov]  IDIQ FLOORING
+    ✓ Saved SAM-PANMCC25P0000016028.pdf (511 KB)
+
+→ 444080940396  [BidNet Direct]  FLOORING - GRAY/BLACK, 48" X 39.37 ' X 0.12", NORAPLAN 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N6264926Q0389  [SAM.gov]  LSD-47 CHEMICAL-RESISTANT FLOORING IN 03-29-0-L; REPLAC
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q0310-S  [SAM.gov]  LSD-47 2PK CHEMICAL-RESISTANT FLOORING IN 2-25-1-L; INS
+    ⚠ No PDF link found
+
+→ 444070805697  [BidNet Direct]  CARPET TILE AND ADHESIVE
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N6264926Q0392  [SAM.gov]  MCM-14 Chemical-Resistant Flooring in 1-59-3-Q; Replace
+    ⚠ No PDF link found
+
+→ 2704212317  [BidNet Direct]  Flooring Materials for Yosemite NP
+    ⚠ SKIP — BidNet login failed
+
+→ 2704224047  [BidNet Direct]  37260PR260000011 - Sector Los Angeles Long Beach - Comm
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P4526R0028  [SAM.gov]  MASI, CARPET REPLACEMENT AT FEDERAL HALL
+    ✓ Saved SAM-140P4526R0028.pdf (1454 KB)
+
+→ SAM-36C25726Q0722  [SAM.gov]  CTX Chapel Carpet Replacement
+    ✓ Saved SAM-36C25726Q0722.pdf (444 KB)
+
+→ SAM-FA303026R0006  [SAM.gov]  B334 Repair Kitchen Flooring
+    ✓ Saved SAM-FA303026R0006.pdf (678 KB)
+
+→ 2705026787  [BidNet Direct]  Replace Flooring and Paint Interior Spaces In Building 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326Q2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ✓ Saved SAM-70Z03326Q2019000007.pdf (253 KB)
+
+→ 2703665852  [BidNet Direct]  Flooring Services - Basic Ordering Agreement (BOA)
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N40085-26-R-9047  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ✓ Saved SAM-N40085-26-R-9047.pdf (170 KB)
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+17 PDF(s) to parse:
+
+→ 444018425719  (80 KB)  McKee Fisk Anthropology Research Lab Retrofit Project
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444018425719 '<json>'
+
+→ 444028582344  (102 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444028582344 '<json>'
+
+→ 444031270985  (55 KB)  LA SIERRA AND ARLANZA LIBRARIES CARPET INSTALLATION
+  Sending to Ollama...
+  ⚠ Text extraction failed: No /Root object! - Is this really a PDF?
+  ⚠ Parse failed — run manually:
+    python parser.py --save 444031270985 '<json>'
+
+→ SAM-140P4526R0028  (1454 KB)  MASI, CARPET REPLACEMENT AT FEDERAL HALL
+  Sending to Ollama...
+✓ Saved spec for SAM-140P4526R0028  [GO 75]
+
+→ SAM-140P5326Q0025  (4526 KB)  S--MACA - REPLACEMENT OF VC EXHIBIT CARPET
+  Sending to Ollama...
+✓ Saved spec for SAM-140P5326Q0025  [GO 75]
+
+→ SAM-36C25726Q0722  (444 KB)  CTX Chapel Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C25726Q0722  [GO 80]
+
+→ SAM-6010026003  (4 KB)  Change out leaking shower flooring
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-6010026003  [GO 70]
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-70Z03326Q2019000007  (253 KB)  U.S. Coast Guard Station Quillayute River Main Building Floo
+  Sending to Ollama...
+✓ Saved spec for SAM-70Z03326Q2019000007  [GO 75]
+
+→ SAM-70Z03326QSEAT0006  (84 KB)  USCG Base Astoria Hanger Carpet and Flooring Project
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326QSEAT0006 '<json>'
+
+→ SAM-FA251726QA024  (16 KB)  SS - Airfield and Weather Flight Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA251726QA024  [GO 80]
+
+→ SAM-FA303026R0006  (678 KB)  B334 Repair Kitchen Flooring
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA303026R0006  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-N40085-26-R-9047  (170 KB)  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N40085-26-R-9047  [GO 80]
+
+→ SAM-PANMCC25P0000016028  (511 KB)  IDIQ FLOORING
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-PANMCC25P0000016028  [GO 80]
+
+→ SAM-PR16068545  (4 KB)  Request for Pricing Proposal – Replacement of carpeting in U
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-PR16068545  [GO 80]
+
+→ SAM-W911SG26CA012  (402 KB)  Remove and Install Vinyl Composite Tile (VCT) Flooring BLDG 
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-W911SG26CA012  [GO 80]
+
+Unprocessed relevant bids: 30
+  2 already downloaded (run --pending to list)
+  28 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q1115  [SAM.gov]  LSD-47, CHEMICAL RESISTANT FLOORING IN 02-43-2-L; REPAI
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ 444059163451  [BidNet Direct]  Floor Repair, Inspection, and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ 444080940396  [BidNet Direct]  FLOORING - GRAY/BLACK, 48" X 39.37 ' X 0.12", NORAPLAN 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q0389  [SAM.gov]  LSD-47 CHEMICAL-RESISTANT FLOORING IN 03-29-0-L; REPLAC
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q0310-S  [SAM.gov]  LSD-47 2PK CHEMICAL-RESISTANT FLOORING IN 2-25-1-L; INS
+    ⚠ No PDF link found
+
+→ 444070805697  [BidNet Direct]  CARPET TILE AND ADHESIVE
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N6264926Q0392  [SAM.gov]  MCM-14 Chemical-Resistant Flooring in 1-59-3-Q; Replace
+    ⚠ No PDF link found
+
+→ 2704212317  [BidNet Direct]  Flooring Materials for Yosemite NP
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 2704224047  [BidNet Direct]  37260PR260000011 - Sector Los Angeles Long Beach - Comm
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444062882410  [BidNet Direct]  Carpet Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W912DR26QA051  [SAM.gov]  Janitorial and Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 2705026787  [BidNet Direct]  Replace Flooring and Paint Interior Spaces In Building 
+    ⚠ SKIP — BidNet login failed
+
+→ 2703665852  [BidNet Direct]  Flooring Services - Basic Ordering Agreement (BOA)
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+2 PDF(s) to parse:
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 33
+  2 already downloaded (run --pending to list)
+  31 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q1115  [SAM.gov]  LSD-47, CHEMICAL RESISTANT FLOORING IN 02-43-2-L; REPAI
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ 444080940396  [BidNet Direct]  FLOORING - GRAY/BLACK, 48" X 39.37 ' X 0.12", NORAPLAN 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q0389  [SAM.gov]  LSD-47 CHEMICAL-RESISTANT FLOORING IN 03-29-0-L; REPLAC
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q0310-S  [SAM.gov]  LSD-47 2PK CHEMICAL-RESISTANT FLOORING IN 2-25-1-L; INS
+    ⚠ No PDF link found
+
+→ 444070805697  [BidNet Direct]  CARPET TILE AND ADHESIVE
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444062882410  [BidNet Direct]  Carpet Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W912DR26QA051  [SAM.gov]  Janitorial and Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-PR16052230  [SAM.gov]  F-FRA carpet stock request @ COB
+    ✓ Saved SAM-PR16052230.pdf (526 KB)
+
+→ SAM-W50S9A26QA012  [SAM.gov]  Raised Access Flooring Tiles
+    ✓ Saved SAM-W50S9A26QA012.pdf (3235 KB)
+
+→ SAM-FA460026B1000CARPET  [SAM.gov]  B1000 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N6264926Q0392  [SAM.gov]  MCM-14 Chemical-Resistant Flooring in 1-59-3-Q; Replace
+    ⚠ No PDF link found
+
+→ 2704212317  [BidNet Direct]  Flooring Materials for Yosemite NP
+    ⚠ SKIP — BidNet login failed
+
+→ 2704224047  [BidNet Direct]  37260PR260000011 - Sector Los Angeles Long Beach - Comm
+    ⚠ SKIP — BidNet login failed
+
+→ 2705026787  [BidNet Direct]  Replace Flooring and Paint Interior Spaces In Building 
+    ⚠ SKIP — BidNet login failed
+
+→ 2703665852  [BidNet Direct]  Flooring Services - Basic Ordering Agreement (BOA)
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+4 PDF(s) to parse:
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-PR16052230  (526 KB)  F-FRA carpet stock request @ COB
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-PR16052230  [GO 80]
+
+→ SAM-W50S9A26QA012  (3235 KB)  Raised Access Flooring Tiles
+  Sending to Ollama...
+✓ Saved spec for SAM-W50S9A26QA012  [GO 75]
+
+Unprocessed relevant bids: 36
+  2 already downloaded (run --pending to list)
+  34 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-36C24926Q0290  [SAM.gov]  S214--36C249-26-AP-2401 - Carpet Cleaning Contract
+    ↳ ZIP: extracted DOCX text (95 KB)
+    ✓ Extracted from ZIP → SAM-36C24926Q0290.txt (96 KB)
+
+→ SAM-N6264926Q0439  [SAM.gov]  USS TRIPOLI(LHA-7) CHEMICAL RESISTANT FLOORING; REFURFA
+    ✓ Saved SAM-N6264926Q0439.pdf (1089 KB)
+
+→ SAM-FA521526Q0027  [SAM.gov]  647 FSS Flooring
+    ✓ Saved SAM-FA521526Q0027.pdf (200 KB)
+
+→ SAM-FA452826JT0123  [SAM.gov]  5 CS Carpet Cleaning
+    ✓ Saved SAM-FA452826JT0123.pdf (400 KB)
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q1115  [SAM.gov]  LSD-47, CHEMICAL RESISTANT FLOORING IN 02-43-2-L; REPAI
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526R9054  [SAM.gov]  BEQ M400 Area Paint-Flooring Repairs
+    ✓ Saved SAM-N4008526R9054.pdf (153 KB)
+
+→ SAM-N4008526R9063  [SAM.gov]  BQ AS4000 Area Paint - Flooring Repairs
+    ✓ Saved SAM-N4008526R9063.pdf (153 KB)
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444055057272  [BidNet Direct]  Animal Care & Adoption Center – Admin Building Resinous
+    ⚠ SKIP — BidNet login failed
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N6264926Q0392  [SAM.gov]  MCM-14 Chemical-Resistant Flooring in 1-59-3-Q; Replace
+    ⚠ No PDF link found
+
+→ 2704212317  [BidNet Direct]  Flooring Materials for Yosemite NP
+    ⚠ SKIP — BidNet login failed
+
+→ 2704224047  [BidNet Direct]  37260PR260000011 - Sector Los Angeles Long Beach - Comm
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444070805697  [BidNet Direct]  CARPET TILE AND ADHESIVE
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444062882410  [BidNet Direct]  Carpet Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W912DR26QA051  [SAM.gov]  Janitorial and Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-FA460026B1000CARPET  [SAM.gov]  B1000 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 2705026787  [BidNet Direct]  Replace Flooring and Paint Interior Spaces In Building 
+    ⚠ SKIP — BidNet login failed
+
+→ 2703665852  [BidNet Direct]  Flooring Services - Basic Ordering Agreement (BOA)
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+8 PDF(s) to parse:
+
+→ SAM-36C24926Q0290  (96 KB)  S214--36C249-26-AP-2401 - Carpet Cleaning Contract
+  Sending to Ollama...
+✓ Saved spec for SAM-36C24926Q0290  [GO 80]
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-FA452826JT0123  (400 KB)  5 CS Carpet Cleaning
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA452826JT0123  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA521526Q0027  (200 KB)  647 FSS Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-FA521526Q0027  [GO 75]
+
+→ SAM-N4008526R9054  (153 KB)  BEQ M400 Area Paint-Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N4008526R9054  [GO 80]
+
+→ SAM-N4008526R9063  (153 KB)  BQ AS4000 Area Paint - Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N4008526R9063  [GO 80]
+
+→ SAM-N6264926Q0439  (1089 KB)  USS TRIPOLI(LHA-7) CHEMICAL RESISTANT FLOORING; REFURFACE
+  Sending to Ollama...
+✓ Saved spec for SAM-N6264926Q0439  [GO 75]
+
+Unprocessed relevant bids: 66
+  2 already downloaded (run --pending to list)
+  64 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q1115  [SAM.gov]  LSD-47, CHEMICAL RESISTANT FLOORING IN 02-43-2-L; REPAI
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1305M226Q0200  [SAM.gov]  Hawaiian Humpback Whale NMS Flooring Installation
+    ✓ Saved SAM-1305M226Q0200.pdf (1792 KB)
+
+→ SAM-N6264926Q0457  [SAM.gov]  Chemical Resistant Flooring in 03-86-5-Q
+    ✓ Saved SAM-N6264926Q0457.pdf (1130 KB)
+
+→ SAM-FA8136260004  [SAM.gov]  72 OSS Tower Window Shades
+    ✓ Saved SAM-FA8136260004.pdf (545 KB)
+
+→ SAM-SIMACQ-PD-102-0078  [SAM.gov]  Carpet Tiles
+    ✓ Saved SAM-SIMACQ-PD-102-0078.pdf (143 KB)
+
+→ SAM-31090PR260000288  [SAM.gov]  Replace Flooring and Paint Interior Spaces In Building 
+    ✓ Saved SAM-31090PR260000288.pdf (375 KB)
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526R9055  [SAM.gov]  BEQ HP200 Area Paint & Flooring Repairs
+    ✓ Saved SAM-N4008526R9055.pdf (159 KB)
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-36C24726Q0763  [SAM.gov]  J083--BUILDING 143 DIETETICS FLOORING RENOVATIONS SERVI
+    ↳ ZIP: extracted DOCX text (8 KB)
+    ✓ Extracted from ZIP → SAM-36C24726Q0763.txt (9 KB)
+
+→ SAM-N4008526R9064  [SAM.gov]  BEQ BB200-BB300 Area Paint & Flooring Repairs
+    ✓ Saved SAM-N4008526R9064.pdf (154 KB)
+
+→ SAM-FA302226R0020  [SAM.gov]  OSI B926 Flooring
+    ✓ Saved SAM-FA302226R0020.pdf (578 KB)
+
+→ SAM-1240LT26Q0144  [SAM.gov]  Jeffco Airtanker Base Flooring Replacement
+    ✓ Saved SAM-1240LT26Q0144.pdf (367 KB)
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA480326Q0109  [SAM.gov]  Multi-Building Carpet & LVP
+    ✓ Saved SAM-FA480326Q0109.pdf (152 KB)
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-19KS7026Q0053  [SAM.gov]  Carpet Replacement and Painting at American Diplomacy H
+    ✓ Saved SAM-19KS7026Q0053.pdf (593 KB)
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+→ 2704212317  [BidNet Direct]  Flooring Materials for Yosemite NP
+    ⚠ SKIP — BidNet login failed
+
+→ 2704224047  [BidNet Direct]  37260PR260000011 - Sector Los Angeles Long Beach - Comm
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-FA461026Q0150  [SAM.gov]  30 CPTS Carpet 10577
+    ✓ Saved SAM-FA461026Q0150.pdf (124 KB)
+
+→ SAM-FA309926Q0016  [SAM.gov]  Laughlin AFB - Bldg 308 Carpet Replacement
+    ✓ Saved SAM-FA309926Q0016.pdf (184 KB)
+
+→ SAM-19PK4026Q5016  [SAM.gov]  19PK4026Q5016 - PR16122102 - Carpets for SDA Apartments
+    ✓ Saved SAM-19PK4026Q5016.pdf (912 KB)
+
+→ SAM-2031ZA26Q00138  [SAM.gov]  NTERFACE CARPET TILES MARRAKESH CLASSICS
+    ✓ Saved SAM-2031ZA26Q00138.pdf (405 KB)
+
+→ SAM-36C24226Q0826  [SAM.gov]  7230--Sources Sought: Window Treatment Replacement for 
+    ↳ ZIP: extracted DOCX text (29 KB)
+    ✓ Extracted from ZIP → SAM-36C24226Q0826.txt (29 KB)
+
+→ SAM-1232SA26Q0887  [SAM.gov]  Floor Replacement
+    ✓ Saved SAM-1232SA26Q0887.pdf (632 KB)
+
+→ SAM-W911SA26BA010  [SAM.gov]  NEW IDIQ- FLOORING IDIQ FY26-FY29
+    ⚠ No PDF link found
+
+→ SAM-N6264926Q0449  [SAM.gov]  Replace Chemical-Resistant Flooring in 1-57-0-L and Pas
+    ✓ Saved SAM-N6264926Q0449.pdf (1133 KB)
+
+→ 444062882410  [BidNet Direct]  Carpet Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W912DR26QA051  [SAM.gov]  Janitorial and Carpet Cleaning Services
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-PR16077115  [SAM.gov]  Chancery 3003 Integrated window blinds (104)
+    ↳ ZIP: extracted DOCX text (3 KB)
+    ✓ Extracted from ZIP → SAM-PR16077115.txt (3 KB)
+
+→ SAM-75H70726Q00080  [SAM.gov]  Floor Replacement for the Albuquerque Indian Health Cen
+    ✓ Saved SAM-75H70726Q00080.pdf (129 KB)
+
+→ SAM-N4008526R9045  [SAM.gov]  MARSOC Buildings RR531 and RR532 Flooring Repairs
+    ✓ Saved SAM-N4008526R9045.pdf (123 KB)
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-FA860126R0022  [SAM.gov]  2026 Base Wide Flooring
+    ✓ Saved SAM-FA860126R0022.pdf (686 KB)
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ SAM-70Z03326Q0000011  [SAM.gov]  Gymnasium Hardwood Floor Restoration - USCG Station Qui
+    ✓ Saved SAM-70Z03326Q0000011.pdf (362 KB)
+
+→ SAM-FA460026B1000CARPET  [SAM.gov]  B1000 Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C25626Q1005  [SAM.gov]  Z2JZ--Wellness Center Flooring Install / Service
+    ↳ ZIP: extracted DOCX text (14 KB)
+    ✓ Extracted from ZIP → SAM-36C25626Q1005.txt (14 KB)
+
+→ SAM-FA462526Q1067  [SAM.gov]  Flooring and Carpet Services
+    ✓ Saved SAM-FA462526Q1067.pdf (452 KB)
+
+→ SAM-19KU2026Q0013  [SAM.gov]  RFQ 19KU2026Q0013 - AEWA Door & Tile Installation Upgra
+    ✓ Saved SAM-19KU2026Q0013.pdf (2495 KB)
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ 2705026787  [BidNet Direct]  Replace Flooring and Paint Interior Spaces In Building 
+    ⚠ SKIP — BidNet login failed
+
+→ 2703665852  [BidNet Direct]  Flooring Services - Basic Ordering Agreement (BOA)
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+29 PDF(s) to parse:
+
+→ SAM-1232SA26Q0887  (632 KB)  Floor Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-1232SA26Q0887  [GO 80]
+
+→ SAM-1240LT26Q0144  (367 KB)  Jeffco Airtanker Base Flooring Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-1240LT26Q0144  [GO 80]
+
+→ SAM-1305M226Q0200  (1792 KB)  Hawaiian Humpback Whale NMS Flooring Installation
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-1305M226Q0200  [GO 83]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-19KU2026Q0013  (2495 KB)  RFQ 19KU2026Q0013 - AEWA Door & Tile Installation Upgrade pr
+  Sending to Ollama...
+✓ Saved spec for SAM-19KU2026Q0013  [GO 75]
+
+→ SAM-19PK4026Q5016  (912 KB)  19PK4026Q5016 - PR16122102 - Carpets for SDA Apartments
+  Sending to Ollama...
+✓ Saved spec for SAM-19PK4026Q5016  [GO 75]
+
+→ SAM-2031ZA26Q00138  (405 KB)  NTERFACE CARPET TILES MARRAKESH CLASSICS
+  Sending to Ollama...
+✓ Saved spec for SAM-2031ZA26Q00138  [GO 80]
+
+→ SAM-31090PR260000288  (375 KB)  Replace Flooring and Paint Interior Spaces In Building 52 on
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-31090PR260000288  [GO 80]
+
+→ SAM-36C24226Q0826  (29 KB)  7230--Sources Sought: Window Treatment Replacement for the N
+  Sending to Ollama...
+✓ Saved spec for SAM-36C24226Q0826  [GO 80]
+
+→ SAM-36C24726Q0763  (9 KB)  J083--BUILDING 143 DIETETICS FLOORING RENOVATIONS SERVICE
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C24726Q0763  [GO 80]
+
+→ SAM-36C25626Q1005  (14 KB)  Z2JZ--Wellness Center Flooring Install / Service
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C25626Q1005  [GO 80]
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-70Z03326Q2019000003  (943 KB)  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD&CC S
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q2019000003 '<json>'
+
+→ SAM-75H70726Q00080  (129 KB)  Floor Replacement for the Albuquerque Indian Health Center, 
+  Sending to Ollama...
+✓ Saved spec for SAM-75H70726Q00080  [GO 75]
+
+→ SAM-FA302226R0020  (578 KB)  OSI B926 Flooring
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA302226R0020  [GO 80]
+
+→ SAM-FA309926Q0016  (184 KB)  Laughlin AFB - Bldg 308 Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA309926Q0016  [GO 80]
+
+→ SAM-FA461026Q0150  (124 KB)  30 CPTS Carpet 10577
+  Sending to Ollama...
+✓ Saved spec for SAM-FA461026Q0150  [GO 75]
+
+→ SAM-FA462526Q1067  (452 KB)  Flooring and Carpet Services
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA462526Q1067  [GO 80]
+
+→ SAM-FA480326Q0109  (152 KB)  Multi-Building Carpet & LVP
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA480326Q0109  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA8136260004  (545 KB)  72 OSS Tower Window Shades
+  Sending to Ollama...
+✓ Saved spec for SAM-FA8136260004  [GO 80]
+
+→ SAM-FA860126R0022  (686 KB)  2026 Base Wide Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-FA860126R0022  [GO 75]
+
+→ SAM-N4008526R9045  (123 KB)  MARSOC Buildings RR531 and RR532 Flooring Repairs
+  Sending to Ollama...
+✓ Saved spec for SAM-N4008526R9045  [GO 75]
+
+→ SAM-N4008526R9055  (159 KB)  BEQ HP200 Area Paint & Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N4008526R9055  [GO 80]
+
+→ SAM-N4008526R9064  (154 KB)  BEQ BB200-BB300 Area Paint & Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N4008526R9064  [GO 80]
+
+→ SAM-N6264926Q0449  (1133 KB)  Replace Chemical-Resistant Flooring in 1-57-0-L and Passage
+  Sending to Ollama...
+✓ Saved spec for SAM-N6264926Q0449  [GO 80]
+
+→ SAM-N6264926Q0457  (1130 KB)  Chemical Resistant Flooring in 03-86-5-Q
+  Sending to Ollama...
+✓ Saved spec for SAM-N6264926Q0457  [GO 80]
+
+→ SAM-PR16077115  (3 KB)  Chancery 3003 Integrated window blinds (104)
+  Sending to Ollama...
+✓ Saved spec for SAM-PR16077115  [GO 75]
+
+→ SAM-SIMACQ-PD-102-0078  (143 KB)  Carpet Tiles
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-SIMACQ-PD-102-0078  [GO 90]
+
+Unprocessed relevant bids: 35
+  3 already downloaded (run --pending to list)
+  32 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W911SA26BA010  [SAM.gov]  NEW IDIQ- FLOORING IDIQ FY26-FY29
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 2703665852  [BidNet Direct]  Flooring Services - Basic Ordering Agreement (BOA)
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA930126Q0010  [SAM.gov]  Flooring Services - Basic Ordering Agreement (BOA)
+    ✓ Saved SAM-FA930126Q0010.pdf (579 KB)
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+4 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA930126Q0010  (579 KB)  Flooring Services - Basic Ordering Agreement (BOA)
+  Sending to Ollama...
+✓ Saved spec for SAM-FA930126Q0010  [GO 75]
+
+Unprocessed relevant bids: 35
+  3 already downloaded (run --pending to list)
+  32 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-70Z03326QSEAT0055  [SAM.gov]  Northwest District Carpet Replacement
+    ✓ Saved SAM-70Z03326QSEAT0055.pdf (153 KB)
+
+→ SAM-19BR2526Q0012  [SAM.gov]  BSB|FAC|7901 RSTR|Chancery Corridors Carpet replacement
+    ✓ Saved SAM-19BR2526Q0012.pdf (452 KB)
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W911SA26BA010  [SAM.gov]  NEW IDIQ- FLOORING IDIQ FY26-FY29
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+5 PDF(s) to parse:
+
+→ SAM-19BR2526Q0012  (452 KB)  BSB|FAC|7901 RSTR|Chancery Corridors Carpet replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-19BR2526Q0012  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-70Z03326QSEAT0055  (153 KB)  Northwest District Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-70Z03326QSEAT0055  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 38
+  3 already downloaded (run --pending to list)
+  35 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W911SA26BA010  [SAM.gov]  NEW IDIQ- FLOORING IDIQ FY26-FY29
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-FA446026Q0040  [SAM.gov]  19 CONS Carpet Replacement
+    ✓ Saved SAM-FA446026Q0040.pdf (562 KB)
+
+→ SAM-FA446026Q0039  [SAM.gov]  19 CPTS Carpet B1255
+    ✓ Saved SAM-FA446026Q0039.pdf (379 KB)
+
+→ SAM-N4008526R9069  [SAM.gov]  MCAS Multiple Building Painting/Flooring Repairs
+    ✓ Saved SAM-N4008526R9069.pdf (253 KB)
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-FA480326Q0088  [SAM.gov]  1947 Remove and Replace Carpet - Shaw AFB
+    ✓ Saved SAM-FA480326Q0088.pdf (259 KB)
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+7 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA446026Q0039  (379 KB)  19 CPTS Carpet B1255
+  Sending to Ollama...
+✓ Saved spec for SAM-FA446026Q0039  [GO 75]
+
+→ SAM-FA446026Q0040  (562 KB)  19 CONS Carpet Replacement
+  Sending to Ollama...
+✓ Saved spec for SAM-FA446026Q0040  [GO 75]
+
+→ SAM-FA480326Q0088  (259 KB)  1947 Remove and Replace Carpet - Shaw AFB
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA480326Q0088  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-N4008526R9069  (253 KB)  MCAS Multiple Building Painting/Flooring Repairs
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-N4008526R9069  [GO 80]
+
+Unprocessed relevant bids: 35
+  3 already downloaded (run --pending to list)
+  32 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-12452360  [SAM.gov]  Carpet Removal and Installation
+    ✓ Saved SAM-12452360.pdf (157 KB)
+
+→ SAM-36C26127Q0015  [SAM.gov]  Z1DA--36C26127Q0015 | VASNHCS Maintenance Flooring Repa
+    ↳ ZIP: extracted DOCX text (23 KB)
+    ✓ Extracted from ZIP → SAM-36C26127Q0015.txt (23 KB)
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+5 PDF(s) to parse:
+
+→ SAM-12452360  (157 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-12452360  [GO 90]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C26127Q0015  (23 KB)  Z1DA--36C26127Q0015 | VASNHCS Maintenance Flooring Repairs a
+  Sending to Ollama...
+✓ Saved spec for SAM-36C26127Q0015  [GO 80]
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 33
+  3 already downloaded (run --pending to list)
+  30 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444088240486  [BidNet Direct]  Gladstone Lab Tenant Improvement - Window Coverings
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 444088240487  [BidNet Direct]  Gladstone Lab Tenant Improvement - Carpet & Wood Floori
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+3 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 40
+  3 already downloaded (run --pending to list)
+  37 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-36C24926Q0344  [SAM.gov]  S214--Carpet Cleaning Service
+    ↳ ZIP: extracted DOCX text (0 KB)
+    ✓ Extracted from ZIP → SAM-36C24926Q0344.txt (0 KB)
+
+→ SAM-FA462026QA295  [SAM.gov]  Resilient Rubber Flooring
+    ✓ Saved SAM-FA462026QA295.pdf (409 KB)
+
+→ SAM-FA469026Q0032  [SAM.gov]  SOLICITATION: Flooring Material and Installation BPA
+    ✓ Saved SAM-FA469026Q0032.pdf (537 KB)
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-31090PR260000376  [SAM.gov]  Purchase of Carpet Tile
+    ✓ Saved SAM-31090PR260000376.pdf (441 KB)
+
+→ SAM-36C24626Q0782  [SAM.gov]  Z2FD--Epoxy Flooring-Kitchen Floor
+    ↳ ZIP: extracted DOCX text (88 KB)
+    ✓ Extracted from ZIP → SAM-36C24626Q0782.txt (88 KB)
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z02926QNEWO369  [SAM.gov]  Replace Flooring at USCG Base New Orleans Administrativ
+    ✓ Saved SAM-70Z02926QNEWO369.pdf (448 KB)
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-140P4226Q0021  [SAM.gov]  REPRODUCTION WALLPAPER AND CARPET FOR THE IRONMAST
+    ✓ Saved SAM-140P4226Q0021.pdf (1891 KB)
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+10 PDF(s) to parse:
+
+→ SAM-140P4226Q0021  (1891 KB)  REPRODUCTION WALLPAPER AND CARPET FOR THE IRONMAST
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-140P4226Q0021  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-31090PR260000376  (441 KB)  Purchase of Carpet Tile
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-31090PR260000376  [GO 90]
+
+→ SAM-36C24626Q0782  (88 KB)  Z2FD--Epoxy Flooring-Kitchen Floor
+  Sending to Ollama...
+✓ Saved spec for SAM-36C24626Q0782  [GO 75]
+
+→ SAM-36C24926Q0344  (0 KB)  S214--Carpet Cleaning Service
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C24926Q0344  [GO 80]
+
+→ SAM-70Z02926QNEWO369  (448 KB)  Replace Flooring at USCG Base New Orleans Administrative Bui
+  Sending to Ollama...
+✓ Saved spec for SAM-70Z02926QNEWO369  [GO 75]
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA462026QA295  (409 KB)  Resilient Rubber Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-FA462026QA295  [GO 80]
+
+→ SAM-FA469026Q0032  (537 KB)  SOLICITATION: Flooring Material and Installation BPA
+  Sending to Ollama...
+✓ Saved spec for SAM-FA469026Q0032  [GO 75]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 38
+  3 already downloaded (run --pending to list)
+  35 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA461326Q2010  [SAM.gov]  SOURCES SOUGHT PKAB Bldg 485, 1151, 1235 Carpet Replace
+    ✓ Saved SAM-FA461326Q2010.pdf (137 KB)
+
+→ SAM-36C24226Q0887  [SAM.gov]  7220--36C242-26-AP-4139 | 528-26-3-8893-0611 Albany 10B
+    ↳ ZIP: extracted DOCX text (8 KB)
+    ✓ Extracted from ZIP → SAM-36C24226Q0887.txt (8 KB)
+
+→ SAM-140A2326Q0163  [SAM.gov]  SIPI DORM BLINDS
+    ↳ ZIP: extracted DOCX text (6 KB)
+    ✓ Extracted from ZIP → SAM-140A2326Q0163.txt (6 KB)
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+6 PDF(s) to parse:
+
+→ SAM-140A2326Q0163  (6 KB)  SIPI DORM BLINDS
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-140A2326Q0163  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24226Q0887  (8 KB)  7220--36C242-26-AP-4139 | 528-26-3-8893-0611 Albany 10B Secl
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C24226Q0887  [GO 80]
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA461326Q2010  (137 KB)  SOURCES SOUGHT PKAB Bldg 485, 1151, 1235 Carpet Replacement 
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA461326Q2010  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 38
+  3 already downloaded (run --pending to list)
+  35 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-SPMYM326Q6075  [SAM.gov]  VINYL TILE AND FLOORING
+    ↳ ZIP: extracted DOCX text (16 KB)
+    ✓ Extracted from ZIP → SAM-SPMYM326Q6075.txt (16 KB)
+
+→ SAM-36C24526Q0637  [SAM.gov]  N055--INSTALLATION OF LVT FLOORING
+    ✓ Saved SAM-36C24526Q0637.pdf (4203 KB)
+
+→ SAM-1232SA26Q1228  [SAM.gov]  Flooring Abatement and Replacement
+    ✓ Saved SAM-1232SA26Q1228.pdf (27 KB)
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+6 PDF(s) to parse:
+
+→ SAM-1232SA26Q1228  (27 KB)  Flooring Abatement and Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-1232SA26Q1228  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-SPMYM326Q6075  (16 KB)  VINYL TILE AND FLOORING
+  Sending to Ollama...
+✓ Saved spec for SAM-SPMYM326Q6075  [GO 75]
+
+Unprocessed relevant bids: 40
+  4 already downloaded (run --pending to list)
+  36 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-FA6670-26-Q-0010  [SAM.gov]  Replace CAC Carpeting B503, RVKQ 26-0007
+    ✓ Saved SAM-FA6670-26-Q-0010.pdf (601 KB)
+
+→ SAM-1232SA26Q1229  [SAM.gov]  Flooring Repairs
+    ✓ Saved SAM-1232SA26Q1229.pdf (540 KB)
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+6 PDF(s) to parse:
+
+→ SAM-1232SA26Q1229  (540 KB)  Flooring Repairs
+  Sending to Ollama...
+✓ Saved spec for SAM-1232SA26Q1229  [GO 75]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA6670-26-Q-0010  (601 KB)  Replace CAC Carpeting B503, RVKQ 26-0007
+  Sending to Ollama...
+✓ Saved spec for SAM-FA6670-26-Q-0010  [GO 75]
+
+Unprocessed relevant bids: 43
+  4 already downloaded (run --pending to list)
+  39 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912DS26QA015  [SAM.gov]  FY 2026 Facility Upgrades for New Jersey and New York R
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-FA468626MUNSB1322  [SAM.gov]  9 MUNS B1322 - Asbestos & Carpet Replacement - Beale AF
+    ⚠ ZIP contained no usable content
+
+→ SAM-PSFBTINTBLINDS  [SAM.gov]  21 CES/OL Tints and Blinds Install
+    ✓ Saved SAM-PSFBTINTBLINDS.pdf (671 KB)
+
+→ SAM-IHS1522593  [SAM.gov]  Construction Services - Floor Replacement at Tsaile Hea
+    ✓ Saved SAM-IHS1522593.pdf (135 KB)
+
+→ SAM-FA481926QA061  [SAM.gov]  AFNORTH Carpet Replacement
+    ✓ Saved SAM-FA481926QA061.pdf (219 KB)
+
+→ SAM-FA568226QA060  [SAM.gov]  31 FSS Dragon Gym Floor Refurbishment
+    ✓ Saved SAM-FA568226QA060.pdf (295 KB)
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+8 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-70Z03326Q0000011  (362 KB)  Gymnasium Hardwood Floor Restoration - USCG Station Quillayu
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-70Z03326Q0000011 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA481926QA061  (219 KB)  AFNORTH Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA481926QA061  [GO 80]
+
+→ SAM-FA568226QA060  (295 KB)  31 FSS Dragon Gym Floor Refurbishment
+  Sending to Ollama...
+✓ Saved spec for SAM-FA568226QA060  [GO 80]
+
+→ SAM-IHS1522593  (135 KB)  Construction Services - Floor Replacement at Tsaile Health C
+  Sending to Ollama...
+✓ Saved spec for SAM-IHS1522593  [GO 75]
+
+→ SAM-PSFBTINTBLINDS  (671 KB)  21 CES/OL Tints and Blinds Install
+  Sending to Ollama...
+✓ Saved spec for SAM-PSFBTINTBLINDS  [GO 75]
+
+Unprocessed relevant bids: 41
+  3 already downloaded (run --pending to list)
+  38 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-70Z02726RFQ000053  [SAM.gov]  Base Portsmouth Wheelhouse Flooring
+    ✓ Saved SAM-70Z02726RFQ000053.pdf (1247 KB)
+
+→ SAM-W912HQ26S0058  [SAM.gov]  Window Tint and Blinds Install
+    ✓ Saved SAM-W912HQ26S0058.pdf (344 KB)
+
+→ SAM-FA461326Q0013  [SAM.gov]  PKAA Dorm Carpet BLD 222, 223 & 226 (Service)
+    ✓ Saved SAM-FA461326Q0013.pdf (261 KB)
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ 444104565563  [BidNet Direct]  Brockton 1st Floor Remodel
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W50S8226QA005  [SAM.gov]  SCIF Tile Replacement
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ 444112489174  [BidNet Direct]  Statement of Services for IT Data Center Raised Access 
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-FA468626MUNSB1322  [SAM.gov]  9 MUNS B1322 - Asbestos & Carpet Replacement - Beale AF
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+6 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-70Z02726RFQ000053  (1247 KB)  Base Portsmouth Wheelhouse Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-70Z02726RFQ000053  [GO 75]
+
+→ SAM-FA461326Q0013  (261 KB)  PKAA Dorm Carpet BLD 222, 223 & 226 (Service)
+  Sending to Ollama...
+✓ Saved spec for SAM-FA461326Q0013  [GO 75]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-W912HQ26S0058  (344 KB)  Window Tint and Blinds Install
+  Sending to Ollama...
+✓ Saved spec for SAM-W912HQ26S0058  [GO 75]
+
+Unprocessed relevant bids: 40
+  3 already downloaded (run --pending to list)
+  37 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-PANMCC26P0000052477  [SAM.gov]  Building 700 (TRADOC Band) Carpet Replacement Project a
+    ↳ ZIP: extracted DOCX text (49 KB)
+    ✓ Extracted from ZIP → SAM-PANMCC26P0000052477.txt (49 KB)
+
+→ SAM-W50S8226QA009  [SAM.gov]  175th Wing MDANG Epoxy Floor Bldg. 3010 Warehouse
+    ✓ Saved SAM-W50S8226QA009.pdf (262 KB)
+
+→ SAM-FA461026Q9977  [SAM.gov]  SLD 30/SE, B7015, Carpet Removal/Installation
+    ✓ Saved SAM-FA461026Q9977.pdf (186 KB)
+
+→ SAM-140A2326Q0246  [SAM.gov]  FLOORING PROJECT BLDG121-NAVARRE
+    ✓ Saved SAM-140A2326Q0246.pdf (472 KB)
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-FA468626MUNSB1322  [SAM.gov]  9 MUNS B1322 - Asbestos & Carpet Replacement - Beale AF
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+7 PDF(s) to parse:
+
+→ SAM-140A2326Q0246  (472 KB)  FLOORING PROJECT BLDG121-NAVARRE
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-140A2326Q0246  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA461026Q9977  (186 KB)  SLD 30/SE, B7015, Carpet Removal/Installation
+  Sending to Ollama...
+✓ Saved spec for SAM-FA461026Q9977  [GO 75]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-PANMCC26P0000052477  (49 KB)  Building 700 (TRADOC Band) Carpet Replacement Project at For
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-PANMCC26P0000052477  [GO 80]
+
+→ SAM-W50S8226QA009  (262 KB)  175th Wing MDANG Epoxy Floor Bldg. 3010 Warehouse
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-W50S8226QA009  [GO 90]
+
+Unprocessed relevant bids: 38
+  3 already downloaded (run --pending to list)
+  35 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA301626Q0237  [SAM.gov]  Carpet Removal and Installation
+    ✓ Saved SAM-FA301626Q0237.pdf (2804 KB)
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-FA468626MUNSB1322  [SAM.gov]  9 MUNS B1322 - Asbestos & Carpet Replacement - Beale AF
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+4 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 43
+  4 already downloaded (run --pending to list)
+  39 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA4686269RWB2161  [SAM.gov]  9 RW B2161 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-FA4686269CSB2445  [SAM.gov]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-FA4686269OSSB1060  [SAM.gov]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-FA500026Q0035  [SAM.gov]  JBER Chapel Flooring Replacement
+    ✓ Saved SAM-FA500026Q0035.pdf (189 KB)
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-FA251726QA029  [SAM.gov]  Solicitation- WT 18058173 Airfield and Weather Flight C
+    ✓ Saved SAM-FA251726QA029.pdf (2010 KB)
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444105925105  [BidNet Direct]  As-Needed Unit Turnover Flooring Services
+    ⚠ SKIP — BidNet login failed
+
+→ 444105898963  [BidNet Direct]  As-Needed Unit Turnover Cleaning and Carpet Cleaning Se
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+6 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA251726QA029  (2010 KB)  Solicitation- WT 18058173 Airfield and Weather Flight Carpet
+  Sending to Ollama...
+✓ Saved spec for SAM-FA251726QA029  [GO 75]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-FA500026Q0035  (189 KB)  JBER Chapel Flooring Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA500026Q0035  [GO 80]
+
+Unprocessed relevant bids: 45
+  4 already downloaded (run --pending to list)
+  41 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA4686269RWB2161  [SAM.gov]  9 RW B2161 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-FA4686269CSB2445  [SAM.gov]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-FA4686269OSSB1060  [SAM.gov]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 2714007632  [BidNet Direct]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ 2713978817  [BidNet Direct]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-36C26127Q0024  [SAM.gov]  Z2DA--VCS Canteen Floor Repair | 640-26-111 | Palo Alto
+    ✓ Saved SAM-36C26127Q0024.pdf (676 KB)
+
+→ SAM-36C26126Q1034  [SAM.gov]  VAPIHCS Flooring Materials Indefinite Delivery Indefini
+    ✓ Saved SAM-36C26126Q1034.pdf (882 KB)
+
+→ SAM-FA461026Q0047  [SAM.gov]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ✓ Saved SAM-FA461026Q0047.pdf (187 KB)
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+7 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-36C26126Q1034  (882 KB)  VAPIHCS Flooring Materials Indefinite Delivery Indefinite Qu
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-36C26126Q1034  [GO 80]
+
+→ SAM-36C26127Q0024  (676 KB)  Z2DA--VCS Canteen Floor Repair | 640-26-111 | Palo Alto VA
+  Sending to Ollama...
+✓ Saved spec for SAM-36C26127Q0024  [GO 67]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA461026Q0047  (187 KB)  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA461026Q0047  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 48
+  4 already downloaded (run --pending to list)
+  44 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA4686269RWB2161  [SAM.gov]  9 RW B2161 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-FA4686269CSB2445  [SAM.gov]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-FA4686269OSSB1060  [SAM.gov]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ 2712813977  [BidNet Direct]  Purchase of Carpet Tile
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 2714007632  [BidNet Direct]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ 2713978817  [BidNet Direct]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ SAM-80NSSC26941772Q  [SAM.gov]  Electrostatic Discharge (ESD) compliant flooring materi
+    ✓ Saved SAM-80NSSC26941772Q.pdf (148 KB)
+
+→ SAM-FA462026QA275  [SAM.gov]  Mobile Command Post Floor Replacement
+    ✓ Saved SAM-FA462026QA275.pdf (401 KB)
+
+→ SAM-36C26127Q0026  [SAM.gov]  Z2DA--612A4-27-018 | Replace B650 3rd and 2nd Flooring
+    ✓ Saved SAM-36C26127Q0026.pdf (1625 KB)
+
+→ SAM-N400857318448  [SAM.gov]  Replace Carpet Offices, VMGR252, Building 4305
+    ✓ Saved SAM-N400857318448.pdf (207 KB)
+
+→ 2714158337  [BidNet Direct]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ⚠ No PDF link found
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+8 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-36C26127Q0026  (1625 KB)  Z2DA--612A4-27-018 | Replace B650 3rd and 2nd Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-36C26127Q0026  [GO 75]
+
+→ SAM-80NSSC26941772Q  (148 KB)  Electrostatic Discharge (ESD) compliant flooring materials a
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-80NSSC26941772Q  [GO 80]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA462026QA275  (401 KB)  Mobile Command Post Floor Replacement
+  Sending to Ollama...
+✓ Saved spec for SAM-FA462026QA275  [GO 75]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-N400857318448  (207 KB)  Replace Carpet Offices, VMGR252, Building 4305
+  Sending to Ollama...
+✓ Saved spec for SAM-N400857318448  [GO 75]
+
+Unprocessed relevant bids: 47
+  4 already downloaded (run --pending to list)
+  43 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q1021  [SAM.gov]  BLDG. 380 – Carpet Replacement Sustainment Project
+    ↳ ZIP: extracted DOCX text (10 KB)
+    ✓ Extracted from ZIP → SAM-FA309926Q1021.txt (10 KB)
+
+→ SAM-FA468626QS026  [SAM.gov]  9 MUNS B1322 - Asbestos Abatement & Carpet Replacement
+    ✓ Saved SAM-FA468626QS026.pdf (782 KB)
+
+→ SAM-W911S226U4183  [SAM.gov]  carpet
+    ⚠ No PDF link found
+
+→ SAM-F1S0AW6148A001  [SAM.gov]  SCIF Floor Replacement
+    ✓ Saved SAM-F1S0AW6148A001.pdf (151 KB)
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-FA4686269OSSB1060  [SAM.gov]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA4686269RWB2161  [SAM.gov]  9 RW B2161 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ SAM-FA4686269CSB2445  [SAM.gov]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ ZIP contained no usable content
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 2714007632  [BidNet Direct]  9 CS B2445 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ 2713978817  [BidNet Direct]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ 2714158337  [BidNet Direct]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+7 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-F1S0AW6148A001  (151 KB)  SCIF Floor Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-F1S0AW6148A001  [GO 80]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA309926Q1021  (10 KB)  BLDG. 380 – Carpet Replacement Sustainment Project
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA309926Q1021  [GO 83]
+
+→ SAM-FA468626QS026  (782 KB)  9 MUNS B1322 - Asbestos Abatement & Carpet Replacement
+  Sending to Ollama...
+✓ Saved spec for SAM-FA468626QS026  [GO 75]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 48
+  4 already downloaded (run --pending to list)
+  44 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-FA468626QS027  [SAM.gov]  9 RW B2161 Carpet/Furniture/Asbestos
+    ✓ Saved SAM-FA468626QS027.pdf (512 KB)
+
+→ SAM-FA468626QS028  [SAM.gov]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ✓ Saved SAM-FA468626QS028.pdf (590 KB)
+
+→ SAM-FA468626QS024  [SAM.gov]  9 CS B2445 Carpet/Furniture/Asbestos
+    ✓ Saved SAM-FA468626QS024.pdf (640 KB)
+
+→ SAM-FA460026Q0109  [SAM.gov]  B1000 Carpet Replacement
+    ✓ Saved SAM-FA460026Q0109.pdf (2115 KB)
+
+→ SAM-FA255026Q0036  [SAM.gov]  FY26 - Furniture/Carpet Requirement
+    ✓ Saved SAM-FA255026Q0036.pdf (507 KB)
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA462126Q0049  [SAM.gov]  McConnell AFB - Carpet Replacement (B739, B840, B955)
+    ✓ Saved SAM-FA462126Q0049.pdf (400 KB)
+
+→ SAM-19FR6326Q0103  [SAM.gov]  Consular Waiting Room Carpet replacement
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444137245507  [BidNet Direct]  Carpet Flooring Services for Butte Court
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P4226R0030  [SAM.gov]  GETT RENO INTERIOR LIGHTING FLOORING DWH
+    ↳ ZIP: extracted DOCX text (9 KB)
+    ✓ Extracted from ZIP → SAM-140P4226R0030.txt (9 KB)
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-W911S226U4183  [SAM.gov]  carpet
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ 2714158337  [BidNet Direct]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+11 PDF(s) to parse:
+
+→ SAM-140P4226R0030  (9 KB)  GETT RENO INTERIOR LIGHTING FLOORING DWH
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-140P4226R0030  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA255026Q0036  (507 KB)  FY26 - Furniture/Carpet Requirement
+  Sending to Ollama...
+✓ Saved spec for SAM-FA255026Q0036  [GO 80]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA460026Q0109  (2115 KB)  B1000 Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA460026Q0109  [GO 80]
+
+→ SAM-FA462126Q0049  (400 KB)  McConnell AFB - Carpet Replacement (B739, B840, B955)
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA462126Q0049  [GO 80]
+
+→ SAM-FA468626QS024  (640 KB)  9 CS B2445 Carpet/Furniture/Asbestos
+  Sending to Ollama...
+✓ Saved spec for SAM-FA468626QS024  [GO 80]
+
+→ SAM-FA468626QS027  (512 KB)  9 RW B2161 Carpet/Furniture/Asbestos
+  Sending to Ollama...
+✓ Saved spec for SAM-FA468626QS027  [GO 80]
+
+→ SAM-FA468626QS028  (590 KB)  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+  Sending to Ollama...
+✓ Saved spec for SAM-FA468626QS028  [GO 80]
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+Unprocessed relevant bids: 46
+  4 already downloaded (run --pending to list)
+  42 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444137245507  [BidNet Direct]  Carpet Flooring Services for Butte Court
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-W911S226U4183  [SAM.gov]  carpet
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N0018926QW329  [SAM.gov]  Carpet Installation
+    ✓ Saved SAM-N0018926QW329.pdf (9729 KB)
+
+→ 444139377794  [BidNet Direct]  CARPET INSTALLATION AT LA SIERRA LIBRARY AND ARLANZA LI
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA252126QB144  [SAM.gov]  Patrick SFB Carpet Replacement
+    ✓ Saved SAM-FA252126QB144.pdf (251 KB)
+
+→ SAM-15M10226QA4700349  [SAM.gov]  FY26 D08 Range Flooring
+    ✓ Saved SAM-15M10226QA4700349.pdf (150 KB)
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ 444139430270  [BidNet Direct]  Districtwide Flooring Phase 4
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-19FR6326Q0103  [SAM.gov]  Consular Waiting Room Carpet replacement
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ 2714158337  [BidNet Direct]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+7 PDF(s) to parse:
+
+→ SAM-15M10226QA4700349  (150 KB)  FY26 D08 Range Flooring
+  Sending to Ollama...
+✓ Saved spec for SAM-15M10226QA4700349  [GO 80]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA252126QB144  (251 KB)  Patrick SFB Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA252126QB144  [GO 80]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-N0018926QW329  (9729 KB)  Carpet Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-N0018926QW329 '<json>'
+
+Unprocessed relevant bids: 48
+  5 already downloaded (run --pending to list)
+  43 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444137245507  [BidNet Direct]  Carpet Flooring Services for Butte Court
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-W911S226U4183  [SAM.gov]  carpet
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ No PDF link found
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ 444139377794  [BidNet Direct]  CARPET INSTALLATION AT LA SIERRA LIBRARY AND ARLANZA LI
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ 444139430270  [BidNet Direct]  Districtwide Flooring Phase 4
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 2714808587  [BidNet Direct]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA4407QCCR1  [SAM.gov]  FY26 Carpet Cleaning Requirement
+    ⚠ Not a valid PDF (content-type: application/octet-stream)
+
+→ SAM-FA2543CarpetReplacement  [SAM.gov]  FA2543 Chapel Carpet Replacement
+    ✓ Saved SAM-FA2543CarpetReplacement.pdf (238 KB)
+
+→ SAM-140G0326Q0215  [SAM.gov]  USGS DAVIS FIELD STATION FLOORING REPLACEMENT
+    ↳ ZIP: extracted DOCX text (7 KB)
+    ✓ Extracted from ZIP → SAM-140G0326Q0215.txt (7 KB)
+
+→ SAM-19FR6326Q0103  [SAM.gov]  Consular Waiting Room Carpet replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ 2714158337  [BidNet Direct]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+7 PDF(s) to parse:
+
+→ SAM-140G0326Q0215  (7 KB)  USGS DAVIS FIELD STATION FLOORING REPLACEMENT
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-140G0326Q0215  [GO 83]
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA2543CarpetReplacement  (238 KB)  FA2543 Chapel Carpet Replacement
+  Sending to Ollama...
+  ↻ Retrying with strict JSON prompt...
+✓ Saved spec for SAM-FA2543CarpetReplacement  [GO 80]
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-N0018926QW329  (9729 KB)  Carpet Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-N0018926QW329 '<json>'
+
+Unprocessed relevant bids: 46
+  5 already downloaded (run --pending to list)
+  41 to download
+
+  ⚠ BidNet Direct: login failed — check BIDNET_EMAIL / BIDNET_PASSWORD in .env
+→ TEST-001  [Test]  Test Flooring Installation
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0315  [SAM.gov]  Asbestos Abatement & Install New Flooring (Athens, GA)
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0323  [SAM.gov]  Building 7 Suite 3 Floor Repair
+    ⚠ No PDF link found
+
+→ SAM-HE125426QE048AN  [SAM.gov]  Ramey School Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1031  [SAM.gov]  Flooring Repairs Buildings 24 and 8
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA154  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-N4008526R1381  [SAM.gov]  Bldg HP51, HP53, HP55, HP57 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 444085598352  [BidNet Direct]  Contractor Prequalification Application Fiscal Year 202
+    ⚠ SKIP — BidNet login failed
+
+→ 9487084409  [BidNet Direct]  Carpet and Base Installation
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1266  [SAM.gov]  Building M457 & M458 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-W91QVN26PA029  [SAM.gov]  Flooring materials for rubbler tiles and custom artific
+    ⚠ No PDF link found
+
+→ SAM-N40085-26-R-9038  [SAM.gov]  Buildings RR139, RR140, and RR141 Paint and Flooring
+    ⚠ No PDF link found
+
+→ SAM-FA663326C0004  [SAM.gov]  B777 MAINTAIN GYM & AEROBICS ROOMS FLOOR
+    ⚠ No PDF link found
+
+→ 444137245507  [BidNet Direct]  Carpet Flooring Services for Butte Court
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-N4008526F1062  [SAM.gov]  Building FC478 and FC481 Paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ SAM-N0018926PL127  [SAM.gov]  NAVSUP FLC Norfolk CEP 200 Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-36C26226C0182  [SAM.gov]  Dermatology Clinic Bldg 126 LVT Flooring, Department of
+    ⚠ No PDF link found
+
+→ SAM-36C25726P0699  [SAM.gov]  CTX Chapel Carpet Replacement
+    ⚠ No PDF link found
+
+→ SAM-W911S226U4183  [SAM.gov]  carpet
+    ⚠ No PDF link found
+
+→ SAM-N4008526F1032  [SAM.gov]  Building HP275 and HP465 paint and Flooring Repairs
+    ⚠ No PDF link found
+
+→ 9512137926  [BidNet Direct]  REPLACEMENT OF FLOORING AT ANTHONY COMMUNITY CENTER GYM
+    ⚠ SKIP — BidNet login failed
+
+→ CAL-33  [Cal eProcure]  IFB No. 125471 Carpet, Chairs, Grout Cleaning Services
+    ⚠ Error: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://caleprocure.ca.gov/pages/Events-BS3/event-search.aspx", waiting until "domcontentloaded"
+
+
+→ SAM-W50S6T26CA012  [SAM.gov]  Replace Flooring Bldg 102 & Bldg 110
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA127  [SAM.gov]  Epoxy Floor Coating, Cold Regions Research and Engineer
+    ⚠ No PDF link found
+
+→ SAM-W912WJ26QA147  [SAM.gov]  Flooring Replacement, Hop Brook Lake, Middlebury, CT
+    ⚠ No PDF link found
+
+→ SAM-FA309926Q0020  [SAM.gov]  Laughlin AFB - Bldg 222 Carpet Replacement
+    ⚠ No PDF link found
+
+→ 444129603753  [BidNet Direct]  Miramar - W Building Carpet Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ 444139377794  [BidNet Direct]  CARPET INSTALLATION AT LA SIERRA LIBRARY AND ARLANZA LI
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-140P8526Q0087  [SAM.gov]  72--Flooring Materials for Yosemite NP
+    ⚠ No PDF link found
+
+→ 444139430270  [BidNet Direct]  Districtwide Flooring Phase 4
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-W15QKN26RA054  [SAM.gov]  CSS 99142 Flooring and Wall Upgrade
+    ⚠ No PDF link found
+
+→ SAM-1232SA26P0502  [SAM.gov]  Floor Replacement
+    ⚠ No PDF link found
+
+→ SAM-70Z03326P2019000003  [SAM.gov]  REPLACE CARPET FLOORING AT UNITED STATES COAST GUARD FD
+    ⚠ No PDF link found
+
+→ 2714808587  [BidNet Direct]  9 OSS (Base Ops) B1060 Carpet/Furniture/Asbestos
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-FA4407QCCR1  [SAM.gov]  FY26 Carpet Cleaning Requirement
+    ⚠ Not a valid PDF (content-type: application/json)
+
+→ SAM-19FR6326Q0103  [SAM.gov]  Consular Waiting Room Carpet replacement
+    ⚠ No PDF link found
+
+→ 444118431999  [BidNet Direct]  On-Call Flooring Repair and Replacement Services
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-191T7026Q0037  [SAM.gov]  USUN Reflooring
+    ⚠ No PDF link found
+
+→ 444133323143  [BidNet Direct]  Boys & Girls Club Flooring
+    ⚠ SKIP — BidNet login failed
+
+→ 2714158337  [BidNet Direct]  SLD 30 CES BLD 10577 Carpet Removal and Replacement
+    ⚠ SKIP — BidNet login failed
+
+→ SAM-70Z03326P2019000007  [SAM.gov]  U.S. Coast Guard Station Quillayute River Main Building
+    ⚠ No PDF link found
+
+Done. PDFs saved to /Users/leo-claude/fcu/bid-scanner/output/specs/
+Now run: python parser.py --pending  to see what needs parsing
+5 PDF(s) to parse:
+
+→ SAM-19KS7026Q0053  (593 KB)  Carpet Replacement and Painting at American Diplomacy House
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-19KS7026Q0053 '<json>'
+
+→ SAM-36C24526Q0637  (4203 KB)  N055--INSTALLATION OF LVT FLOORING
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-36C24526Q0637 '<json>'
+
+→ SAM-FA301626Q0237  (2804 KB)  Carpet Removal and Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA301626Q0237 '<json>'
+
+→ SAM-FA481421D0003P00006  (454 KB)  MacDill AFB Flooring IDIQ Ceiling Adjustment
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-FA481421D0003P00006 '<json>'
+
+→ SAM-N0018926QW329  (9729 KB)  Carpet Installation
+  Sending to Ollama...
+  ⚠ No text extracted (may be a scanned image)
+  → Falling back to Claude vision API...
+  ⚠ PDF→image conversion failed: Unable to get page count. Is poppler installed and in PATH?
+  ⚠ Parse failed — run manually:
+    python parser.py --save SAM-N0018926QW329 '<json>'
+

@@ -98,7 +98,6 @@ def sync_new_bids(bids: list[dict]) -> int:
             "Bid ID": bid_id,
             "Date Surfaced": date.today().isoformat(),
             "Source Platform": _SOURCE_MAP.get(source, "Other"),
-            "Agency or GC": agency,
             "Bid Due Date": b.get("due_date").isoformat() if isinstance(b.get("due_date"), date) else (b.get("due_date") or None),
             "Status": "Surfaced",
             "Listing URL": b.get("url") or None,

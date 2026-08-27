@@ -256,3 +256,163 @@
 2026-06-16 07:15:03,839 INFO No qualifying GO walks in next 7 days
 2026-06-16 07:15:03,839 INFO No qualifying GO walks in next 7 days
 ✓ No qualifying job walks to report
+2026-07-06 07:15:02,290 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-06&walk_date=lte.2026-07-13&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-06 07:15:02,290 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-06&walk_date=lte.2026-07-13&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-06 07:15:02,292 INFO No qualifying GO walks in next 7 days
+2026-07-06 07:15:02,292 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-07-07 07:15:05,918 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-07&walk_date=lte.2026-07-14&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-07 07:15:05,918 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-07&walk_date=lte.2026-07-14&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-07 07:15:05,921 INFO No qualifying GO walks in next 7 days
+2026-07-07 07:15:05,921 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-07-08 07:15:04,633 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-08&walk_date=lte.2026-07-15&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-08 07:15:04,633 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-08&walk_date=lte.2026-07-15&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-08 07:15:04,636 INFO No qualifying GO walks in next 7 days
+2026-07-08 07:15:04,636 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-07-09 07:15:05,195 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-09&walk_date=lte.2026-07-16&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-09 07:15:05,195 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-09&walk_date=lte.2026-07-16&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-09 07:15:05,198 INFO No qualifying GO walks in next 7 days
+2026-07-09 07:15:05,198 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-07-29 07:15:02,723 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-29&walk_date=lte.2026-08-05&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-29 07:15:02,723 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-29&walk_date=lte.2026-08-05&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-29 07:15:03,234 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-07-29 07:15:03,234 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-07-29 07:15:03,236 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-07-29 07:15:03,236 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-07-29 07:15:03,644 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-07-29 07:15:03,644 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-07-30 07:15:03,154 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-30&walk_date=lte.2026-08-06&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-30 07:15:03,154 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-30&walk_date=lte.2026-08-06&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-30 07:15:04,103 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-07-30 07:15:04,103 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-07-30 07:15:04,105 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-07-30 07:15:04,105 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-07-30 07:15:04,820 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-07-30 07:15:04,820 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-07-31 07:15:06,174 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-31&walk_date=lte.2026-08-07&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-31 07:15:06,174 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-07-31&walk_date=lte.2026-08-07&order=walk_date.asc "HTTP/2 200 OK"
+2026-07-31 07:15:08,115 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-07-31 07:15:08,115 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-07-31 07:15:08,116 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-07-31 07:15:08,116 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-07-31 07:15:08,455 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-07-31 07:15:08,455 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-08-03 07:15:05,354 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-03&walk_date=lte.2026-08-10&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-03 07:15:05,354 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-03&walk_date=lte.2026-08-10&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-03 07:15:05,970 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-08-03 07:15:05,970 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-08-03 07:15:05,971 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-08-03 07:15:05,971 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-08-03 07:15:06,787 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-08-03 07:15:06,787 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-08-04 07:15:03,880 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-04&walk_date=lte.2026-08-11&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-04 07:15:03,880 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-04&walk_date=lte.2026-08-11&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-04 07:15:05,005 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-08-04 07:15:05,005 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-08-04 07:15:05,006 INFO Qualifying walks: 1 tomorrow, 0 upcoming
+2026-08-04 07:15:05,006 INFO Qualifying walks: 1 tomorrow, 0 upcoming
+2026-08-04 07:15:05,327 INFO Job walk email sent — 1 tomorrow, 0 upcoming
+2026-08-04 07:15:05,327 INFO Job walk email sent — 1 tomorrow, 0 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (1 tomorrow, 0 upcoming)
+2026-08-05 07:15:03,071 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-05&walk_date=lte.2026-08-12&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-05 07:15:03,071 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-05&walk_date=lte.2026-08-12&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-05 07:15:04,091 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-08-05 07:15:04,091 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bids?select=bid_id%2Ctitle%2Cagency%2Cdue_date%2Curl%2Cbid_status%2Cis_relevant&bid_id=in.%28SAM-19KU2026Q0013%29&is_relevant=eq.True "HTTP/2 200 OK"
+2026-08-05 07:15:04,093 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-08-05 07:15:04,093 INFO Qualifying walks: 0 tomorrow, 1 upcoming
+2026-08-05 07:15:05,934 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+2026-08-05 07:15:05,934 INFO Job walk email sent — 0 tomorrow, 1 upcoming
+  ✓ Email sent to ['ben@benlee.ventures', 'lee.joanne.c@gmail.com', 'floorcoveringunltd@msn.com', 'leonardo.gutarra001@gmail.com']
+✓ Job walk email sent (0 tomorrow, 1 upcoming)
+2026-08-06 07:15:04,408 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-06&walk_date=lte.2026-08-13&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-06 07:15:04,408 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-06&walk_date=lte.2026-08-13&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-06 07:15:04,410 INFO No qualifying GO walks in next 7 days
+2026-08-06 07:15:04,410 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-07 07:15:06,874 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-07&walk_date=lte.2026-08-14&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-07 07:15:06,874 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-07&walk_date=lte.2026-08-14&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-07 07:15:06,877 INFO No qualifying GO walks in next 7 days
+2026-08-07 07:15:06,877 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-10 07:15:04,554 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-10&walk_date=lte.2026-08-17&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-10 07:15:04,554 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-10&walk_date=lte.2026-08-17&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-10 07:15:04,556 INFO No qualifying GO walks in next 7 days
+2026-08-10 07:15:04,556 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-11 07:15:04,173 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-11&walk_date=lte.2026-08-18&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-11 07:15:04,173 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-11&walk_date=lte.2026-08-18&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-11 07:15:04,176 INFO No qualifying GO walks in next 7 days
+2026-08-11 07:15:04,176 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-12 07:15:03,209 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-12&walk_date=lte.2026-08-19&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-12 07:15:03,209 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-12&walk_date=lte.2026-08-19&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-12 07:15:03,212 INFO No qualifying GO walks in next 7 days
+2026-08-12 07:15:03,212 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-13 07:15:06,479 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-13&walk_date=lte.2026-08-20&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-13 07:15:06,479 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-13&walk_date=lte.2026-08-20&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-13 07:15:06,481 INFO No qualifying GO walks in next 7 days
+2026-08-13 07:15:06,481 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-14 07:15:03,811 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-14&walk_date=lte.2026-08-21&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-14 07:15:03,811 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-14&walk_date=lte.2026-08-21&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-14 07:15:03,814 INFO No qualifying GO walks in next 7 days
+2026-08-14 07:15:03,814 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-17 07:15:09,287 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-17&walk_date=lte.2026-08-24&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-17 07:15:09,287 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-17&walk_date=lte.2026-08-24&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-17 07:15:09,290 INFO No qualifying GO walks in next 7 days
+2026-08-17 07:15:09,290 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-18 07:15:03,140 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-18&walk_date=lte.2026-08-25&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-18 07:15:03,140 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-18&walk_date=lte.2026-08-25&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-18 07:15:03,142 INFO No qualifying GO walks in next 7 days
+2026-08-18 07:15:03,142 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-19 07:15:03,434 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-19&walk_date=lte.2026-08-26&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-19 07:15:03,434 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-19&walk_date=lte.2026-08-26&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-19 07:15:03,437 INFO No qualifying GO walks in next 7 days
+2026-08-19 07:15:03,437 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-20 07:15:03,282 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-20&walk_date=lte.2026-08-27&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-20 07:15:03,282 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-20&walk_date=lte.2026-08-27&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-20 07:15:03,284 INFO No qualifying GO walks in next 7 days
+2026-08-20 07:15:03,284 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-21 07:15:04,302 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-21&walk_date=lte.2026-08-28&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-21 07:15:04,302 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-21&walk_date=lte.2026-08-28&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-21 07:15:04,304 INFO No qualifying GO walks in next 7 days
+2026-08-21 07:15:04,304 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-24 07:15:08,794 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-24&walk_date=lte.2026-08-31&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-24 07:15:08,794 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-24&walk_date=lte.2026-08-31&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-24 07:15:08,797 INFO No qualifying GO walks in next 7 days
+2026-08-24 07:15:08,797 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-25 07:15:07,620 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-25&walk_date=lte.2026-09-01&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-25 07:15:07,620 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-25&walk_date=lte.2026-09-01&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-25 07:15:07,622 INFO No qualifying GO walks in next 7 days
+2026-08-25 07:15:07,622 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-26 07:15:03,380 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-26&walk_date=lte.2026-09-02&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-26 07:15:03,380 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-26&walk_date=lte.2026-09-02&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-26 07:15:03,383 INFO No qualifying GO walks in next 7 days
+2026-08-26 07:15:03,383 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
+2026-08-27 07:20:15,208 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-27&walk_date=lte.2026-09-03&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-27 07:20:15,208 INFO HTTP Request: GET https://obrqnthgqczkhffbsbac.supabase.co/rest/v1/bid_specs?select=bid_id%2Cwalk_date%2Cwalk_date_raw%2Cgo_score%2Cgo_verdict%2Csummary&walk_required=eq.True&go_verdict=eq.go&walk_date=gte.2026-08-27&walk_date=lte.2026-09-03&order=walk_date.asc "HTTP/2 200 OK"
+2026-08-27 07:20:15,211 INFO No qualifying GO walks in next 7 days
+2026-08-27 07:20:15,211 INFO No qualifying GO walks in next 7 days
+✓ No qualifying job walks to report
