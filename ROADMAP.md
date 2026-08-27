@@ -34,8 +34,8 @@
 ### 1. Test AI Parsing + Notifications
 Env vars needed in `bid-scanner/.env`:
 ```
-RESEND_API_KEY=re_gLdEGPTm_MFB96mykY8kJtFEZ7TUg7UoA
-NOTIFY_EMAIL=gutarra.leonardo@gmail.com
+RESEND_API_KEY=your_resend_api_key_here
+NOTIFY_EMAIL=your_email_here
 ```
 
 Parse existing downloaded PDFs using Claude Code:
