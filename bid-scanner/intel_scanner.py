@@ -502,7 +502,7 @@ async def run_intel_scan(live_page) -> dict:
     vendors_resolved = 0
     vendors_created = 0
 
-    for portal_id, agency in PLANETBIDS_PORTALS.items():
+    for portal_id, (agency, _county) in PLANETBIDS_PORTALS.items():
         print(f"  → {agency}...")
         awarded_bids = await _scan_awarded_portal(page, portal_id, agency)
 

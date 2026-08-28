@@ -18,7 +18,7 @@ from scanner import PLANETBIDS_PORTALS
 READY_FILE = Path("/tmp/pb_continue")
 
 _limit = int(sys.argv[1]) if len(sys.argv) > 1 else None
-TEST_PORTALS = list(PLANETBIDS_PORTALS.items())[:_limit]
+TEST_PORTALS = [(pid, name) for pid, (name, _county) in PLANETBIDS_PORTALS.items()][:_limit]
 
 BASE = "https://vendors.planetbids.com"
 UA   = (

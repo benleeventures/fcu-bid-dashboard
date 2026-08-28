@@ -7,13 +7,16 @@ being hand-entered. Matches on the "Bid ID" field to avoid duplicates —
 a bid already present in Airtable is left alone (Robert may have already
 moved its Status/Owner/Notes).
 
-Federal listings (SAM.gov) are excluded here — the spec's hard rule is
-no federal work, and SAM.gov is the one federal source the scanner has
-today. This is the only quality filter available at discovery time; there
-is no bid value or county data on `bids` yet, and go/no-go scoring needs a
-parsed spec doc that doesn't exist until later in the pipeline. Estimated
-Value and City/County/Area for non-PlanetBids/OpenGov sources are left
-blank for Robert/Joanne to fill in during qualification.
+Geographic scope (spec §1) is enforced upstream in scanner.py via geo.py:
+any bid whose place of performance is outside the four in-scope counties
+(LA, Orange, Ventura, San Diego) is dropped before it ever reaches here.
+Federal (SAM.gov) bids that survive that filter — i.e. performed in one of
+the four counties, or flagged geo_status="unknown" — are synced like any
+other source. Bids with geo_status="unknown" carry a "Needs county check"
+note so Robert confirms the county during qualification.
+
+Estimated Value still needs a parsed spec doc that doesn't exist until
+later in the pipeline, so it is left blank at discovery time.
 """
 
 import os
@@ -27,7 +30,9 @@ except ImportError:
 
 _table = None
 
-_EXCLUDED_SOURCES = {"SAM.gov"}
+# Geographic scope is enforced in scanner.py (geo.py). Nothing is source-excluded
+# here any more — federal bids performed in the four counties are wanted.
+_EXCLUDED_SOURCES: set[str] = set()
 
 # Scanner source strings -> Airtable "Source Platform" select options
 _SOURCE_MAP = {
@@ -39,6 +44,8 @@ _SOURCE_MAP = {
     "BidNet Direct": "BidNet Direct",
     "Bid Locker": "Bid Locker",
     "Crisp Plan Room": "Crisp Plan Room",
+    "SoCal Plan Room": "SoCal Plan Room",
+    "SAM.gov": "SAM.gov (federal)",
 }
 
 # Sources whose `agency` field is already a specific city name
@@ -102,15 +109,41 @@ def sync_new_bids(bids: list[dict]) -> int:
             "Status": "Surfaced",
             "Listing URL": b.get("url") or None,
         }
+        if b.get("county"):
+            fields["County"] = b["county"]
+        if agency:
+            fields["Agency or GC"] = agency
         if source in _CITY_BEARING_SOURCES and agency:
             fields["City / County / Area"] = agency
+        if b.get("geo_status") == "unknown":
+            fields["Notes"] = "Needs county check — place of performance not confirmed"
         to_create.append(fields)
 
     if not to_create:
         return 0
 
+    # typecast=True lets Airtable auto-create new single-select options
+    # (e.g. a new Source Platform value) instead of 422-ing.
+    # Newer optional fields ("County", "Agency or GC", "Notes") may still not
+    # exist in the base — if Airtable rejects an unknown field, strip the
+    # optional ones and retry with the core set so the sync still lands.
+    _CORE_FIELDS = {
+        "Project Name", "Bid ID", "Date Surfaced", "Source Platform",
+        "Bid Due Date", "Status", "Listing URL", "City / County / Area",
+    }
     for i in range(0, len(to_create), 10):
-        table.batch_create(to_create[i:i + 10])
+        batch = to_create[i:i + 10]
+        try:
+            table.batch_create(batch, typecast=True)
+        except Exception as e:
+            if "UNKNOWN_FIELD_NAME" in str(e) or "Unknown field name" in str(e):
+                print(f"  ⚠ Airtable rejected a new field ({e}); retrying with core fields only")
+                table.batch_create([
+                    {k: v for k, v in row.items() if k in _CORE_FIELDS}
+                    for row in batch
+                ], typecast=True)
+            else:
+                raise
 
     return len(to_create)
 

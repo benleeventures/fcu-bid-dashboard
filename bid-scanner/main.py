@@ -85,11 +85,15 @@ async def main():
         # Bids are NOT emailed now — they are picked up by the next scheduled run.
         from test_planetbids import run_with_live_browser
         from db import upsert_bids, log_scan
+        from geo import enrich
         bids = await run_with_live_browser(SEARCH_KEYWORDS)
         duration = time.time() - t_start
         if not bids:
             print("\n⚠ No bids found.")
             sys.exit(0)
+        for b in bids:
+            enrich(b)
+        bids = [b for b in bids if b.get("geo_status") != "out"]
         if os.getenv("SUPABASE_URL", ""):
             print("\nQueuing bids for next scheduled digest...")
             new_count, updated_count = upsert_bids(bids)
@@ -106,11 +110,15 @@ async def main():
         # Manual run — open real Chrome, user handles I'm-not-a-robot, scrape and queue.
         # Bids are NOT emailed now — they are picked up by the next scheduled run.
         from opengov_live import run_opengov_scraper
+        from geo import enrich
         bids = await run_opengov_scraper()
         duration = time.time() - t_start
         if not bids:
             print("\n⚠ No bids found.")
             sys.exit(0)
+        for b in bids:
+            enrich(b)
+        bids = [b for b in bids if b.get("geo_status") != "out"]
         if os.getenv("SUPABASE_URL", ""):
             print("\nQueuing bids for next scheduled digest...")
             new_count, updated_count = upsert_bids(bids)

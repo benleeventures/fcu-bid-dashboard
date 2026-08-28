@@ -264,43 +264,53 @@ def _dedup(bids: list[dict]) -> list[dict]:
 
 # CA agency portals FCU is likely registered with.
 # Keys are portal IDs used in pbsystem.planetbids.com/portal/{ID}/
+# {portal_id: (agency name, county)}. County is stamped straight onto every
+# bid from that portal so the spec §1 geo gate never has to guess for a
+# portal-based source.
 PLANETBIDS_PORTALS = {
-    # Original portals
-    "21372": "LA Community College District",
-    "19236": "Port of Long Beach",
-    "25987": "Cal State LA",
-    "61954": "LA County Office of Education",
-    # CA city portals
-    "39478": "Agoura Hills",
-    "55389": "Baldwin Park",
-    "39493": "Beverly Hills",
-    "14210": "Burbank",
-    "32461": "Carson",
-    "32906": "Commerce",
-    "39483": "Culver City",
-    "24661": "Downey",
-    "42035": "Duarte",
-    "43375": "El Monte",
-    "39470": "Gardena",
-    "39503": "Glendale",
-    "51313": "Hermosa Beach",
-    "72415": "Huntington Park",
-    "62508": "La Canada Flintridge",
-    "42566": "Lancaster",
-    "39486": "Lynwood",
-    "64496": "Maywood",
-    "33072": "Norwalk / Montebello",
-    "23532": "Palmdale",
-    "50534": "Palos Verdes Estates",
-    "41481": "Pico Rivera",
-    "24662": "Pomona",
-    "54150": "Rosemead",
-    "69928": "San Dimas",
-    "65093": "Santa Fe Springs",
-    "60317": "South Gate",
-    "47426": "Torrance",
-    "39468": "West Covina",
-    "47476": "Azusa",
+    # --- Los Angeles County ---
+    "21372": ("LA Community College District", "Los Angeles"),
+    "19236": ("Port of Long Beach", "Los Angeles"),
+    "25987": ("Cal State LA", "Los Angeles"),
+    "61954": ("LA County Office of Education", "Los Angeles"),
+    "39478": ("Agoura Hills", "Los Angeles"),
+    "55389": ("Baldwin Park", "Los Angeles"),
+    "39493": ("Beverly Hills", "Los Angeles"),
+    "14210": ("Burbank", "Los Angeles"),
+    "32461": ("Carson", "Los Angeles"),
+    "32906": ("Commerce", "Los Angeles"),
+    "39483": ("Culver City", "Los Angeles"),
+    "24661": ("Downey", "Los Angeles"),
+    "42035": ("Duarte", "Los Angeles"),
+    "43375": ("El Monte", "Los Angeles"),
+    "39470": ("Gardena", "Los Angeles"),
+    "39503": ("Glendale", "Los Angeles"),
+    "51313": ("Hermosa Beach", "Los Angeles"),
+    "72415": ("Huntington Park", "Los Angeles"),
+    "62508": ("La Canada Flintridge", "Los Angeles"),
+    "42566": ("Lancaster", "Los Angeles"),
+    "39486": ("Lynwood", "Los Angeles"),
+    "64496": ("Maywood", "Los Angeles"),
+    "33072": ("Norwalk / Montebello", "Los Angeles"),
+    "23532": ("Palmdale", "Los Angeles"),
+    "50534": ("Palos Verdes Estates", "Los Angeles"),
+    "41481": ("Pico Rivera", "Los Angeles"),
+    "24662": ("Pomona", "Los Angeles"),
+    "54150": ("Rosemead", "Los Angeles"),
+    "69928": ("San Dimas", "Los Angeles"),
+    "65093": ("Santa Fe Springs", "Los Angeles"),
+    "60317": ("South Gate", "Los Angeles"),
+    "47426": ("Torrance", "Los Angeles"),
+    "39468": ("West Covina", "Los Angeles"),
+    "47476": ("Azusa", "Los Angeles"),
+    "15810": ("City of Long Beach", "Los Angeles"),   # verified 2026-08
+    # --- Orange County ---
+    "20137": ("City of Santa Ana", "Orange"),         # verified 2026-08
+    "14424": ("City of Anaheim (legacy)", "Orange"),  # verified 2026-08 — moved to OpenGov Dec 2024
+    # --- San Diego County ---
+    "17950": ("City of San Diego", "San Diego"),      # verified 2026-08
+    # --- Ventura County ---
+    # (none verified yet — see ROADMAP "PlanetBids portal expansion")
 }
 
 PLANETBIDS_BASE = "https://vendors.planetbids.com"
@@ -359,7 +369,7 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
     all_bids: list[dict] = []
 
-    for portal_id, agency in PLANETBIDS_PORTALS.items():
+    for portal_id, (agency, portal_county_) in PLANETBIDS_PORTALS.items():
         print(f"  → {agency}...")
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
 
@@ -427,6 +437,7 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
                 "search_keyword": next((kw for kw in keywords if kw.lower() in title_lower), keywords[0]),
                 "url": portal_url,
                 "source": "PlanetBids",
+                "county": portal_county_,
             })
 
         print(f"    ✓ {len(portal_bids)} relevant bids")
@@ -472,6 +483,8 @@ async def _search_samgov(keywords: list[str]) -> list[dict]:
                 "sfm[simpleSearch][keywordTags][0][value]": keyword,
                 "sfm[status][is_active]": "true",
                 "sfm[performance][state][0]": "CA",  # place of performance CA (not agency state)
+                # Spec §3: cut DoD/GSA noise — restrict to the flooring NAICS.
+                "sfm[naics][0][code]": "238330",     # Flooring Contractors
             }
             url = SAMGOV_SEARCH + "?" + urllib.parse.urlencode(params)
 
@@ -536,11 +549,26 @@ async def _search_samgov(keywords: list[str]) -> list[dict]:
                         agency = lines[i + 1] if i + 1 < len(lines) else ""
                         break
 
+                # Place of performance — used by geo.py to keep only 4-county
+                # federal work. SAM cards sometimes show a "City, CALIFORNIA ZIP"
+                # line; capture whatever we can.
+                pop_raw = ""
+                for i, line in enumerate(lines):
+                    if "Place of Performance" in line:
+                        pop_raw = lines[i + 1] if i + 1 < len(lines) else ""
+                        break
+                if not pop_raw:
+                    m = _re.search(
+                        r"([A-Z][A-Za-z .'-]+,\s*(?:CALIFORNIA|CA)\b[^\n]*)", card_text)
+                    if m:
+                        pop_raw = m.group(1).strip()
+
                 ca_bids.append({
                     "bid_id": f"SAM-{notice_id}",
                     "title": title,
                     "agency": agency,
                     "state": "California",
+                    "pop_raw": pop_raw,
                     "published_date": _parse_date(pub_raw),
                     "published_raw": pub_raw,
                     "due_date": _parse_date(due_raw),
@@ -675,16 +703,13 @@ async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 OPENGOV_PORTALS = {
-    # Your list
+    # Four-county municipalities only (spec §1). NorCal portals removed
+    # 2026-08 — Sacramento / San Francisco / Alameda County are out of area.
     "cityofbell":       "City of Bell",
     "redondo":          "Redondo Beach",
     "citymb":           "Manhattan Beach",
     "pasadena":         "Pasadena",
     "santa-monica-ca":  "Santa Monica",
-    # Previously configured
-    "sacramento":       "Sacramento",
-    "san-francisco":    "San Francisco",
-    "alameda-county":   "Alameda County",
 }
 
 OPENGOV_BASE = "https://procurement.opengov.com"
@@ -1036,16 +1061,19 @@ SCBPR_BASE = "https://www.southerncaliforniabuildersplanroom.com"
 # Caltrans CCOP — CA Dept of Transportation contracting opportunities
 # ---------------------------------------------------------------------------
 
-CCOP_URL = "https://ccop.dot.ca.gov/onestopshop/1,2,3,4,5,6,7,8,9,10,11,12"
+# Spec §1: only the SoCal districts covering the four counties —
+# D7 (LA + Ventura), D12 (Orange), D11 (San Diego + Imperial).
+# Imperial-County projects in D11 are dropped later by geo.classify_location.
+CCOP_URL = "https://ccop.dot.ca.gov/onestopshop/7,11,12"
 
 
 async def _search_ccop(page, keywords: list[str]) -> list[dict]:
     """
-    Scrape Caltrans Contracting Opportunities Portal — all 12 CA districts.
-    Public, no auth, all projects load on one page.
+    Scrape Caltrans Contracting Opportunities Portal — SoCal districts only
+    (D7 / D11 / D12). Public, no auth, all projects load on one page.
     Filters locally by flooring keywords.
     """
-    print("\nSearching Caltrans CCOP (all CA districts)...")
+    print("\nSearching Caltrans CCOP (SoCal districts 7/11/12)...")
     all_bids: list[dict] = []
 
     try:
@@ -1262,6 +1290,21 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     if src in (None, "qualitybidders"):
         qb_bids = await _search_qualitybidders(keywords)
         all_bids.extend(qb_bids)
+
+    # --- Geographic + agency-type gate (spec §1 / §2) ---------------------
+    # Enrich every bid with county / geo_status / agency_type / is_k12, then
+    # drop anything whose place of performance is outside the four in-scope
+    # counties (LA, Orange, Ventura, San Diego). "unknown" is kept and flagged
+    # for Robert to confirm during qualification — never silently dropped.
+    from geo import enrich
+    for b in all_bids:
+        enrich(b)
+    before_geo = len(all_bids)
+    all_bids = [b for b in all_bids if b.get("geo_status") != "out"]
+    dropped = before_geo - len(all_bids)
+    if dropped:
+        print(f"\nGeo filter: dropped {dropped} out-of-area bid(s); "
+              f"{sum(1 for b in all_bids if b.get('geo_status') == 'unknown')} flagged unknown")
 
     deduped = _dedup(all_bids)
 

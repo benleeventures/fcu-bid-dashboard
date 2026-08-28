@@ -1,5 +1,5 @@
 # FCU — AI Bid Agent Roadmap
-**Last updated:** 2026-04-26
+**Last updated:** 2026-08-28
 
 > Always read this before any bid agent work. Contains current build status, pricing rates, phase checklist, and portal coverage.
 
@@ -9,7 +9,7 @@
 
 | System | Status | Notes |
 |--------|--------|-------|
-| Bid Scanner (SAM.gov + PlanetBids + BidNet) | ✅ Running | CA filter applied |
+| Bid Scanner (9 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08) |
 | Dashboard (Next.js + Supabase) | ✅ Live on Vercel | Showing bid results |
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
 | Document Download | ✅ Done | Playwright-based, all sources |
@@ -174,13 +174,48 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 
 | Portal | Status | Notes |
 |--------|--------|-------|
-| SAM.gov | ✅ Active | Federal contracts, CA filter applied |
-| PlanetBids | ✅ Active | Cookies-based auth working |
+| SAM.gov | ✅ Active | Federal; NAICS 238330 + CA place-of-performance. Now runs through the 4-county geo gate — out-of-area federal work is dropped |
+| PlanetBids | ✅ Active | Cookies-based auth. 41 portals, each tagged with its county (see `PLANETBIDS_PORTALS`) |
 | BidNet Direct | ⚠ Partial | Doc download works; public listing page blocked by bot detection |
-| LAUSD | ⬜ Not connected | Highest priority — TOPO contract renewal 2027 |
-| City of LA | ⬜ Not connected | Phase 1 expansion |
-| County of LA | ⬜ Not connected | Phase 1 expansion |
-| Long Beach Unified | ⬜ Not connected | Phase 1 expansion (DVBE required) |
+| Cal eProcure | ✅ Active | Statewide — most rows land as `geo_status=unknown` and get flagged for county check |
+| OpenGov | ⚠ Manual | 5 SoCal portals (NorCal portals removed 2026-08). Run `--source opengov` on demand |
+| Caltrans CCOP | ✅ Active | SoCal districts only (D7 / D11 / D12) |
+| Quality Bidders (Colbi) | ✅ Active | School-district bids |
+| Crisp / SoCal plan rooms | ✅ Active | CyberCopy platform |
+| LAUSD | ⬜ Not connected | **Session 2** — highest priority, 2027 TOPO renewal. Needs FCU portal creds from Joanne |
+| RAMP LA County | ⬜ Deferred | Not in current scope |
+| City of LA BAVN / LADWP | ⬜ Deferred | Not in current scope |
+| LACDA | ⬜ Deferred | Not in current scope |
+| Public Purchase | ⬜ Deferred | Not in current scope |
+
+### Geographic + agency-type gate (spec §1 / §2) — ✅ Session 1 (2026-08)
+
+- `geo.py` classifies every bid: `geo_status` = `in` (LA / Orange / Ventura / San Diego),
+  `out` (dropped before dedup), or `unknown` (kept + flagged "Needs county check" in Airtable).
+- Also tags `agency_type` (city / county / state / ccd / k12 / transit / housing / airport /
+  port / special_district) and `is_k12`.
+- ✅ Migration `supabase/add_geo_agency.sql` run (adds `county`, `geo_status`, `agency_type`,
+  `is_k12` to `bids`). Scanner writes these on every run.
+- ✅ Airtable "Opportunities" has **County** (singleSelect: LA/Orange/Ventura/San Diego) and
+  **Agency or GC** (text) fields. Sync now uses `typecast=True` so new Source Platform options
+  auto-create, and degrades to core fields if a column is missing.
+
+### PlanetBids portal expansion — follow-up task
+
+41 portals configured, but Orange / Ventura / San Diego coverage is still thin. IDs verified
+2026-08: Long Beach 15810 (LA), Santa Ana 20137 (OC), Anaheim 14424 (OC, legacy → moved to
+OpenGov), San Diego 17950 (SD). **Still to add** (resolve each ID by logging into the FCU
+PlanetBids vendor account and checking which portals FCU is registered on):
+
+- **Orange:** County of Orange, Irvine, Huntington Beach, Costa Mesa, Newport Beach, Fullerton,
+  Orange, Garden Grove, Tustin, Westminster, Mission Viejo, Lake Forest, Fountain Valley
+- **Ventura:** County of Ventura, Ventura, Oxnard, Thousand Oaks, Simi Valley, Camarillo, Moorpark
+- **San Diego:** County of San Diego, Chula Vista, Oceanside, Escondido, Carlsbad, El Cajon,
+  Vista, San Marcos, Encinitas, National City, Santee, Poway
+- **CCDs:** Coast CCD, South Orange County CCD, Rancho Santiago CCD, Ventura County CCD,
+  San Diego CCD, Grossmont-Cuyamaca CCD, MiraCosta CCD, Palomar CCD
+- **LA gaps:** Santa Clarita, Inglewood, Compton, Whittier, Alhambra, Arcadia, Monrovia,
+  Claremont, El Segundo, LA County Public Works
 
 ---
 

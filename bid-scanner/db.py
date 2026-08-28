@@ -53,6 +53,10 @@ def _serialize_bid(bid: dict) -> dict:
         "url":            (bid.get("url") or "")[:1000],
         "is_relevant":    bool(bid.get("is_relevant", False)),
         "search_keyword": (bid.get("search_keyword") or "")[:100],
+        "county":         bid.get("county") or None,
+        "geo_status":     bid.get("geo_status") or None,
+        "agency_type":    bid.get("agency_type") or None,
+        "is_k12":         bool(bid.get("is_k12", False)),
     }
 
 

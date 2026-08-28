@@ -28,15 +28,13 @@ OPENGOV_BASE       = "https://procurement.opengov.com"
 OPENGOV_LOGIN_URL  = f"{OPENGOV_BASE}/login"
 COOKIES_FILE       = Path(__file__).parent / "cookies_opengov.json"
 
+# Four-county municipalities only (spec §1). NorCal portals removed 2026-08.
 OPENGOV_PORTALS = {
     "cityofbell":       "City of Bell",
     "redondo":          "Redondo Beach",
     "citymb":           "Manhattan Beach",
     "pasadena":         "Pasadena",
     "santa-monica-ca":  "Santa Monica",
-    "sacramento":       "Sacramento",
-    "san-francisco":    "San Francisco",
-    "alameda-county":   "Alameda County",
 }
 
 _EMAIL    = os.getenv("OPENGOV_EMAIL", "")
