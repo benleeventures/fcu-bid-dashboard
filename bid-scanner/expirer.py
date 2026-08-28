@@ -6,11 +6,9 @@ Sets is_relevant=False for bids whose due_date has passed so they drop
 out of the active dashboard view. Logs what was archived.
 """
 
-import logging
 import os
 import sys
 from datetime import date
-from pathlib import Path
 
 try:
     from dotenv import load_dotenv
@@ -18,15 +16,8 @@ try:
 except ImportError:
     pass
 
-LOG_FILE = Path(__file__).parent / "logs" / "expirer.log"
-LOG_FILE.parent.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
-)
-log = logging.getLogger(__name__)
+from logsetup import setup
+log = setup("expirer")
 
 
 def run(dry_run: bool = False):
