@@ -347,7 +347,14 @@ async def _planetbids_login(page) -> bool:
         return False
 
 
-async def _search_planetbids(browser_context, keywords: list[str], live_page=None) -> list[dict]:
+# Consecutive blocked portals after which we assume the whole browser session
+# is WAF-poisoned (every portal serves a blank page) and stop early. The
+# untried portals stay "pending" in the manifest for `--resume`.
+PLANETBIDS_BLOCK_STREAK_LIMIT = 4
+
+
+async def _search_planetbids(browser_context, keywords: list[str], live_page=None,
+                             resume: bool = False) -> list[dict]:
     """
     Navigate to each PlanetBids portal and capture the /papi/bids JSON response
     from the browser's own request.
@@ -359,17 +366,54 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
       - After the initial CAPTCHA solve on portal 1, the aws-waf-token cookie
         remains valid for all subsequent vendors.planetbids.com navigations.
       - This was confirmed working across 3 portals with no additional CAPTCHAs.
+
+    Every portal's outcome (ok / empty / blocked / error / pending) is written to
+    output/planetbids_state.json via pb_state. When resume=True, only portals left
+    unfinished by the previous run are re-scraped. See pb_state.py.
     """
     from urllib.parse import urlparse, parse_qs
+    import pb_state
 
     print("\nSearching PlanetBids portals (CA agency bids)...")
+
+    # --- Decide which portals to scan + which manifest to write --------------
+    if resume:
+        manifest = pb_state.load()
+        if manifest is None:
+            print("  ⚠ No previous run to resume — doing a full scan.")
+            manifest = pb_state.new_manifest(PLANETBIDS_PORTALS)
+            resume = False
+        elif pb_state.is_stale(manifest):
+            print(f"  ⚠ Last run started {manifest.get('run_started')} — too old to "
+                  f"resume. Doing a full scan.")
+            manifest = pb_state.new_manifest(PLANETBIDS_PORTALS)
+            resume = False
+        else:
+            todo = set(pb_state.unfinished_portal_ids(manifest))
+            if not todo:
+                print("  ✓ Nothing to resume — every portal is ok/empty already.")
+                return []
+            print(f"  Resuming {len(todo)} unfinished portal(s) from run "
+                  f"started {manifest.get('run_started')}.")
+    else:
+        manifest = pb_state.new_manifest(PLANETBIDS_PORTALS)
+
+    portals = [
+        (pid, agency, county)
+        for pid, (agency, county) in PLANETBIDS_PORTALS.items()
+        if (not resume) or pid in todo
+    ]
+    manifest["run_finished"] = None
+    pb_state.save(manifest)
 
     page = live_page
     kw_lower = [k.lower() for k in keywords]
     skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
     all_bids: list[dict] = []
+    block_streak = 0
+    stopped_early = False
 
-    for portal_id, (agency, portal_county_) in PLANETBIDS_PORTALS.items():
+    for idx, (portal_id, agency, portal_county_) in enumerate(portals):
         print(f"  → {agency}...")
         portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
 
@@ -389,15 +433,27 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
                             captured.set_exception(exc)
 
         page.on("response", on_response)
+        status = "ok"
         try:
             await page.goto(portal_url, wait_until="domcontentloaded", timeout=30000)
             data = await asyncio.wait_for(captured, timeout=20)
             records = data.get("data", [])
         except asyncio.TimeoutError:
-            print(f"    ⚠ Timed out waiting for bids — skipped")
+            # Data never loaded — WAF challenge or blank page. Confirm by
+            # sniffing the body so we can tell "blocked" from a real portal glitch.
+            try:
+                body = (await page.inner_text("body")).strip()
+            except Exception:
+                body = ""
+            if len(body) < 200 or "captcha" in body.lower() or "aws-waf" in body.lower():
+                print(f"    ⚠ Blocked — page served no data (blank / WAF challenge)")
+            else:
+                print(f"    ⚠ Timed out waiting for bids")
+            status = "blocked"
             records = []
         except Exception as e:
             print(f"    ⚠ Error: {e}")
+            status = "error"
             records = []
         finally:
             page.remove_listener("response", on_response)
@@ -440,8 +496,32 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
                 "county": portal_county_,
             })
 
-        print(f"    ✓ {len(portal_bids)} relevant bids")
+        if status == "ok" and not portal_bids:
+            status = "empty"
+
+        if status in ("blocked", "error"):
+            block_streak += 1
+        else:
+            block_streak = 0
+            print(f"    ✓ {len(portal_bids)} relevant bids")
+
+        pb_state.record(manifest, portal_id, agency, status, len(portal_bids))
         all_bids.extend(portal_bids)
+
+        # Whole session looks WAF-poisoned — stop and leave the rest "pending".
+        if block_streak >= PLANETBIDS_BLOCK_STREAK_LIMIT and idx < len(portals) - 1:
+            remaining = len(portals) - idx - 1
+            print(f"\n  ⚠ {block_streak} portals blocked in a row — session looks "
+                  f"blocked. Stopping; {remaining} portal(s) left as pending.")
+            stopped_early = True
+            break
+
+    if not stopped_early:
+        manifest["run_finished"] = datetime.now().isoformat(timespec="seconds")
+    pb_state.save(manifest)
+
+    print()
+    print(pb_state.format_summary(manifest))
 
     return all_bids
 

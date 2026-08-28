@@ -5,6 +5,7 @@ Usage:
   python main.py                        # run full scan (all sources)
   python main.py --source sam           # SAM.gov only (headless, no cookies needed)
   python main.py --source planetbids    # PlanetBids only (requires CAPTCHA solve)
+  python main.py --source planetbids --resume  # retry only portals blocked/missed last run
   python main.py --source opengov       # OpenGov only (requires I'm-not-a-robot solve)
   python main.py --intel                # competitive intel: scan PlanetBids awarded bids (+ GC watchlist)
   python main.py --gc-watchlist         # GC watchlist: seed list + harvest from intel data (no browser)
@@ -22,6 +23,7 @@ SOURCE  = next((sys.argv[sys.argv.index("--source") + 1] for i, a in enumerate(s
 HEADLESS = "--headless" in sys.argv
 INTEL   = "--intel" in sys.argv
 GC_WATCHLIST = "--gc-watchlist" in sys.argv
+RESUME  = "--resume" in sys.argv
 
 try:
     from dotenv import load_dotenv
@@ -106,10 +108,20 @@ async def main():
         from test_planetbids import run_with_live_browser
         from db import upsert_bids, log_scan
         from geo import enrich
-        bids = await run_with_live_browser(SEARCH_KEYWORDS)
+        import pb_state
+        bids = await run_with_live_browser(SEARCH_KEYWORDS, resume=RESUME)
         duration = time.time() - t_start
+
+        # Distinguish "portals loaded, nothing matched" from "portals blocked".
+        manifest = pb_state.load()
+        incomplete = pb_state.unfinished_portal_ids(manifest) if manifest else []
         if not bids:
-            print("\n⚠ No bids found.")
+            if incomplete:
+                print(f"\n⚠ No bids captured and {len(incomplete)} portal(s) still "
+                      f"blocked/unfinished.")
+                print("  Re-run later today:  python main.py --source planetbids --resume")
+                sys.exit(1)
+            print("\n⚠ No bids found (all portals loaded — nothing matched).")
             sys.exit(0)
         for b in bids:
             enrich(b)
@@ -124,7 +136,11 @@ async def main():
         else:
             print("\n  (Supabase not configured — bids not queued)")
         print(f"\n  {len(bids)} total bids scanned across {len(set(b['agency'] for b in bids))} portals")
-        return
+        if incomplete:
+            print(f"\n⚠ {len(incomplete)} portal(s) still blocked/unfinished — re-run later today:")
+            print("    python main.py --source planetbids --resume")
+            sys.exit(2)
+        sys.exit(0)
 
     if SOURCE == "opengov":
         # Manual run — open real Chrome, user handles I'm-not-a-robot, scrape and queue.

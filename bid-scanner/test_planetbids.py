@@ -2,7 +2,8 @@
 PlanetBids scraper — opens real Chrome, user solves CAPTCHA, scrapes in same session.
 
 Usage:
-  python main.py --source planetbids   ← always use this
+  python main.py --source planetbids            ← full scan of all portals
+  python main.py --source planetbids --resume   ← retry only blocked/unfinished portals
 """
 
 import asyncio
@@ -27,10 +28,13 @@ UA = (
 )
 
 
-async def run_with_live_browser(keywords: list[str]) -> list[dict]:
+async def run_with_live_browser(keywords: list[str], resume: bool = False) -> list[dict]:
     """
     Open real Chrome, wait for user to solve CAPTCHA, then scrape all portals
     in the same verified browser session. Returns list of bid dicts.
+
+    resume=True re-scrapes only the portals left unfinished (blocked / error /
+    pending) by the previous run — see pb_state.py.
     """
     from scanner import _search_planetbids, SEARCH_KEYWORDS
 
@@ -59,7 +63,7 @@ async def run_with_live_browser(keywords: list[str]) -> list[dict]:
         await asyncio.get_event_loop().run_in_executor(None, input, "")
 
         # Scrape all portals using this verified session
-        bids = await _search_planetbids(ctx, keywords, live_page=page)
+        bids = await _search_planetbids(ctx, keywords, live_page=page, resume=resume)
 
         await browser.close()
         return bids
@@ -67,5 +71,5 @@ async def run_with_live_browser(keywords: list[str]) -> list[dict]:
 
 if __name__ == "__main__":
     from scanner import SEARCH_KEYWORDS
-    bids = asyncio.run(run_with_live_browser(SEARCH_KEYWORDS))
+    bids = asyncio.run(run_with_live_browser(SEARCH_KEYWORDS, resume="--resume" in sys.argv))
     print(f"\n✓ {len(bids)} bids found")

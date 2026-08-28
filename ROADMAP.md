@@ -187,7 +187,7 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | Portal | Status | Notes |
 |--------|--------|-------|
 | SAM.gov | ✅ Active | Federal; NAICS 238330 + CA place-of-performance. Now runs through the 4-county geo gate — out-of-area federal work is dropped |
-| PlanetBids | ✅ Active | Cookies-based auth. 41 portals, each tagged with its county (see `PLANETBIDS_PORTALS`) |
+| PlanetBids | ✅ Active | Manual run (`--source planetbids`), user solves one CAPTCHA. 41 portals, each county-tagged (see `PLANETBIDS_PORTALS`). Per-portal outcome tracked in `output/planetbids_state.json`; if the WAF blocks mid-run, re-run `--source planetbids --resume` to retry only the missed portals (auto-loops via `rerun_planetbids.sh`) |
 | BidNet Direct | ⚠ Partial | Doc download works; public listing page blocked by bot detection |
 | Cal eProcure | ✅ Active | Statewide — most rows land as `geo_status=unknown` and get flagged for county check |
 | OpenGov | ⚠ Manual | 5 SoCal portals (NorCal portals removed 2026-08). Run `--source opengov` on demand |
@@ -219,6 +219,27 @@ writes `Owner` (when `AIRTABLE_OWNER_EMAIL` is set — pending Robert's base sea
 `Estimated Value` (when a value is known post-parse). **Conditional-formatting colour rules
 are UI-only** — steps documented in `docs/airtable-tracker-setup.md` §2 (red ≤48h, amber ≤5d
 off the `Days to Due` formula). Someone needs to click through that once.
+
+### PlanetBids block-detection + resume — ✅ Session 5 (2026-08)
+
+The scraper walks ~40 portals in one browser session. When PlanetBids' WAF trips,
+every portal after it serves a blank page — the old code recorded those as "0 bids"
+and `main.py` exited 0, so a mostly-failed run looked clean.
+
+- `_search_planetbids` now classifies each portal: `ok` / `empty` / `blocked` /
+  `error` / `pending`, written to `output/planetbids_state.json` (`pb_state.py`).
+- After 4 blocked portals in a row it assumes the session is WAF-poisoned, stops,
+  and leaves the rest `pending`.
+- `python main.py --source planetbids --resume` re-scrapes only the unfinished
+  portals and merges them into the Supabase queue. Repeatable; falls back to a full
+  scan if the manifest is missing or >48h old.
+- `main.py` prints an honest summary (`30 ok · 3 empty · 5 blocked`) and exits 2
+  when portals are still incomplete.
+- `rerun_planetbids.sh` loops the resume up to 4× with a cooldown (still needs a
+  CAPTCHA solve each round).
+- **Phase 2 (not done):** randomized inter-portal delay, persist `aws-waf-token`
+  cookie between runs, session-health recheck, incomplete-coverage line in the
+  scan-summary email.
 
 ### PlanetBids portal expansion — follow-up task
 
