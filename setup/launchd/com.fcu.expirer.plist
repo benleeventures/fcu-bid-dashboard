@@ -33,9 +33,9 @@
     </array>
 
     <key>StandardOutPath</key>
-    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.log</string>
+    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.cron.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.log</string>
+    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.cron.log</string>
 
     <key>RunAtLoad</key>
     <false/>

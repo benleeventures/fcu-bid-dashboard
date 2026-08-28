@@ -1,10 +1,10 @@
 """
 FCU Supervisor — Ollama health check + auto-restart
-Runs every 2 minutes via launchd (com.fcu.supervisor).
+Runs every 15 minutes via launchd (com.fcu.supervisor).
 If Ollama is down, attempts brew restart. If it stays down, sends email alert.
+Healthy checks are silent — supervisor.log only ever holds real events.
 """
 
-import logging
 import os
 import subprocess
 import time
@@ -17,15 +17,8 @@ try:
 except ImportError:
     pass
 
-LOG_FILE = Path(__file__).parent / "logs" / "supervisor.log"
-LOG_FILE.parent.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
-)
-log = logging.getLogger(__name__)
+from logsetup import setup
+log = setup("supervisor")
 
 OLLAMA_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 ALERT_COOLDOWN_FILE = Path(__file__).parent / "logs" / "supervisor_alert.flag"
@@ -91,8 +84,7 @@ def send_alert():
 
 def main():
     if check_ollama():
-        log.info("Ollama OK")
-        return
+        return  # healthy — stay silent so the log only ever holds real events
 
     log.warning("Ollama not responding")
     restart_ollama()

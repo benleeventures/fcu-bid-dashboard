@@ -10,11 +10,9 @@ Rules:
   - If nothing qualifies, no email sent
 """
 
-import logging
 import os
 import sys
 from datetime import date, timedelta
-from pathlib import Path
 
 try:
     from dotenv import load_dotenv
@@ -22,15 +20,8 @@ try:
 except ImportError:
     pass
 
-LOG_FILE = Path(__file__).parent / "logs" / "jobwalk.log"
-LOG_FILE.parent.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
-)
-log = logging.getLogger(__name__)
+from logsetup import setup
+log = setup("jobwalk")
 
 WALK_WINDOW_DAYS = 7
 

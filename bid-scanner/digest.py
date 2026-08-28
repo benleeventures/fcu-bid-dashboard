@@ -7,11 +7,9 @@ bid_specs (sqft, compliance flags, walk status) for any bids parsed in
 the last 24h, plus a count of still-unprocessed bids awaiting parsing.
 """
 
-import logging
 import os
 import sys
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 try:
     from dotenv import load_dotenv
@@ -19,15 +17,8 @@ try:
 except ImportError:
     pass
 
-LOG_FILE = Path(__file__).parent / "logs" / "digest.log"
-LOG_FILE.parent.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
-)
-log = logging.getLogger(__name__)
+from logsetup import setup
+log = setup("digest")
 
 
 def run():
