@@ -122,12 +122,16 @@ export default async function Home() {
             Floor Covering Unlimited — Government Contracts
           </p>
         </div>
-        {lastScan && (
-          <div style={{ textAlign: 'right', color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
-            Last scan: {new Date(lastScan.scanned_at).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} PT
-            <br />{lastScan.duration_secs}s · {lastScan.new_bids} new bids
-          </div>
-        )}
+        <div style={{ textAlign: 'right', color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
+          {lastScan && (
+            <>
+              Last scan: {new Date(lastScan.scanned_at).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} PT
+              <br />{lastScan.duration_secs}s · {lastScan.new_bids} new bids
+              <br />
+            </>
+          )}
+          <a href="/scanner" style={{ color: 'var(--gold-light)' }}>Scanner health →</a>
+        </div>
       </div>
 
       {/* Stats */}

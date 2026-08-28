@@ -106,8 +106,10 @@ async def main():
         # Manual run — open real Chrome, user solves CAPTCHA, scrape and queue in Supabase.
         # Bids are NOT emailed now — they are picked up by the next scheduled run.
         from test_planetbids import run_with_live_browser
-        from db import upsert_bids, log_scan
+        from db import upsert_bids, log_scan, log_scan_run
         from geo import enrich
+        from funnel import ScanFunnel
+        from scanner import PLANETBIDS_PORTALS
         import pb_state
         bids = await run_with_live_browser(SEARCH_KEYWORDS, resume=RESUME)
         duration = time.time() - t_start
@@ -115,7 +117,22 @@ async def main():
         # Distinguish "portals loaded, nothing matched" from "portals blocked".
         manifest = pb_state.load()
         incomplete = pb_state.unfinished_portal_ids(manifest) if manifest else []
+
+        funnel = ScanFunnel(mode="planetbids")
+        for b in bids:
+            b.setdefault("source", "PlanetBids")
+        funnel.note_raw(bids)
+        for b in bids:
+            enrich(b)
+        funnel.note_geo(bids)
+        bids = [b for b in bids if b.get("geo_status") != "out"]
+        funnel.note_kept(bids)
+        funnel.note_final(bids, len(bids))
+        funnel.apply_planetbids_manifest(manifest, PLANETBIDS_PORTALS)
+        funnel.finish(duration)
+
         if not bids:
+            log_scan_run(funnel)
             if incomplete:
                 print(f"\n⚠ No bids captured and {len(incomplete)} portal(s) still "
                       f"blocked/unfinished.")
@@ -123,14 +140,15 @@ async def main():
                 sys.exit(1)
             print("\n⚠ No bids found (all portals loaded — nothing matched).")
             sys.exit(0)
-        for b in bids:
-            enrich(b)
-        bids = [b for b in bids if b.get("geo_status") != "out"]
         if os.getenv("SUPABASE_URL", ""):
             print("\nQueuing bids for next scheduled digest...")
             new_count, updated_count = upsert_bids(bids)
             log_scan(len(bids), sum(1 for b in bids if b["is_relevant"]), new_count,
                      {"PlanetBids": len(bids)}, duration)
+            funnel.new_bids = new_count
+            funnel.updated_bids = updated_count
+            funnel.note_new(bids)
+            log_scan_run(funnel)
             print(f"  ✓ {new_count} new bids queued · {updated_count} already known")
             print(f"  → These will appear in tomorrow's email digest automatically.")
         else:
@@ -146,20 +164,37 @@ async def main():
         # Manual run — open real Chrome, user handles I'm-not-a-robot, scrape and queue.
         # Bids are NOT emailed now — they are picked up by the next scheduled run.
         from opengov_live import run_opengov_scraper
+        from db import upsert_bids, log_scan, log_scan_run
         from geo import enrich
+        from funnel import ScanFunnel
         bids = await run_opengov_scraper()
         duration = time.time() - t_start
-        if not bids:
-            print("\n⚠ No bids found.")
-            sys.exit(0)
+
+        funnel = ScanFunnel(mode="opengov")
+        for b in bids:
+            b.setdefault("source", "OpenGov")
+        funnel.note_raw(bids)
         for b in bids:
             enrich(b)
+        funnel.note_geo(bids)
         bids = [b for b in bids if b.get("geo_status") != "out"]
+        funnel.note_kept(bids)
+        funnel.note_final(bids, len(bids))
+        funnel.finish(duration)
+
+        if not bids:
+            log_scan_run(funnel)
+            print("\n⚠ No bids found.")
+            sys.exit(0)
         if os.getenv("SUPABASE_URL", ""):
             print("\nQueuing bids for next scheduled digest...")
             new_count, updated_count = upsert_bids(bids)
             log_scan(len(bids), sum(1 for b in bids if b["is_relevant"]), new_count,
                      {"OpenGov": len(bids)}, duration)
+            funnel.new_bids = new_count
+            funnel.updated_bids = updated_count
+            funnel.note_new(bids)
+            log_scan_run(funnel)
             print(f"  ✓ {new_count} new bids queued · {updated_count} already known")
             print(f"  → These will appear in tomorrow's email digest automatically.")
         else:
@@ -168,11 +203,16 @@ async def main():
         return
 
     # --- Scheduled / full run ---
-    bids = await run_scan(source=SOURCE, headless=HEADLESS)
+    from funnel import ScanFunnel
+    funnel = ScanFunnel(mode=SOURCE or "full")
+    bids = await run_scan(source=SOURCE, headless=HEADLESS, funnel=funnel)
     duration = time.time() - t_start
+    funnel.finish(duration)
 
     if not bids:
         print("\n⚠ No bids found. Check internet connection or agency portal availability.")
+        from db import log_scan_run
+        log_scan_run(funnel)
         sys.exit(0)
 
     relevant = sum(1 for b in bids if b["is_relevant"])
@@ -206,6 +246,9 @@ async def main():
             source_counts["OpenGov"] = source_counts.get("OpenGov", 0) + len(queued_og_bids)
 
         log_scan(len(bids) + len(queued_pb_bids) + len(queued_og_bids), relevant, new_count, source_counts, duration)
+        funnel.new_bids = new_count
+        funnel.updated_bids = updated_count
+        funnel.note_new(bids)
         print(f"  ✓ {new_count} new bids added · {updated_count} existing updated")
     else:
         print("\n  (Supabase not configured — set SUPABASE_URL + SUPABASE_KEY in .env to persist)")
@@ -224,6 +267,7 @@ async def main():
         if new_relevant:
             print(f"  Sending new-bid digest ({len(new_relevant)} relevant)...")
             send_new_bids_digest(new_relevant)
+            funnel.digest_sent = True
 
     if new_relevant and os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
         from airtable_sync import sync_new_bids
@@ -239,6 +283,13 @@ async def main():
     if queued_og_bids:
         mark_digested([b["bid_id"] for b in queued_og_bids])
         print(f"  ✓ {len(queued_og_bids)} OpenGov bids marked as digested")
+
+    from db import log_scan_run
+    run_id = log_scan_run(funnel)
+    if run_id:
+        print(f"  ✓ scan_run {run_id[:8]} logged "
+              f"({funnel.raw_found} raw → {funnel.after_dedup} deduped → "
+              f"{funnel.relevant} relevant → {funnel.new_bids} new)")
 
     print(f"\n  {len(all_bids)} total bids · {relevant} flooring/relevant")
 

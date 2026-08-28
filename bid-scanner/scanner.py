@@ -13,6 +13,7 @@ import asyncio
 import os
 import re
 import sys
+import time
 from datetime import datetime, date
 
 import requests
@@ -1354,15 +1355,22 @@ async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
     return all_bids
 
 
-async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True, live_page=None) -> list[dict]:
+async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True,
+                   live_page=None, funnel=None) -> list[dict]:
     """
     Main scan entry point.
     source: filter to a single source ("sam", "planetbids", "bidnet", etc.) or None for all.
     live_page: verified Playwright page to use for PlanetBids (WAF already bypassed).
+    funnel: optional ScanFunnel — populated in place with per-stage / per-source
+            telemetry for the /scanner dashboard. See funnel.py.
     Returns list of deduplicated bid dicts sorted by relevance + due date.
     """
     if keywords is None:
         keywords = SEARCH_KEYWORDS
+
+    if funnel is None:
+        from funnel import ScanFunnel
+        funnel = ScanFunnel(mode=source or "full")
 
     src = source.lower() if source else None
     all_bids = []
@@ -1380,49 +1388,64 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
 
             if src in (None, "bidnet"):
                 print("Searching BidNet Direct (CA public bids)...")
-                page = await context.new_page()
-                for keyword in keywords:
-                    bids = await _search_keyword(page, keyword)
-                    for b in bids:
-                        b.setdefault("source", "BidNet Direct")
-                    all_bids.extend(bids)
-                await page.close()
+                with funnel.guard("BidNet Direct"):
+                    page = await context.new_page()
+                    for keyword in keywords:
+                        bids = await _search_keyword(page, keyword)
+                        for b in bids:
+                            b.setdefault("source", "BidNet Direct")
+                        all_bids.extend(bids)
+                    await page.close()
 
             if src == "planetbids" or (src is None and live_page is not None):
-                pb_bids = await _search_planetbids(context, keywords, live_page=live_page)
-                all_bids.extend(pb_bids)
+                with funnel.guard("PlanetBids"):
+                    pb_bids = await _search_planetbids(context, keywords, live_page=live_page)
+                    all_bids.extend(pb_bids)
+                try:
+                    import pb_state
+                    funnel.apply_planetbids_manifest(pb_state.load(), PLANETBIDS_PORTALS)
+                except Exception as e:
+                    print(f"    ⚠ PlanetBids manifest fold failed: {e}")
 
             if src in (None, "caleprocure"):
-                cal_page = await context.new_page()
-                cal_bids = await _search_caleprocure(cal_page, keywords)
-                all_bids.extend(cal_bids)
-                await cal_page.close()
+                with funnel.guard("Cal eProcure"):
+                    cal_page = await context.new_page()
+                    cal_bids = await _search_caleprocure(cal_page, keywords)
+                    all_bids.extend(cal_bids)
+                    await cal_page.close()
 
             if src == "opengov":
-                og_bids = await _search_opengov(context, keywords)
-                all_bids.extend(og_bids)
+                with funnel.guard("OpenGov"):
+                    og_bids = await _search_opengov(context, keywords)
+                    all_bids.extend(og_bids)
 
             if src in (None, "planrooms"):
-                pr_page = await context.new_page()
-                pr_bids = await _search_plan_rooms(pr_page, keywords)
-                all_bids.extend(pr_bids)
-                await pr_page.close()
+                with funnel.guard("Plan Rooms"):
+                    pr_page = await context.new_page()
+                    pr_bids = await _search_plan_rooms(pr_page, keywords)
+                    all_bids.extend(pr_bids)
+                    await pr_page.close()
 
             if src in (None, "caltrans"):
-                ccop_page = await context.new_page()
-                ccop_bids = await _search_ccop(ccop_page, keywords)
-                all_bids.extend(ccop_bids)
-                await ccop_page.close()
+                with funnel.guard("Caltrans CCOP"):
+                    ccop_page = await context.new_page()
+                    ccop_bids = await _search_ccop(ccop_page, keywords)
+                    all_bids.extend(ccop_bids)
+                    await ccop_page.close()
 
             await browser.close()
 
     if src in (None, "sam"):
-        sam_bids = await _search_samgov(keywords)
-        all_bids.extend(sam_bids)
+        with funnel.guard("SAM.gov"):
+            sam_bids = await _search_samgov(keywords)
+            all_bids.extend(sam_bids)
 
     if src in (None, "qualitybidders"):
-        qb_bids = await _search_qualitybidders(keywords)
-        all_bids.extend(qb_bids)
+        with funnel.guard("Quality Bidders"):
+            qb_bids = await _search_qualitybidders(keywords)
+            all_bids.extend(qb_bids)
+
+    funnel.note_raw(all_bids)
 
     # --- Geographic + agency-type gate (spec §1 / §2) ---------------------
     # Enrich every bid with county / geo_status / agency_type / is_k12, then
@@ -1432,14 +1455,18 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     from geo import enrich
     for b in all_bids:
         enrich(b)
+    funnel.note_geo(all_bids)
     before_geo = len(all_bids)
     all_bids = [b for b in all_bids if b.get("geo_status") != "out"]
+    funnel.note_kept(all_bids)
     dropped = before_geo - len(all_bids)
     if dropped:
         print(f"\nGeo filter: dropped {dropped} out-of-area bid(s); "
               f"{sum(1 for b in all_bids if b.get('geo_status') == 'unknown')} flagged unknown")
 
+    pre_dedup = len(all_bids)
     deduped = _dedup(all_bids)
+    funnel.note_final(deduped, pre_dedup)
 
     # Sort: relevant first, then by soonest due date
     today = date.today()

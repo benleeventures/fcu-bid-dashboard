@@ -11,6 +11,7 @@
 |--------|--------|-------|
 | Bid Scanner (9 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08) |
 | Dashboard (Next.js + Supabase) | ✅ Live on Vercel | Showing bid results |
+| Scanner Health Dashboard (`/scanner`) | ✅ Built (2026-08) | Funnel + volume-over-time + per-source visibility matrix + PlanetBids portal grid. Needs `supabase/add_scan_analytics.sql` + `backfill_scan_run.sql` applied. See `docs/scanner-dashboard.md` |
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
 | Document Download | ✅ Done | Playwright-based, all sources |
 | AI Parsing → bid_specs | ✅ Done (manual mode) | `--parse-all` prints prompts for Claude Code; `--ollama` for auto |
