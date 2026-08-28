@@ -197,6 +197,36 @@ def log_scan(total: int, relevant: int, new_bids: int, sources: dict, duration_s
         print(f"  ⚠ DB scan log error: {e}")
 
 
+def log_scan_run(funnel) -> str:
+    """
+    Write a ScanFunnel to scan_run + scan_source_stat + scan_portal_stat.
+    Returns the scan_run id (or "" if not persisted). See funnel.py.
+    """
+    sb = get_client()
+    if not sb:
+        return ""
+    try:
+        resp = sb.table("scan_run").insert(funnel.run_row()).execute()
+        run_id = (resp.data or [{}])[0].get("id", "")
+        if not run_id:
+            print("  ⚠ scan_run insert returned no id — source/portal stats skipped")
+            return ""
+
+        source_rows = funnel.source_rows(run_id)
+        if source_rows:
+            sb.table("scan_source_stat").insert(source_rows).execute()
+
+        portal_rows = funnel.portal_rows(run_id)
+        if portal_rows:
+            for i in range(0, len(portal_rows), 100):
+                sb.table("scan_portal_stat").insert(portal_rows[i:i + 100]).execute()
+
+        return run_id
+    except Exception as e:
+        print(f"  ⚠ DB scan_run log error: {e}")
+        return ""
+
+
 # ---------------------------------------------------------------------------
 # Competitive Intelligence — vendors + bid_intel + bid_intel_submissions
 # ---------------------------------------------------------------------------

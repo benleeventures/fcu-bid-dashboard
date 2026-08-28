@@ -103,6 +103,54 @@ def _recipients() -> list[str]:
 # Scan Summary (fires every run)
 # ─────────────────────────────────────────────
 
+def _persistent_source_issues(lookback: int = 6, min_streak: int = 2) -> list[str]:
+    """
+    Sources that have scraped 0 rows (or been blocked/errored) for `min_streak`
+    or more consecutive recent runs — the early-warning the /scanner matrix shows.
+    Returns human-readable strings like "Cal eProcure — 3 runs at 0".
+    Best effort: silent [] if scan_run/scan_source_stat aren't there yet.
+    """
+    try:
+        from db import get_client
+        sb = get_client()
+        if not sb:
+            return []
+        runs = (sb.table("scan_run")
+                .select("id, started_at, mode")
+                .neq("mode", "legacy")
+                .order("started_at", desc=True)
+                .limit(lookback).execute().data or [])
+        if not runs:
+            return []
+        run_ids = [r["id"] for r in runs]
+        stats = (sb.table("scan_source_stat")
+                 .select("scan_run_id, source, raw_count, status")
+                 .in_("scan_run_id", run_ids).execute().data or [])
+    except Exception:
+        return []
+
+    by_run: dict[str, dict[str, dict]] = {}
+    for s in stats:
+        by_run.setdefault(s["scan_run_id"], {})[s["source"]] = s
+    sources = {s["source"] for s in stats}
+
+    issues = []
+    for src in sorted(sources):
+        streak = 0
+        for rid in run_ids:                       # newest → oldest
+            rec = by_run.get(rid, {}).get(src)
+            if rec is None:
+                continue                          # not scanned that run — skip
+            bad = rec.get("raw_count", 0) == 0 or rec.get("status") in ("blocked", "error")
+            if bad:
+                streak += 1
+            else:
+                break
+        if streak >= min_streak:
+            issues.append(f"{src} — {streak} runs at 0")
+    return issues
+
+
 def send_scan_summary(bids: list[dict], duration_secs: float):
     """
     Email a per-source summary after every scanner run.
@@ -111,6 +159,19 @@ def send_scan_summary(bids: list[dict], duration_secs: float):
     recipients = _admin_recipients()
     if not recipients:
         return
+
+    health_issues = _persistent_source_issues()
+    health_banner = ""
+    if health_issues:
+        items = "".join(f"<li style='margin:2px 0;'>{i}</li>" for i in health_issues)
+        health_banner = (
+            "<div style=\"background:#3A2A0A;border-left:3px solid #FF9F0A;"
+            "border-radius:6px;padding:12px 16px;margin-bottom:20px;\">"
+            "<p style=\"margin:0 0 4px;font-size:11px;color:#FF9F0A;letter-spacing:.06em;"
+            "text-transform:uppercase;\">Source health — needs attention</p>"
+            f"<ul style=\"margin:4px 0 0;padding-left:18px;font-size:12px;color:#F5F5F0;\">{items}</ul>"
+            "</div>"
+        )
 
     # Per-source stats — _is_new is set by upsert_bids before this is called
     stats: dict[str, dict] = {}
@@ -168,6 +229,8 @@ def send_scan_summary(bids: list[dict], duration_secs: float):
       <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;">{datetime.now().strftime('%B %d, %Y')} — {duration_str}</h1>
     </div>
 
+    {health_banner}
+
     <!-- Quick stats -->
     <div style="display:flex;gap:12px;margin-bottom:24px;">
       <div style="flex:1;background:#2C2C2E;border-radius:8px;padding:14px 16px;text-align:center;">
@@ -201,6 +264,8 @@ def send_scan_summary(bids: list[dict], duration_secs: float):
     <p style="margin-top:20px;font-size:11px;color:#555;line-height:1.6;">
       ★ new bids found &nbsp;·&nbsp; ⚠ scraper returned 0 — may need attention<br>
       <a href="https://fcu-dashboard.vercel.app" style="color:#C8922A;">Open Dashboard ↗</a>
+      &nbsp;·&nbsp;
+      <a href="https://fcu-dashboard.vercel.app/scanner" style="color:#C8922A;">Scanner Health ↗</a>
     </p>
   </div>
 </body>
