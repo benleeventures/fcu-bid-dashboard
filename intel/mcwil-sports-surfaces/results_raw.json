@@ -1,0 +1,487 @@
+[
+  {
+    "key": "23758:105116",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "105116",
+    "title": "LBUSD FAC28-2223 Polytechnic HS Baseball Backstop Replacement",
+    "awarded_at": null,
+    "winner_name": "West Coast Netting",
+    "winner_amount": 280300.0,
+    "total_bidders": 2,
+    "submissions": [
+      {
+        "raw_vendor_name": "West Coast Netting",
+        "bid_amount": 280300.0,
+        "rank": 1,
+        "is_winner": true
+      },
+      {
+        "raw_vendor_name": "Quality Fence Co Inc",
+        "bid_amount": 296721.0,
+        "rank": 2,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/105116"
+  },
+  {
+    "key": "23758:88035",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "88035",
+    "title": "LBUSD FAC11-2122 Lakewood HS Bleacher Painting",
+    "awarded_at": null,
+    "winner_name": "TONY PAINTING",
+    "winner_amount": 59400.0,
+    "total_bidders": 10,
+    "submissions": [
+      {
+        "raw_vendor_name": "TONY PAINTING",
+        "bid_amount": 59400.0,
+        "rank": 1,
+        "is_winner": true
+      },
+      {
+        "raw_vendor_name": "ALLINONE CONSTRUCTION INC.",
+        "bid_amount": 63000.0,
+        "rank": 2,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Innovation Painting Inc",
+        "bid_amount": 69999.0,
+        "rank": 3,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "US National Corp",
+        "bid_amount": 72320.0,
+        "rank": 4,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "A.J. Fistes Corporation",
+        "bid_amount": 93794.0,
+        "rank": 5,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Astro Painting Company, Inc.",
+        "bid_amount": 98000.0,
+        "rank": 6,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Omega Construction Co Inc",
+        "bid_amount": 114000.0,
+        "rank": 7,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Southwest Painting, Inc",
+        "bid_amount": 125500.0,
+        "rank": 8,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Corner Keystone Construction Corporation",
+        "bid_amount": 177200.0,
+        "rank": 9,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "CTG CONSTRUCTION,INC",
+        "bid_amount": 220000.0,
+        "rank": 10,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/88035"
+  },
+  {
+    "key": "23758:87579",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "87579",
+    "title": "LBUSD FAC12-2122 Lakewood HS Bleacher Abatement",
+    "awarded_at": null,
+    "winner_name": "Delta 4 Environmental Inc.",
+    "winner_amount": 59000.0,
+    "total_bidders": 7,
+    "submissions": [
+      {
+        "raw_vendor_name": "Delta 4 Environmental Inc.",
+        "bid_amount": 59000.0,
+        "rank": 1,
+        "is_winner": true
+      },
+      {
+        "raw_vendor_name": "Quality Environmental Inc.",
+        "bid_amount": 74000.0,
+        "rank": 2,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Resource Environmental Services, LLC",
+        "bid_amount": 100000.0,
+        "rank": 3,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "ASBESTOS CONTROL TESTING INC.",
+        "bid_amount": 149500.0,
+        "rank": 4,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Karcher Environmental",
+        "bid_amount": 230000.0,
+        "rank": 5,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "INTEGRATED DEMOLITION AND REMEDIATION INC",
+        "bid_amount": 230000.0,
+        "rank": 6,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "T3 Contractors Corp",
+        "bid_amount": 275000.0,
+        "rank": 7,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/87579"
+  },
+  {
+    "key": "23758:82185",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "82185",
+    "title": "LBUSD FAC24-2021 Millikan HS Bleachers Painting Project",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/82185"
+  },
+  {
+    "key": "23758:75794",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "75794",
+    "title": "LBUSD FAC03-2021 Wilson High School Bleachers Replacement",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/75794"
+  },
+  {
+    "key": "23758:62050",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "62050",
+    "title": "Bleacher Repair Service, As-Needed, District-Wide",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/62050"
+  },
+  {
+    "key": "23758:55513",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "55513",
+    "title": "LBUSD Poly HS Site Improvements (Bleachers & Field Lighting)",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/55513"
+  },
+  {
+    "key": "23758:53290",
+    "portal_id": "23758",
+    "agency": "Long Beach Unified School District",
+    "county": "Los Angeles",
+    "numeric_bid_id": "53290",
+    "title": "Poly HS Site Improvements (Bleachers & Field Lighting",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/23758/bo/bo-detail/53290"
+  },
+  {
+    "key": "14210:82271",
+    "portal_id": "14210",
+    "agency": "Burbank",
+    "county": "Los Angeles",
+    "numeric_bid_id": "82271",
+    "title": "PA 2238 - OUTDOOR SPORT COURT RESURFACING",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/14210/bo/bo-detail/82271"
+  },
+  {
+    "key": "14210:19738",
+    "portal_id": "14210",
+    "agency": "Burbank",
+    "county": "Los Angeles",
+    "numeric_bid_id": "19738",
+    "title": "WEDGEWOOD FLOOR JOINT REPLACEMENT",
+    "awarded_at": null,
+    "winner_name": "Pacific Waterproofing & Restoration, Inc",
+    "winner_amount": 94210.0,
+    "total_bidders": 3,
+    "submissions": [
+      {
+        "raw_vendor_name": "Pacific Waterproofing & Restoration, Inc",
+        "bid_amount": 94210.0,
+        "rank": 1,
+        "is_winner": true
+      },
+      {
+        "raw_vendor_name": "Olympos Painting Inc.",
+        "bid_amount": 246000.0,
+        "rank": 2,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Howard Ridley Co., Inc.",
+        "bid_amount": 265776.0,
+        "rank": 3,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/14210/bo/bo-detail/19738"
+  },
+  {
+    "key": "14210:14709",
+    "portal_id": "14210",
+    "agency": "Burbank",
+    "county": "Los Angeles",
+    "numeric_bid_id": "14709",
+    "title": "PA 2001 - RESURFACE VARIOUS GYM FLOORS",
+    "awarded_at": null,
+    "winner_name": "Geary Floors Inc",
+    "winner_amount": 12180.58,
+    "total_bidders": 5,
+    "submissions": [
+      {
+        "raw_vendor_name": "Geary Floors Inc",
+        "bid_amount": 12180.58,
+        "rank": 1,
+        "is_winner": true
+      },
+      {
+        "raw_vendor_name": "The Fitness Standard",
+        "bid_amount": 13650.99,
+        "rank": 2,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Pacific Floor Company, Inc",
+        "bid_amount": 18900.9,
+        "rank": 3,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "J L E FLOORING",
+        "bid_amount": 45572.78,
+        "rank": 4,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Floor Covering Unlimited, Inc.",
+        "bid_amount": 899640006.0,
+        "rank": 5,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/14210/bo/bo-detail/14709"
+  },
+  {
+    "key": "20137:136425",
+    "portal_id": "20137",
+    "agency": "City of Santa Ana",
+    "county": "Orange",
+    "numeric_bid_id": "136425",
+    "title": "Lillie King Park Basketball Court Construction",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/20137/bo/bo-detail/136425"
+  },
+  {
+    "key": "20137:136655",
+    "portal_id": "20137",
+    "agency": "City of Santa Ana",
+    "county": "Orange",
+    "numeric_bid_id": "136655",
+    "title": "Bristol-Tolliver Basketball Court Lighting",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 3,
+    "submissions": [
+      {
+        "raw_vendor_name": "A.C.M Lighting Services Inc.",
+        "bid_amount": null,
+        "rank": null,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Lighting Technology Services, Inc.",
+        "bid_amount": null,
+        "rank": null,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Koba Construction",
+        "bid_amount": null,
+        "rank": null,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/20137/bo/bo-detail/136655"
+  },
+  {
+    "key": "20137:134451",
+    "portal_id": "20137",
+    "agency": "City of Santa Ana",
+    "county": "Orange",
+    "numeric_bid_id": "134451",
+    "title": "Angels Cool Pavement Basketball Court and ADA Improvements",
+    "awarded_at": null,
+    "winner_name": "Siterep Construction Services, Inc.",
+    "winner_amount": 172778.0,
+    "total_bidders": 10,
+    "submissions": [
+      {
+        "raw_vendor_name": "Siterep Construction Services, Inc.",
+        "bid_amount": 172778.0,
+        "rank": 1,
+        "is_winner": true
+      },
+      {
+        "raw_vendor_name": "RCCI",
+        "bid_amount": 188125.0,
+        "rank": 2,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "ACC & Engineering LLC",
+        "bid_amount": 214260.0,
+        "rank": 3,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "A's Construction",
+        "bid_amount": 222000.0,
+        "rank": 4,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Ace Capital Engineering",
+        "bid_amount": 237438.23,
+        "rank": 5,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "OrangeBlue General Contractors",
+        "bid_amount": 283900.0,
+        "rank": 6,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "SAVI Construction Inc",
+        "bid_amount": 298296.0,
+        "rank": 7,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Vido Samarzich, Inc.",
+        "bid_amount": 328700.0,
+        "rank": 8,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Veteran Builders Corps",
+        "bid_amount": 364158.0,
+        "rank": 9,
+        "is_winner": false
+      },
+      {
+        "raw_vendor_name": "Asphalt, Fabric and Engineering, Inc.",
+        "bid_amount": 378850.0,
+        "rank": 10,
+        "is_winner": false
+      }
+    ],
+    "url": "https://vendors.planetbids.com/portal/20137/bo/bo-detail/134451"
+  },
+  {
+    "key": "20137:132826",
+    "portal_id": "20137",
+    "agency": "City of Santa Ana",
+    "county": "Orange",
+    "numeric_bid_id": "132826",
+    "title": "Rubberized Resurfacing at Sandpointe Playground",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/20137/bo/bo-detail/132826"
+  },
+  {
+    "key": "20137:66776",
+    "portal_id": "20137",
+    "agency": "City of Santa Ana",
+    "county": "Orange",
+    "numeric_bid_id": "66776",
+    "title": "Gymnasium Floor Waterproofing",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/20137/bo/bo-detail/66776"
+  },
+  {
+    "key": "20137:34466",
+    "portal_id": "20137",
+    "agency": "City of Santa Ana",
+    "county": "Orange",
+    "numeric_bid_id": "34466",
+    "title": "Outdoor Basketball Court Renovation",
+    "awarded_at": null,
+    "winner_name": null,
+    "winner_amount": null,
+    "total_bidders": 0,
+    "submissions": [],
+    "url": "https://vendors.planetbids.com/portal/20137/bo/bo-detail/34466"
+  }
+]
