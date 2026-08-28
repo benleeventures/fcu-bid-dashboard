@@ -1,0 +1,1722 @@
+{
+  "requests": [
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/oauth/refresh/",
+      "method": "POST",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "null",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/t",
+      "method": "POST",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "null",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/server-time",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "null",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/version?new_session=true",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "null",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/feature-flags?feature=DOM_PURIFY_ENABLED&agency_id=23758&default=false",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "null",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/planetbids-info",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/agencies/23758",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "null"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bid-types",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/departments",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/categories",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/feature-flags?feature=VENDOR_HELP_CENTER_REVAMP_ENABLED&agency_id=23758&default=false",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/feature-flags?feature=VENDOR_AGENCY_PROFILES_NOMENCLATURE_ENABLED&agency_id=23758&default=false",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/feature-flags?feature=subaccounts_enabled&agency_id=23758&default=false",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "authorization": "PBToken notLoggedIn",
+        "vendor-login-id": "null",
+        "vendor-id": "null",
+        "em-version": "v11056@fa3f174",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "referer": "https://vendors.planetbids.com/",
+        "sec-ch-ua-mobile": "?0",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "content-type": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&due_date_from=&due_date_to=&keyword=&page=1&per_page=30&sort_by=&sort_order=-1&stage_id=0",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&due_date_from=&due_date_to=&keyword=&page=2&per_page=30&sort_by=&sort_order=-1&stage_id=0",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "em-version": "v11056@fa3f174",
+        "vendor-id": "null",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "vendor-login-id": "null",
+        "sec-ch-ua-mobile": "?0",
+        "referer": "https://vendors.planetbids.com/",
+        "visit-id": "104420585",
+        "company-id": "23758",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/vnd.api+json",
+        "timezone-name": "America/Los_Angeles"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&page%5Bnumber%5D=2",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "https://vendors.planetbids.com/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&page%5Bsize%5D=200",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "https://vendors.planetbids.com/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&filter%5Bstage%5D=awarded",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "https://vendors.planetbids.com/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&filter%5Bstage%5D=all",
+      "method": "GET",
+      "headers": {
+        "sec-ch-ua-platform": "\"macOS\"",
+        "referer": "https://vendors.planetbids.com/",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&due_date_from=&due_date_to=&keyword=&page=1&per_page=30&sort_by=&sort_order=-1&stage_id=0",
+      "json": {
+        "data": [
+          {
+            "type": "bids",
+            "id": "142397",
+            "attributes": {
+              "bidId": 142397,
+              "issueDate": "2026-05-29 12:14:04.863",
+              "categoryIds": "2777, 5260",
+              "title": "Expanded Learning Opportunities Program (ELO-P) - Staffing Support Services",
+              "invitationNum": "2627-004-RFP",
+              "bidDueDate": "2026-06-26 16:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142261",
+            "attributes": {
+              "bidId": 142261,
+              "issueDate": "2026-05-20 09:00:10.577",
+              "categoryIds": "110, 111, 2225",
+              "title": "FAC03-2526 Polytechnic High School Improvements Project",
+              "invitationNum": "FAC03-2526",
+              "bidDueDate": "2026-06-25 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142674",
+            "attributes": {
+              "bidId": 142674,
+              "issueDate": "2026-06-03 07:58:02.200",
+              "categoryIds": "2600, 2625, 2650, 2888, 4775",
+              "title": "RFI - Waste Services Optimization and Data Analytics Solutions",
+              "invitationNum": "RFI- 2526-017",
+              "bidDueDate": "2026-06-24 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 2,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142450",
+            "attributes": {
+              "bidId": 142450,
+              "issueDate": "2026-05-29 08:00:19.250",
+              "categoryIds": "1725, 2275, 3550, 4800",
+              "title": "HVAC Parts and Supplies",
+              "invitationNum": "2526-011-RFB",
+              "bidDueDate": "2026-06-24 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142275",
+            "attributes": {
+              "bidId": 142275,
+              "issueDate": "2026-05-29 08:00:11.483",
+              "categoryIds": "1225",
+              "title": "Service Trucks",
+              "invitationNum": "2526-018-RFB",
+              "bidDueDate": "2026-06-24 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142018",
+            "attributes": {
+              "bidId": 142018,
+              "issueDate": "2026-05-22 10:41:22.197",
+              "categoryIds": "2778",
+              "title": "Expanded Learning Opportunities Program (ELO-P) - Supplemental Enrichment Programs",
+              "invitationNum": "2627-003-RFP",
+              "bidDueDate": "2026-06-18 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142435",
+            "attributes": {
+              "bidId": 142435,
+              "issueDate": "2026-05-22 16:00:22.583",
+              "categoryIds": "2725, 2777",
+              "title": "Expanded Learning Opportunities Program (ELO-P) - Primary Program Provider Services",
+              "invitationNum": "2627-002-RFP",
+              "bidDueDate": "2026-06-12 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "142145",
+            "attributes": {
+              "bidId": 142145,
+              "issueDate": "2026-05-15 11:53:26.883",
+              "categoryIds": "1125, 2175, 5325, 5350, 5375",
+              "title": "ICS System Support & Maintenance (Bell & Clock Systems)",
+              "invitationNum": "2526-016-RFP",
+              "bidDueDate": "2026-06-05 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "141682",
+            "attributes": {
+              "bidId": 141682,
+              "issueDate": "2026-05-04 10:37:46.147",
+              "categoryIds": "3125, 3175, 3200, 424420",
+              "title": "Dairy and Juice Products",
+              "invitationNum": "FS430-2627/RFP",
+              "bidDueDate": "2026-06-05 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "141422",
+            "attributes": {
+              "bidId": 141422,
+              "issueDate": "2026-05-01 06:00:36.580",
+              "categoryIds": "0012, 0014, 2888",
+              "title": "RFQ 26-01 California Environmental Quality Act (CEQA) Consulting Services",
+              "invitationNum": "RFQ 26-01",
+              "bidDueDate": "2026-06-02 14:00:00.000",
+              "stageId": 5,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 16,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Award Pending",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "141883",
+            "attributes": {
+              "bidId": 141883,
+              "issueDate": "2026-05-15 10:00:12.917",
+              "categoryIds": "3200",
+              "title": "Expanded Learning Opportunities Program (ELO-P) - Packaged Meals Service",
+              "invitationNum": "2526-019-RFP",
+              "bidDueDate": "2026-06-01 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "140812",
+            "attributes": {
+              "bidId": 140812,
+              "issueDate": "2026-04-10 09:26:01.203",
+              "categoryIds": "1575, 1650, 1675, 1700, 5350",
+              "title": "2526-015-RFP Managed Security Service Provider (MSSP)",
+              "invitationNum": "2526-015-RFP",
+              "bidDueDate": "2026-05-20 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "141126",
+            "attributes": {
+              "bidId": 141126,
+              "issueDate": "2026-04-24 08:12:21.673",
+              "categoryIds": "4500",
+              "title": "Plumbing Supplies",
+              "invitationNum": "2526-012-RFB",
+              "bidDueDate": "2026-05-20 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "141164",
+            "attributes": {
+              "bidId": 141164,
+              "issueDate": "2026-04-20 11:59:56.303",
+              "categoryIds": "3175, 3200, 42448",
+              "title": "Fresh and Processed Produce",
+              "invitationNum": "FS429-2627/RFP",
+              "bidDueDate": "2026-05-15 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "140915",
+            "attributes": {
+              "bidId": 140915,
+              "issueDate": "2026-04-16 08:15:24.397",
+              "categoryIds": "265700, 3175, 322120, 322212, 322215, 322219, 322220, 322221, 322222, 322223, 322224, 322226, 322291, 322299, 326111, 326112, 326113, 326121, 326199, 339113, 3625, 3650, 3700, 423840, 424130, 4750, 64000, 64022, 64050, 64100, 64122, 64150",
+              "title": "Purchase of Paper, Compostable and Plastic Goods",
+              "invitationNum": "FS427-2627/IFB",
+              "bidDueDate": "2026-05-14 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "140814",
+            "attributes": {
+              "bidId": 140814,
+              "issueDate": "2026-04-10 10:36:49.623",
+              "categoryIds": "3100, 3200, 424420, 445299, 624210, 722310",
+              "title": "Purchase of Fresh Baked Pizza",
+              "invitationNum": "FS428-2627/RFP",
+              "bidDueDate": "2026-05-06 10:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "140768",
+            "attributes": {
+              "bidId": 140768,
+              "issueDate": "2026-04-13 08:00:32.150",
+              "categoryIds": "0015, 3726",
+              "title": "LBUSD RFP 2526-60 Labor Compliance (MDF/IDF Switch Replacement Project (E-Rate Funding Year 2026))",
+              "invitationNum": "RFP 2526-60",
+              "bidDueDate": "2026-05-01 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "140347",
+            "attributes": {
+              "bidId": 140347,
+              "issueDate": "2026-03-31 09:38:12.387",
+              "categoryIds": "1775, 1825",
+              "title": "LBUSD RFQ/P 2526-54 Architectural Services (Facility Space Needs Analysis)",
+              "invitationNum": "RFQ/P 2526-54",
+              "bidDueDate": "2026-05-01 14:00:00.000",
+              "stageId": 5,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Award Pending",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "140339",
+            "attributes": {
+              "bidId": 140339,
+              "issueDate": "2026-04-01 07:56:52.477",
+              "categoryIds": "3100, 311412, 3125, 3150, 3175, 3200, 424420, 424490, 722310",
+              "title": "Purchase of Foodstuffs - Commercial",
+              "invitationNum": "FS425-2627/IFB",
+              "bidDueDate": "2026-04-28 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "139837",
+            "attributes": {
+              "bidId": 139837,
+              "issueDate": "2026-03-24 08:30:51.510",
+              "categoryIds": "1225",
+              "title": "Hybrid Truck",
+              "invitationNum": "2526-014",
+              "bidDueDate": "2026-04-21 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "139776",
+            "attributes": {
+              "bidId": 139776,
+              "issueDate": "2026-03-23 07:11:11.647",
+              "categoryIds": "3100, 311412, 3125, 3150, 3175, 3200, 424420, 722310",
+              "title": "Purchase of USDA Commodity Processed Foodstuffs",
+              "invitationNum": "FS426-2627/IFB",
+              "bidDueDate": "2026-04-17 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "139893",
+            "attributes": {
+              "bidId": 139893,
+              "issueDate": "2026-03-23 07:57:20.927",
+              "categoryIds": "110, 111, 2225",
+              "title": "FAC02-2526 Jackie Robinson K-8 Academy All-Weather Field",
+              "invitationNum": "FAC02-2526",
+              "bidDueDate": "2026-04-16 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "138060",
+            "attributes": {
+              "bidId": 138060,
+              "issueDate": "2026-02-11 08:00:04.937",
+              "categoryIds": "3075, 3675, 4800",
+              "title": "Kitchen Equipment Maintenance and Repair",
+              "invitationNum": "2526-008-RFP",
+              "bidDueDate": "2026-03-18 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "137840",
+            "attributes": {
+              "bidId": 137840,
+              "issueDate": "2026-02-05 11:48:20.523",
+              "categoryIds": "1910",
+              "title": "Medical Benefits Consultant Services",
+              "invitationNum": "2526-013-RFP",
+              "bidDueDate": "2026-02-27 12:00:00.000",
+              "stageId": 8,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Rejected",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "137990",
+            "attributes": {
+              "bidId": 137990,
+              "issueDate": "2026-02-04 11:58:20.573",
+              "categoryIds": "2900, 5125",
+              "title": "Fire Alarm System Services",
+              "invitationNum": "2526-010-RFP",
+              "bidDueDate": "2026-02-23 12:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "136983",
+            "attributes": {
+              "bidId": 136983,
+              "issueDate": "2026-01-13 08:00:21.607",
+              "categoryIds": "2225, 2825, 3550, 5075",
+              "title": "Door & Window Hardware",
+              "invitationNum": "2526-009-RFB",
+              "bidDueDate": "2026-02-10 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "137110",
+            "attributes": {
+              "bidId": 137110,
+              "issueDate": "2026-01-12 06:00:50.390",
+              "categoryIds": "101, 110, 111, 2175, 2225",
+              "title": "LBUSD FAC01-2526 AV Portables 2026 (Carver ES, Henry ES, Hoover MS, Marshall MS, and Millikan HS)",
+              "invitationNum": "FAC01-2526",
+              "bidDueDate": "2026-02-04 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "135850",
+            "attributes": {
+              "bidId": 135850,
+              "issueDate": "2025-11-19 09:03:56.937",
+              "categoryIds": "101, 111, 2100, 2175, 2225, 5325, 5350, 5375",
+              "title": "2526-007-RFP MDF/IDF Switch Replacement Project (E-Rate Funding Year 2026)",
+              "invitationNum": "2526-007-RFP",
+              "bidDueDate": "2026-01-07 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "135151",
+            "attributes": {
+              "bidId": 135151,
+              "issueDate": "2025-10-30 14:00:08.360",
+              "categoryIds": "5270",
+              "title": "Substitute Staffing As Needed District-Wide",
+              "invitationNum": "2526-006-RFP",
+              "bidDueDate": "2025-11-20 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "134181",
+            "attributes": {
+              "bidId": 134181,
+              "issueDate": "2025-10-03 16:41:19.377",
+              "categoryIds": "2780",
+              "title": "Gardening Program for Expanded Learning Opportunities Program (ELOP)",
+              "invitationNum": "2526-005-RFP",
+              "bidDueDate": "2025-10-21 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:06:26.181",
+          "desiredEmVersion": "",
+          "totalBids": 412,
+          "totalPages": 14
+        }
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&due_date_from=&due_date_to=&keyword=&page=2&per_page=30&sort_by=&sort_order=-1&stage_id=0",
+      "json": {
+        "data": [
+          {
+            "type": "bids",
+            "id": "134403",
+            "attributes": {
+              "bidId": 134403,
+              "issueDate": "2025-10-03 06:00:42.313",
+              "categoryIds": "1850, 1999, 2725",
+              "title": "LBUSD RFP 2526-17 SCHOOL FEE JUSTIFICATION STUDY (FJS), SCHOOL FACILITIES NEEDS ANALYSIS (SFNA), AND THE ANNUAL & FIVE YEAR REPORT",
+              "invitationNum": "RFP 2526-17",
+              "bidDueDate": "2025-10-16 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "133372",
+            "attributes": {
+              "bidId": 133372,
+              "issueDate": "2025-09-05 08:30:14.707",
+              "categoryIds": "2225, 4525",
+              "title": "Storage Sheds",
+              "invitationNum": "2526-002",
+              "bidDueDate": "2025-10-03 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "133901",
+            "attributes": {
+              "bidId": 133901,
+              "issueDate": "2025-09-17 09:56:02.653",
+              "categoryIds": "5475, 5500",
+              "title": "Student Transportation Services",
+              "invitationNum": "2627-001-RFP",
+              "bidDueDate": "2025-10-01 13:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "132968",
+            "attributes": {
+              "bidId": 132968,
+              "issueDate": "2025-08-20 15:33:01.457",
+              "categoryIds": "5270",
+              "title": "Registered Behavior Technician Staffing Services",
+              "invitationNum": "2526-001-RFB",
+              "bidDueDate": "2025-09-03 14:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "132812",
+            "attributes": {
+              "bidId": 132812,
+              "issueDate": "2025-08-15 11:51:14.900",
+              "categoryIds": "1225",
+              "title": "Electric/Hybrid Vehicles",
+              "invitationNum": "2526-004",
+              "bidDueDate": "2025-09-03 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "132816",
+            "attributes": {
+              "bidId": 132816,
+              "issueDate": "2025-08-13 15:47:21.670",
+              "categoryIds": "5475, 5500",
+              "title": "Field Trips and Athletics Transportation Services (Supplemental)",
+              "invitationNum": "2526-003-RFB",
+              "bidDueDate": "2025-08-21 13:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "131572",
+            "attributes": {
+              "bidId": 131572,
+              "issueDate": "2025-07-10 11:47:52.660",
+              "categoryIds": "0015, 3726",
+              "title": "LBUSD RFP 2526-05 Labor Compliance (Polytechnic HS HVAC Modernization)",
+              "invitationNum": "RFP 2526-05",
+              "bidDueDate": "2025-07-24 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128972",
+            "attributes": {
+              "bidId": 128972,
+              "issueDate": "2025-04-21 08:00:32.647",
+              "categoryIds": "202404, 2100, 2225",
+              "title": "LBUSD RFQ/P 2425-98 LLB Construction Services (Polytechnic HS Transformation Project)",
+              "invitationNum": "RFQ/P 2425-98",
+              "bidDueDate": "2025-05-28 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "129489",
+            "attributes": {
+              "bidId": 129489,
+              "issueDate": "2025-05-02 10:28:12.627",
+              "categoryIds": "111",
+              "title": "FAC14-2425 Window Coverings, As-Needed, District-Wide",
+              "invitationNum": "FAC14-2425",
+              "bidDueDate": "2025-05-22 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128806",
+            "attributes": {
+              "bidId": 128806,
+              "issueDate": "2025-04-18 07:58:21.800",
+              "categoryIds": "3600, 4675",
+              "title": "Printing Services",
+              "invitationNum": "21-2425",
+              "bidDueDate": "2025-05-21 11:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128129",
+            "attributes": {
+              "bidId": 128129,
+              "issueDate": "2025-03-28 11:27:39.890",
+              "categoryIds": "2875, 2900, 5125",
+              "title": "Fire Suppression Systems Maintenance Services",
+              "invitationNum": "2425-019-RFP",
+              "bidDueDate": "2025-05-14 16:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128993",
+            "attributes": {
+              "bidId": 128993,
+              "issueDate": "2025-04-17 15:47:53.507",
+              "categoryIds": "3075, 3675, 3700",
+              "title": "Purchase of Food Service Equipment",
+              "invitationNum": "FS421-2526/IFB",
+              "bidDueDate": "2025-05-14 15:03:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128480",
+            "attributes": {
+              "bidId": 128480,
+              "issueDate": "2025-04-11 09:00:02.310",
+              "categoryIds": "101, 110, 111, 2175, 2750",
+              "title": "Battery Inverters Maintenance Services",
+              "invitationNum": "2425-020-RFB",
+              "bidDueDate": "2025-05-09 16:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128040",
+            "attributes": {
+              "bidId": 128040,
+              "issueDate": "2025-03-28 10:29:46.960",
+              "categoryIds": "2875, 2900, 5125",
+              "title": "Fire Extinguisher Services",
+              "invitationNum": "2425-016-RFB",
+              "bidDueDate": "2025-05-09 16:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128848",
+            "attributes": {
+              "bidId": 128848,
+              "issueDate": "2025-04-18 08:00:29.307",
+              "categoryIds": "0001, 2888",
+              "title": "LBUSD RFQ/P 2425-92 MT&I Services (Washington MS Transformation Project) - Rebid",
+              "invitationNum": "RFQ/P 2425-92",
+              "bidDueDate": "2025-05-09 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128567",
+            "attributes": {
+              "bidId": 128567,
+              "issueDate": "2025-04-08 11:59:11.387",
+              "categoryIds": "3175, 3200, 424420",
+              "title": "Purchase of Novelty Food Products",
+              "invitationNum": "FS422-2526/RFQ",
+              "bidDueDate": "2025-05-07 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 16,
+              "bidTypeId": 8,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128404",
+            "attributes": {
+              "bidId": 128404,
+              "issueDate": "2025-04-07 07:34:35.413",
+              "categoryIds": "111, 2225",
+              "title": "LBUSD FAC13-2425 CABRILLO HIGH SCHOOL BASEBALL FIELD LIGHTS PROJECT",
+              "invitationNum": "FAC13-2425",
+              "bidDueDate": "2025-05-02 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128290",
+            "attributes": {
+              "bidId": 128290,
+              "issueDate": "2025-04-01 15:02:09.713",
+              "categoryIds": "3100, 3175, 3200, 424420, 722310",
+              "title": "Purchase of Bread Products",
+              "invitationNum": "FS424-2526/IFB",
+              "bidDueDate": "2025-04-28 10:00:00.000",
+              "stageId": 5,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Award Pending",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127919",
+            "attributes": {
+              "bidId": 127919,
+              "issueDate": "2025-03-31 12:46:02.967",
+              "categoryIds": "265700, 3175, 322120, 322212, 322215, 322219, 322220, 322221, 322222, 322223, 322224, 322226, 322291, 322299, 326111, 326112, 326113, 326121, 326199, 339113, 3625, 3650, 3700, 423840, 424130, 4750, 64000, 64022, 64050, 64100, 64122, 64150",
+              "title": "Purchase of Paper and Plastic Goods",
+              "invitationNum": "FS417-2526/IFB",
+              "bidDueDate": "2025-04-28 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "128627",
+            "attributes": {
+              "bidId": 128627,
+              "issueDate": "2025-04-09 10:33:05.783",
+              "categoryIds": "101, 2175, 2225",
+              "title": "LBUSD FAC11-2425 Renaissance HS Light Fixture Replacement",
+              "invitationNum": "FAC11-2425",
+              "bidDueDate": "2025-04-25 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "126651",
+            "attributes": {
+              "bidId": 126651,
+              "issueDate": "2025-03-20 10:16:53.613",
+              "categoryIds": "3100, 311412, 3125, 3150, 3175, 3200, 424420, 424490, 722310",
+              "title": "Purchase of Foodstuffs - Commercial",
+              "invitationNum": "FS418-2526/IFB",
+              "bidDueDate": "2025-04-21 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127964",
+            "attributes": {
+              "bidId": 127964,
+              "issueDate": "2025-03-24 15:18:37.920",
+              "categoryIds": "101, 110, 111, 2100, 2225, 3075, 3675",
+              "title": "FAC12-2425 Food Service Equipment Labor and Installation (REBID)",
+              "invitationNum": "FAC12-2425",
+              "bidDueDate": "2025-04-18 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127189",
+            "attributes": {
+              "bidId": 127189,
+              "issueDate": "2025-03-17 11:40:58.607",
+              "categoryIds": "3100, 311412, 3125, 3150, 3175, 3200, 424420, 722310",
+              "title": "Purchase of USDA Commodity Processed Foodstuffs",
+              "invitationNum": "FS420-2526/IFB",
+              "bidDueDate": "2025-04-14 10:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127320",
+            "attributes": {
+              "bidId": 127320,
+              "issueDate": "2025-03-07 10:01:03.577",
+              "categoryIds": "101, 111, 2175, 2225",
+              "title": "LBUSD FAC10-2425C AV Installation in Portables at Los Cerritos ES",
+              "invitationNum": "FAC10-2425C",
+              "bidDueDate": "2025-04-04 13:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127319",
+            "attributes": {
+              "bidId": 127319,
+              "issueDate": "2025-03-07 10:00:31.307",
+              "categoryIds": "101, 111, 2175, 2225",
+              "title": "LBUSD FAC10-2425B AV Installation in Portables at Tincher K8 School",
+              "invitationNum": "FAC10-2425B",
+              "bidDueDate": "2025-04-04 13:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127317",
+            "attributes": {
+              "bidId": 127317,
+              "issueDate": "2025-03-07 09:59:52.890",
+              "categoryIds": "101, 111, 2175, 2225",
+              "title": "LBUSD FAC10-2425A AV Installation in Portables at Gant ES",
+              "invitationNum": "FAC10-2425A",
+              "bidDueDate": "2025-04-04 13:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 2,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "126507",
+            "attributes": {
+              "bidId": 126507,
+              "issueDate": "2025-02-14 16:08:03.977",
+              "categoryIds": "1650",
+              "title": "NUTRITION SERVICES: ERP SOFTWARE AND IMPLEMENTATION SERVICES",
+              "invitationNum": "2425-015-RFP",
+              "bidDueDate": "2025-03-31 16:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 4,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "127444",
+            "attributes": {
+              "bidId": 127444,
+              "issueDate": "2025-03-14 12:00:11.273",
+              "categoryIds": "3200",
+              "title": "Packaged Suppers",
+              "invitationNum": "2425-018-RFB",
+              "bidDueDate": "2025-03-31 12:00:00.000",
+              "stageId": 4,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 1,
+              "bidTypeId": 1,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Closed",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "126405",
+            "attributes": {
+              "bidId": 126405,
+              "issueDate": "2025-02-14 08:56:14.520",
+              "categoryIds": "0003, 1999",
+              "title": "RFQ/P 2425-65 Construction Management Services (Various Projects)",
+              "invitationNum": "RFQ/P 2425-65",
+              "bidDueDate": "2025-03-25 14:00:00.000",
+              "stageId": 6,
+              "bidResponseFormat": 1,
+              "bidTemplateType": 4,
+              "bidTypeId": 16,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Awarded",
+              "bidResponseFormatStr": "Electronic"
+            }
+          },
+          {
+            "type": "bids",
+            "id": "125965",
+            "attributes": {
+              "bidId": 125965,
+              "issueDate": "2025-01-31 12:38:53.473",
+              "categoryIds": "111, 2100, 2225, 3075, 3675",
+              "title": "Food Service Equipment Labor & Installation",
+              "invitationNum": "FS419-2425/RFP",
+              "bidDueDate": "2025-03-14 12:00:00.000",
+              "stageId": 7,
+              "bidResponseFormat": 3,
+              "bidTemplateType": 2,
+              "bidTypeId": 8,
+              "byInvitation": false,
+              "companyId": 23758,
+              "stageStr": "Canceled",
+              "bidResponseFormatStr": "Electronic and Paper"
+            }
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:06:34.673",
+          "desiredEmVersion": "",
+          "totalBids": 412,
+          "totalPages": 14
+        }
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&page%5Bnumber%5D=2",
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.172",
+          "desiredEmVersion": ""
+        }
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&page%5Bsize%5D=200",
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.312",
+          "desiredEmVersion": ""
+        }
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&filter%5Bstage%5D=awarded",
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.448",
+          "desiredEmVersion": ""
+        }
+      }
+    },
+    {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&filter%5Bstage%5D=all",
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.586",
+          "desiredEmVersion": ""
+        }
+      }
+    }
+  ],
+  "probes": {
+    "page2": {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&page%5Bnumber%5D=2",
+      "status": 406,
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.172",
+          "desiredEmVersion": ""
+        }
+      }
+    },
+    "page1_big": {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&page%5Bsize%5D=200",
+      "status": 406,
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.312",
+          "desiredEmVersion": ""
+        }
+      }
+    },
+    "awarded": {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&filter%5Bstage%5D=awarded",
+      "status": 406,
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.448",
+          "desiredEmVersion": ""
+        }
+      }
+    },
+    "all_stages": {
+      "url": "https://api-external.prod.planetbids.com/papi/bids?bid_type_id=0&cid=23758&dept_id=0&page=2&per_page=30&sort_order=-1&stage_id=0&filter%5Bstage%5D=all",
+      "status": 406,
+      "json": {
+        "errors": [
+          {
+            "detail": "Could not satisfy the request Accept header.",
+            "status": "406",
+            "source": {
+              "pointer": "/data"
+            },
+            "code": "not_acceptable"
+          }
+        ],
+        "meta": {
+          "serverTime": "2026-08-28 07:07:43.586",
+          "desiredEmVersion": ""
+        }
+      }
+    }
+  }
+}
