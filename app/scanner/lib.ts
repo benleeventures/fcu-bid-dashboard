@@ -97,9 +97,11 @@ function ptDay(iso: string): string {
 }
 
 export function dailySeries(runs: ScanRun[], days = 30): DayPoint[] {
+  // Legacy (scan_log backfill) rows are included: raw_found is set to the
+  // post-dedup total and the geo/dedup split is 0, so `raw` reads a touch low
+  // and `filteredOut` a touch low for historical days — relevant / new are exact.
   const byDay = new Map<string, DayPoint>()
   for (const r of runs) {
-    if (r.mode === 'legacy') continue
     const day = ptDay(r.started_at)
     const p = byDay.get(day) ?? { day, raw: 0, relevant: 0, new: 0, filteredOut: 0, runs: 0 }
     p.raw += r.raw_found
@@ -123,7 +125,7 @@ export function dailySeries(runs: ScanRun[], days = 30): DayPoint[] {
 
 export function windowTotals(runs: ScanRun[], days: number) {
   const cutoff = Date.now() - days * 86400000
-  const inWin = runs.filter(r => r.mode !== 'legacy' && new Date(r.started_at).getTime() >= cutoff)
+  const inWin = runs.filter(r => new Date(r.started_at).getTime() >= cutoff)
   const sum = (f: (r: ScanRun) => number) => inWin.reduce((a, r) => a + f(r), 0)
   return {
     runs: inWin.length,

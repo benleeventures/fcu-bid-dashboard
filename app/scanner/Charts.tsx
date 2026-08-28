@@ -9,7 +9,13 @@ const MONO = 'IBM Plex Mono, monospace'
 
 export function Funnel({ steps }: { steps: FunnelStep[] }) {
   if (!steps.length) {
-    return <div style={{ color: 'var(--gray)', fontFamily: MONO, fontSize: 12 }}>No run data.</div>
+    return (
+      <div style={{ color: 'var(--gray)', fontFamily: MONO, fontSize: 12 }}>
+        No instrumented run yet — the funnel populates after the next full
+        {' '}<code style={{ color: 'var(--gold-light)' }}>python main.py</code>
+        {' '}(scheduled Mon–Fri 6 AM PT). Backfilled history still shows below.
+      </div>
+    )
   }
   const max = Math.max(steps[0].value, 1)
 
