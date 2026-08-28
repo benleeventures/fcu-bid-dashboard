@@ -104,7 +104,24 @@ Extend `bid_specs` with room-by-room breakdown for estimate pre-filling.
 - [x] Compliance alert emails — fires on `--save` for bid_bond, prevailing_wage, dvbe, dbe flags
 - [x] RFQ email generator — `python parser.py --rfq <bid_id>` + "Send RFQ →" dashboard button
 - [x] Bid package assembly module (PDF generation) — `/api/bids/[id]/package` route, PDF download in dashboard
-- [ ] Ollama/LLaMA 3 local model for auto-parsing (replace manual mode)
+- [x] Auto-parsing via Claude (`--parse-all --claude`) — replaces the llama3.2:3b path
+
+### Parse pipeline hardening (Phase 1 branch) — 2026-08
+
+The parse queue used to grow forever: any bid whose docs failed to download, or
+whose scanned PDF the vision fallback couldn't read, stayed "pending" indefinitely.
+
+- **`bids.parse_status`** (migration `supabase/add_parse_status.sql`): `parsed` /
+  `no_docs` / `unparseable` / `skipped` / NULL(pending). `parse_attempts` caps
+  retries at `MAX_PARSE_ATTEMPTS` (3), then the bid leaves the queue.
+- **Claude extraction** — `_parse_with_claude_text` (text layer) → `_parse_with_claude`
+  (vision) for scanned. Model = `PARSER_CLAUDE_MODEL` env (default `claude-sonnet-5`).
+- **poppler PATH** fixed for launchd (a8b7e4b) so the vision fallback actually runs.
+- **Digest** now separates actionable "pending" from "gave up" (no_docs/unparseable).
+- **One-time**: after running the migration, `python parser.py --writeoff-backlog`
+  clears the pre-existing backlog to `skipped`.
+- ⚠ Deploy: `setup/launchd/com.fcu.parser.plist` switched `--ollama` → `--claude`;
+  reload it on the Mac mini after merge (`launchctl unload/load`).
 
 ### Phase 4: Intelligence
 - [ ] Bid results tracking and logging

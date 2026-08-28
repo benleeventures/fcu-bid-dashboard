@@ -53,16 +53,36 @@ def run():
     )
     fresh_specs = specs_resp.data or []
 
-    # All relevant unprocessed bids (no spec yet)
-    all_relevant_resp = sb.table("bids").select("bid_id").eq("is_relevant", True).execute()
-    all_relevant_ids = [b["bid_id"] for b in (all_relevant_resp.data or [])]
-    unprocessed_count = 0
-    if all_relevant_ids:
-        for i in range(0, len(all_relevant_ids), 200):
-            chunk = all_relevant_ids[i:i+200]
-            parsed_resp = sb.table("bid_specs").select("bid_id").in_("bid_id", chunk).execute()
-            parsed_ids = {r["bid_id"] for r in (parsed_resp.data or [])}
-            unprocessed_count += sum(1 for bid_id in chunk if bid_id not in parsed_ids)
+    # Relevant bids by parse lifecycle. "pending" = still actionable (no spec,
+    # not terminal, under the attempt cap). "stuck" = gave up (no_docs /
+    # unparseable) — surfaced separately so the pending number stays honest.
+    MAX_PARSE_ATTEMPTS = 3
+    TERMINAL = {"parsed", "no_docs", "unparseable", "skipped"}
+    try:
+        all_relevant_resp = (
+            sb.table("bids").select("bid_id,parse_status,parse_attempts")
+            .eq("is_relevant", True).execute()
+        )
+    except Exception:
+        all_relevant_resp = sb.table("bids").select("bid_id").eq("is_relevant", True).execute()
+    all_relevant = all_relevant_resp.data or []
+    parsed_ids = set()
+    for i in range(0, len(all_relevant), 200):
+        chunk = [b["bid_id"] for b in all_relevant[i:i+200]]
+        parsed_resp = sb.table("bid_specs").select("bid_id").in_("bid_id", chunk).execute()
+        parsed_ids.update(r["bid_id"] for r in (parsed_resp.data or []))
+
+    unprocessed_count = sum(
+        1 for b in all_relevant
+        if b["bid_id"] not in parsed_ids
+        and (b.get("parse_status") or "") not in TERMINAL
+        and (b.get("parse_attempts") or 0) < MAX_PARSE_ATTEMPTS
+    )
+    stuck_count = sum(
+        1 for b in all_relevant
+        if b["bid_id"] not in parsed_ids
+        and (b.get("parse_status") or "") in {"no_docs", "unparseable"}
+    )
 
     recipients = _admin_recipients()
     if not recipients:
@@ -122,13 +142,17 @@ def run():
         </div>"""
 
     pending_note = ""
-    if unprocessed_count > 0:
+    if unprocessed_count > 0 or stuck_count > 0:
+        stuck_line = (
+            f'<br><span style="color:#8E8E93;">{stuck_count} gave up (no docs / unparseable) — see dashboard.</span>'
+            if stuck_count else ""
+        )
         pending_note = f"""
         <div style="background:#3A3A3C;border-radius:8px;padding:14px 16px;margin-top:4px;">
           <p style="margin:0;font-size:13px;color:#8E8E93;">
-            <strong style="color:#F5F5F0;">{unprocessed_count} relevant bid{'s' if unprocessed_count > 1 else ''}</strong>
-            still awaiting parsing. Run:
-            <code style="background:#2C2C2E;padding:2px 6px;border-radius:3px;">python parser.py --parse-all --ollama</code>
+            <strong style="color:#F5F5F0;">{unprocessed_count} relevant bid{'s' if unprocessed_count != 1 else ''}</strong>
+            awaiting parsing. The 6:30am job auto-parses via
+            <code style="background:#2C2C2E;padding:2px 6px;border-radius:3px;">--parse-all --claude</code>.{stuck_line}
           </p>
         </div>"""
 
