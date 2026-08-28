@@ -200,6 +200,14 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
   **Agency or GC** (text) fields. Sync now uses `typecast=True` so new Source Platform options
   auto-create, and degrades to core fields if a column is missing.
 
+### Airtable tracker to spec §5 — ✅ Session 3 (2026-08)
+
+All spec §5 columns exist (see `bid-scanner/docs/airtable-tracker-setup.md`). Sync now also
+writes `Owner` (when `AIRTABLE_OWNER_EMAIL` is set — pending Robert's base seat) and
+`Estimated Value` (when a value is known post-parse). **Conditional-formatting colour rules
+are UI-only** — steps documented in `docs/airtable-tracker-setup.md` §2 (red ≤48h, amber ≤5d
+off the `Days to Due` formula). Someone needs to click through that once.
+
 ### PlanetBids portal expansion — follow-up task
 
 41 portals configured, but Orange / Ventura / San Diego coverage is still thin. IDs verified

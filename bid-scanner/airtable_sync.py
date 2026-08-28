@@ -93,6 +93,11 @@ def sync_new_bids(bids: list[dict]) -> int:
         for rec in table.all(formula=formula, fields=["Bid ID"]):
             existing_ids.add(rec["fields"].get("Bid ID"))
 
+    # Spec §5: every new opportunity defaults to Robert. Set
+    # AIRTABLE_OWNER_EMAIL in .env once he's a collaborator on the base;
+    # left unset, Owner stays blank for manual assignment.
+    owner_email = os.getenv("AIRTABLE_OWNER_EMAIL", "").strip()
+
     to_create = []
     for b in bids:
         bid_id = b.get("bid_id")
@@ -117,6 +122,11 @@ def sync_new_bids(bids: list[dict]) -> int:
             fields["City / County / Area"] = agency
         if b.get("geo_status") == "unknown":
             fields["Notes"] = "Needs county check — place of performance not confirmed"
+        if owner_email:
+            fields["Owner"] = {"email": owner_email}
+        est = b.get("est_value")
+        if isinstance(est, (int, float)) and est > 0:
+            fields["Estimated Value"] = est
         to_create.append(fields)
 
     if not to_create:
@@ -131,21 +141,24 @@ def sync_new_bids(bids: list[dict]) -> int:
         "Project Name", "Bid ID", "Date Surfaced", "Source Platform",
         "Bid Due Date", "Status", "Listing URL", "City / County / Area",
     }
+    created = 0
     for i in range(0, len(to_create), 10):
         batch = to_create[i:i + 10]
         try:
             table.batch_create(batch, typecast=True)
+            created += len(batch)
         except Exception as e:
-            if "UNKNOWN_FIELD_NAME" in str(e) or "Unknown field name" in str(e):
-                print(f"  ⚠ Airtable rejected a new field ({e}); retrying with core fields only")
-                table.batch_create([
-                    {k: v for k, v in row.items() if k in _CORE_FIELDS}
-                    for row in batch
-                ], typecast=True)
-            else:
-                raise
+            # A missing field, a bad collaborator email, an un-typecastable
+            # value — fall back to the always-present core columns so the
+            # opportunity still lands on the tracker.
+            print(f"  ⚠ Airtable create failed ({e}); retrying with core fields only")
+            table.batch_create([
+                {k: v for k, v in row.items() if k in _CORE_FIELDS}
+                for row in batch
+            ], typecast=True)
+            created += len(batch)
 
-    return len(to_create)
+    return created
 
 
 def update_job_walk(bid_id: str, walk_required, walk_date: str | None) -> bool:
