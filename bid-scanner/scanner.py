@@ -121,6 +121,13 @@ def _is_relevant(title: str, description: str = "") -> bool:
     return False
 
 
+def _safe_bid_id(bid_id: str) -> str:
+    """bid_id doubles as a filesystem path component downstream — parser.py
+    builds output/specs/<bid_id>.pdf. Quality Bidders / Caltrans embed '/' and
+    spaces, which silently broke document download. Mirrors parser._safe_id."""
+    return re.sub(r"[^\w.\-]", "_", (bid_id or "").strip()) or "unknown"
+
+
 def _parse_date(s: str) -> date | None:
     for fmt in ("%m/%d/%Y", "%m/%d/%y", "%Y-%m-%d", "%b %d, %Y", "%B %d, %Y"):
         try:
@@ -732,17 +739,22 @@ async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
     """
     Search Cal eProcure (CA state portal) for open flooring bids.
     Public search — no login required.
+
+    Fail-fast: this PeopleSoft/Angular portal is slow and frequently unavailable,
+    and it has yet to surface a flooring-relevant bid. Give it one short attempt
+    (~15s to load, 2s per keyword) and bail the moment it stops cooperating —
+    never let it stall the whole nightly scan.
     """
     print("\nSearching Cal eProcure (CA state portal)...")
     all_bids: list[dict] = []
 
     try:
-        await page.goto(CALEPROCURE_URL, wait_until="networkidle", timeout=30000)
-        await page.wait_for_timeout(4000)
+        await page.goto(CALEPROCURE_URL, wait_until="domcontentloaded", timeout=15000)
+        await page.wait_for_timeout(5000)  # Angular SPA needs a beat to render the search form
 
         title = await page.title()
         if "maintenance" in title.lower() or "error" in title.lower():
-            print("  ⚠ Cal eProcure unavailable")
+            print("  ⚠ Cal eProcure unavailable (maintenance)")
             return []
 
         for keyword in keywords:
@@ -759,13 +771,13 @@ async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
                     search_input = inputs[0] if inputs else None
 
                 if not search_input:
-                    print(f"  ⚠ No search input found on Cal eProcure")
+                    print("  ⚠ Cal eProcure search UI not present — skipping")
                     break
 
-                await search_input.click(click_count=3)
-                await search_input.fill(keyword)
+                await search_input.click(click_count=3, timeout=5000)
+                await search_input.fill(keyword, timeout=5000)
                 await page.keyboard.press("Enter")
-                await page.wait_for_timeout(3000)
+                await page.wait_for_timeout(2000)
 
                 # Collect bid rows — PeopleSoft/Angular tables
                 rows = await page.query_selector_all(
@@ -823,10 +835,13 @@ async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
                 print(f"  → \"{keyword}\": {len(row_data)} rows, {sum(1 for b in all_bids if b['search_keyword'] == keyword)} parsed")
 
             except Exception as e:
-                print(f"  ⚠ Cal eProcure error for '{keyword}': {e}")
+                # Portal is not cooperating — stop hammering it, don't burn
+                # ~30s per remaining keyword.
+                print(f"  ⚠ Cal eProcure stopped after '{keyword}': {str(e)[:80]}")
+                break
 
     except Exception as e:
-        print(f"  ⚠ Cal eProcure unavailable: {e}")
+        print(f"  ⚠ Cal eProcure unavailable: {str(e)[:80]}")
 
     print(f"  ✓ Cal eProcure total: {len(all_bids)} bids")
     return all_bids
@@ -1446,6 +1461,11 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
             all_bids.extend(qb_bids)
 
     funnel.note_raw(all_bids)
+
+    # Normalise bid IDs before dedup / persistence — they're used as filesystem
+    # paths downstream (parser.py: output/specs/<bid_id>.pdf).
+    for b in all_bids:
+        b["bid_id"] = _safe_bid_id(b.get("bid_id", ""))
 
     # --- Geographic + agency-type gate (spec §1 / §2) ---------------------
     # Enrich every bid with county / geo_status / agency_type / is_k12, then
