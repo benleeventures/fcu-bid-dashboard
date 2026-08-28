@@ -11,6 +11,13 @@
         <string>/Users/leo-claude/fcu/bid-scanner/supervisor.py</string>
     </array>
 
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+
     <key>WorkingDirectory</key>
     <string>/Users/leo-claude/fcu/bid-scanner</string>
 

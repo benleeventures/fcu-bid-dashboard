@@ -9,8 +9,15 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>git -C /Users/leo-claude/fcu pull --quiet && /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu/bid-scanner/main.py --headless</string>
+        <string>git -C /Users/leo-claude/fcu pull --quiet &amp;&amp; /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu/bid-scanner/main.py --headless</string>
     </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
 
     <key>WorkingDirectory</key>
     <string>/Users/leo-claude/fcu/bid-scanner</string>

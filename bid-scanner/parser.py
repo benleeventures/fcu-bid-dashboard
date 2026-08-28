@@ -34,6 +34,8 @@ JSON schema for --save:
 import asyncio
 import json
 import os
+import re
+import shutil
 import sys
 from pathlib import Path
 from datetime import date
@@ -48,6 +50,39 @@ SCRIPT_DIR    = Path(__file__).parent
 SPECS_DIR     = SCRIPT_DIR / "output" / "specs"
 COOKIES_PB    = SCRIPT_DIR / "cookies.json"
 BIDNET_LOGIN  = "https://www.bidnetdirect.com/login"
+
+
+def _poppler_path() -> str | None:
+    """Resolve poppler's bin directory. launchd runs jobs with a bare PATH that
+    omits Homebrew, so pdf2image cannot find pdftoppm/pdfinfo without an explicit
+    hint. Returns None when poppler genuinely isn't installed."""
+    exe = shutil.which("pdftoppm")
+    if exe:
+        return str(Path(exe).parent)
+    for cand in ("/opt/homebrew/bin", "/usr/local/bin"):
+        if (Path(cand) / "pdftoppm").exists():
+            return cand
+    return None
+
+
+_POPPLER_PATH = _poppler_path()
+
+
+def _safe_id(bid_id: str) -> str:
+    """bid_id doubles as a filesystem path component. Some sources (Quality
+    Bidders, Caltrans) embed '/' or spaces, which silently break
+    `SPECS_DIR / f'{bid_id}.pdf'`. Collapse anything non-portable to '_'."""
+    return re.sub(r"[^\w.\-]", "_", bid_id.strip())
+
+
+def _flat_pdf(bid_id: str) -> Path:
+    """Canonical flat spec path the parser reads: output/specs/<id>.pdf"""
+    return SPECS_DIR / f"{_safe_id(bid_id)}.pdf"
+
+
+def _bid_dir(bid_id: str) -> Path:
+    """Per-bid attachment directory: output/specs/<id>/"""
+    return SPECS_DIR / _safe_id(bid_id)
 
 
 # ─────────────────────────────────────────────
@@ -158,7 +193,7 @@ async def download_all():
     already = []
     skipped_due = []
     for b in bids:
-        pdf_path = SPECS_DIR / f"{b['bid_id']}.pdf"
+        pdf_path = _flat_pdf(b['bid_id'])
         if pdf_path.exists():
             already.append(b)
             continue
@@ -244,7 +279,7 @@ async def download_all():
             url    = b.get("url", "")
             source = b.get("source", "")
             title  = b["title"][:55]
-            out    = SPECS_DIR / f"{bid_id}.pdf"
+            out    = _flat_pdf(bid_id)
 
             print(f"→ {bid_id}  [{source}]  {title}")
 
@@ -279,7 +314,7 @@ async def download_all():
                     if downloaded:
                         # Use the solicitation PDF as the canonical spec file
                         sol = next((d for d in downloaded if "solicitation" in d.lower() or "ifpq" in d.lower() or "ifb" in d.lower()), downloaded[0])
-                        sol_path = SPECS_DIR / bid_id / sol
+                        sol_path = _bid_dir(bid_id) / sol
                         if sol_path.exists():
                             # Symlink/copy primary file to the flat {bid_id}.pdf location
                             out.write_bytes(sol_path.read_bytes())
@@ -331,7 +366,7 @@ async def download_all():
                     # ZIP or DOCX — extract best content
                     content, ext = _extract_best_pdf_from_zip(data, bid_id)
                     if content:
-                        save_path = SPECS_DIR / f"{bid_id}{ext}"
+                        save_path = SPECS_DIR / f"{_safe_id(bid_id)}{ext}"
                         save_path.write_bytes(content)
                         print(f"    ✓ Extracted from ZIP → {save_path.name} ({len(content)//1024} KB)\n")
                     else:
@@ -380,7 +415,7 @@ async def _download_caleprocure_docs(page, context, bid_id: str, url: str) -> bo
     )
     BIDDER_ID = os.getenv("CALEPROCURE_BIDDER_ID", "0000026084")
 
-    out_dir = SPECS_DIR / bid_id
+    out_dir = _bid_dir(bid_id)
     out_dir.mkdir(parents=True, exist_ok=True)
     saved_any = False
 
@@ -601,7 +636,7 @@ async def _download_caleprocure_docs(page, context, bid_id: str, url: str) -> bo
 
                 # Primary doc → also save as flat {bid_id}.pdf for the parser
                 if i == 0:
-                    (SPECS_DIR / f"{bid_id}.pdf").write_bytes(data)
+                    _flat_pdf(bid_id).write_bytes(data)
 
             except Exception as e:
                 print(f"    ⚠ Error downloading '{filename}': {e}")
@@ -707,7 +742,7 @@ async def _download_bidnet_docs(page, context, bid_id: str, bid_url: str) -> lis
     """
     import urllib.parse as _up
 
-    bid_dir = SPECS_DIR / bid_id
+    bid_dir = _bid_dir(bid_id)
     bid_dir.mkdir(parents=True, exist_ok=True)
 
     # Build the private notice URL from bid_id (numeric ID)
@@ -999,7 +1034,7 @@ async def _download_crisp_docs(page, context, bid_id: str, bid_url: str, logged_
     print(f"    {len(labeled)} file(s) found — downloading top {len(top_files)}: "
           + ", ".join(f'"{label[:40]}"' for _, _, label in top_files))
 
-    bid_dir = SPECS_DIR / bid_id
+    bid_dir = _bid_dir(bid_id)
     bid_dir.mkdir(parents=True, exist_ok=True)
 
     all_images: list[bytes] = []
@@ -1203,7 +1238,7 @@ def cmd_list():
         return
     print(f"{len(bids)} unprocessed relevant bids:\n")
     for b in bids:
-        pdf = SPECS_DIR / f"{b['bid_id']}.pdf"
+        pdf = _flat_pdf(b['bid_id'])
         tag = "PDF ✓" if pdf.exists() else "no PDF"
         print(f"  [{tag:6}]  {b['bid_id']}  {b['title'][:55]}")
 
@@ -1243,7 +1278,7 @@ def cmd_save(args: list[str], trigger_alerts: bool = True):
     except json.JSONDecodeError as e:
         print(f"JSON parse error: {e}")
         sys.exit(1)
-    pdf_path = str(SPECS_DIR / f"{bid_id}.pdf")
+    pdf_path = str(_flat_pdf(bid_id))
     save_spec(bid_id, spec, pdf_path)
 
     # Alerts removed — handled by daily scheduled agents:
@@ -1299,9 +1334,14 @@ def _parse_with_claude(pdf_path: Path) -> dict | None:
         return None
 
     try:
-        images = convert_from_path(str(pdf_path), dpi=150, first_page=1, last_page=8)
+        images = convert_from_path(
+            str(pdf_path), dpi=150, first_page=1, last_page=8,
+            poppler_path=_POPPLER_PATH,
+        )
     except Exception as e:
         print(f"  ⚠ PDF→image conversion failed: {e}")
+        if _POPPLER_PATH is None:
+            print("     poppler not found — install with: brew install poppler")
         return None
 
     # Build content blocks: prompt + each page as base64 image
