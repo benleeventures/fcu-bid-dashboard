@@ -17,7 +17,6 @@ try:
 except ImportError:
     pass
 
-PORTAL_ID = "39493"
 BASE = "https://vendors.planetbids.com"
 
 SCRIPT_DIR = Path(__file__).parent
@@ -36,7 +35,7 @@ async def run_with_live_browser(keywords: list[str], resume: bool = False) -> li
     resume=True re-scrapes only the portals left unfinished (blocked / error /
     pending) by the previous run — see pb_state.py.
     """
-    from scanner import _search_planetbids, SEARCH_KEYWORDS
+    from scanner import _search_planetbids, planetbids_scan_plan, SEARCH_KEYWORDS
 
     if not keywords:
         keywords = SEARCH_KEYWORDS
@@ -44,6 +43,16 @@ async def run_with_live_browser(keywords: list[str], resume: bool = False) -> li
     print("=" * 60)
     print("PLANETBIDS — Opening browser")
     print("=" * 60)
+
+    # Land the CAPTCHA solve on the FIRST portal we're actually going to scrape —
+    # each PlanetBids tenant runs its own WAF challenge, so solving on some other
+    # portal doesn't help (that's why Long Beach kept bouncing to /2001).
+    plan = planetbids_scan_plan(resume)
+    _manifest, portals = plan
+    if not portals:
+        print("\n✓ Nothing to scrape.")
+        return []
+    first_id, first_agency, _county = portals[0]
 
     async with async_playwright() as p:
         try:
@@ -54,16 +63,18 @@ async def run_with_live_browser(keywords: list[str], resume: bool = False) -> li
         ctx = await browser.new_context(user_agent=UA, viewport={"width": 1280, "height": 900})
         page = await ctx.new_page()
 
-        target = f"{BASE}/portal/{PORTAL_ID}/bo/bo-search"
-        print(f"\nOpening Chrome → {target}")
+        target = f"{BASE}/portal/{first_id}/bo/bo-search"
+        print(f"\nOpening Chrome → {first_agency} ({target})")
         await page.goto(target, wait_until="domcontentloaded", timeout=30000)
 
-        print("\n→ Solve the CAPTCHA in the Chrome window.")
-        print("→ Press Enter here when done.")
+        print("\n→ Solve the CAPTCHA in the Chrome window (if one appears).")
+        print("→ Wait for the bid list to load, then press Enter here.")
         await asyncio.get_event_loop().run_in_executor(None, input, "")
 
-        # Scrape all portals using this verified session
-        bids = await _search_planetbids(ctx, keywords, live_page=page, resume=resume)
+        # Scrape using this verified session. Pass the plan we already built so
+        # the manifest / portal list stay consistent with what we just solved.
+        bids = await _search_planetbids(ctx, keywords, live_page=page,
+                                        resume=resume, plan=plan)
 
         await browser.close()
         return bids

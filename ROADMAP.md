@@ -233,6 +233,11 @@ and `main.py` exited 0, so a mostly-failed run looked clean.
 - `python main.py --source planetbids --resume` re-scrapes only the unfinished
   portals and merges them into the Supabase queue. Repeatable; falls back to a full
   scan if the manifest is missing or >48h old.
+- The CAPTCHA solve now lands on the **first portal actually being scraped**
+  (`planetbids_scan_plan` picks it), not a hardcoded one — each PlanetBids tenant
+  runs its own AWS WAF `/2001` challenge, so solving on Beverly Hills didn't help
+  Long Beach. If a portal still bounces to `/2001` mid-run, the scraper pauses and
+  asks for a manual solve (up to `PLANETBIDS_MAX_RESOLVES` = 3 per run) then retries.
 - `main.py` prints an honest summary (`30 ok · 3 empty · 5 blocked`) and exits 2
   when portals are still incomplete.
 - `rerun_planetbids.sh` loops the resume up to 4× with a cooldown (still needs a
