@@ -9,10 +9,14 @@ Workflows:
   Parse PDFs (AI-assisted):
     python parser.py --pending           # list PDFs ready to parse
     python parser.py --parse-all         # print manual parsing prompts (use with Claude Code)
-    python parser.py --parse-all --ollama  # auto-parse via local Ollama (LLaMA 3 etc.)
+    python parser.py --parse-all --claude # auto-parse via Claude (text layer → vision) — production default
+    python parser.py --parse-all --ollama # auto-parse via local Ollama (offline fallback)
 
   Save extracted spec (after reading PDF manually or with Claude Code):
     python parser.py --save <bid_id> '<json>'
+
+  Queue maintenance:
+    python parser.py --writeoff-backlog  # one-time: mark current unparsed relevant bids 'skipped'
 
   List:
     python parser.py --list              # show unprocessed relevant bids
@@ -38,7 +42,7 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from datetime import date
+from datetime import date, datetime, timezone
 
 try:
     from dotenv import load_dotenv
@@ -50,6 +54,15 @@ SCRIPT_DIR    = Path(__file__).parent
 SPECS_DIR     = SCRIPT_DIR / "output" / "specs"
 COOKIES_PB    = SCRIPT_DIR / "cookies.json"
 BIDNET_LOGIN  = "https://www.bidnetdirect.com/login"
+
+# Claude model for spec extraction (text + vision). Overridable so the rate can
+# be tuned without a code change. Sonnet reads long, compliance-heavy bid docs
+# far more reliably than the old llama3.2:3b local model.
+_CLAUDE_MODEL = os.getenv("PARSER_CLAUDE_MODEL", "claude-sonnet-5")
+
+# A bid drops out of the parse queue after this many failed download/parse
+# attempts (marked no_docs / unparseable) so the pipeline never loops forever.
+MAX_PARSE_ATTEMPTS = 3
 
 
 def _poppler_path() -> str | None:
@@ -98,10 +111,28 @@ def _sb():
     return create_client(url, key)
 
 
+# Terminal parse states — a bid in one of these is done with the pipeline
+# (successfully or not) and is excluded from the queue.
+_TERMINAL_PARSE = {"parsed", "no_docs", "unparseable", "skipped"}
+
+
 def get_unprocessed_bids() -> list[dict]:
-    """Relevant bids with no entry in bid_specs."""
+    """Relevant bids still worth working: no bid_specs row, not in a terminal
+    parse state, and under the attempt cap."""
     sb = _sb()
-    resp = sb.table("bids").select("bid_id,title,source,url").eq("is_relevant", True).execute()
+    try:
+        resp = (
+            sb.table("bids")
+            .select("bid_id,title,source,url,due_date,parse_status,parse_attempts")
+            .eq("is_relevant", True)
+            .execute()
+        )
+    except Exception:
+        # parse_status migration not applied yet — fall back to the legacy view
+        resp = (
+            sb.table("bids").select("bid_id,title,source,url,due_date")
+            .eq("is_relevant", True).execute()
+        )
     all_relevant = resp.data or []
     if not all_relevant:
         return []
@@ -112,7 +143,63 @@ def get_unprocessed_bids() -> list[dict]:
         r = sb.table("bid_specs").select("bid_id").in_("bid_id", ids[i:i+200]).execute()
         parsed_ids.update(row["bid_id"] for row in (r.data or []))
 
-    return [b for b in all_relevant if b["bid_id"] not in parsed_ids]
+    out = []
+    for b in all_relevant:
+        if b["bid_id"] in parsed_ids:
+            continue
+        if (b.get("parse_status") or "") in _TERMINAL_PARSE:
+            continue
+        if (b.get("parse_attempts") or 0) >= MAX_PARSE_ATTEMPTS:
+            continue
+        out.append(b)
+    return out
+
+
+def mark_parse_status(bid_id: str, status: str | None = None,
+                      note: str = "", bump_attempt: bool = True):
+    """Record where a bid is in the parse lifecycle so dead ends stop being
+    retried. status: None keeps it pending; 'no_docs' / 'unparseable' / 'skipped'
+    / 'parsed' are terminal (see _TERMINAL_PARSE)."""
+    try:
+        sb = _sb()
+        row: dict = {"parse_checked_at": datetime.now(timezone.utc).isoformat()}
+        if status:
+            row["parse_status"] = status
+        if note:
+            row["parse_note"] = note[:300]
+        if bump_attempt:
+            cur = sb.table("bids").select("parse_attempts").eq("bid_id", bid_id).limit(1).execute()
+            row["parse_attempts"] = ((cur.data or [{}])[0].get("parse_attempts") or 0) + 1
+        sb.table("bids").update(row).eq("bid_id", bid_id).execute()
+    except Exception as e:
+        print(f"  ⚠ parse-status update failed for {bid_id}: {e}")
+
+
+def _claude_text(msg) -> str:
+    """Concatenate the text blocks of a Claude response, skipping thinking
+    blocks (adaptive thinking is on by default on Sonnet/Opus)."""
+    return "".join(b.text for b in msg.content if getattr(b, "type", None) == "text").strip()
+
+
+def _extract_json(raw: str) -> dict | None:
+    """Pull the first JSON object out of an LLM response (handles ``` fences)."""
+    if not raw:
+        return None
+    start, end = raw.find("{"), raw.rfind("}") + 1
+    if start != -1 and end > start:
+        try:
+            return json.loads(raw[start:end])
+        except Exception:
+            pass
+    if "```" in raw:
+        for part in raw.split("```"):
+            part = part.strip().lstrip("json").strip()
+            try:
+                return json.loads(part)
+            except Exception:
+                continue
+    print(f"  ⚠ Claude returned invalid JSON: {raw[:200]}")
+    return None
 
 
 def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
@@ -147,6 +234,13 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
         "go_verdict":      go["verdict"],
     }
     sb.table("bid_specs").upsert(row, on_conflict="bid_id").execute()
+    try:
+        sb.table("bids").update({
+            "parse_status":     "parsed",
+            "parse_checked_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("bid_id", bid_id).execute()
+    except Exception:
+        pass  # parse_status column not migrated yet — spec still saved
     print(f"✓ Saved spec for {bid_id}  [{go['verdict'].upper()} {go['score']}]")
 
     if os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
@@ -212,6 +306,9 @@ async def download_all():
         print(f"  {len(already)} already downloaded (run --pending to list)")
     if skipped_due:
         print(f"  {len(skipped_due)} skipped — past due date (expirer will archive)")
+        for b in skipped_due:
+            mark_parse_status(b["bid_id"], "skipped",
+                              "past due before spec docs were downloaded", bump_attempt=False)
     if not pending:
         print("Nothing new to download.")
         return
@@ -389,6 +486,19 @@ async def download_all():
             await ccop_page.close()
 
         await browser.close()
+
+    # Reconcile: any bid we just tried but still has no local document gets an
+    # attempt bump; at the cap it's marked no_docs and leaves the queue.
+    for b in pending:
+        bid_id = b["bid_id"]
+        if _flat_pdf(bid_id).exists() or (_bid_dir(bid_id).exists() and any(_bid_dir(bid_id).iterdir())):
+            continue
+        attempts = (b.get("parse_attempts") or 0) + 1
+        if attempts >= MAX_PARSE_ATTEMPTS:
+            mark_parse_status(bid_id, "no_docs",
+                              f"no spec document found after {attempts} download attempts")
+        else:
+            mark_parse_status(bid_id, None, "download attempt — no document yet")
 
     print(f"Done. PDFs saved to {SPECS_DIR}/")
     print("Now run: python parser.py --pending  to see what needs parsing")
@@ -1169,31 +1279,17 @@ def _parse_with_claude_images(images: list[bytes]) -> dict | None:
     try:
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1024,
+            model=_CLAUDE_MODEL,
+            max_tokens=4000,
+            thinking={"type": "disabled"},  # deterministic extraction — no reasoning needed
             messages=[{"role": "user", "content": content}],
         )
-        raw = msg.content[0].text.strip()
+        raw = _claude_text(msg)
     except Exception as e:
         print(f"  ⚠ Claude API error: {e}")
         return None
 
-    start = raw.find("{")
-    end = raw.rfind("}") + 1
-    if start != -1 and end > start:
-        try:
-            return json.loads(raw[start:end])
-        except Exception:
-            pass
-    if "```" in raw:
-        for part in raw.split("```"):
-            part = part.strip().lstrip("json").strip()
-            try:
-                return json.loads(part)
-            except Exception:
-                continue
-    print(f"  ⚠ Claude returned invalid JSON: {raw[:200]}")
-    return None
+    return _extract_json(raw)
 
 
 async def _find_generic_pdf(page) -> str | None:
@@ -1315,9 +1411,57 @@ Important:
 - For flooring_types, use lowercase: carpet, lvt, vct, tile, hardwood, window_coverings, blinds, resilient."""
 
 
+def _parse_with_claude_text(pdf_path: Path) -> dict | None:
+    """
+    Primary extraction path: pull the PDF text layer with pdfplumber and send it
+    to Claude. Scanned / no-text PDFs fall through to Claude vision.
+    """
+    try:
+        import pdfplumber
+    except ImportError:
+        print("  ⚠ pdfplumber not installed — run: pip install pdfplumber")
+        return None
+
+    try:
+        if str(pdf_path).endswith(".txt"):
+            text = pdf_path.read_text(encoding="utf-8", errors="ignore").strip()
+        else:
+            with pdfplumber.open(pdf_path) as pdf:
+                text = "\n".join(p.extract_text() or "" for p in pdf.pages[:25]).strip()
+    except Exception as e:
+        print(f"  ⚠ Text extraction failed: {e}")
+        text = ""
+
+    if not text:
+        print("  ⚠ No text layer — using Claude vision")
+        return _parse_with_claude(pdf_path)
+
+    try:
+        import anthropic
+    except ImportError:
+        print("  ⚠ anthropic not installed — run: pip install anthropic")
+        return None
+
+    text = text[:60000]
+    try:
+        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        msg = client.messages.create(
+            model=_CLAUDE_MODEL,
+            max_tokens=4000,
+            thinking={"type": "disabled"},  # deterministic extraction — no reasoning needed
+            messages=[{"role": "user",
+                       "content": f"{_EXTRACTION_PROMPT}\n\n---\nBID DOCUMENT TEXT:\n{text}"}],
+        )
+        raw = _claude_text(msg)
+    except Exception as e:
+        print(f"  ⚠ Claude API error: {e}")
+        return None
+    return _extract_json(raw)
+
+
 def _parse_with_claude(pdf_path: Path) -> dict | None:
     """
-    Fallback for scanned PDFs: convert pages to images and send to Claude Haiku vision.
+    Fallback for scanned PDFs: convert pages to images and send to Claude vision.
     Only called when pdfplumber extracts no text and ANTHROPIC_API_KEY is set.
     """
     try:
@@ -1362,32 +1506,17 @@ def _parse_with_claude(pdf_path: Path) -> dict | None:
     try:
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1024,
+            model=_CLAUDE_MODEL,
+            max_tokens=4000,
+            thinking={"type": "disabled"},  # deterministic extraction — no reasoning needed
             messages=[{"role": "user", "content": content}],
         )
-        raw = msg.content[0].text.strip()
+        raw = _claude_text(msg)
     except Exception as e:
         print(f"  ⚠ Claude API error: {e}")
         return None
 
-    # Reuse same JSON parser as Ollama path
-    start = raw.find("{")
-    end = raw.rfind("}") + 1
-    if start != -1 and end > start:
-        try:
-            return json.loads(raw[start:end])
-        except Exception:
-            pass
-    if "```" in raw:
-        for part in raw.split("```"):
-            part = part.strip().lstrip("json").strip()
-            try:
-                return json.loads(part)
-            except Exception:
-                continue
-    print(f"  ⚠ Claude returned invalid JSON: {raw[:200]}")
-    return None
+    return _extract_json(raw)
 
 
 def _parse_with_ollama(pdf_path: Path) -> dict | None:
@@ -1503,14 +1632,16 @@ def _parse_with_ollama(pdf_path: Path) -> dict | None:
     return None
 
 
-def cmd_parse_all(use_ollama: bool = False):
+def cmd_parse_all(backend: str = "manual"):
     """
     Parse all downloaded PDFs that don't yet have bid_specs.
 
-    Without --ollama: prints a manual prompt for each PDF so you can parse
-    with Claude Code and then run --save manually.
+    backend="claude" : auto-parse via Claude (text layer → vision fallback). Default in production.
+    backend="ollama" : auto-parse via local Ollama (offline fallback).
+    backend="manual" : print prompts for interactive Claude Code parsing + --save.
 
-    With --ollama: auto-parses each PDF via local Ollama.
+    On auto backends, a PDF that fails to parse bumps parse_attempts; after
+    MAX_PARSE_ATTEMPTS it's marked 'unparseable' and leaves the queue.
     """
     if not SPECS_DIR.exists():
         print("No specs directory. Run --download first.")
@@ -1533,21 +1664,34 @@ def cmd_parse_all(use_ollama: bool = False):
         title = bid.get("title", "")[:60]
         print(f"→ {bid_id}  ({size_kb} KB)  {title}")
 
-        if use_ollama:
-            print("  Sending to Ollama...")
-            spec = _parse_with_ollama(pdf_path)
-            if spec:
-                save_spec(bid_id, spec, str(pdf_path))
-                print()
-            else:
-                print(f"  ⚠ Parse failed — run manually:\n    python parser.py --save {bid_id} '<json>'\n")
-        else:
-            # Print instructions for Claude Code manual parsing
+        if backend == "manual":
             print(f"  PDF: {pdf_path}")
             print(f"  Read the PDF above and extract the spec JSON, then run:")
             print(f"  python parser.py --save {bid_id} '<json>'\n")
+            continue
 
-    if not use_ollama:
+        if backend == "ollama":
+            print("  Sending to Ollama...")
+            spec = _parse_with_ollama(pdf_path)
+        else:
+            print(f"  Parsing with Claude ({_CLAUDE_MODEL})...")
+            spec = _parse_with_claude_text(pdf_path)
+
+        if spec:
+            save_spec(bid_id, spec, str(pdf_path))
+            print()
+        else:
+            attempts = (bid.get("parse_attempts") or 0) + 1
+            if attempts >= MAX_PARSE_ATTEMPTS:
+                mark_parse_status(bid_id, "unparseable",
+                                  f"parse failed {attempts}x ({backend})")
+                print(f"  ⚠ Parse failed {attempts}x — marked unparseable, dropped from queue\n")
+            else:
+                mark_parse_status(bid_id, None, f"parse failed ({backend})")
+                print(f"  ⚠ Parse failed (attempt {attempts}/{MAX_PARSE_ATTEMPTS}) — "
+                      f"or parse manually: python parser.py --save {bid_id} '<json>'\n")
+
+    if backend == "manual":
         print("─" * 60)
         print("JSON schema to extract:")
         print(_EXTRACTION_PROMPT.split("\n\n")[0])
@@ -1581,6 +1725,22 @@ def cmd_recalculate():
         updated += 1
 
     print(f"\n✓ Recalculated {updated} specs")
+
+
+def cmd_writeoff_backlog():
+    """One-time: mark every currently-queued unparsed relevant bid as 'skipped'
+    so the pipeline starts from a clean slate. Bids discovered afterwards are
+    unaffected — run this once, right after the parse_status migration."""
+    bids = get_unprocessed_bids()
+    if not bids:
+        print("Queue already clean — nothing to write off.")
+        return
+    print(f"Writing off {len(bids)} backlog bid(s) as 'skipped':\n")
+    for b in bids:
+        print(f"  {b['bid_id']}  {b.get('title','')[:60]}")
+        mark_parse_status(b["bid_id"], "skipped",
+                          "pre-phase1 backlog write-off", bump_attempt=False)
+    print(f"\n✓ {len(bids)} written off. The digest 'pending' count will drop to ~0.")
 
 
 def cmd_rfq(bid_id: str):
@@ -1619,7 +1779,10 @@ if __name__ == "__main__":
     elif "--pending" in argv:
         cmd_pending()
     elif "--parse-all" in argv:
-        cmd_parse_all(use_ollama="--ollama" in argv)
+        backend = "claude" if "--claude" in argv else "ollama" if "--ollama" in argv else "manual"
+        cmd_parse_all(backend=backend)
+    elif "--writeoff-backlog" in argv:
+        cmd_writeoff_backlog()
     elif "--save" in argv:
         idx = argv.index("--save")
         cmd_save(argv[idx+1:])

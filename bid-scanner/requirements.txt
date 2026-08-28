@@ -4,7 +4,12 @@ python-dotenv>=1.0.0
 requests>=2.31.0
 supabase>=2.4.0
 pdfplumber>=0.11.0
+pdf2image>=1.17.0
+anthropic>=0.97.0
 undetected-chromedriver>=3.5.0
 beautifulsoup4>=4.12.0
 selenium>=4.18.0
 pyairtable>=2.3.0
+
+# System dependency (not pip): poppler — `brew install poppler` — required by
+# pdf2image for the scanned-PDF (Claude vision) parse path.
