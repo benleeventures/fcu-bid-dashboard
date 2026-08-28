@@ -247,7 +247,7 @@ export default async function ScannerPage() {
                   </tr>
                 </thead>
                 <tbody style={{ fontFamily: MONO }}>
-                  {realRuns.slice(0, 25).map(r => (
+                  {runs.slice(0, 25).map(r => (
                     <tr key={r.id} style={{ borderTop: '1px solid var(--charcoal-mid)', textAlign: 'right' }}>
                       <td style={{ textAlign: 'left', padding: '6px 8px' }}>{fmtPT(r.started_at)}</td>
                       <td style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--gray)' }}>
