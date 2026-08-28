@@ -44,6 +44,18 @@ Commercial flooring installation: carpet, hard surface, blinds, ceiling work, ho
 
 > **ROADMAP.md** — always read this before any bid agent work. Contains current build status, pricing rates, phase checklist, and portal coverage.
 
+## Multi-Session Git Workflow
+Multiple Claude Code sessions run in parallel, one branch per session. Follow this every session:
+
+1. **Separate working directory per session.** Never run two sessions on different branches in the same folder — a `checkout` in one corrupts the others. Use `git worktree add ../fcu-<branch> <branch>` (or the `EnterWorktree` helper) or a separate clone.
+2. **One branch = one scoped, non-overlapping change.** Keep sessions in different areas (`bid-scanner/`, `agent/`, docs). Merge and delete branches fast — don't let them live for days.
+3. **Sync main before every merge:** `git fetch origin` → `git rebase origin/main` → **re-run tests/build on the result.** A branch that passed in isolation can break once other sessions' work lands under it.
+4. **Merge via PR, not direct to main** (`gh pr create`), even solo — gives a diff to eyeball. Serialize merges: don't let sessions race. Prefer one integrator (usually Leo) merging PRs one at a time.
+5. **After any merge, rebase the other sessions** onto the new main so they don't reintroduce stale code or hit avoidable conflicts.
+6. **Shared files are conflict magnets** — `ROADMAP.md`, `CLAUDE.md`, `context/`, plan docs, lockfiles. Edit these on their own tiny branches merged immediately, or keep each session's edits in its own section.
+
+Answer to "can I just tell any session to push and merge to main?" — only safely if branches don't overlap AND the session syncs main and re-verifies first. Otherwise expect conflicts or silent regressions.
+
 ## Sales Intelligence System
 Proposal approved. Architecture: Notion (database) → Python agent → Claude API → Gmail digest.
 
