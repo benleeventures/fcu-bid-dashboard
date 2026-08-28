@@ -6,7 +6,8 @@ Usage:
   python main.py --source sam           # SAM.gov only (headless, no cookies needed)
   python main.py --source planetbids    # PlanetBids only (requires CAPTCHA solve)
   python main.py --source opengov       # OpenGov only (requires I'm-not-a-robot solve)
-  python main.py --intel                # competitive intel: scan PlanetBids awarded bids
+  python main.py --intel                # competitive intel: scan PlanetBids awarded bids (+ GC watchlist)
+  python main.py --gc-watchlist         # GC watchlist: seed list + harvest from intel data (no browser)
   python main.py --headless             # suppress browser windows
   python main.py --check-cookies        # just check if cookies are valid
 """
@@ -20,6 +21,7 @@ from pathlib import Path
 SOURCE  = next((sys.argv[sys.argv.index("--source") + 1] for i, a in enumerate(sys.argv) if a == "--source"), None) if "--source" in sys.argv else None
 HEADLESS = "--headless" in sys.argv
 INTEL   = "--intel" in sys.argv
+GC_WATCHLIST = "--gc-watchlist" in sys.argv
 
 try:
     from dotenv import load_dotenv
@@ -39,6 +41,13 @@ async def main():
     print(f"Searching {len(SEARCH_KEYWORDS)} keyword groups across sources...\n")
 
     t_start = time.time()
+
+    if GC_WATCHLIST:
+        # Spec §7 — seed the GC watchlist and harvest GC winners from award
+        # data the intel scans have already collected. No browser needed.
+        from gc_watchlist import run as run_gc_watchlist
+        run_gc_watchlist()
+        return
 
     if INTEL:
         # On-demand intel scan — open real Chrome, user solves CAPTCHA, scrape awarded bids.
@@ -74,10 +83,21 @@ async def main():
             await asyncio.get_event_loop().run_in_executor(None, input, "")
 
             summary = await run_intel_scan(live_page=page)
+
+            # Spec §7 — reuse the live session to scan general-construction
+            # award winners for the GC watchlist.
+            gc_summary = {"found": 0, "added": 0}
+            try:
+                from intel_scanner import run_gc_award_scan
+                gc_summary = await run_gc_award_scan(live_page=page)
+            except Exception as e:
+                print(f"  ⚠ GC watchlist scan failed: {e}")
+
             await browser.close()
 
         print(f"\n  ✓ Intel scan complete")
         print(f"    {summary['new_awards']} new awards · {summary['vendors_resolved']} vendors resolved · {summary['new_vendors']} new vendors")
+        print(f"    GC watchlist: {gc_summary['found']} GC(s) found · {gc_summary['added']} new")
         return
 
     if SOURCE == "planetbids":

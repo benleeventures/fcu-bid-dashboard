@@ -112,6 +112,18 @@ Extend `bid_specs` with room-by-room breakdown for estimate pre-filling.
 - [ ] Go/no-go scoring model
 - [ ] Markup recommendation engine
 
+### GC Watchlist (spec §7) — ✅ Session 4 (2026-08)
+
+Airtable table **GC Watchlist** (`tbl0Dt9pkq3p23AkB`) — GC name, counties, plan room,
+registered?, prequal?, ITB arriving?, contact, last invitation. Seeded with 20 GCs
+(`gc_watchlist.SEED_GCS`, Tutor Perini first).
+
+- `python main.py --gc-watchlist` — seed + harvest GC winners from `bid_intel` (no browser)
+- `python main.py --intel` now also runs `run_gc_award_scan` on the live session — scans
+  PlanetBids **general-construction** award winners in the four counties and adds them
+- Registration on GC plan rooms (iSqFt/BuildingConnected/Procore/SmartBid) and outreach
+  stay manual — this only tracks whether invitations arrive. **Free channels only.**
+
 ---
 
 ## Pricing Framework (Always Current — Update Here First)

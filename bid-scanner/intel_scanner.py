@@ -110,10 +110,15 @@ def resolve_vendor(raw_name: str, existing: list[dict]) -> dict | None:
 # PlanetBids awarded bid scanning
 # ---------------------------------------------------------------------------
 
-async def _scan_awarded_portal(page, portal_id: str, agency: str) -> list[dict]:
+async def _scan_awarded_portal(page, portal_id: str, agency: str,
+                               mode: str = "flooring") -> list[dict]:
     """
-    Navigate to one PlanetBids portal and return all awarded bids via /papi/bids.
+    Navigate to one PlanetBids portal and return awarded bids via /papi/bids.
     Returns list of {portal_id, numeric_bid_id, title, agency}.
+
+    mode="flooring"              — awards where flooring is the primary scope
+    mode="general_construction"  — general-construction packages (spec §7 GC
+                                   watchlist: the winner needs flooring subs)
     """
     from urllib.parse import urlparse, parse_qs
 
@@ -132,6 +137,7 @@ async def _scan_awarded_portal(page, portal_id: str, agency: str) -> list[dict]:
                         captured.set_exception(exc)
 
     from scanner import _is_relevant
+    from gc_watchlist import _looks_like_general_construction
 
     portal_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
     page.on("response", on_response)
@@ -163,7 +169,10 @@ async def _scan_awarded_portal(page, portal_id: str, agency: str) -> list[dict]:
             attrs.get("description") or attrs.get("scope") or
             attrs.get("bidDescription") or attrs.get("projectDescription") or ""
         ).strip()
-        if not _is_relevant(title, description):
+        if mode == "general_construction":
+            if not _looks_like_general_construction(title):
+                continue
+        elif not _is_relevant(title, description):
             continue
         awarded.append({
             "portal_id":      portal_id,
@@ -584,3 +593,47 @@ async def run_intel_scan(live_page) -> dict:
         "vendors_resolved": vendors_resolved,
         "new_vendors":      vendors_created,
     }
+
+
+async def run_gc_award_scan(live_page) -> dict:
+    """
+    Spec §7: scan PlanetBids awarded bids for general-construction packages in
+    the four counties, pull the winning GC, and add it to the Airtable GC
+    Watchlist. Reuses the live CAPTCHA session — call right after run_intel_scan.
+    """
+    from scanner import PLANETBIDS_PORTALS
+    from gc_watchlist import sync_gc_watchlist, _looks_like_gc
+    from geo import classify_location, FOUR_COUNTIES
+
+    print("\n" + "=" * 60)
+    print("GC WATCHLIST — general-construction award winners")
+    print("=" * 60)
+
+    page = live_page
+    candidates: dict[str, dict] = {}
+
+    for portal_id, (agency, county) in PLANETBIDS_PORTALS.items():
+        awarded = await _scan_awarded_portal(page, portal_id, agency,
+                                             mode="general_construction")
+        if not awarded:
+            continue
+        print(f"  → {agency}: {len(awarded)} general-construction award(s)")
+        for bid in awarded:
+            detail = await _fetch_bid_detail(page, portal_id, bid["numeric_bid_id"])
+            winner = (detail.get("winner_name") or "").strip()
+            if not winner or not _looks_like_gc(winner):
+                continue
+            loc = classify_location(bid["title"], agency)
+            c = county if county in FOUR_COUNTIES else loc["county"]
+            key = winner.lower()
+            if key not in candidates:
+                candidates[key] = {
+                    "name": winner,
+                    "counties": [c] if c in FOUR_COUNTIES else [],
+                    "source": "Award notice",
+                    "notes": f"Won: {bid['title'][:120]} ({agency})",
+                }
+
+    added = sync_gc_watchlist(list(candidates.values()))
+    print(f"\n  ✓ {len(candidates)} GC(s) found · {added} new on the watchlist")
+    return {"found": len(candidates), "added": added}
