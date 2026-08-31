@@ -1,7 +1,7 @@
 // Hand-rolled SVG/CSS charts for the scanner dashboard. No chart library.
 // All server components — purely presentational.
 
-import { DayPoint, FunnelStep, pct } from './lib'
+import { DayPoint, FunnelStep, DocPull, DocPullKey, pct } from './lib'
 
 const MONO = 'IBM Plex Mono, monospace'
 
@@ -55,6 +55,51 @@ export function Funnel({ steps }: { steps: FunnelStep[] }) {
           </div>
         )
       })}
+    </div>
+  )
+}
+
+// ── Document pull (parse_status disposition) ─────────────────────────────
+
+const DOC_SEGMENTS: { key: DocPullKey; label: string; color: string }[] = [
+  { key: 'parsed',      label: 'Docs pulled & parsed', color: 'var(--green)' },
+  { key: 'pending',     label: 'Still pending',        color: 'var(--gold)' },
+  { key: 'noDocs',      label: "No docs — can't pull", color: 'var(--red)' },
+  { key: 'unparseable', label: 'Downloaded, unparseable', color: 'var(--orange)' },
+  { key: 'skipped',     label: 'Written off (past due / backlog)', color: 'var(--gray)' },
+]
+
+export function DocPullChart({ d }: { d: DocPull }) {
+  if (!d.total) {
+    return (
+      <div style={{ color: 'var(--gray)', fontFamily: MONO, fontSize: 12 }}>
+        No relevant bids discovered in this window yet.
+      </div>
+    )
+  }
+  const rows = DOC_SEGMENTS.filter(s => d[s.key] > 0)
+  return (
+    <div>
+      <div style={{ display: 'flex', height: 22, borderRadius: 4, overflow: 'hidden', background: 'var(--charcoal-mid)' }}>
+        {rows.map(s => (
+          <div key={s.key} title={`${s.label}: ${d[s.key]}`}
+            style={{ width: `${(d[s.key] / d.total) * 100}%`, background: s.color }} />
+        ))}
+      </div>
+      <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {rows.map(s => (
+          <div key={s.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--white)' }}>
+              <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, display: 'inline-block' }} />
+              {s.label}
+            </span>
+            <span style={{ fontFamily: MONO, color: 'var(--gray)' }}>
+              <span style={{ color: 'var(--gold-light)', marginRight: 8 }}>{pct(d[s.key], d.total)}</span>
+              <span style={{ color: 'var(--white)', fontWeight: 600 }}>{d[s.key].toLocaleString()}</span>
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
