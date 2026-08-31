@@ -142,7 +142,12 @@ class ScanFunnel:
         """
         if not manifest:
             return
-        portals = manifest.get("portals", {})
+        try:
+            from scanner import PLANETBIDS_SKIP as _pb_skip
+        except Exception:
+            _pb_skip = set()
+        portals = {pid: rec for pid, rec in manifest.get("portals", {}).items()
+                   if pid not in _pb_skip}
         counts = {"ok": 0, "empty": 0, "blocked": 0, "error": 0, "pending": 0}
         for pid, rec in portals.items():
             st = rec.get("status", "pending")

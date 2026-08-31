@@ -25,6 +25,20 @@ STATE_FILE = Path(__file__).parent / "output" / "planetbids_state.json"
 # Statuses that a resume run should retry.
 UNFINISHED = {"blocked", "error", "pending"}
 
+
+def _skip_ids() -> set:
+    """Portal IDs that scanner.PLANETBIDS_SKIP excludes from every scan.
+
+    Imported lazily so this module has no import-time dependency on scanner.
+    A manifest may still carry these (written before the ID was skipped, or by
+    an older build) — treat them as done so `--resume` doesn't chase them.
+    """
+    try:
+        from scanner import PLANETBIDS_SKIP
+        return set(PLANETBIDS_SKIP)
+    except Exception:
+        return set()
+
 # A manifest older than this (hours, based on run_started) is considered stale;
 # `--resume` falls back to a full run rather than resuming yesterday's portals.
 STALE_AFTER_HOURS = 48
@@ -74,8 +88,9 @@ def is_stale(manifest: dict) -> bool:
 
 
 def unfinished_portal_ids(manifest: dict) -> list[str]:
+    skip = _skip_ids()
     return [pid for pid, rec in manifest.get("portals", {}).items()
-            if rec.get("status") in UNFINISHED]
+            if rec.get("status") in UNFINISHED and pid not in skip]
 
 
 def record(manifest: dict, portal_id: str, agency: str, status: str,
@@ -90,8 +105,11 @@ def record(manifest: dict, portal_id: str, agency: str, status: str,
 
 
 def counts(manifest: dict) -> dict:
+    skip = _skip_ids()
     out = {"ok": 0, "empty": 0, "blocked": 0, "error": 0, "pending": 0}
-    for rec in manifest.get("portals", {}).values():
+    for pid, rec in manifest.get("portals", {}).items():
+        if pid in skip:
+            continue
         out[rec.get("status", "pending")] = out.get(rec.get("status", "pending"), 0) + 1
     return out
 
@@ -105,10 +123,11 @@ def format_summary(manifest: dict) -> str:
         f"{c['blocked']} blocked · {c['error']} error · {c['pending']} pending "
         f"({total_bids} matched bids)"
     ]
+    skip = _skip_ids()
     incomplete = [
         f"{rec['agency']} (cid={pid})"
         for pid, rec in manifest.get("portals", {}).items()
-        if rec.get("status") in UNFINISHED
+        if rec.get("status") in UNFINISHED and pid not in skip
     ]
     if incomplete:
         lines.append("")

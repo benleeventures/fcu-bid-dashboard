@@ -6,6 +6,7 @@ Usage:
   python main.py --source sam           # SAM.gov only (headless, no cookies needed)
   python main.py --source planetbids    # PlanetBids only (requires CAPTCHA solve)
   python main.py --source planetbids --resume  # retry only portals blocked/missed last run
+  python main.py --source planetbids --resume --give-up  # ...and don't fail if a few won't load
   python main.py --source opengov       # OpenGov only (requires I'm-not-a-robot solve)
   python main.py --intel                # competitive intel: scan PlanetBids awarded bids (+ GC watchlist)
   python main.py --gc-watchlist         # GC watchlist: seed list + harvest from intel data (no browser)
@@ -24,6 +25,7 @@ HEADLESS = "--headless" in sys.argv
 INTEL   = "--intel" in sys.argv
 GC_WATCHLIST = "--gc-watchlist" in sys.argv
 RESUME  = "--resume" in sys.argv
+GIVE_UP = "--give-up" in sys.argv   # PlanetBids: exit 0 even if some portals stay blocked
 
 try:
     from dotenv import load_dotenv
@@ -136,6 +138,9 @@ async def main():
             if incomplete:
                 print(f"\n⚠ No bids captured and {len(incomplete)} portal(s) still "
                       f"blocked/unfinished.")
+                if GIVE_UP:
+                    print("  --give-up set — leaving them for the next run.")
+                    sys.exit(0)
                 print("  Re-run later today:  python main.py --source planetbids --resume")
                 sys.exit(1)
             print("\n⚠ No bids found (all portals loaded — nothing matched).")
@@ -154,10 +159,13 @@ async def main():
         else:
             print("\n  (Supabase not configured — bids not queued)")
         print(f"\n  {len(bids)} total bids scanned across {len(set(b['agency'] for b in bids))} portals")
-        if incomplete:
+        if incomplete and not GIVE_UP:
             print(f"\n⚠ {len(incomplete)} portal(s) still blocked/unfinished — re-run later today:")
             print("    python main.py --source planetbids --resume")
             sys.exit(2)
+        if incomplete:
+            print(f"\n⚠ {len(incomplete)} portal(s) still blocked — --give-up set, "
+                  f"leaving them for the next run.")
         sys.exit(0)
 
     if SOURCE == "opengov":

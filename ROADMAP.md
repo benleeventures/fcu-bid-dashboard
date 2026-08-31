@@ -205,7 +205,7 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | Portal | Status | Notes |
 |--------|--------|-------|
 | SAM.gov | ✅ Active | Federal; NAICS 238330 + CA place-of-performance. Now runs through the 4-county geo gate — out-of-area federal work is dropped |
-| PlanetBids | ✅ Active | Manual run (`--source planetbids`), user solves one CAPTCHA. 41 portals, each county-tagged (see `PLANETBIDS_PORTALS`). Per-portal outcome tracked in `output/planetbids_state.json`; if the WAF blocks mid-run, re-run `--source planetbids --resume` to retry only the missed portals (auto-loops via `rerun_planetbids.sh`) |
+| PlanetBids | ✅ Active | Manual run (`--source planetbids`), user solves one CAPTCHA. ~37 portals scanned, each county-tagged (see `PLANETBIDS_PORTALS`; `PLANETBIDS_SKIP` excludes chronically-broken ones). Per-portal outcome tracked in `output/planetbids_state.json`; if the WAF blocks mid-run, re-run `--source planetbids --resume` to retry only the missed portals (auto-loops via `rerun_planetbids.sh`), or add `--give-up` to accept a partial run |
 | BidNet Direct | ⚠ Partial | Doc download works; public listing page blocked by bot detection |
 | Cal eProcure | ✅ Active | Statewide — most rows land as `geo_status=unknown` and get flagged for county check |
 | OpenGov | ⚠ Manual | 5 SoCal portals (NorCal portals removed 2026-08). Run `--source opengov` on demand |
@@ -257,7 +257,12 @@ and `main.py` exited 0, so a mostly-failed run looked clean.
   Long Beach. If a portal still bounces to `/2001` mid-run, the scraper pauses and
   asks for a manual solve (up to `PLANETBIDS_MAX_RESOLVES` = 3 per run) then retries.
 - `main.py` prints an honest summary (`30 ok · 3 empty · 5 blocked`) and exits 2
-  when portals are still incomplete.
+  when portals are still incomplete. Add `--give-up` to that resume command to
+  accept whatever loaded and exit 0 (the blocked portals stay unfinished and get
+  retried on the next run).
+- `scanner.PLANETBIDS_SKIP` — portal IDs excluded from every scan (full and
+  resume). For chronically-broken tenants that only cost CAPTCHA solves and keep
+  `--resume` looping. City of Long Beach (`15810`) is skipped there.
 - `rerun_planetbids.sh` loops the resume up to 4× with a cooldown (still needs a
   CAPTCHA solve each round).
 - **Phase 2 (not done):** randomized inter-portal delay, persist `aws-waf-token`
