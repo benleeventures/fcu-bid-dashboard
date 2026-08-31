@@ -36,7 +36,7 @@
 Env vars needed in `bid-scanner/.env`:
 ```
 RESEND_API_KEY=your_resend_api_key_here
-NOTIFY_EMAIL=your_email_here
+ADMIN_EMAIL=your_email_here          # role vars: see bid-scanner/.env.example
 ```
 
 Parse existing downloaded PDFs using Claude Code:
