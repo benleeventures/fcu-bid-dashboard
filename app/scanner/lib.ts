@@ -80,6 +80,40 @@ export function pct(a: number, b: number): string {
   return `${Math.round((a / b) * 100)}%`
 }
 
+// ── Document pull (parse_status disposition) ──────────────────────────────
+// The discovery funnel above only scrapes listing pages. Whether we can
+// actually download + parse a bid's documents is decided later, async, by
+// parser.py (com.fcu.parser), and recorded per-bid in bids.parse_status.
+// This cohort view answers: of the relevant bids we found, how many could
+// we fully pull?
+
+export type BidParseRow = {
+  parse_status: string | null
+  parse_attempts: number | null
+  first_seen_at: string
+  source: string | null
+}
+
+export type DocPullKey = 'parsed' | 'pending' | 'noDocs' | 'unparseable' | 'skipped'
+
+export type DocPull = Record<DocPullKey, number> & { total: number }
+
+export function docPull(bids: BidParseRow[], sinceMs?: number): DocPull {
+  const d: DocPull = { total: 0, parsed: 0, pending: 0, noDocs: 0, unparseable: 0, skipped: 0 }
+  for (const b of bids) {
+    if (sinceMs && new Date(b.first_seen_at).getTime() < sinceMs) continue
+    d.total++
+    switch (b.parse_status) {
+      case 'parsed':      d.parsed++; break
+      case 'no_docs':     d.noDocs++; break
+      case 'unparseable': d.unparseable++; break
+      case 'skipped':     d.skipped++; break
+      default:            d.pending++      // null / 'pending'
+    }
+  }
+  return d
+}
+
 // ── Time series ───────────────────────────────────────────────────────────
 
 export type DayPoint = {

@@ -1,18 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 import {
-  ScanRun, SourceStat, PortalStat,
+  ScanRun, SourceStat, PortalStat, BidParseRow,
   funnelSteps, dailySeries, windowTotals, sourceMatrix, latestPortalRun,
-  STATUS_COLOR, pct,
+  docPull, STATUS_COLOR, pct,
 } from './lib'
-import { Funnel, VolumeChart, FilteredOutBars } from './Charts'
+import { Funnel, DocPullChart, VolumeChart, FilteredOutBars } from './Charts'
 
 export const revalidate = 300
 const MONO = 'IBM Plex Mono, monospace'
 
-async function getData(): Promise<{ runs: ScanRun[]; sources: SourceStat[]; portals: PortalStat[] }> {
+const DOC_PULL_WINDOW_DAYS = 90
+
+async function getData(): Promise<{
+  runs: ScanRun[]; sources: SourceStat[]; portals: PortalStat[]; parseRows: BidParseRow[]
+}> {
   const url = process.env.SUPABASE_URL
   const key = process.env.SUPABASE_KEY
-  if (!url || !key) return { runs: [], sources: [], portals: [] }
+  if (!url || !key) return { runs: [], sources: [], portals: [], parseRows: [] }
 
   const sb = createClient(url, key)
 
@@ -23,12 +27,12 @@ async function getData(): Promise<{ runs: ScanRun[]; sources: SourceStat[]; port
     .limit(120)
   if (error) {
     console.error('scan_run fetch error:', error.message)
-    return { runs: [], sources: [], portals: [] }
+    return { runs: [], sources: [], portals: [], parseRows: [] }
   }
 
   const runs = (runData ?? []) as ScanRun[]
   const ids = runs.map(r => r.id)
-  if (!ids.length) return { runs, sources: [], portals: [] }
+  if (!ids.length) return { runs, sources: [], portals: [], parseRows: [] }
 
   const { data: sourceData } = await sb
     .from('scan_source_stat').select('*').in('scan_run_id', ids)
@@ -36,10 +40,26 @@ async function getData(): Promise<{ runs: ScanRun[]; sources: SourceStat[]; port
   const { data: portalData } = await sb
     .from('scan_portal_stat').select('*').in('scan_run_id', ids.slice(0, 15))
 
+  // Document-pull cohort: relevant bids first seen in the last N days, with
+  // their current parse_status. Tolerates the add_parse_status migration not
+  // being applied (the select just errors and we render nothing).
+  let parseRows: BidParseRow[] = []
+  const since = new Date(Date.now() - DOC_PULL_WINDOW_DAYS * 86400000).toISOString()
+  const { data: bidData, error: bidErr } = await sb
+    .from('bids')
+    .select('parse_status, parse_attempts, first_seen_at, source')
+    .eq('is_relevant', true)
+    .gte('first_seen_at', since)
+    .order('first_seen_at', { ascending: false })
+    .limit(5000)
+  if (bidErr) console.error('bids parse_status fetch error:', bidErr.message)
+  else parseRows = (bidData ?? []) as BidParseRow[]
+
   return {
     runs,
     sources: (sourceData ?? []) as SourceStat[],
     portals: (portalData ?? []) as PortalStat[],
+    parseRows,
   }
 }
 
@@ -71,7 +91,10 @@ function StatusDot({ status }: { status: string }) {
 }
 
 export default async function ScannerPage() {
-  const { runs, sources, portals } = await getData()
+  const { runs, sources, portals, parseRows } = await getData()
+
+  const dp30 = docPull(parseRows, Date.now() - 30 * 86400000)
+  const dp90 = docPull(parseRows)
 
   const realRuns = runs.filter(r => r.mode !== 'legacy')
   const latestFull: ScanRun | null =
@@ -147,6 +170,20 @@ export default async function ScannerPage() {
               <span>30-day: {w30.raw.toLocaleString()} raw → {w30.relevant} relevant → {w30.new} new</span>
             </div>
           </Card>
+
+          {/* Document pull — parse_status disposition of the relevant-bid cohort */}
+          {dp90.total > 0 && (
+            <Card
+              title="Document pull — can we fully scrape it?"
+              sub={`${dp30.total} relevant bids (distinct) found in the last 30d · parse_status resolves async over ~3 days after discovery`}
+            >
+              <DocPullChart d={dp30} />
+              <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--charcoal-mid)', display: 'flex', gap: 24, fontSize: 11, fontFamily: MONO, color: 'var(--gray)' }}>
+                <span>30-day: {dp30.parsed} pulled · {dp30.noDocs + dp30.unparseable} unpullable · {dp30.pending} pending</span>
+                <span>90-day: {dp90.parsed}/{dp90.total} pulled ({pct(dp90.parsed, dp90.total)})</span>
+              </div>
+            </Card>
+          )}
 
           {/* Volume over time */}
           <Card title="Volume over time" sub="Per day, all run types · last 30 days">

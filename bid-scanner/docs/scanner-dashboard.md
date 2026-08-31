@@ -49,6 +49,7 @@ longer aborts the whole scan; it's recorded as `error` and the run continues.
 
 - **Window summary** — 7-day totals (runs, raw, relevant, new, filtered-out, raw→new %).
 - **Funnel** — latest full run, step-to-step conversion %, with 7/30-day totals underneath.
+- **Document pull** — of the *distinct* relevant bids found in the last 30d (90d in the fetch), their current `bids.parse_status`: parsed / pending / no_docs / unparseable / skipped. Answers "can we actually get the docs to bid?" This is a **cohort snapshot**, not a per-run count — the scanner only scrapes listing pages; download+parse happens later, async, in `parser.py` (`com.fcu.parser`), and resolves over ~3 attempts. Card hides itself if the `add_parse_status` migration isn't applied.
 - **Volume over time** — 30-day line chart (raw / relevant / new) + "bids filtered out per day" bars.
 - **Source visibility** — source × last-14-days grid, cell coloured by status, number = raw rows. A source red-flagged (`Nd`) has scraped 0 for ≥2 consecutive days.
 - **PlanetBids portals** — latest sweep, 38-portal grid by county, coloured by outcome.
