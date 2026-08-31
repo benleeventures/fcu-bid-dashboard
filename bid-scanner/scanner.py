@@ -322,7 +322,20 @@ PLANETBIDS_PORTALS = {
     # (none verified yet — see ROADMAP "PlanetBids portal expansion")
 }
 
+# Portal IDs to skip entirely — chronically blocked / broken tenants that only
+# ever cost CAPTCHA solves and leave `--resume` stuck in a loop. They are left
+# out of both full and resume scans (no "pending"/"blocked" entry is written, so
+# resume treats the run as complete). Remove an ID here to bring a portal back.
+PLANETBIDS_SKIP = {
+    "15810",   # City of Long Beach — always bounces to its own /2001 challenge
+}
+
 PLANETBIDS_BASE = "https://vendors.planetbids.com"
+
+
+def _scannable_portals() -> dict:
+    """PLANETBIDS_PORTALS minus the PLANETBIDS_SKIP list."""
+    return {pid: v for pid, v in PLANETBIDS_PORTALS.items() if pid not in PLANETBIDS_SKIP}
 
 
 async def _planetbids_login(page) -> bool:
@@ -393,16 +406,16 @@ def planetbids_scan_plan(resume: bool = False):
             resume = False
 
     if resume:
-        todo = set(pb_state.unfinished_portal_ids(manifest))
+        todo = set(pb_state.unfinished_portal_ids(manifest)) - PLANETBIDS_SKIP
         if not todo:
             print("  ✓ Nothing to resume — every portal is ok/empty already.")
             return manifest, []
         print(f"  Resuming {len(todo)} unfinished portal(s) from run "
               f"started {manifest.get('run_started')}.")
-        portals = [(pid, a, c) for pid, (a, c) in PLANETBIDS_PORTALS.items() if pid in todo]
+        portals = [(pid, a, c) for pid, (a, c) in _scannable_portals().items() if pid in todo]
     else:
-        manifest = pb_state.new_manifest(PLANETBIDS_PORTALS)
-        portals = [(pid, a, c) for pid, (a, c) in PLANETBIDS_PORTALS.items()]
+        manifest = pb_state.new_manifest(_scannable_portals())
+        portals = [(pid, a, c) for pid, (a, c) in _scannable_portals().items()]
 
     manifest["run_finished"] = None
     pb_state.save(manifest)
