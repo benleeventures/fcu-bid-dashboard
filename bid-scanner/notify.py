@@ -13,6 +13,7 @@ Recipient routing (env vars):
   BEN_EMAIL      — job walks + new-bid alerts
   JOANNE_EMAIL   — job walks + new-bid alerts + RFQ drafts
   TEAM_EMAIL     — job walks + new-bid alerts
+  ROBERT_EMAIL   — job walks + new-bid alerts
   NOTIFY_EMAIL   — legacy fallback if the above are not set
 
 Cookie alerts also fire macOS desktop notification + terminal printout.
@@ -85,8 +86,8 @@ def _admin_recipients() -> list[str]:
 
 
 def _operational_recipients() -> list[str]:
-    """Field/ops team — job walks + new-bid alerts. Ben, Joanne, Team, and Admin."""
-    return _parse_emails("BEN_EMAIL", "JOANNE_EMAIL", "TEAM_EMAIL", "ADMIN_EMAIL") or _parse_emails("NOTIFY_EMAIL")
+    """Field/ops team — job walks + new-bid alerts. Ben, Joanne, Team, Robert, and Admin."""
+    return _parse_emails("BEN_EMAIL", "JOANNE_EMAIL", "TEAM_EMAIL", "ROBERT_EMAIL", "ADMIN_EMAIL") or _parse_emails("NOTIFY_EMAIL")
 
 
 def _joanne_and_admin() -> list[str]:
