@@ -1534,6 +1534,100 @@ async def _search_lausd_fsd(keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# SecureBids (Colbi Technologies) — securebids.com / colbisecurebids.com
+# ---------------------------------------------------------------------------
+# Same vendor as Quality Bidders, different product. Public JSON API, no login
+# (colbisecurebids.com just redirects here). SecureBids hosts agencies in ~10
+# states, so filter to California (stateId 5) at the API and let the geo gate
+# narrow to the four in-scope counties. Auto-discovers agencies each run —
+# no hardcoded portal list to maintain.
+
+SECUREBIDS_API = "https://api.securebids.com/api/pub"
+SECUREBIDS_BASE = "https://securebids.com"
+SECUREBIDS_CA_STATE_ID = 5
+
+# CA region id -> county, for the regions we cover. Region id is often 0 on the
+# agency record (then the geo gate classifies by agency name instead).
+SECUREBIDS_REGION_COUNTY = {2: "Los Angeles", 1: "Orange", 5: "San Diego"}
+# CA regions definitively outside the four counties — skip these agencies.
+SECUREBIDS_OUT_REGIONS = {4, 6, 7, 8, 9, 10, 11}
+
+
+def _fetch_securebids_sync() -> list[dict]:
+    """Pull open CA opportunities from the SecureBids public API."""
+    h = {"User-Agent": USER_AGENT, "Content-Type": "application/json",
+         "Origin": SECUREBIDS_BASE, "Referer": SECUREBIDS_BASE + "/"}
+
+    agencies = requests.post(
+        f"{SECUREBIDS_API}/Agency/AgencyListPageContent/", headers=h, timeout=25,
+        json={"stateId": SECUREBIDS_CA_STATE_ID, "regionId": 0, "pageNumber": 0,
+              "searchTerm": "", "sortColumn": "", "sortAtoZ": True},
+    ).json()["responseData"]["agencyList"]
+
+    out = []
+    for a in agencies:
+        if not a.get("openEventCount"):
+            continue
+        if a.get("regionId") in SECUREBIDS_OUT_REGIONS:
+            continue
+        token = a["agencyToken"]
+        try:
+            events = requests.post(
+                f"{SECUREBIDS_API}/Agency/BidListContent", headers=h, timeout=25,
+                json={"agencyToken": token, "categoryId": 0, "closedCancelled": False,
+                      "maxResults": 100, "eventStatus": "Available", "sortColumn": "closing",
+                      "sortAtoZ": True, "pageNumber": 1, "searchTerm": "",
+                      "stateId": 0, "regionId": 0},
+            ).json()["responseData"].get("bidEvents", [])
+        except Exception as e:
+            print(f"    ⚠ SecureBids agency {token}: {e}")
+            continue
+        for e in events:
+            e["_agencyName"] = a["agencyName"]
+            e["_agencyToken"] = token
+            e["_county"] = SECUREBIDS_REGION_COUNTY.get(a.get("regionId"))
+            out.append(e)
+    return out
+
+
+async def _search_securebids(keywords: list[str]) -> list[dict]:
+    """SecureBids / Colbi — open CA agency opportunities. Pure HTTP, no login."""
+    print("\nSearching SecureBids / Colbi (CA agencies)...")
+    try:
+        events = await asyncio.to_thread(_fetch_securebids_sync)
+    except Exception as e:
+        print(f"  ⚠ SecureBids error: {e}")
+        return []
+
+    bids = []
+    for e in events:
+        if (e.get("eventStatus") or "").lower() != "available":
+            continue
+        title = (e.get("oppName") or e.get("description") or "").strip()
+        num = e.get("oppNumber") or e.get("eventToken") or ""
+        close_raw = e.get("bidCloseDate") or ""
+        bids.append({
+            "bid_id": f"SB-{e['_agencyToken']}-{_safe_bid_id(num)}",
+            "title": title[:480],
+            "agency": e["_agencyName"],
+            "state": "California",
+            "county": e.get("_county"),
+            "published_date": None,
+            "published_raw": "",
+            "due_date": _parse_date(close_raw[:10]) if close_raw else None,
+            "due_date_raw": close_raw,
+            "is_relevant": _is_relevant(title, f"{title} {e.get('description', '')}"),
+            "search_keyword": "open bids",
+            "url": f"{SECUREBIDS_BASE}/o/{e['_agencyToken']}/{e.get('eventToken', '')}",
+            "source": "SecureBids",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} open opportunities, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SoCal Builders Plan Room (CyberCopy — public CA construction bids)
 # ---------------------------------------------------------------------------
 
@@ -1793,7 +1887,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     src = source.lower() if source else None
     all_bids = []
 
-    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla", "lausd")
+    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla", "lausd", "securebids")
 
     if needs_browser:
         async with async_playwright() as p:
@@ -1879,6 +1973,11 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
         with funnel.guard("LAUSD Facilities"):
             lausd_bids = await _search_lausd_fsd(keywords)
             all_bids.extend(lausd_bids)
+
+    if src in (None, "securebids"):
+        with funnel.guard("SecureBids"):
+            sb_bids = await _search_securebids(keywords)
+            all_bids.extend(sb_bids)
 
     funnel.note_raw(all_bids)
 
