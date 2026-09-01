@@ -46,6 +46,7 @@ _SOURCE_MAP = {
     "Crisp Plan Room": "Crisp Plan Room",
     "SoCal Plan Room": "SoCal Plan Room",
     "SAM.gov": "SAM.gov (federal)",
+    "UCLA Capital Programs": "UCLA Capital Programs",
 }
 
 # Sources whose `agency` field is already a specific city name

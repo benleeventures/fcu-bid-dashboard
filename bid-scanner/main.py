@@ -8,6 +8,7 @@ Usage:
   python main.py --source planetbids --resume  # retry only portals blocked/missed last run
   python main.py --source planetbids --resume --give-up  # ...and don't fail if a few won't load
   python main.py --source opengov       # OpenGov only (requires I'm-not-a-robot solve)
+  python main.py --source ucla          # UCLA Capital Programs only (public, no browser)
   python main.py --intel                # competitive intel: scan PlanetBids awarded bids (+ GC watchlist)
   python main.py --gc-watchlist         # GC watchlist: seed list + harvest from intel data (no browser)
   python main.py --headless             # suppress browser windows

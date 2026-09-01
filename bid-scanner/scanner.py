@@ -17,6 +17,7 @@ import time
 from datetime import datetime, date
 
 import requests
+from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
 # ---------------------------------------------------------------------------
@@ -1218,6 +1219,113 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# UCLA Capital Programs — public "Projects Currently Bidding" page
+# ---------------------------------------------------------------------------
+# Server-rendered HTML, no auth (the UCLA Online Planroom behind it needs a
+# login, but this index page lists every advertised project). Westwood campus,
+# so every bid is Los Angeles County — stamped directly for the geo gate.
+# The page carries no bid due date (it lives in the "Ad for Bids" PDF); the
+# parser pulls it later. `est_value` shown on-page is not persisted here.
+
+UCLA_BASE = "https://www.capitalprograms.ucla.edu"
+UCLA_BIDDING_URL = UCLA_BASE + "/Contracts/Bidding"
+
+# Section headers on the page. Rows under "Announcement to PQ Bidders" are
+# addenda/notices to already-prequalified bidders, not new opportunities —
+# everything else (open bids, sub-bid ads, prequalification ads) is kept.
+UCLA_SKIP_SECTIONS = {"announcement to pq bidders"}
+
+
+def _fetch_ucla_sync() -> list[dict]:
+    """Scrape the UCLA bidding index. Pure HTTP + BeautifulSoup, no browser."""
+    resp = requests.get(UCLA_BIDDING_URL, headers={"User-Agent": USER_AGENT}, timeout=25)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+    table = soup.find("table", id="cptable-leftlabels")
+    if not table or not table.find("tbody"):
+        return []
+
+    projects: list[dict] = []
+    section: str | None = None
+    cur: dict | None = None
+
+    def _flush():
+        nonlocal cur
+        if cur and cur.get("title") and section not in UCLA_SKIP_SECTIONS:
+            projects.append(cur)
+        cur = None
+
+    for tr in table.find("tbody").find_all("tr", recursive=False):
+        th = tr.find("th")
+        if th and th.get("scope") == "colgroup":
+            _flush()
+            section = th.get_text(strip=True).lower()
+            continue
+        if "project-divider" in (tr.get("class") or []):
+            _flush()
+            continue
+        rid = tr.get("id")
+        if rid and rid.isdigit():
+            _flush()
+            a = tr.find("a")
+            td = tr.find("td")
+            cur = {
+                "id": rid,
+                "section": section,
+                "title": (a.get_text(" ", strip=True) if a else td.get_text(" ", strip=True)).strip(),
+                "url": (requests.compat.urljoin(UCLA_BASE, a["href"])
+                        if a and a.get("href") else UCLA_BIDDING_URL),
+                "number": "",
+                "desc": "",
+            }
+            continue
+        if cur is None:
+            continue
+        label = th.get_text(strip=True).lower() if th else ""
+        td = tr.find("td")
+        val = td.get_text(" ", strip=True) if td else ""
+        if label.startswith("project number"):
+            cur["number"] = val
+        elif label.startswith("project description"):
+            cur["desc"] = val
+    _flush()
+    return projects
+
+
+async def _search_ucla(keywords: list[str]) -> list[dict]:
+    """Pull UCLA Capital Programs advertised projects; flag flooring-relevant ones."""
+    print("\nSearching UCLA Capital Programs (Westwood — LA County)...")
+    try:
+        projects = await asyncio.to_thread(_fetch_ucla_sync)
+    except Exception as e:
+        print(f"  ⚠ UCLA Capital Programs error: {e}")
+        return []
+
+    bids = []
+    for p in projects:
+        title = p["title"].replace("(opens in new tab, PDF)", "").strip()
+        bids.append({
+            "bid_id": f"UCLA-{p['id']}",
+            "title": title,
+            "agency": "UCLA Capital Programs",
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": None,
+            "published_raw": "",
+            "due_date": None,
+            "due_date_raw": "",
+            "is_relevant": _is_relevant(title, f"{title} {p.get('desc', '')}"),
+            "search_keyword": "open bids",
+            "url": p["url"],
+            "source": "UCLA Capital Programs",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} advertised projects, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SoCal Builders Plan Room (CyberCopy — public CA construction bids)
 # ---------------------------------------------------------------------------
 
@@ -1477,7 +1585,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     src = source.lower() if source else None
     all_bids = []
 
-    needs_browser = src is None or src not in ("sam",)
+    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla")
 
     if needs_browser:
         async with async_playwright() as p:
@@ -1546,6 +1654,11 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
         with funnel.guard("Quality Bidders"):
             qb_bids = await _search_qualitybidders(keywords)
             all_bids.extend(qb_bids)
+
+    if src in (None, "ucla"):
+        with funnel.guard("UCLA Capital Programs"):
+            ucla_bids = await _search_ucla(keywords)
+            all_bids.extend(ucla_bids)
 
     funnel.note_raw(all_bids)
 

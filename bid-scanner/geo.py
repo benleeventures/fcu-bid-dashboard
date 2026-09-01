@@ -255,7 +255,8 @@ _AGENCY_TYPE_RULES = [
     ("state", re.compile(
         r"department of |\bcaltrans\b|\bCHP\b|\bDMV\b|\bDGS\b|\bDVBE\b|"
         r"state of california|\bCSU\b|cal state|california state university|"
-        r"university of california|state parks|\bdirector of general services\b",
+        r"university of california|\bUC\s?(?:LA|I|SD|SB|R|D|SC|SF|M)\b|"
+        r"regents of the university|state parks|\bdirector of general services\b",
         re.I)),
     ("city", re.compile(r"\bcity of |\btown of |\bcity\b|\bmunicipal\b", re.I)),
 ]

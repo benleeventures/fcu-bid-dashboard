@@ -480,6 +480,8 @@ tr.hidden {{ display: none; }}
     <option value="socal plan room">SoCal Plan Room</option>
     <option value="crisp plan room">Crisp Plan Room</option>
     <option value="caltrans ccop">Caltrans CCOP</option>
+    <option value="ucla capital programs">UCLA Capital Programs</option>
+    <option value="cybercopy plan room">CyberCopy Plan Room</option>
   </select>
 </div>
 
