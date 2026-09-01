@@ -317,23 +317,38 @@ async def _search_keyword(page, keyword: str) -> list[dict]:
 
 
 def _dedup(bids: list[dict]) -> list[dict]:
-    """Remove duplicates by bid_id, then by title similarity."""
+    """Remove duplicates by bid_id, then title, then LAUSD project number.
+
+    An LAUSD project shows up both in the FSD bid-date report ("LAUSD Facilities")
+    and — with downloadable specs — in the Crisp plan room. Both carry the 7-digit
+    project number (26xxxxx / 27xxxxx). Sources run Crisp before LAUSD Facilities,
+    so the doc-bearing Crisp row wins.
+    """
     seen_ids = set()
     seen_titles = set()
+    seen_lausd = set()
     out = []
 
     for b in bids:
         bid_id = b["bid_id"]
         title_key = b["title"].lower().strip()[:60]
+        lausd_no = None
+        m = re.search(r"\b(2[67]\d{5})\b", f"{bid_id} {b['title']}")
+        if m and ("lausd" in bid_id.lower() or re.search(r"lausd|los angeles usd|unified school", b.get("agency", "") + b["title"], re.I)):
+            lausd_no = m.group(1)
 
         if bid_id and bid_id in seen_ids:
             continue
         if title_key in seen_titles:
             continue
+        if lausd_no and lausd_no in seen_lausd:
+            continue
 
         if bid_id:
             seen_ids.add(bid_id)
         seen_titles.add(title_key)
+        if lausd_no:
+            seen_lausd.add(lausd_no)
         out.append(b)
 
     return out
@@ -1453,13 +1468,21 @@ def _fetch_lausd_fsd_sync() -> list[dict]:
     """Download + parse the LAUSD FSD bid-date report PDF. Pure HTTP + pdfplumber."""
     import pdfplumber
 
-    headers = {"User-Agent": USER_AGENT}
+    # procurement.lausd.org serves a stub/challenge page to bare user-agents —
+    # send a full browser header set so the link is actually in the response.
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
     page = requests.get(LAUSD_BIDDOCS_URL, headers=headers, timeout=25)
     page.raise_for_status()
-    m = re.search(r'href="(https://media\.edlio\.net/[^"]+Bid%20Report\.pdf)"', page.text, re.I) \
+    m = re.search(r'href="(https://media\.edlio\.net/\S+?Bid%20Report\.pdf)"', page.text, re.I) \
         or re.search(r'href="([^"]+)"[^>]*>\s*Updated Bid Report', page.text, re.I)
     if not m:
-        raise RuntimeError("could not find the Bid Report PDF link on the LAUSD page")
+        raise RuntimeError(
+            f"Bid Report PDF link not on the LAUSD page (got {len(page.text)} bytes)"
+        )
     pdf_url = m.group(1).replace("&amp;", "&")
 
     pdf_resp = requests.get(pdf_url, headers=headers, timeout=45)
@@ -1471,6 +1494,14 @@ def _fetch_lausd_fsd_sync() -> list[dict]:
 
     with pdfplumber.open(tmp) as pdf:
         full = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
+
+    # The report is a human-run "print to PDF" — warn if it has gone stale.
+    printed = re.search(r"Printed:\s*[A-Za-z]+,\s*([A-Za-z]+ \d{1,2}, \d{4})", full)
+    if printed:
+        stamp = _parse_date(printed.group(1))
+        if stamp and (date.today() - stamp).days > 10:
+            print(f"    ⚠ LAUSD bid report is stale — printed {printed.group(1)}")
+
     full = _LAUSD_NOISE_RE.sub("\n", full)
 
     entries = [e for e in re.split(r"(?=Bid/RFQ No\s+\d+)", full) if e.startswith("Bid/RFQ No")]
