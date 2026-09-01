@@ -482,6 +482,7 @@ tr.hidden {{ display: none; }}
     <option value="caltrans ccop">Caltrans CCOP</option>
     <option value="ucla capital programs">UCLA Capital Programs</option>
     <option value="long beach buyspeed">Long Beach BuySpeed</option>
+    <option value="lausd facilities">LAUSD Facilities</option>
     <option value="cybercopy plan room">CyberCopy Plan Room</option>
   </select>
 </div>

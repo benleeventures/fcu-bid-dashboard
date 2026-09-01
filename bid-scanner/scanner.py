@@ -1423,6 +1423,117 @@ async def _search_longbeach(page, keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# LAUSD Facilities — "Updated Bid Information Report (Sorted by Bid Date)"
+# ---------------------------------------------------------------------------
+# LAUSD FSD publishes every advertised facilities project in one public PDF
+# ("Bid Report.pdf") linked from procurement.lausd.org. No login, and the
+# edlio CDN that hosts the PDF is reachable where laschools.org itself is not.
+# The report is regenerated in place, so resolve the current URL from the CMS
+# page each run rather than hardcoding the media hash. Every LAUSD project is
+# LA County / K-12. FCU's flooring licence is C-15, so a required licence that
+# names C-15 is treated as relevant even when the description is generic.
+
+LAUSD_BIDDOCS_URL = "https://procurement.lausd.org/apps/pages/Bid_Documents"
+LAUSD_SOURCE_LINK = "https://www.laschools.org/new-site/bidding-opportunities/bid-documents"
+
+_LAUSD_NOISE_RE = re.compile(
+    r"\n(?:Updated Bid Information Report Sorted by Bid Date"
+    r"|B E S T V A L U E|C O N S T R U C T I O N|I N F O R M A L|M A I N T E N A N C E"
+    r"|J O C|A / E|BOE District = .*|Total Bids for .*"
+    r"|LOS ANGELES UNIFIED SCHOOL DISTRICT|FACILITIES CONTRACTS)\n"
+)
+
+
+def _lausd_field(pattern: str, text: str, default: str = "") -> str:
+    m = re.search(pattern, text, re.S | re.I)
+    return re.sub(r"\s+", " ", m.group(1)).strip() if m else default
+
+
+def _fetch_lausd_fsd_sync() -> list[dict]:
+    """Download + parse the LAUSD FSD bid-date report PDF. Pure HTTP + pdfplumber."""
+    import pdfplumber
+
+    headers = {"User-Agent": USER_AGENT}
+    page = requests.get(LAUSD_BIDDOCS_URL, headers=headers, timeout=25)
+    page.raise_for_status()
+    m = re.search(r'href="(https://media\.edlio\.net/[^"]+Bid%20Report\.pdf)"', page.text, re.I) \
+        or re.search(r'href="([^"]+)"[^>]*>\s*Updated Bid Report', page.text, re.I)
+    if not m:
+        raise RuntimeError("could not find the Bid Report PDF link on the LAUSD page")
+    pdf_url = m.group(1).replace("&amp;", "&")
+
+    pdf_resp = requests.get(pdf_url, headers=headers, timeout=45)
+    pdf_resp.raise_for_status()
+    tmp = os.path.join(os.path.dirname(__file__), "output", "lausd_bidreport.pdf")
+    os.makedirs(os.path.dirname(tmp), exist_ok=True)
+    with open(tmp, "wb") as fh:
+        fh.write(pdf_resp.content)
+
+    with pdfplumber.open(tmp) as pdf:
+        full = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
+    full = _LAUSD_NOISE_RE.sub("\n", full)
+
+    entries = [e for e in re.split(r"(?=Bid/RFQ No\s+\d+)", full) if e.startswith("Bid/RFQ No")]
+    rows = []
+    for raw in entries:
+        e = re.sub(r"\s+", " ", raw)
+        rows.append({
+            "no":     _lausd_field(r"Bid/RFQ No\s+(\d+)", e),
+            "open":   _lausd_field(r"Bid Open:\s*([\d/]+)", e),
+            "prebid": _lausd_field(r"Pre-Bid:\s*([\d/]+)", e),
+            "name":   _lausd_field(r"Project Name:\s*(.+?)\s*Description:", e),
+            "desc":   _lausd_field(r"Description:\s*(.+?)\s*(?:License Type Required:|Prequalification is Required)", e),
+            "lic":    _lausd_field(r"License Type Required:\s*(.+?)\s*Contract Bond Estimate:", e),
+        })
+    return rows
+
+
+async def _search_lausd_fsd(keywords: list[str]) -> list[dict]:
+    """Pull LAUSD Facilities advertised projects from the public bid-date report."""
+    print("\nSearching LAUSD Facilities (FSD bid-date report)...")
+    try:
+        rows = await asyncio.to_thread(_fetch_lausd_fsd_sync)
+    except Exception as e:
+        print(f"  ⚠ LAUSD Facilities error: {e}")
+        return []
+
+    today = date.today()
+    bids = []
+    for r in rows:
+        if not r["no"]:
+            continue
+        due = _parse_date(r["open"]) if r["open"] else None
+        if due and due < today:
+            continue
+        name = re.sub(r"\s*(?:Pre-Bid is Mandatory|Prequalification is Required)\s*", " ",
+                      r["name"], flags=re.I).strip()
+        if name.count("(") > name.count(")"):
+            name += ")"
+        title = f"{name} — {r['desc']}".strip(" —") if r["desc"] else name
+        haystack = f"{title} {r['lic']}"
+        relevant = _is_relevant(title, haystack) or bool(re.search(r"\bC-?15\b", r["lic"], re.I))
+        bids.append({
+            "bid_id": f"LAUSD-{r['no']}",
+            "title": title[:480],
+            "agency": "Los Angeles Unified School District",
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": None,
+            "published_raw": "",
+            "due_date": due,
+            "due_date_raw": r["open"],
+            "is_relevant": relevant,
+            "search_keyword": "C-15" if re.search(r"\bC-?15\b", r["lic"], re.I) else "open bids",
+            "url": LAUSD_SOURCE_LINK,
+            "source": "LAUSD Facilities",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} advertised projects, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SoCal Builders Plan Room (CyberCopy — public CA construction bids)
 # ---------------------------------------------------------------------------
 
@@ -1682,7 +1793,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     src = source.lower() if source else None
     all_bids = []
 
-    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla")
+    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla", "lausd")
 
     if needs_browser:
         async with async_playwright() as p:
@@ -1763,6 +1874,11 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
         with funnel.guard("UCLA Capital Programs"):
             ucla_bids = await _search_ucla(keywords)
             all_bids.extend(ucla_bids)
+
+    if src in (None, "lausd"):
+        with funnel.guard("LAUSD Facilities"):
+            lausd_bids = await _search_lausd_fsd(keywords)
+            all_bids.extend(lausd_bids)
 
     funnel.note_raw(all_bids)
 
