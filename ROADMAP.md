@@ -9,7 +9,7 @@
 
 | System | Status | Notes |
 |--------|--------|-------|
-| Bid Scanner (13 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08). UCLA + Long Beach BuySpeed + LAUSD Facilities + SecureBids added 2026-09 |
+| Bid Scanner (14 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08). UCLA + Long Beach BuySpeed + LAUSD Facilities + SecureBids + RAMP added 2026-09 |
 | Dashboard (Next.js + Supabase) | ✅ Live on Vercel | Showing bid results |
 | Scanner Health Dashboard (`/scanner`) | ✅ Built (2026-08) | Funnel + volume-over-time + per-source visibility matrix + PlanetBids portal grid. **Fully data-driven** — every source wrapped in `funnel.guard()` auto-appears in the matrix (ok / empty / error + broken-streak) on the next full `python main.py` run; no source list to maintain. The 2026-09 additions (UCLA, Long Beach, LAUSD Facilities, SecureBids) show up automatically. Needs `supabase/add_scan_analytics.sql` + `backfill_scan_run.sql` applied. See `docs/scanner-dashboard.md` |
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
@@ -218,9 +218,9 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | LAUSD Facilities (FSD) | ✅ Active | `--source lausd` — parses the public "Updated Bid Information Report (Sorted by Bid Date)" PDF (URL resolved each run from procurement.lausd.org — needs full browser headers or it serves a stub). The report is LAUSD FCC's own authoritative list, human-regenerated ~daily on business days; scraper warns if the "Printed:" date is >10 days stale. Every project LA County / K-12. **Thin per-entry info** → relevance leans on the required licence (C-15 = flooring) + keywords. **Depth comes from Crisp:** LAUSD distributes bidding docs through the Crisp plan room, which we already scrape *with* full spec download — same 7-digit project number, so `_dedup` collapses the FSD row into the Crisp one (Crisp runs first). Login-sheet rows 13–18 |
 | LAUSD Supplier Portal / ARRIBA | ⬜ Not connected | vendors.lausd.net SAP portal (Firefox-only) — PO/supplier side, separate from FSD bids. Needs working creds. Login-sheet rows 14/15/18 |
 | Long Beach BuySpeed | ✅ Active | `--source longbeach` — public BuySpeed advanced search, no login. Filters Status="Sent" and drops past-opening-date leftovers; paginates PrimeFaces results. Every bid stamped LA County. Retires the PlanetBids Long Beach portal (15810, still in `PLANETBIDS_SKIP`). Live 2026-09 (18 advertised bids, 0 flooring at check time). **Doc download = follow-up:** bidDetail.sda is public but attachments are `javascript:downloadFile(id)` — the generic parser can't pull them yet |
-| RAMP LA County | ⬜ Not connected | **Priority #3** — rampla.org (login-sheet rows 1/7/8, cred "ok 8/26"). One integration covers LA County + LA County Public Works + Metro + **LADWP ERS** (ERS logs in through RAMP) |
-| City of LA BAVN | ⬜ Blocked on creds | **Priority #4** — angeleno.lacity.org (login-sheet row 6). Credential marked **"not valid 8/26"** — Joanne must fix the login before scraper work |
-| LACDA | ⬜ Not connected | **Priority #5** — lacda.org/vendors (login-sheet row 2). Housing-authority rehab work; lower volume. Cred present, never verified |
+| RAMP LA County | ✅ Active | `--source ramp` — rampla.org's DNS is US-geo-restricted, but LA City publishes the same open opportunities as a Socrata dataset (`data.lacity.org/resource/hf3r-utnq.json`), no login, refreshed daily, reachable anywhere. One feed = LA County + LADWP + LA Public Works + Port of LA + LAWA + HACLA (+ a few LAUSD). All LA County. Live 2026-09 (415 open opps). **No FCU login needed after all.** |
+| City of LA BAVN | ⬜ Blocked (geo + creds) | labavn.org (the sheet's `angeleno.lacity.org` is wrong — real host is **labavn.org**). DNS won't resolve outside the US → build/test on the Mac mini. No open-data feed found. Cred also marked "not valid 8/26" |
+| LACDA | ⬜ Blocked (geo + creds) | lacda.org/vendors (login-sheet row 2) — LA County Development Authority (housing). Returns Azure 403 outside the US → build/test on the Mac mini. No open-data feed found. Lower volume. Cred present, never verified |
 | Public Purchase | ⬜ Blocked on registration | **On Ben's list but no FCU account exists** — Joanne must register FCU on publicpurchase.com first |
 | Bonfire / Euna | ⬜ Investigate | account.bonfirehub.com (login-sheet row 31) — identify which CA agencies FCU follows before building |
 | PQ Bids / Hardesty Associates | ⬜ Verify platform | pqbids.com (row 28), hardestyassociatesplans.com (row 20) — confirm whether either runs the CyberCopy `/projects/public` contract before adding to `PLAN_ROOMS` |
@@ -237,7 +237,8 @@ lives in the session notes; summary:
   (row 11 — public index, planroom creds on the sheet not needed); **Long Beach BuySpeed**
   (row 37 — public bid search); **LAUSD Facilities** (rows 13–18 — public bid-date report
   PDF, discovery only); **SecureBids/Colbi** (row 21 — public JSON API, colbisecurebids.com
-  just redirects; the sheet's login is unnecessary).
+  just redirects; the sheet's login is unnecessary); **RAMP LA County** (rows 1/7/8 — LA City
+  Socrata open-data feed, no login despite the sheet listing creds).
 - **No-login confirmed:** Quality Bidders, SecureBids, UCLA, LAUSD FSD, Long Beach, OpenGov,
   Cal eProcure, Caltrans CCOP, Crisp/CyberCopy, SAM.gov all scrape without any FCU account.
   Only PlanetBids (CAPTCHA, not creds), BidNet (doc download), and the not-yet-built RAMP/
@@ -247,9 +248,12 @@ lives in the session notes; summary:
   invite-only — handled by GC Watchlist); HigherGov (paid federal aggregator, redundant with
   SAM.gov); Quality Bidders LAUSD prequal (registration admin).
 - **Out-of-area:** none — the client added no out-of-state portals.
-- **To add (remaining, priority order):** RAMP → City of LA BAVN → LACDA → Bonfire → LAUSD
-  Supplier/ARRIBA. All need working FCU logins (or, for Public Purchase, an account that
-  doesn't exist yet).
+- **To add (remaining):** City of LA BAVN + LACDA (both **US-geo-blocked** — labavn.org DNS
+  won't resolve outside the US, lacda.org returns Azure 403; build/test on the Mac mini) →
+  Bonfire → LAUSD Supplier/ARRIBA. Public Purchase needs an FCU account that doesn't exist yet.
+- **Dev-environment note:** this session runs from a non-US IP. Confirmed blocked from here:
+  laschools.org, labavn.org (no DNS), lacda.org (Azure 403). Reachable: rampla.org itself,
+  data.lacity.org, procurement.lausd.org (edlio CDN), publicpurchase.com, securebids.com.
 - **LAUSD FSD doc download (follow-up):** the bid-date report is one combined PDF, so the
   parser has no per-bid spec to fetch. Getting actual plans/specs needs the FCC vendor
   number + the request-for-plans flow, or the JOC/Best-Value RFQ pages on laschools.org

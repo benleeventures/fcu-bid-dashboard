@@ -1565,6 +1565,71 @@ async def _search_lausd_fsd(keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# RAMP — Regional Alliance Marketplace for Procurement (rampla.org)
+# ---------------------------------------------------------------------------
+# rampla.org is a Salesforce site and its DNS is geo-restricted, but the City
+# of LA publishes the same open opportunities as a Socrata open dataset on
+# data.lacity.org — no login, refreshed daily, reachable everywhere. RAMP is a
+# shared marketplace: one feed covers LA County, LADWP, LA Public Works, Port
+# of LA, LAWA, HACLA and more — all LA County.
+
+RAMP_API = "https://data.lacity.org/resource/hf3r-utnq.json"
+
+
+def _fetch_ramp_sync() -> list[dict]:
+    """Pull open RAMP opportunities from the data.lacity.org Socrata feed."""
+    resp = requests.get(
+        RAMP_API,
+        params={"$where": "stagename in('Open','Amended')",
+                "$order": "bidpost desc", "$limit": 2000},
+        headers={"User-Agent": USER_AGENT, "Accept-Language": "en-US,en;q=0.9"},
+        timeout=25,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+async def _search_ramp(keywords: list[str]) -> list[dict]:
+    """RAMP LA County — open opportunities via the LA City open-data feed."""
+    print("\nSearching RAMP LA County (data.lacity.org feed)...")
+    try:
+        rows = await asyncio.to_thread(_fetch_ramp_sync)
+    except Exception as e:
+        print(f"  ⚠ RAMP error: {e}")
+        return []
+
+    bids = []
+    for r in rows:
+        rid = str(r.get("rampid") or "").strip()
+        if not rid:
+            continue
+        title = re.sub(r"\s*-\s*Closing:\s*$", "", (r.get("title") or "").strip())
+        close_raw = r.get("closedate") or ""
+        url = r.get("url")
+        if isinstance(url, dict):
+            url = url.get("url", "")
+        bids.append({
+            "bid_id": f"RAMP-{rid}",
+            "title": title[:480],
+            "agency": (r.get("department") or "Los Angeles County").strip(),
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": _parse_date((r.get("bidpost") or "")[:10]) or None,
+            "published_raw": (r.get("bidpost") or "")[:10],
+            "due_date": _parse_date(close_raw[:10]) if close_raw else None,
+            "due_date_raw": close_raw[:10],
+            "is_relevant": _is_relevant(title, f"{title} {r.get('category', '')}"),
+            "search_keyword": "open bids",
+            "url": url or "https://www.rampla.org/s/",
+            "source": "RAMP LA County",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} open opportunities, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SecureBids (Colbi Technologies) — securebids.com / colbisecurebids.com
 # ---------------------------------------------------------------------------
 # Same vendor as Quality Bidders, different product. Public JSON API, no login
@@ -1918,7 +1983,8 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     src = source.lower() if source else None
     all_bids = []
 
-    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla", "lausd", "securebids")
+    needs_browser = src is None or src not in (
+        "sam", "qualitybidders", "ucla", "lausd", "securebids", "ramp")
 
     if needs_browser:
         async with async_playwright() as p:
@@ -2009,6 +2075,11 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
         with funnel.guard("SecureBids"):
             sb_bids = await _search_securebids(keywords)
             all_bids.extend(sb_bids)
+
+    if src in (None, "ramp"):
+        with funnel.guard("RAMP LA County"):
+            ramp_bids = await _search_ramp(keywords)
+            all_bids.extend(ramp_bids)
 
     funnel.note_raw(all_bids)
 
