@@ -1223,6 +1223,9 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
 
 PLAN_ROOMS = [
     ("https://www.southerncaliforniabuildersplanroom.com", "SoCal Plan Room"),
+    # CyberCopy-platform SoCal plan room from FCU's login sheet (row 30). Same
+    # scraper contract as Crisp — /projects/public?status=bidding.
+    ("https://www.cybercopyplanroom.com", "CyberCopy Plan Room"),
 ]
 CRISP_BASE = "https://www.crispplanroom.com"
 

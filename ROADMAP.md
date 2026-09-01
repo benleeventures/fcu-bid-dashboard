@@ -211,12 +211,35 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | OpenGov | ⚠ Manual | 5 SoCal portals (NorCal portals removed 2026-08). Run `--source opengov` on demand |
 | Caltrans CCOP | ✅ Active | SoCal districts only (D7 / D11 / D12) |
 | Quality Bidders (Colbi) | ✅ Active | School-district bids |
-| Crisp / SoCal plan rooms | ✅ Active | CyberCopy platform |
-| LAUSD | ⬜ Not connected | **Session 2** — highest priority, 2027 TOPO renewal. Needs FCU portal creds from Joanne |
-| RAMP LA County | ⬜ Deferred | Not in current scope |
-| City of LA BAVN / LADWP | ⬜ Deferred | Not in current scope |
-| LACDA | ⬜ Deferred | Not in current scope |
-| Public Purchase | ⬜ Deferred | Not in current scope |
+| Crisp / SoCal plan rooms | ✅ Active | CyberCopy platform. `PLAN_ROOMS` now also includes **CyberCopy Plan Room** (cybercopyplanroom.com, login-sheet row 30) — verified 2026-09 the scraper contract works (0 open public projects at time of check) |
+| LAUSD | ⬜ Not connected | **Priority #1** — 2027 TOPO renewal. Two systems: **FSD** (laschools.org — publicly posts bids, discovery may not need login) + **Supplier/ARRIBA** (vendors.lausd.net SAP portal, Firefox-only, creds status "?????"). Login-sheet rows 13–18 |
+| Long Beach BuySpeed | ⬜ Not connected | **Priority #2** — longbeachbuys.buyspeed.com (login-sheet row 37). BuySpeed/Periscope S2G = reusable scraper for other CA agencies. Retires the chronically-blocked PlanetBids Long Beach portal (15810, in `PLANETBIDS_SKIP`) |
+| RAMP LA County | ⬜ Not connected | **Priority #3** — rampla.org (login-sheet rows 1/7/8, cred "ok 8/26"). One integration covers LA County + LA County Public Works + Metro + **LADWP ERS** (ERS logs in through RAMP) |
+| City of LA BAVN | ⬜ Blocked on creds | **Priority #4** — angeleno.lacity.org (login-sheet row 6). Credential marked **"not valid 8/26"** — Joanne must fix the login before scraper work |
+| LACDA | ⬜ Not connected | **Priority #5** — lacda.org/vendors (login-sheet row 2). Housing-authority rehab work; lower volume. Cred present, never verified |
+| Public Purchase | ⬜ Blocked on registration | **On Ben's list but no FCU account exists** — Joanne must register FCU on publicpurchase.com first |
+| Colbi Secure Bids | ⬜ Not connected | colbisecurebids.com (login-sheet row 21) — same vendor as Quality Bidders; scraper likely close to `_search_qualitybidders`. School-district bids |
+| Bonfire / Euna | ⬜ Investigate | account.bonfirehub.com (login-sheet row 31) — identify which CA agencies FCU follows before building |
+| PQ Bids / Hardesty Associates | ⬜ Verify platform | pqbids.com (row 28), hardestyassociatesplans.com (row 20) — confirm whether either runs the CyberCopy `/projects/public` contract before adding to `PLAN_ROOMS` |
+| El Segundo | ⬜ Check | elsegundo.org (login-sheet row 10) — determine if it's just a PlanetBids portal ID to add vs. its own system |
+| UCLA Capital Programs | ⬜ Blocked on creds | capitalprograms.ucla.edu/Contracts/Bidding (login-sheet row 11) — no username/password recorded |
+
+### Client login-sheet triage — 2026-09
+
+Ben asked to fold FCU's manual login sheet (38 rows) into scanner coverage. Full mapping
+lives in the session notes; summary:
+
+- **Already covered:** Cal eProcure, Quality Bidders, PlanetBids (incl. Torrance), BidNet
+  Direct, Crisp, OpenGov.
+- **Excluded (not solicitation sources):** FCU website/email logins; DIR/DLSE PWCR + LAUSD
+  CPRs (certified payroll); Surety2000 (bid-bond tool); Autodesk BuildingConnected (GC
+  invite-only — handled by GC Watchlist); HigherGov (paid federal aggregator, redundant with
+  SAM.gov); Quality Bidders LAUSD prequal (registration admin).
+- **Out-of-area:** none — the client added no out-of-state portals.
+- **To add:** priority list above (LAUSD → Long Beach → RAMP → BAVN → LACDA → plan-room
+  configs → Colbi → Bonfire).
+- **Ben's 5:** RAMP / LACDA / BAVN / LAUSD all have creds in the sheet; **Public Purchase is
+  the gap — no FCU account.**
 
 ### Materials-only / service-only filter — ✅ 2026-09
 
