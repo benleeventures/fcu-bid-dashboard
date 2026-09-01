@@ -51,6 +51,32 @@ RELEVANT_KEYWORDS = [
     "ceramic tile", "porcelain tile", "tile installation", "tile replacement",
 ]
 
+# Materials-/supply-only solicitations — FCU is an installer, not a distributor.
+# These buy product with no installation labor, so they're never a fit even when
+# the title mentions flooring. Checked against title + description.
+MATERIALS_ONLY_PATTERNS = [
+    "materials only", "material only", "materials-only", "material-only",
+    "furnish only", "furnish and deliver", "furnish & deliver",
+    "supply only", "supply and deliver", "supply & deliver", "delivery only",
+    "purchase and delivery", "no installation", "installation not included",
+    "installation by others", "installation by owner", "material purchase",
+    "carpet purchase", "purchase of carpet", "purchase of flooring",
+    "product only", "supply of carpet", "supply of flooring", "no labor",
+]
+
+# If any of these also appear, it's an install job after all — keep it.
+# Note: these are all *affirmative* install phrases; negated forms like
+# "no installation" / "installation not included" stay in MATERIALS_ONLY_PATTERNS
+# and never appear here, so they aren't accidentally rescued.
+_INSTALL_OVERRIDE = [
+    "furnish and install", "furnish & install", "furnish/install",
+    "supply and install", "supply & install", "labor and material",
+    "labor and materials", "turnkey", "install and furnish",
+    "and installation", "& installation", "and install ", "install and",
+    "including installation", "installation included", "installation of ",
+    "installation for ", "install carpet", "install flooring", "installed by",
+]
+
 # Construction bids that didn't match keywords → Ollama second-pass
 # (set OLLAMA_RELEVANCE=true in .env to enable)
 _CONSTRUCTION_TRIGGERS = [
@@ -99,7 +125,9 @@ def _claude_relevance(title: str, description: str = "") -> bool:
                     "'Carpet Installation Gymnasium', 'VCT Tile Replacement School'.\n"
                     "Examples that should be NO: 'Aquatic Center Improvements', "
                     "'Street Improvements', 'Restroom Rehabilitation', "
-                    "'Building Renovation' (flooring is incidental).\n\n"
+                    "'Building Renovation' (flooring is incidental), "
+                    "'Furnish and Deliver Carpet Tile', 'Flooring Materials — Supply Only' "
+                    "(product purchase, no installation labor).\n\n"
                     f"{context}\n\n"
                     "Is commercial flooring the PRIMARY scope? Answer YES or NO only."
                 ),
@@ -110,7 +138,19 @@ def _claude_relevance(title: str, description: str = "") -> bool:
         return False
 
 
+def _is_materials_only(title: str, description: str = "") -> bool:
+    """True if the solicitation is for supplying flooring product with no
+    installation labor. Overridden when the text also names install/turnkey work."""
+    blob = f"{title} {description}".lower()
+    if not any(p in blob for p in MATERIALS_ONLY_PATTERNS):
+        return False
+    return not any(p in blob for p in _INSTALL_OVERRIDE)
+
+
 def _is_relevant(title: str, description: str = "") -> bool:
+    # Materials-/supply-only jobs are never a fit — bail before any keyword match
+    if _is_materials_only(title, description):
+        return False
     t = title.lower()
     # Fast keyword match — unambiguous flooring titles pass immediately
     if any(kw in t for kw in RELEVANT_KEYWORDS):

@@ -218,6 +218,20 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | LACDA | ⬜ Deferred | Not in current scope |
 | Public Purchase | ⬜ Deferred | Not in current scope |
 
+### Materials-/supply-only filter — ✅ 2026-09
+
+FCU installs flooring; it does not bid product-only supply contracts. Two layers:
+
+- **Scanner:** `scanner._is_materials_only(title, description)` — matches `MATERIALS_ONLY_PATTERNS`
+  ("furnish/supply only", "furnish and deliver", "no installation", "installation by others",
+  "material purchase", …) unless an affirmative install phrase (`_INSTALL_OVERRIDE`) is also
+  present. Folded into `_is_relevant()`, so a materials-only bid gets `is_relevant=False` and
+  never reaches the digest or Airtable. Row is still stored in Supabase for the record.
+- **Parser:** `_EXTRACTION_PROMPT` now extracts `materials_only`. On `--save`, a `materials_only`
+  bid is flipped to `is_relevant=False`. `score_go_no_go` (both `.py` and `app/lib/scoring.ts`)
+  returns a hard **NO-GO / 0** for it. Dashboard bid page shows a "Materials only — no install" flag.
+- No migration — `materials_only` lives inside `bid_specs.raw_extract`.
+
 ### Geographic + agency-type gate (spec §1 / §2) — ✅ Session 1 (2026-08)
 
 - `geo.py` classifies every bid: `geo_status` = `in` (LA / Orange / Ventura / San Diego),

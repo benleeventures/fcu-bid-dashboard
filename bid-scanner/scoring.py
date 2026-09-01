@@ -14,6 +14,12 @@ def score_go_no_go(bid: dict, spec: dict | None) -> dict:
     """
     score = 55
 
+    # 0. Materials-/supply-only solicitation — FCU installs, it does not just
+    #    sell product. Hard no-go regardless of every other factor.
+    raw0 = (spec.get("raw_extract") or spec) if spec else {}
+    if spec and (spec.get("materials_only") is True or raw0.get("materials_only") is True):
+        return {"score": 0, "verdict": "no_go"}
+
     # 1. Flooring scope match
     if bid.get("is_relevant"):
         score += 20

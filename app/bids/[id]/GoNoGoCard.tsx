@@ -11,6 +11,7 @@ type Props = {
     walk_required: boolean | null
     dvbe_required?: boolean | null
     dbe_goal_pct?: number | null
+    materials_only?: boolean | null
   } | null
 }
 

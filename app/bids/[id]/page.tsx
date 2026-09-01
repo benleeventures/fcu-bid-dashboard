@@ -90,6 +90,7 @@ export default async function BidDetailPage({ params }: { params: { id: string }
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 14, fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
             {spec.total_sqft && <span style={{ color: 'var(--white)' }}>{spec.total_sqft.toLocaleString()} SF</span>}
             {spec.flooring_types?.length && <span style={{ color: 'var(--gray)' }}>{spec.flooring_types.join(' · ')}</span>}
+            {(spec.materials_only === true || spec.raw_extract?.materials_only === true) && <span style={{ color: 'var(--red)' }}>Materials only — no install</span>}
             {spec.prevailing_wage === true  && <span style={{ color: 'var(--orange)' }}>Prevailing wage</span>}
             {spec.bid_bond === true         && <span style={{ color: 'var(--orange)' }}>Bid bond {spec.bid_bond_pct ? spec.bid_bond_pct + '%' : ''}</span>}
             {spec.walk_required === true    && <span style={{ color: 'var(--orange)' }}>Job walk {spec.walk_date_raw || spec.walk_date || ''}</span>}
@@ -106,7 +107,13 @@ export default async function BidDetailPage({ params }: { params: { id: string }
       {spec ? (
         <GoNoGoCard
           bid={{ is_relevant: bid.is_relevant, due_date: bid.due_date }}
-          spec={spec}
+          spec={{
+            ...spec,
+            // These live in raw_extract, not as columns — surface them for scoring
+            materials_only: spec.materials_only ?? spec.raw_extract?.materials_only ?? null,
+            dvbe_required: spec.dvbe_required ?? spec.raw_extract?.dvbe_required ?? null,
+            dbe_goal_pct: spec.dbe_goal_pct ?? spec.raw_extract?.dbe_goal_pct ?? null,
+          }}
         />
       ) : (
         <div style={{
