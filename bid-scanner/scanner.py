@@ -64,6 +64,18 @@ MATERIALS_ONLY_PATTERNS = [
     "product only", "supply of carpet", "supply of flooring", "no labor",
 ]
 
+# Service contracts, not installation — cleaning, maintenance, pest, janitorial.
+# The word "carpet" or "floor" makes these look relevant, but FCU installs floor
+# covering; it doesn't hold recurring service contracts.
+SERVICE_ONLY_PATTERNS = [
+    "carpet cleaning", "floor cleaning", "cleaning service", "cleaning contract",
+    "janitorial", "custodial", "housekeeping", "pest control", "extermination",
+    "fumigation", "strip and wax", "stripping and waxing", "strip & wax",
+    "floor waxing", "floor buffing", "carpet care", "carpet extraction",
+    "steam cleaning", "carpet shampoo", "shampoo carpet", "spot cleaning",
+    "grounds maintenance", "landscape maintenance", "window washing",
+]
+
 # If any of these also appear, it's an install job after all — keep it.
 # Note: these are all *affirmative* install phrases; negated forms like
 # "no installation" / "installation not included" stay in MATERIALS_ONLY_PATTERNS
@@ -127,7 +139,9 @@ def _claude_relevance(title: str, description: str = "") -> bool:
                     "'Street Improvements', 'Restroom Rehabilitation', "
                     "'Building Renovation' (flooring is incidental), "
                     "'Furnish and Deliver Carpet Tile', 'Flooring Materials — Supply Only' "
-                    "(product purchase, no installation labor).\n\n"
+                    "(product purchase, no installation labor), "
+                    "'Carpet Cleaning Services', 'Janitorial & Pest Control' "
+                    "(recurring service, not installation).\n\n"
                     f"{context}\n\n"
                     "Is commercial flooring the PRIMARY scope? Answer YES or NO only."
                 ),
@@ -147,9 +161,26 @@ def _is_materials_only(title: str, description: str = "") -> bool:
     return not any(p in blob for p in _INSTALL_OVERRIDE)
 
 
+# Any of these means real flooring work is in scope — not just a service run.
+_SERVICE_OVERRIDE = _INSTALL_OVERRIDE + [
+    "install", "installation", "replace", "replacement", "demolition",
+    "new carpet", "new flooring", "renovation", "tenant improvement",
+]
+
+
+def _is_service_only(title: str, description: str = "") -> bool:
+    """True if the solicitation is a cleaning / maintenance / pest / janitorial
+    service contract rather than a flooring installation."""
+    blob = f"{title} {description}".lower()
+    if not any(p in blob for p in SERVICE_ONLY_PATTERNS):
+        return False
+    return not any(p in blob for p in _SERVICE_OVERRIDE)
+
+
 def _is_relevant(title: str, description: str = "") -> bool:
-    # Materials-/supply-only jobs are never a fit — bail before any keyword match
-    if _is_materials_only(title, description):
+    # Materials-only or service-only jobs are never a fit — bail before any
+    # keyword match
+    if _is_materials_only(title, description) or _is_service_only(title, description):
         return False
     t = title.lower()
     # Fast keyword match — unambiguous flooring titles pass immediately

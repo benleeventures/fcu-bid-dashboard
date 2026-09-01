@@ -26,6 +26,7 @@ JSON schema for --save:
     "flooring_types": ["carpet", "LVT", "VCT"],
     "total_sqft": 4500,
     "materials_only": false,
+    "service_only": false,
     "rooms": "Classrooms, hallways, admin offices",
     "prevailing_wage": true,
     "bid_bond": true,
@@ -243,12 +244,13 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
     except Exception:
         pass  # parse_status column not migrated yet — spec still saved
 
-    # Materials-/supply-only jobs surfaced by the parser: drop them off the
-    # relevant list so they leave the dashboard star + Airtable tracker.
-    if spec.get("materials_only") is True and bid.get("is_relevant"):
+    # Materials-only or service-only jobs surfaced by the parser: drop them off
+    # the relevant list so they leave the dashboard star + Airtable tracker.
+    if (spec.get("materials_only") is True or spec.get("service_only") is True) and bid.get("is_relevant"):
+        reason = "materials-only" if spec.get("materials_only") is True else "service-only"
         try:
             sb.table("bids").update({"is_relevant": False}).eq("bid_id", bid_id).execute()
-            print(f"  ⚠ {bid_id}: materials-only per docs — marked not relevant")
+            print(f"  ⚠ {bid_id}: {reason} per docs — marked not relevant")
         except Exception:
             pass
 
@@ -1405,6 +1407,7 @@ Extract the following fields and return ONLY a valid JSON object — no markdown
   "flooring_types": ["list of flooring types found: carpet, LVT, VCT, tile, hardwood, window_coverings, blinds, etc. Empty array if none."],
   "total_sqft": <number or null — total square footage of flooring scope>,
   "materials_only": <true if this solicitation is for the PURCHASE / SUPPLY / DELIVERY of flooring materials with NO installation labor in scope (installation "by others", "by owner", or not mentioned at all). false if the contractor installs the flooring. null if genuinely unclear.>,
+  "service_only": <true if this is a recurring cleaning / maintenance / janitorial / pest-control / strip-and-wax SERVICE contract rather than a flooring installation or replacement project. false otherwise.>,
   "rooms": "<comma-separated list of rooms or areas, e.g. 'Classrooms, hallways, admin offices'. Empty string if not specified.>",
   "prevailing_wage": <true if prevailing wage or certified payroll is required, false if not, null if unclear>,
   "bid_bond": <true if a bid bond is required, false if not, null if unclear>,

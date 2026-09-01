@@ -218,19 +218,23 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | LACDA | ⬜ Deferred | Not in current scope |
 | Public Purchase | ⬜ Deferred | Not in current scope |
 
-### Materials-/supply-only filter — ✅ 2026-09
+### Materials-only / service-only filter — ✅ 2026-09
 
-FCU installs flooring; it does not bid product-only supply contracts. Two layers:
+FCU installs flooring. It does not bid product-only supply contracts, and it does not
+hold recurring cleaning / maintenance / pest / janitorial service contracts. Two layers:
 
-- **Scanner:** `scanner._is_materials_only(title, description)` — matches `MATERIALS_ONLY_PATTERNS`
-  ("furnish/supply only", "furnish and deliver", "no installation", "installation by others",
-  "material purchase", …) unless an affirmative install phrase (`_INSTALL_OVERRIDE`) is also
-  present. Folded into `_is_relevant()`, so a materials-only bid gets `is_relevant=False` and
-  never reaches the digest or Airtable. Row is still stored in Supabase for the record.
-- **Parser:** `_EXTRACTION_PROMPT` now extracts `materials_only`. On `--save`, a `materials_only`
-  bid is flipped to `is_relevant=False`. `score_go_no_go` (both `.py` and `app/lib/scoring.ts`)
-  returns a hard **NO-GO / 0** for it. Dashboard bid page shows a "Materials only — no install" flag.
-- No migration — `materials_only` lives inside `bid_specs.raw_extract`.
+- **Scanner:** `_is_materials_only()` matches `MATERIALS_ONLY_PATTERNS` ("furnish/supply only",
+  "furnish and deliver", "no installation", "installation by others", "material purchase", …);
+  `_is_service_only()` matches `SERVICE_ONLY_PATTERNS` ("carpet cleaning", "janitorial",
+  "pest control", "strip and wax", "carpet extraction", …). Both back off when the text also
+  names real install / replacement work (`_INSTALL_OVERRIDE` / `_SERVICE_OVERRIDE`). Folded into
+  `_is_relevant()`, so a hit gets `is_relevant=False` and never reaches the digest or Airtable.
+  Row is still stored in Supabase for the record.
+- **Parser:** `_EXTRACTION_PROMPT` extracts `materials_only` and `service_only`. On `--save`,
+  either flag flips the bid to `is_relevant=False`. `score_go_no_go` (both `.py` and
+  `app/lib/scoring.ts`) returns a hard **NO-GO / 0**. Dashboard bid page shows a
+  "Materials only" / "Service contract" flag.
+- No migration — both flags live inside `bid_specs.raw_extract`.
 
 ### Geographic + agency-type gate (spec §1 / §2) — ✅ Session 1 (2026-08)
 
