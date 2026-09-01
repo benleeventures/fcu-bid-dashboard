@@ -248,6 +248,14 @@ hold recurring cleaning / maintenance / pest / janitorial service contracts. Two
   **Agency or GC** (text) fields. Sync now uses `typecast=True` so new Source Platform options
   auto-create, and degrades to core fields if a column is missing.
 
+**Out-of-state drop — 2026-09.** `geo._is_out_of_state()` catches a US state / territory
+other than California named in the agency, place-of-performance, or title (full name, `City, XX`
+USPS code, or "State of X"), plus a short list of unambiguous non-CA places (Honolulu / Pearl
+Harbor / Hawaii bases, Las Vegas, Reno, Anchorage). These now return `geo_status="out"` and are
+dropped before dedup instead of landing as "unknown" and reaching the digest. Runs after the
+in-scope positives (LAUSD etc.) so an in-district school named "Washington" isn't caught.
+Tests: `test_geo_out_of_state.py`.
+
 ### Airtable tracker to spec §5 — ✅ Session 3 (2026-08)
 
 All spec §5 columns exist (see `bid-scanner/docs/airtable-tracker-setup.md`). Sync now also

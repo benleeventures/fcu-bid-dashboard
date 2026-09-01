@@ -165,6 +165,64 @@ _IN_SCOPE_COUNTY_PHRASES = {
 _COUNTY_PHRASE_RE = re.compile(r"\b([a-z][a-z .'-]+?) county\b")
 
 # ---------------------------------------------------------------------------
+# Out-of-state markers — a place string that names a US state other than
+# California is out, full stop. Federal sources (SAM.gov) and BidNet
+# occasionally leak non-CA work past their own place-of-performance filters
+# (e.g. a USCG base in Honolulu). "unknown" is for *ambiguous* CA listings —
+# a clearly out-of-state one should be dropped, not flagged.
+# ---------------------------------------------------------------------------
+
+_US_STATE_NAMES_OUT = {
+    "alabama", "alaska", "arizona", "arkansas", "colorado", "connecticut",
+    "delaware", "florida", "georgia", "hawaii", "idaho", "illinois", "indiana",
+    "iowa", "kansas", "kentucky", "louisiana", "maine", "maryland",
+    "massachusetts", "michigan", "minnesota", "mississippi", "missouri",
+    "montana", "nebraska", "nevada", "new hampshire", "new jersey",
+    "new mexico", "new york", "north carolina", "north dakota", "ohio",
+    "oklahoma", "oregon", "pennsylvania", "rhode island", "south carolina",
+    "south dakota", "tennessee", "texas", "utah", "vermont", "virginia",
+    "washington", "west virginia", "wisconsin", "wyoming",
+    "district of columbia", "puerto rico", "guam", "american samoa",
+    "northern mariana islands", "u.s. virgin islands", "virgin islands",
+}
+
+# USPS codes for the same. Only matched in a "City, XX" / "City, XX 12345"
+# context so we don't trip on words like "or", "in", "hi", "me".
+_US_STATE_CODES_OUT = {
+    "al", "ak", "az", "ar", "co", "ct", "de", "fl", "ga", "hi", "id", "il",
+    "in", "ia", "ks", "ky", "la", "me", "md", "ma", "mi", "mn", "ms", "mo",
+    "mt", "ne", "nv", "nh", "nj", "nm", "ny", "nc", "nd", "oh", "ok", "or",
+    "pa", "ri", "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi",
+    "wy", "dc", "pr", "gu", "vi",
+}
+
+# Unambiguous non-CA place names that show up in federal solicitations with no
+# accompanying state string (military bases especially). Kept deliberately
+# short and free of names that collide with CA cities or common words.
+_OUT_OF_STATE_PLACES = {
+    "honolulu", "pearl harbor", "hickam", "schofield barracks", "kaneohe",
+    "wahiawa", "ewa beach", "kapolei", "waipahu", "mililani", "hilo", "oahu",
+    "maui", "kauai", "molokai", "guam", "tinian", "saipan",
+    "las vegas", "north las vegas", "anchorage", "fairbanks", "juneau",
+}
+
+_STATE_COMMA_RE = re.compile(r",\s*([a-z][a-z. ]*[a-z]|[a-z]{2})\b")
+_STATE_OF_RE = re.compile(
+    r"\b(?:state|commonwealth|territory) of ([a-z][a-z ]+?)\b")
+
+
+def _is_out_of_state(blob: str) -> bool:
+    """blob is an already-lowercased 'agency place_text — title' string."""
+    for m in _STATE_COMMA_RE.finditer(blob):
+        cand = m.group(1).strip().rstrip(".")
+        if cand in _US_STATE_NAMES_OUT or cand in _US_STATE_CODES_OUT:
+            return True
+    m = _STATE_OF_RE.search(blob)
+    if m and m.group(1).strip() in _US_STATE_NAMES_OUT:
+        return True
+    return any(re.search(rf"\b{re.escape(p)}\b", blob) for p in _OUT_OF_STATE_PLACES)
+
+# ---------------------------------------------------------------------------
 # Agency-type rules — first match wins
 # ---------------------------------------------------------------------------
 
@@ -271,6 +329,12 @@ def classify_location(title: str, agency: str, state: str | None = None,
                      "Orange" if phrase == "orange county" else \
                      "Ventura" if phrase == "ventura county" else "San Diego"
             return {"county": county, "geo_status": "in"}
+
+    # 1b. Names a US state / territory other than California, or a well-known
+    #     out-of-state place -> out. Checked after the in-scope positives above
+    #     so an in-district school named "Washington" isn't caught here.
+    if _is_out_of_state(blob):
+        return {"county": None, "geo_status": "out"}
 
     # 2. Any other "<x> County" phrase -> out
     for m in _COUNTY_PHRASE_RE.finditer(blob):
