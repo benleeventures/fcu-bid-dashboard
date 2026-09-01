@@ -18,6 +18,7 @@ except ImportError:
     pass
 
 from logsetup import setup
+from notify import DASHBOARD_URL, dashboard_bid_url
 log = setup("digest")
 
 
@@ -100,8 +101,7 @@ def run():
         title   = bid.get("title", s["bid_id"])[:70]
         agency  = bid.get("agency", "")
         due     = bid.get("due_date") or "—"
-        portal  = bid.get("url", "")
-        link    = f'<a href="{portal}" style="color:#C8922A;">View ↗</a>' if portal else ""
+        link    = f'<a href="{dashboard_bid_url(s["bid_id"])}" style="color:#C8922A;">View ↗</a>'
         sqft    = f"{s['total_sqft']:,.0f} SF" if s.get("total_sqft") else "SF unknown"
         types   = ", ".join(s.get("flooring_types") or []) or "—"
         summary = s.get("summary") or ""
@@ -168,7 +168,7 @@ def run():
     {pending_note}
 
     <p style="margin-top:20px;font-size:12px;color:#555;">
-      <a href="https://fcu-dashboard.vercel.app" style="color:#C8922A;">Open Dashboard ↗</a>
+      <a href="{DASHBOARD_URL}" style="color:#C8922A;">Open Dashboard ↗</a>
     </p>
   </div>
 </body>

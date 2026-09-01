@@ -21,6 +21,7 @@ except ImportError:
     pass
 
 from logsetup import setup
+from notify import DASHBOARD_URL, dashboard_bid_url
 log = setup("jobwalk")
 
 WALK_WINDOW_DAYS = 7
@@ -105,8 +106,7 @@ def run():
         title    = bid.get("title", s["bid_id"])[:60]
         agency   = bid.get("agency", "")[:50]
         bid_due  = _fmt_date(bid["due_date"]) if bid.get("due_date") else "—"
-        portal   = bid.get("url", "")
-        link     = f'<a href="{portal}" style="color:#C8922A;text-decoration:none;font-size:12px;">View ↗</a>' if portal else "—"
+        link     = f'<a href="{dashboard_bid_url(s["bid_id"])}" style="color:#C8922A;text-decoration:none;font-size:12px;">View ↗</a>'
         walk_raw = s.get("walk_date_raw") or _fmt_date(s.get("walk_date", "")) or "TBD"
         score    = s.get("go_score", "—")
 
@@ -171,7 +171,7 @@ def run():
       <p style="margin:0;font-size:13px;color:#8E8E93;">
         After each walk, call Joanne with <strong style="color:#F5F5F0;">BID or NO BID</strong> + any site notes that affect scope or quantities.
         &nbsp;·&nbsp;
-        <a href="https://fcu-dashboard.vercel.app" style="color:#C8922A;">Dashboard ↗</a>
+        <a href="{DASHBOARD_URL}" style="color:#C8922A;">Dashboard ↗</a>
       </p>
     </div>
   </div>

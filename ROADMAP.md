@@ -15,7 +15,7 @@
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
 | Document Download | ✅ Done | Playwright-based, all sources |
 | AI Parsing → bid_specs | ✅ Done (manual mode) | `--parse-all` prints prompts for Claude Code; `--ollama` for auto |
-| New-Bid Email Digest | ✅ Done | Fires via Resend after each scanner run with new relevant bids |
+| New-Bid Email Digest | ✅ Done | Fires via Resend after each scanner run with new relevant bids. "View ↗" links point to the dashboard bid page (`DASHBOARD_URL/bids/<id>`), which links out to the source portal in turn |
 | Job Walk Alert Email | ✅ Done | Fires via Resend when `walk_required=True` after parsing |
 | Compliance Alert Email | ✅ Done | Fires via Resend on `--save` when bid_bond/prevailing_wage/dvbe/dbe flags set |
 | RFQ Email Generator | ✅ Done | `--rfq <bid_id>` CLI + "Send RFQ →" button in dashboard; sends draft to Joanne |
