@@ -23,11 +23,18 @@ type ScoringSpec = {
   walk_required: boolean | null
   dvbe_required?: boolean | null
   dbe_goal_pct?: number | null
+  materials_only?: boolean | null
 } | null
 
 export function scoreGoNoGo(bid: ScoringBid, spec: ScoringSpec): GoNoGoResult {
   const factors: ScoreFactor[] = []
   let score = 55
+
+  // ── 0. Materials-/supply-only — FCU installs, it does not just sell product ─
+  if (spec?.materials_only === true) {
+    factors.push({ label: 'Materials only', delta: -100, note: 'Supply-only solicitation — no installation labor in scope' })
+    return { score: 0, verdict: 'no_go', factors, partial: false }
+  }
 
   // ── 1. Flooring scope match ──────────────────────────────────────────────
   if (bid.is_relevant) {
