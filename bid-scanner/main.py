@@ -11,6 +11,7 @@ Usage:
   python main.py --source ucla          # UCLA Capital Programs only (public, no browser)
   python main.py --source longbeach     # Long Beach Buys (BuySpeed) only (public, browser)
   python main.py --source lausd         # LAUSD Facilities bid-date report only (public PDF)
+  python main.py --source securebids    # SecureBids / Colbi CA agencies only (public API)
   python main.py --intel                # competitive intel: scan PlanetBids awarded bids (+ GC watchlist)
   python main.py --gc-watchlist         # GC watchlist: seed list + harvest from intel data (no browser)
   python main.py --headless             # suppress browser windows
