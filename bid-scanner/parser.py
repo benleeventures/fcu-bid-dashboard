@@ -449,6 +449,20 @@ async def download_all():
                     print(f"    ⚠ CCOP error: {e}\n")
                 continue
 
+            # Direct-PDF sources (UCLA points url straight at the Ad-for-Bids PDF)
+            if url.lower().split("?")[0].endswith(".pdf"):
+                try:
+                    resp = await context.request.get(url, timeout=30000)
+                    data = await resp.body()
+                    if data and b"%PDF" in data[:10]:
+                        out.write_bytes(data)
+                        print(f"    ✓ Saved {out.name} ({len(data)//1024} KB)\n")
+                    else:
+                        print("    ⚠ Direct PDF fetch returned no usable content\n")
+                except Exception as e:
+                    print(f"    ⚠ Direct PDF error: {e}\n")
+                continue
+
             page = await context.new_page()
             try:
                 await page.goto(url, timeout=30000, wait_until="domcontentloaded")

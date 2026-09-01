@@ -17,6 +17,7 @@ import time
 from datetime import datetime, date
 
 import requests
+from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
 # ---------------------------------------------------------------------------
@@ -1218,11 +1219,329 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# UCLA Capital Programs — public "Projects Currently Bidding" page
+# ---------------------------------------------------------------------------
+# Server-rendered HTML, no auth (the UCLA Online Planroom behind it needs a
+# login, but this index page lists every advertised project). Westwood campus,
+# so every bid is Los Angeles County — stamped directly for the geo gate.
+# The page carries no bid due date (it lives in the "Ad for Bids" PDF); the
+# parser pulls it later. `est_value` shown on-page is not persisted here.
+
+UCLA_BASE = "https://www.capitalprograms.ucla.edu"
+UCLA_BIDDING_URL = UCLA_BASE + "/Contracts/Bidding"
+
+# Section headers on the page. Rows under "Announcement to PQ Bidders" are
+# addenda/notices to already-prequalified bidders, not new opportunities —
+# everything else (open bids, sub-bid ads, prequalification ads) is kept.
+UCLA_SKIP_SECTIONS = {"announcement to pq bidders"}
+
+
+def _fetch_ucla_sync() -> list[dict]:
+    """Scrape the UCLA bidding index. Pure HTTP + BeautifulSoup, no browser."""
+    resp = requests.get(UCLA_BIDDING_URL, headers={"User-Agent": USER_AGENT}, timeout=25)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+    table = soup.find("table", id="cptable-leftlabels")
+    if not table or not table.find("tbody"):
+        return []
+
+    projects: list[dict] = []
+    section: str | None = None
+    cur: dict | None = None
+
+    def _flush():
+        nonlocal cur
+        if cur and cur.get("title") and section not in UCLA_SKIP_SECTIONS:
+            projects.append(cur)
+        cur = None
+
+    for tr in table.find("tbody").find_all("tr", recursive=False):
+        th = tr.find("th")
+        if th and th.get("scope") == "colgroup":
+            _flush()
+            section = th.get_text(strip=True).lower()
+            continue
+        if "project-divider" in (tr.get("class") or []):
+            _flush()
+            continue
+        rid = tr.get("id")
+        if rid and rid.isdigit():
+            _flush()
+            a = tr.find("a")
+            td = tr.find("td")
+            cur = {
+                "id": rid,
+                "section": section,
+                "title": (a.get_text(" ", strip=True) if a else td.get_text(" ", strip=True)).strip(),
+                "url": (requests.compat.urljoin(UCLA_BASE, a["href"])
+                        if a and a.get("href") else UCLA_BIDDING_URL),
+                "number": "",
+                "desc": "",
+            }
+            continue
+        if cur is None:
+            continue
+        label = th.get_text(strip=True).lower() if th else ""
+        td = tr.find("td")
+        val = td.get_text(" ", strip=True) if td else ""
+        if label.startswith("project number"):
+            cur["number"] = val
+        elif label.startswith("project description"):
+            cur["desc"] = val
+    _flush()
+    return projects
+
+
+async def _search_ucla(keywords: list[str]) -> list[dict]:
+    """Pull UCLA Capital Programs advertised projects; flag flooring-relevant ones."""
+    print("\nSearching UCLA Capital Programs (Westwood — LA County)...")
+    try:
+        projects = await asyncio.to_thread(_fetch_ucla_sync)
+    except Exception as e:
+        print(f"  ⚠ UCLA Capital Programs error: {e}")
+        return []
+
+    bids = []
+    for p in projects:
+        title = p["title"].replace("(opens in new tab, PDF)", "").strip()
+        bids.append({
+            "bid_id": f"UCLA-{p['id']}",
+            "title": title,
+            "agency": "UCLA Capital Programs",
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": None,
+            "published_raw": "",
+            "due_date": None,
+            "due_date_raw": "",
+            "is_relevant": _is_relevant(title, f"{title} {p.get('desc', '')}"),
+            "search_keyword": "open bids",
+            "url": p["url"],
+            "source": "UCLA Capital Programs",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} advertised projects, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
+# City of Long Beach — "Long Beach Buys" (BuySpeed / Periscope S2G)
+# ---------------------------------------------------------------------------
+# Public advanced bid search, no login. Filter to Status = "Sent" (advertised)
+# and drop rows whose bid-opening date is already past — BuySpeed leaves some
+# dead solicitations in "Sent" for years. Every Long Beach agency is LA County.
+# Replaces the PlanetBids Long Beach portal (15810), which is in PLANETBIDS_SKIP
+# because its AWS WAF challenge could never be solved reliably.
+
+LONGBEACH_SEARCH_URL = (
+    "https://longbeachbuys.buyspeed.com/bso/view/search/external/advancedSearchBid.xhtml"
+)
+
+_LONGBEACH_ROW_JS = """() => {
+  const tbl = [...document.querySelectorAll('table')].find(t => /Bid Opening Date/.test(t.innerText));
+  if (!tbl) return [];
+  return [...tbl.querySelectorAll('tbody tr')].map(tr => {
+    const rec = {};
+    tr.querySelectorAll('td').forEach(td => {
+      const lbl = td.querySelector('.ui-column-title')?.innerText.trim();
+      if (!lbl) return;
+      if (!(lbl in rec)) rec[lbl] = td.innerText.replace(lbl, '').trim();
+      const a = td.querySelector('a[href*="bidDetail"]');
+      if (a) rec.href = a.href;
+    });
+    return rec;
+  }).filter(r => r.href);
+}"""
+
+
+async def _search_longbeach(page, keywords: list[str]) -> list[dict]:
+    """Scrape Long Beach Buys (BuySpeed) advertised bids. Browser required (JSF)."""
+    print("\nSearching Long Beach BuySpeed (City of Long Beach — LA County)...")
+    rows: list[dict] = []
+    try:
+        await page.goto(LONGBEACH_SEARCH_URL, wait_until="networkidle", timeout=45000)
+        await page.wait_for_timeout(1000)
+        await page.select_option("#advancedSearchForm\\:documentTypeSelect", label="Bid Solicitations")
+        await page.wait_for_timeout(2500)
+        await page.select_option("#bidSearchForm\\:status", label="Sent")
+        await page.wait_for_timeout(400)
+        await page.click("#bidSearchForm\\:btnBidSearch")
+        await page.wait_for_timeout(5000)
+
+        seen_first: set[str] = set()
+        for _ in range(20):
+            page_rows = await page.evaluate(_LONGBEACH_ROW_JS)
+            if not page_rows:
+                break
+            key = page_rows[0].get("href")
+            if key in seen_first:
+                break
+            seen_first.add(key)
+            rows.extend(page_rows)
+
+            nxt = page.locator(".ui-paginator-bottom .ui-paginator-next").first
+            if not await nxt.count():
+                break
+            if "ui-state-disabled" in (await nxt.get_attribute("class") or ""):
+                break
+            await nxt.click()
+            await page.wait_for_timeout(3500)
+    except Exception as e:
+        print(f"  ⚠ Long Beach BuySpeed error: {e}")
+
+    today = date.today()
+    bids: list[dict] = []
+    for r in rows:
+        sol = (r.get("Bid Solicitation #") or "").strip()
+        if not sol:
+            continue
+        desc = (r.get("Description") or "").strip()
+        opening_raw = (r.get("Bid Opening Date") or "").strip()
+        due = _parse_date(opening_raw.split()[0]) if opening_raw else None
+        if due and due < today:
+            continue  # stale "Sent" solicitation
+        bids.append({
+            "bid_id": f"LB-{sol}",
+            "title": desc or sol,
+            "agency": (r.get("Organization Name") or "City of Long Beach").strip(),
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": None,
+            "published_raw": "",
+            "due_date": due,
+            "due_date_raw": opening_raw,
+            "is_relevant": _is_relevant(desc, desc),
+            "search_keyword": "open bids",
+            "url": r.get("href") or LONGBEACH_SEARCH_URL,
+            "source": "Long Beach BuySpeed",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} advertised bids, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
+# LAUSD Facilities — "Updated Bid Information Report (Sorted by Bid Date)"
+# ---------------------------------------------------------------------------
+# LAUSD FSD publishes every advertised facilities project in one public PDF
+# ("Bid Report.pdf") linked from procurement.lausd.org. No login, and the
+# edlio CDN that hosts the PDF is reachable where laschools.org itself is not.
+# The report is regenerated in place, so resolve the current URL from the CMS
+# page each run rather than hardcoding the media hash. Every LAUSD project is
+# LA County / K-12. FCU's flooring licence is C-15, so a required licence that
+# names C-15 is treated as relevant even when the description is generic.
+
+LAUSD_BIDDOCS_URL = "https://procurement.lausd.org/apps/pages/Bid_Documents"
+LAUSD_SOURCE_LINK = "https://www.laschools.org/new-site/bidding-opportunities/bid-documents"
+
+_LAUSD_NOISE_RE = re.compile(
+    r"\n(?:Updated Bid Information Report Sorted by Bid Date"
+    r"|B E S T V A L U E|C O N S T R U C T I O N|I N F O R M A L|M A I N T E N A N C E"
+    r"|J O C|A / E|BOE District = .*|Total Bids for .*"
+    r"|LOS ANGELES UNIFIED SCHOOL DISTRICT|FACILITIES CONTRACTS)\n"
+)
+
+
+def _lausd_field(pattern: str, text: str, default: str = "") -> str:
+    m = re.search(pattern, text, re.S | re.I)
+    return re.sub(r"\s+", " ", m.group(1)).strip() if m else default
+
+
+def _fetch_lausd_fsd_sync() -> list[dict]:
+    """Download + parse the LAUSD FSD bid-date report PDF. Pure HTTP + pdfplumber."""
+    import pdfplumber
+
+    headers = {"User-Agent": USER_AGENT}
+    page = requests.get(LAUSD_BIDDOCS_URL, headers=headers, timeout=25)
+    page.raise_for_status()
+    m = re.search(r'href="(https://media\.edlio\.net/[^"]+Bid%20Report\.pdf)"', page.text, re.I) \
+        or re.search(r'href="([^"]+)"[^>]*>\s*Updated Bid Report', page.text, re.I)
+    if not m:
+        raise RuntimeError("could not find the Bid Report PDF link on the LAUSD page")
+    pdf_url = m.group(1).replace("&amp;", "&")
+
+    pdf_resp = requests.get(pdf_url, headers=headers, timeout=45)
+    pdf_resp.raise_for_status()
+    tmp = os.path.join(os.path.dirname(__file__), "output", "lausd_bidreport.pdf")
+    os.makedirs(os.path.dirname(tmp), exist_ok=True)
+    with open(tmp, "wb") as fh:
+        fh.write(pdf_resp.content)
+
+    with pdfplumber.open(tmp) as pdf:
+        full = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
+    full = _LAUSD_NOISE_RE.sub("\n", full)
+
+    entries = [e for e in re.split(r"(?=Bid/RFQ No\s+\d+)", full) if e.startswith("Bid/RFQ No")]
+    rows = []
+    for raw in entries:
+        e = re.sub(r"\s+", " ", raw)
+        rows.append({
+            "no":     _lausd_field(r"Bid/RFQ No\s+(\d+)", e),
+            "open":   _lausd_field(r"Bid Open:\s*([\d/]+)", e),
+            "prebid": _lausd_field(r"Pre-Bid:\s*([\d/]+)", e),
+            "name":   _lausd_field(r"Project Name:\s*(.+?)\s*Description:", e),
+            "desc":   _lausd_field(r"Description:\s*(.+?)\s*(?:License Type Required:|Prequalification is Required)", e),
+            "lic":    _lausd_field(r"License Type Required:\s*(.+?)\s*Contract Bond Estimate:", e),
+        })
+    return rows
+
+
+async def _search_lausd_fsd(keywords: list[str]) -> list[dict]:
+    """Pull LAUSD Facilities advertised projects from the public bid-date report."""
+    print("\nSearching LAUSD Facilities (FSD bid-date report)...")
+    try:
+        rows = await asyncio.to_thread(_fetch_lausd_fsd_sync)
+    except Exception as e:
+        print(f"  ⚠ LAUSD Facilities error: {e}")
+        return []
+
+    today = date.today()
+    bids = []
+    for r in rows:
+        if not r["no"]:
+            continue
+        due = _parse_date(r["open"]) if r["open"] else None
+        if due and due < today:
+            continue
+        name = re.sub(r"\s*(?:Pre-Bid is Mandatory|Prequalification is Required)\s*", " ",
+                      r["name"], flags=re.I).strip()
+        if name.count("(") > name.count(")"):
+            name += ")"
+        title = f"{name} — {r['desc']}".strip(" —") if r["desc"] else name
+        haystack = f"{title} {r['lic']}"
+        relevant = _is_relevant(title, haystack) or bool(re.search(r"\bC-?15\b", r["lic"], re.I))
+        bids.append({
+            "bid_id": f"LAUSD-{r['no']}",
+            "title": title[:480],
+            "agency": "Los Angeles Unified School District",
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": None,
+            "published_raw": "",
+            "due_date": due,
+            "due_date_raw": r["open"],
+            "is_relevant": relevant,
+            "search_keyword": "C-15" if re.search(r"\bC-?15\b", r["lic"], re.I) else "open bids",
+            "url": LAUSD_SOURCE_LINK,
+            "source": "LAUSD Facilities",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} advertised projects, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SoCal Builders Plan Room (CyberCopy — public CA construction bids)
 # ---------------------------------------------------------------------------
 
 PLAN_ROOMS = [
     ("https://www.southerncaliforniabuildersplanroom.com", "SoCal Plan Room"),
+    # CyberCopy-platform SoCal plan room from FCU's login sheet (row 30). Same
+    # scraper contract as Crisp — /projects/public?status=bidding.
+    ("https://www.cybercopyplanroom.com", "CyberCopy Plan Room"),
 ]
 CRISP_BASE = "https://www.crispplanroom.com"
 
@@ -1474,7 +1793,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     src = source.lower() if source else None
     all_bids = []
 
-    needs_browser = src is None or src not in ("sam",)
+    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla", "lausd")
 
     if needs_browser:
         async with async_playwright() as p:
@@ -1532,6 +1851,13 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                     all_bids.extend(ccop_bids)
                     await ccop_page.close()
 
+            if src in (None, "longbeach"):
+                with funnel.guard("Long Beach BuySpeed"):
+                    lb_page = await context.new_page()
+                    lb_bids = await _search_longbeach(lb_page, keywords)
+                    all_bids.extend(lb_bids)
+                    await lb_page.close()
+
             await browser.close()
 
     if src in (None, "sam"):
@@ -1543,6 +1869,16 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
         with funnel.guard("Quality Bidders"):
             qb_bids = await _search_qualitybidders(keywords)
             all_bids.extend(qb_bids)
+
+    if src in (None, "ucla"):
+        with funnel.guard("UCLA Capital Programs"):
+            ucla_bids = await _search_ucla(keywords)
+            all_bids.extend(ucla_bids)
+
+    if src in (None, "lausd"):
+        with funnel.guard("LAUSD Facilities"):
+            lausd_bids = await _search_lausd_fsd(keywords)
+            all_bids.extend(lausd_bids)
 
     funnel.note_raw(all_bids)
 
