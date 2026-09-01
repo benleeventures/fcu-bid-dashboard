@@ -9,7 +9,7 @@
 
 | System | Status | Notes |
 |--------|--------|-------|
-| Bid Scanner (10 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08). UCLA Capital Programs added 2026-09 |
+| Bid Scanner (11 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08). UCLA Capital Programs + Long Beach BuySpeed added 2026-09 |
 | Dashboard (Next.js + Supabase) | ✅ Live on Vercel | Showing bid results |
 | Scanner Health Dashboard (`/scanner`) | ✅ Built (2026-08) | Funnel + volume-over-time + per-source visibility matrix + PlanetBids portal grid. Needs `supabase/add_scan_analytics.sql` + `backfill_scan_run.sql` applied. See `docs/scanner-dashboard.md` |
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
@@ -214,7 +214,7 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 | UCLA Capital Programs | ✅ Active | `--source ucla` (pure HTTP, no browser, no login — the UCLA Online Planroom needs creds but the public bidding index does not). Every bid stamped LA County. No due date on the index page — parser pulls it from the direct Ad-for-Bids PDF (`parser.py` now handles direct-`.pdf` URLs). Live 2026-09 |
 | Crisp / SoCal plan rooms | ✅ Active | CyberCopy platform. `PLAN_ROOMS` now also includes **CyberCopy Plan Room** (cybercopyplanroom.com, login-sheet row 30) — verified 2026-09 the scraper contract works (0 open public projects at time of check) |
 | LAUSD | ⬜ Not connected | **Priority #1** — 2027 TOPO renewal. Two systems: **FSD** (laschools.org — publicly posts bids, discovery may not need login) + **Supplier/ARRIBA** (vendors.lausd.net SAP portal, Firefox-only, creds status "?????"). Login-sheet rows 13–18 |
-| Long Beach BuySpeed | ⬜ Not connected | **Priority #2** — longbeachbuys.buyspeed.com (login-sheet row 37). BuySpeed/Periscope S2G = reusable scraper for other CA agencies. Retires the chronically-blocked PlanetBids Long Beach portal (15810, in `PLANETBIDS_SKIP`) |
+| Long Beach BuySpeed | ✅ Active | `--source longbeach` — public BuySpeed advanced search, no login. Filters Status="Sent" and drops past-opening-date leftovers; paginates PrimeFaces results. Every bid stamped LA County. Retires the PlanetBids Long Beach portal (15810, still in `PLANETBIDS_SKIP`). Live 2026-09 (18 advertised bids, 0 flooring at check time). **Doc download = follow-up:** bidDetail.sda is public but attachments are `javascript:downloadFile(id)` — the generic parser can't pull them yet |
 | RAMP LA County | ⬜ Not connected | **Priority #3** — rampla.org (login-sheet rows 1/7/8, cred "ok 8/26"). One integration covers LA County + LA County Public Works + Metro + **LADWP ERS** (ERS logs in through RAMP) |
 | City of LA BAVN | ⬜ Blocked on creds | **Priority #4** — angeleno.lacity.org (login-sheet row 6). Credential marked **"not valid 8/26"** — Joanne must fix the login before scraper work |
 | LACDA | ⬜ Not connected | **Priority #5** — lacda.org/vendors (login-sheet row 2). Housing-authority rehab work; lower volume. Cred present, never verified |
@@ -232,16 +232,17 @@ lives in the session notes; summary:
 - **Already covered:** Cal eProcure, Quality Bidders, PlanetBids (incl. Torrance), BidNet
   Direct, Crisp, OpenGov.
 - **Added 2026-09:** CyberCopy Plan Room (row 30); **UCLA Capital Programs** (row 11 —
-  public index, no login needed despite the sheet listing planroom creds).
+  public index, no login needed despite the sheet listing planroom creds); **Long Beach
+  BuySpeed** (row 37 — public bid search, no login).
 - **Excluded (not solicitation sources):** FCU website/email logins; DIR/DLSE PWCR + LAUSD
   CPRs (certified payroll); Surety2000 (bid-bond tool); Autodesk BuildingConnected (GC
   invite-only — handled by GC Watchlist); HigherGov (paid federal aggregator, redundant with
   SAM.gov); Quality Bidders LAUSD prequal (registration admin).
 - **Out-of-area:** none — the client added no out-of-state portals.
-- **To add (remaining, priority order):** LAUSD FSD → Long Beach BuySpeed → RAMP → BAVN →
-  LACDA → Colbi Secure Bids → Bonfire. Dev note: `laschools.org` / `achieve.lausd.net` refuse
-  connections from datacenter IPs — LAUSD FSD scraper must be developed/tested on the Mac
-  mini. `procurement.lausd.org` (the CMS pages) is reachable but only UA-gated.
+- **To add (remaining, priority order):** LAUSD FSD → RAMP → BAVN → LACDA → Colbi Secure
+  Bids → Bonfire. Dev note: `laschools.org` / `achieve.lausd.net` refuse connections from
+  datacenter IPs — LAUSD FSD scraper must be developed/tested on the Mac mini.
+  `procurement.lausd.org` (the CMS pages) is reachable but only UA-gated.
 - **Ben's 5:** RAMP / LACDA / BAVN / LAUSD all have creds in the sheet; **Public Purchase is
   the gap — no FCU account.**
 

@@ -1326,6 +1326,103 @@ async def _search_ucla(keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# City of Long Beach — "Long Beach Buys" (BuySpeed / Periscope S2G)
+# ---------------------------------------------------------------------------
+# Public advanced bid search, no login. Filter to Status = "Sent" (advertised)
+# and drop rows whose bid-opening date is already past — BuySpeed leaves some
+# dead solicitations in "Sent" for years. Every Long Beach agency is LA County.
+# Replaces the PlanetBids Long Beach portal (15810), which is in PLANETBIDS_SKIP
+# because its AWS WAF challenge could never be solved reliably.
+
+LONGBEACH_SEARCH_URL = (
+    "https://longbeachbuys.buyspeed.com/bso/view/search/external/advancedSearchBid.xhtml"
+)
+
+_LONGBEACH_ROW_JS = """() => {
+  const tbl = [...document.querySelectorAll('table')].find(t => /Bid Opening Date/.test(t.innerText));
+  if (!tbl) return [];
+  return [...tbl.querySelectorAll('tbody tr')].map(tr => {
+    const rec = {};
+    tr.querySelectorAll('td').forEach(td => {
+      const lbl = td.querySelector('.ui-column-title')?.innerText.trim();
+      if (!lbl) return;
+      if (!(lbl in rec)) rec[lbl] = td.innerText.replace(lbl, '').trim();
+      const a = td.querySelector('a[href*="bidDetail"]');
+      if (a) rec.href = a.href;
+    });
+    return rec;
+  }).filter(r => r.href);
+}"""
+
+
+async def _search_longbeach(page, keywords: list[str]) -> list[dict]:
+    """Scrape Long Beach Buys (BuySpeed) advertised bids. Browser required (JSF)."""
+    print("\nSearching Long Beach BuySpeed (City of Long Beach — LA County)...")
+    rows: list[dict] = []
+    try:
+        await page.goto(LONGBEACH_SEARCH_URL, wait_until="networkidle", timeout=45000)
+        await page.wait_for_timeout(1000)
+        await page.select_option("#advancedSearchForm\\:documentTypeSelect", label="Bid Solicitations")
+        await page.wait_for_timeout(2500)
+        await page.select_option("#bidSearchForm\\:status", label="Sent")
+        await page.wait_for_timeout(400)
+        await page.click("#bidSearchForm\\:btnBidSearch")
+        await page.wait_for_timeout(5000)
+
+        seen_first: set[str] = set()
+        for _ in range(20):
+            page_rows = await page.evaluate(_LONGBEACH_ROW_JS)
+            if not page_rows:
+                break
+            key = page_rows[0].get("href")
+            if key in seen_first:
+                break
+            seen_first.add(key)
+            rows.extend(page_rows)
+
+            nxt = page.locator(".ui-paginator-bottom .ui-paginator-next").first
+            if not await nxt.count():
+                break
+            if "ui-state-disabled" in (await nxt.get_attribute("class") or ""):
+                break
+            await nxt.click()
+            await page.wait_for_timeout(3500)
+    except Exception as e:
+        print(f"  ⚠ Long Beach BuySpeed error: {e}")
+
+    today = date.today()
+    bids: list[dict] = []
+    for r in rows:
+        sol = (r.get("Bid Solicitation #") or "").strip()
+        if not sol:
+            continue
+        desc = (r.get("Description") or "").strip()
+        opening_raw = (r.get("Bid Opening Date") or "").strip()
+        due = _parse_date(opening_raw.split()[0]) if opening_raw else None
+        if due and due < today:
+            continue  # stale "Sent" solicitation
+        bids.append({
+            "bid_id": f"LB-{sol}",
+            "title": desc or sol,
+            "agency": (r.get("Organization Name") or "City of Long Beach").strip(),
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": None,
+            "published_raw": "",
+            "due_date": due,
+            "due_date_raw": opening_raw,
+            "is_relevant": _is_relevant(desc, desc),
+            "search_keyword": "open bids",
+            "url": r.get("href") or LONGBEACH_SEARCH_URL,
+            "source": "Long Beach BuySpeed",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} advertised bids, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SoCal Builders Plan Room (CyberCopy — public CA construction bids)
 # ---------------------------------------------------------------------------
 
@@ -1642,6 +1739,13 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                     ccop_bids = await _search_ccop(ccop_page, keywords)
                     all_bids.extend(ccop_bids)
                     await ccop_page.close()
+
+            if src in (None, "longbeach"):
+                with funnel.guard("Long Beach BuySpeed"):
+                    lb_page = await context.new_page()
+                    lb_bids = await _search_longbeach(lb_page, keywords)
+                    all_bids.extend(lb_bids)
+                    await lb_page.close()
 
             await browser.close()
 
