@@ -12,13 +12,11 @@ const AIRTABLE_URL =
   process.env.NEXT_PUBLIC_AIRTABLE_URL ||
   'https://airtable.com/invite/l?inviteId=invo7mbPUsuWCvKtW&inviteToken=54bfce5e0661c6368cb40a5187c4bfa2bc75fe66ba362ad9be7f46e188f4fdae'
 
-type NavKey = 'bids' | 'scanner' | 'intel' | 'settings'
+type NavKey = 'bids' | 'scanner'
 
 const LINKS: { key: NavKey; label: string; href: string }[] = [
-  { key: 'bids',     label: 'Bids',           href: '/' },
-  { key: 'scanner',  label: 'Scanner health', href: '/scanner' },
-  { key: 'intel',    label: 'Intel',          href: '/intel' },
-  { key: 'settings', label: 'Settings',       href: '/settings' },
+  { key: 'bids',    label: 'Bids',        href: '/' },
+  { key: 'scanner', label: 'Bid Finder',  href: '/scanner' },
 ]
 
 export default function Nav({ active, right }: { active?: NavKey; right?: ReactNode }) {

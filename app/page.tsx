@@ -106,9 +106,6 @@ export default async function Home() {
     const d = new Date(b.due_date)
     return d >= today && d <= in7
   })
-  const submitted = bids.filter(b => b.bid_status === 'submitted')
-  const won       = bids.filter(b => b.bid_status === 'won')
-  const lost      = bids.filter(b => b.bid_status === 'lost')
 
   const sources = Array.from(new Set(bids.map(b => b.source).filter(Boolean))) as string[]
 
@@ -117,14 +114,10 @@ export default async function Home() {
     : null
 
   const stats: { label: string; value: string | number; accent: string }[] = [
-    { label: 'Total Bids',       value: bids.length,      accent: 'var(--gold)' },
-    { label: 'Flooring Relevant', value: relevant.length,  accent: 'var(--green)' },
-    { label: 'Due This Week',    value: dueThisWeek.length, accent: dueThisWeek.length > 0 ? 'var(--orange)' : 'var(--ink-faint)' },
-    { label: 'Submitted',        value: submitted.length,  accent: 'var(--gold)' },
-    { label: 'Won',              value: won.length,        accent: 'var(--green)' },
-    { label: 'Lost',             value: lost.length,       accent: lost.length > 0 ? 'var(--red)' : 'var(--ink-faint)' },
-    { label: 'Win Rate',         value: (won.length + lost.length) > 0 ? `${Math.round(won.length / (won.length + lost.length) * 100)}%` : '—', accent: 'var(--gold)' },
-    { label: 'Sources',          value: sources.length,    accent: 'var(--ink-faint)' },
+    { label: 'Bids found',       value: bids.length,       accent: 'var(--gold)' },
+    { label: 'Flooring jobs',    value: relevant.length,   accent: 'var(--green)' },
+    { label: 'Due this week',    value: dueThisWeek.length, accent: dueThisWeek.length > 0 ? 'var(--orange)' : 'var(--ink-faint)' },
+    { label: 'Websites checked', value: sources.length,    accent: 'var(--ink-faint)' },
   ]
 
   return (
@@ -137,19 +130,19 @@ export default async function Home() {
           <div>
             <h1 style={{ fontSize: 30, letterSpacing: '-0.5px' }}>Government Bid Tracker</h1>
             <p style={{ color: 'var(--ink-dim)', marginTop: 4, fontSize: 13 }}>
-              Floor Covering Unlimited — public-works & institutional opportunities
+              New government and institutional projects out for bid
             </p>
           </div>
           {lastScanLabel && (
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)', textAlign: 'right', lineHeight: 1.5 }}>
-              Last scan {lastScanLabel} PT<br />
-              {lastScan!.duration_secs}s · {lastScan!.new_bids} new bids
+            <div style={{ fontSize: 12, color: 'var(--ink-dim)', textAlign: 'right', lineHeight: 1.6 }}>
+              Last checked {lastScanLabel}<br />
+              {lastScan!.new_bids} new {lastScan!.new_bids === 1 ? 'bid' : 'bids'} since then
             </div>
           )}
         </header>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginBottom: 28, maxWidth: 720 }}>
           {stats.map(stat => (
             <div key={stat.label} className="stat-card" style={{ ['--_accent' as any]: stat.accent }}>
               <div className="stat-card__value">{stat.value}</div>

@@ -161,29 +161,29 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           style={{ flex: '1 1 200px', minWidth: 160 }}
         />
         <select value={filterSource} onChange={e => setFilterSource(e.target.value)} className="field">
-          <option value="">All sources</option>
+          <option value="">All websites</option>
           {sources.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         <select value={filterDue} onChange={e => setFilterDue(e.target.value)} className="field">
           <option value="">Any due date</option>
           <option value="week">Due this week</option>
-          <option value="urgent">Due in 3 days</option>
+          <option value="urgent">Due within 3 days</option>
         </select>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="field">
-          <option value="">All statuses</option>
-          <option value="active">Active</option>
-          <option value="submitted">Submitted</option>
-          <option value="won">Won</option>
-          <option value="lost">Lost</option>
-          <option value="no_bid">No Bid</option>
+          <option value="">All bids</option>
+          <option value="active">Still open</option>
+          <option value="submitted">We bid it</option>
+          <option value="won">We won</option>
+          <option value="lost">We lost</option>
+          <option value="no_bid">Not bidding</option>
         </select>
         <select value={filterRelevant} onChange={e => setFilterRelevant(e.target.value)} className="field">
-          <option value="">All bids</option>
-          <option value="yes">Flooring relevant</option>
-          <option value="no">Not relevant</option>
+          <option value="">All trades</option>
+          <option value="yes">Flooring work</option>
+          <option value="no">Other trades</option>
         </select>
         <span style={{ color: 'var(--ink-dim)', fontSize: 12, marginLeft: 'auto', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
-          {displayBids.length} bids
+          {displayBids.length} shown
         </span>
       </div>
 
@@ -198,17 +198,17 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               padding: 0, textDecoration: 'underline', textUnderlineOffset: 3,
             }}
           >
-            {showArchived ? '← Back to active bids' : `Show ${archivedCount} archived (no bid / expired)`}
+            {showArchived ? '← Back to open bids' : `Show ${archivedCount} hidden (not bidding / closed)`}
           </button>
         </div>
       )}
 
       {/* Legend */}
       <div className="legend" style={{ marginBottom: 12 }}>
-        <span><span className="legend__dot" style={{ background: 'var(--red)' }} />Due &lt;3 days</span>
+        <span><span className="legend__dot" style={{ background: 'var(--red)' }} />Due within 3 days</span>
         <span><span className="legend__dot" style={{ background: 'var(--orange)' }} />Due this week</span>
-        <span><span className="legend__dot" style={{ background: 'var(--green)' }} />Flooring relevant</span>
-        <span><span style={{ color: 'var(--star)' }}>★</span> Pinned favorite</span>
+        <span><span className="legend__dot" style={{ background: 'var(--green)' }} />Flooring work</span>
+        <span><span style={{ color: 'var(--star)' }}>★</span> Pinned to top</span>
       </div>
 
       {/* Table */}
@@ -217,18 +217,18 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           <thead>
             <tr>
               <th style={{ width: 26 }} />
-              <th style={{ width: 118 }}>Bid ID</th>
-              <th style={{ width: 250 }}>Title</th>
+              <th style={{ width: 118 }}>Bid #</th>
+              <th style={{ width: 250 }}>Project</th>
               <th style={{ width: 148 }}>Agency</th>
-              <th style={{ width: 120 }}>Source</th>
+              <th style={{ width: 120 }}>Found on</th>
               <th className="is-sortable" onClick={() => toggleSort('published_date')} style={{ width: 92 }}>
-                Published{sortIndicator('published_date')}
+                Posted{sortIndicator('published_date')}
               </th>
               <th className="is-sortable" onClick={() => toggleSort('due_date')} style={{ width: 108 }}>
-                Due Date{sortIndicator('due_date')}
+                Due date{sortIndicator('due_date')}
               </th>
               <th className="is-sortable" onClick={() => toggleSort('walk_date')} style={{ width: 96 }}>
-                Job Walk{sortIndicator('walk_date')}
+                Job walk{sortIndicator('walk_date')}
               </th>
               <th style={{ width: 78 }}>Status</th>
               <th style={{ width: 58 }} />
@@ -238,7 +238,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
             {displayBids.length === 0 ? (
               <tr>
                 <td colSpan={10} style={{ textAlign: 'center', padding: 48, color: 'var(--ink-dim)' }}>
-                  No bids match your filters.
+                  No bids match what you picked above.
                 </td>
               </tr>
             ) : displayBids.flatMap((b, i) => {
@@ -279,7 +279,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{b.title}</span>
                       {b.search_keyword && <span className="chip">{b.search_keyword}</span>}
-                      {!hasSpec && <span className="chip">No docs</span>}
+                      {!hasSpec && <span className="chip">Details not loaded</span>}
                       <ScorePill bid={b} spec={b.spec ?? null} />
                     </div>
                   </td>
@@ -324,7 +324,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                         fontSize: 15, lineHeight: 1,
                         padding: '0 2px', opacity: 0.6,
                       }}
-                      title={showArchived ? 'Restore to active' : 'Archive (no bid)'}
+                      title={showArchived ? 'Move back to open bids' : 'Hide this bid — we are not bidding it'}
                     >
                       {showArchived ? '↩' : '×'}
                     </button>
@@ -334,8 +334,10 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <tr key={`${b.id}-detail`} className="row--expanded">
                     <td colSpan={10} style={{ padding: '0 14px 16px 14px' }}>
                       {hasSpec ? <SpecPanel spec={b.spec!} /> : (
-                        <div style={{ color: 'var(--ink-dim)', fontSize: 12, fontFamily: 'var(--font-mono)', padding: '8px 0' }}>
-                          No spec parsed yet. Run <code style={{ background: 'var(--surface)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --bid-id={b.bid_id}</code> to extract.
+                        <div style={{ color: 'var(--ink-dim)', fontSize: 12.5, padding: '10px 2px', lineHeight: 1.5 }}>
+                          We haven&rsquo;t gone through this bid&rsquo;s documents yet. The project
+                          details (square footage, flooring type, job walk, bond) will show up
+                          here once we have.
                         </div>
                       )}
                     </td>
@@ -371,12 +373,12 @@ function ScorePill({ bid, spec }: { bid: Bid; spec: BidSpec | null }) {
 
 function StatusBadge({ status }: { status: BidStatus | 'active' }) {
   const cfg: Record<string, { label: string; color: string }> = {
-    active:    { label: 'Active',     color: 'var(--ink-dim)' },
-    submitted: { label: 'Submitted',  color: 'var(--gold-strong)' },
-    won:       { label: 'Won',        color: 'var(--green)' },
-    lost:      { label: 'Lost',       color: 'var(--red)' },
-    no_bid:    { label: 'No Bid',     color: '#8B8578' },
-    expired:   { label: 'Expired',    color: '#A79F8D' },
+    active:    { label: 'Open',        color: 'var(--ink-dim)' },
+    submitted: { label: 'We bid it',   color: 'var(--gold-strong)' },
+    won:       { label: 'We won',      color: 'var(--green)' },
+    lost:      { label: 'We lost',     color: 'var(--red)' },
+    no_bid:    { label: 'Not bidding', color: '#8B8578' },
+    expired:   { label: 'Closed',      color: '#A79F8D' },
   }
   const { label, color } = cfg[status] ?? cfg.active
   if (status === 'active') return null
@@ -398,7 +400,7 @@ function sourceColor(source: string | null): string {
 }
 
 function SpecPanel({ spec }: { spec: BidSpec }) {
-  const tri = (val: boolean | null) => val === true ? '✓' : val === false ? '✗' : '?'
+  const tri = (val: boolean | null) => val === true ? 'Yes' : val === false ? 'No' : 'Not stated'
   const triColor = (val: boolean | null) => val === true ? 'var(--green)' : val === false ? 'var(--red)' : 'var(--ink-dim)'
 
   return (
@@ -419,12 +421,12 @@ function SpecPanel({ spec }: { spec: BidSpec }) {
           {spec.summary}
         </div>
       )}
-      <SpecItem label="Flooring types" value={(spec.flooring_types || []).join(', ') || '—'} />
-      <SpecItem label="Total sqft" value={spec.total_sqft ? spec.total_sqft.toLocaleString() + ' SF' : '—'} />
-      <SpecItem label="Rooms" value={spec.rooms || '—'} />
+      <SpecItem label="Flooring type" value={(spec.flooring_types || []).join(', ') || '—'} />
+      <SpecItem label="Total square feet" value={spec.total_sqft ? spec.total_sqft.toLocaleString() + ' sq ft' : '—'} />
+      <SpecItem label="Areas / rooms" value={spec.rooms || '—'} />
       <SpecItem label="Prevailing wage" value={tri(spec.prevailing_wage)} color={triColor(spec.prevailing_wage)} />
-      <SpecItem label="Bid bond" value={spec.bid_bond ? `✓ ${spec.bid_bond_pct ? spec.bid_bond_pct + '%' : ''}` : tri(spec.bid_bond)} color={triColor(spec.bid_bond)} />
-      <SpecItem label="Job walk" value={spec.walk_required ? `✓ ${spec.walk_date_raw || spec.walk_date || ''}` : tri(spec.walk_required)} color={triColor(spec.walk_required)} />
+      <SpecItem label="Bid bond" value={spec.bid_bond ? `Yes${spec.bid_bond_pct ? ` — ${spec.bid_bond_pct}%` : ''}` : tri(spec.bid_bond)} color={triColor(spec.bid_bond)} />
+      <SpecItem label="Job walk" value={spec.walk_required ? `Required${spec.walk_date_raw || spec.walk_date ? ` — ${spec.walk_date_raw || spec.walk_date}` : ''}` : tri(spec.walk_required)} color={triColor(spec.walk_required)} />
     </div>
   )
 }
@@ -432,8 +434,8 @@ function SpecPanel({ spec }: { spec: BidSpec }) {
 function SpecItem({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10, color: 'var(--ink-dim)', fontFamily: 'var(--font-mono)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-      <div style={{ color: color || 'var(--ink)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{value}</div>
+      <div style={{ fontSize: 11, color: 'var(--ink-dim)', marginBottom: 2 }}>{label}</div>
+      <div style={{ color: color || 'var(--ink)', fontSize: 13, fontWeight: 500 }}>{value}</div>
     </div>
   )
 }
