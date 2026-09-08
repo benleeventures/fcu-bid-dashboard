@@ -45,6 +45,14 @@ NON_FLOORING_SERVICE = [
     ("Exterior Window Washing Services", ""),
 ]
 
+# "steam" / "spot cleaning" without a carpet anchor — pavement / kitchen / HVAC
+# work, not floor covering. Must NOT be relevant.
+NOT_RELEVANT_NO_ANCHOR = [
+    ("Parking Lot Steam Cleaning", ""),
+    ("Kitchen Hood Steam Cleaning Services", ""),
+    ("Parking Spot Cleaning and Restriping", ""),
+]
+
 # Flooring incidental to a larger multi-trade scope — not a keyword match, and
 # the Claude second pass (when enabled) should say NO. Without an API key the
 # fast path returns False anyway.
@@ -71,6 +79,11 @@ def run():
             fails += 1
         if not _is_non_flooring_service(title, desc):
             print(f"FAIL (should be non-flooring-service): {title!r}")
+            fails += 1
+
+    for title, desc in NOT_RELEVANT_NO_ANCHOR:
+        if _is_relevant(title, desc):
+            print(f"FAIL (should NOT be relevant — no carpet anchor): {title!r}")
             fails += 1
 
     # The fast path never keyword-matches these; the Claude second pass decides.
