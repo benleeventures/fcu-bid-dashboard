@@ -136,8 +136,8 @@ export default async function ScannerPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(165px, 1fr))', gap: 12, marginBottom: 24, maxWidth: 900 }}>
             {[
               { label: 'Checks this week', value: w7.runs, accent: 'var(--ink-faint)' },
-              { label: 'Listings seen this week', value: w7.raw.toLocaleString(), accent: 'var(--gold)' },
-              { label: 'Flooring jobs this week', value: w7.relevant.toLocaleString(), accent: 'var(--green)' },
+              { label: 'Listings this week', value: w7.raw.toLocaleString(), accent: 'var(--gold)' },
+              { label: 'Flooring this week', value: w7.relevant.toLocaleString(), accent: 'var(--green)' },
               { label: 'New this week', value: w7.new.toLocaleString(), accent: 'var(--gold-light)' },
               { label: 'Skipped this week', value: w7.filteredOut.toLocaleString(), accent: 'var(--orange)' },
             ].map(s => (
