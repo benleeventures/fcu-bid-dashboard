@@ -31,6 +31,9 @@ def detect_trade(title: str, keyword: str = "") -> str:
 
 
 def calculate_score(bid: dict) -> int:
+    # Legacy heuristic for the standalone HTML report only (not wired into
+    # main.py / supervisor.py). The real model is bid-scanner/scoring.py —
+    # see bid-scanner/docs/scoring.md.
     score = 40
 
     # Relevance

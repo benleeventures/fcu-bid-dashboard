@@ -120,6 +120,102 @@ for _county, _cities in COUNTY_CITIES.items():
         _CITY_TO_COUNTY[_c] = _county
 
 # ---------------------------------------------------------------------------
+# Drive-time bands from the FCU shop (9601 Cozycroft Ave, Chatsworth 91311).
+# Used by scoring.py — geography is not a gate, it just lowers the score for
+# farther jobs. Band A ≈ ≤45 min, B ≈ ≤75 min, C ≈ ≤110 min, D ≈ >110 min.
+# Includes San Fernando Valley neighborhood names (not incorporated cities) since
+# the parser's project_city is often a neighborhood.
+# ---------------------------------------------------------------------------
+
+_BAND_A_CITIES = frozenset({
+    # SFV + immediate foothills / Santa Clarita / east Ventura county
+    "chatsworth", "canoga park", "winnetka", "woodland hills", "west hills",
+    "reseda", "northridge", "porter ranch", "granada hills", "mission hills",
+    "north hills", "sylmar", "pacoima", "sun valley", "panorama city",
+    "van nuys", "sepulveda", "north hollywood", "valley village", "valley glen",
+    "sherman oaks", "studio city", "encino", "tarzana", "lake balboa",
+    "arleta", "shadow hills", "tujunga", "sunland",
+    "san fernando", "burbank", "glendale", "la crescenta", "montrose",
+    "la canada flintridge", "la cañada flintridge",
+    "santa clarita", "valencia", "newhall", "saugus", "canyon country", "stevenson ranch",
+    "agoura hills", "agoura", "calabasas", "hidden hills", "westlake village", "oak park",
+    "simi valley", "moorpark", "thousand oaks", "newbury park",
+})
+
+_BAND_B_CITIES = frozenset({
+    # Central LA basin + rest of Ventura county
+    "los angeles", "hollywood", "west hollywood", "beverly hills", "century city",
+    "brentwood", "west los angeles", "mar vista", "palms", "culver city",
+    "santa monica", "pacific palisades", "playa vista", "playa del rey", "venice",
+    "marina del rey", "westchester", "el segundo",
+    "pasadena", "south pasadena", "altadena", "san marino", "alhambra",
+    "monterey park", "montebello", "rosemead", "san gabriel", "temple city",
+    "arcadia", "monrovia", "duarte", "bradbury", "sierra madre",
+    "el monte", "south el monte", "baldwin park", "irwindale", "azusa",
+    "glendora", "covina", "west covina", "la verne", "san dimas", "claremont",
+    "pomona", "diamond bar", "walnut", "eagle rock", "highland park",
+    "inglewood", "hawthorne", "lawndale", "gardena", "hermosa beach",
+    "manhattan beach", "lennox", "view park", "windsor hills", "ladera heights",
+    "oxnard", "ventura", "san buenaventura", "camarillo", "port hueneme",
+    "santa paula", "fillmore", "ojai",
+})
+
+_BAND_C_CITIES = frozenset({
+    # South Bay, SE LA county, Gateway cities, north Orange County, Antelope Valley
+    "torrance", "carson", "redondo beach", "palos verdes estates",
+    "rancho palos verdes", "rolling hills", "rolling hills estates", "lomita",
+    "san pedro", "wilmington", "harbor city", "long beach", "signal hill",
+    "compton", "lynwood", "south gate", "huntington park", "bell", "bell gardens",
+    "cudahy", "maywood", "vernon", "commerce", "pico rivera", "whittier",
+    "santa fe springs", "norwalk", "downey", "bellflower", "paramount",
+    "lakewood", "cerritos", "artesia", "hawaiian gardens", "la mirada",
+    "la habra heights", "industry", "city of industry", "hacienda heights",
+    "rowland heights", "la puente", "avocado heights", "walnut park",
+    "palmdale", "lancaster",
+    "la habra", "brea", "fullerton", "buena park", "la palma", "cypress",
+    "anaheim", "placentia", "yorba linda", "stanton", "garden grove", "orange",
+    "villa park", "santa ana", "westminster", "fountain valley", "los alamitos",
+    "seal beach", "midway city",
+})
+
+# Deep south Orange County — kept explicit so Orange County's default (C) does
+# not apply. Every San Diego city falls through to the county default (D).
+_BAND_D_CITIES = frozenset({
+    "irvine", "tustin", "costa mesa", "newport beach", "newport coast",
+    "lake forest", "laguna hills", "laguna woods", "laguna beach",
+    "laguna niguel", "aliso viejo", "mission viejo", "rancho santa margarita",
+    "coto de caza", "ladera ranch", "san juan capistrano", "san clemente",
+    "dana point", "trabuco canyon", "foothill ranch",
+})
+
+_COUNTY_DEFAULT_BAND = {
+    "Ventura": "B",
+    "Los Angeles": "C",
+    "Orange": "C",
+    "San Diego": "D",
+}
+
+
+def drive_band(city: str | None, county: str | None) -> str | None:
+    """Drive-time band ('A'|'B'|'C'|'D') from the Chatsworth shop, resolved from
+    the job-site city when known, else the county default. None when neither is
+    usable (caller treats that as 'location unknown')."""
+    c = _norm(city).strip(" .,'-") if city else ""
+    if c:
+        if c in _BAND_A_CITIES:
+            return "A"
+        if c in _BAND_B_CITIES:
+            return "B"
+        if c in _BAND_C_CITIES:
+            return "C"
+        if c in _BAND_D_CITIES:
+            return "D"
+        # a city we don't recognise — fall through to the county default
+    if county in _COUNTY_DEFAULT_BAND:
+        return _COUNTY_DEFAULT_BAND[county]
+    return None
+
+# ---------------------------------------------------------------------------
 # Out-of-scope markers — other CA counties + their principal cities
 # ---------------------------------------------------------------------------
 

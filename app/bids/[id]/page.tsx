@@ -11,6 +11,15 @@ function sb() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!)
 }
 
+function bidTypeLabel(t: string | null | undefined): string | null {
+  return {
+    furnish_install: 'Furnish + install',
+    install_only: 'Install only',
+    furnish_only: 'Furnish only',
+    maintenance: 'Maintenance',
+  }[t ?? ''] ?? null
+}
+
 export default async function BidDetailPage({ params }: { params: { id: string } }) {
   const bidId = decodeURIComponent(params.id)
   const client = sb()
@@ -90,8 +99,15 @@ export default async function BidDetailPage({ params }: { params: { id: string }
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 14, fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
             {spec.total_sqft && <span style={{ color: 'var(--white)' }}>{spec.total_sqft.toLocaleString()} SF</span>}
             {spec.flooring_types?.length && <span style={{ color: 'var(--gray)' }}>{spec.flooring_types.join(' · ')}</span>}
-            {(spec.materials_only === true || spec.raw_extract?.materials_only === true) && <span style={{ color: 'var(--red)' }}>Materials only — no install</span>}
-            {(spec.service_only === true || spec.raw_extract?.service_only === true) && <span style={{ color: 'var(--red)' }}>Service contract — not install</span>}
+            {bidTypeLabel(spec.bid_type ?? spec.raw_extract?.bid_type) && (
+              <span style={{ color: 'var(--gray)' }}>{bidTypeLabel(spec.bid_type ?? spec.raw_extract?.bid_type)}</span>
+            )}
+            {(spec.project_city || spec.raw_extract?.project_city) && (
+              <span style={{ color: 'var(--gray)' }}>{spec.project_city || spec.raw_extract?.project_city}</span>
+            )}
+            {(spec.flooring_is_primary === false || spec.raw_extract?.flooring_is_primary === false) && (
+              <span style={{ color: 'var(--red)' }}>Flooring is minor scope</span>
+            )}
             {spec.prevailing_wage === true  && <span style={{ color: 'var(--orange)' }}>Prevailing wage</span>}
             {spec.bid_bond === true         && <span style={{ color: 'var(--orange)' }}>Bid bond {spec.bid_bond_pct ? spec.bid_bond_pct + '%' : ''}</span>}
             {spec.walk_required === true    && <span style={{ color: 'var(--orange)' }}>Job walk {spec.walk_date_raw || spec.walk_date || ''}</span>}
@@ -104,32 +120,17 @@ export default async function BidDetailPage({ params }: { params: { id: string }
         )}
       </div>
 
-      {/* Go/No-Go score card — only when spec is parsed */}
-      {spec ? (
-        <GoNoGoCard
-          bid={{ is_relevant: bid.is_relevant, due_date: bid.due_date }}
-          spec={{
-            ...spec,
-            // These live in raw_extract, not as columns — surface them for scoring
-            materials_only: spec.materials_only ?? spec.raw_extract?.materials_only ?? null,
-            service_only: spec.service_only ?? spec.raw_extract?.service_only ?? null,
-            dvbe_required: spec.dvbe_required ?? spec.raw_extract?.dvbe_required ?? null,
-            dbe_goal_pct: spec.dbe_goal_pct ?? spec.raw_extract?.dbe_goal_pct ?? null,
-          }}
-        />
-      ) : (
-        <div style={{
-          marginBottom: 24, padding: '16px 20px',
-          background: 'var(--charcoal-soft)', borderRadius: 12,
-          border: '1px solid var(--charcoal-mid)',
-          fontSize: 12, fontFamily: 'IBM Plex Mono', color: 'var(--gray)',
-        }}>
-          No documents parsed yet — score unavailable.{' '}
-          Run <code style={{ background: 'var(--charcoal-mid)', padding: '1px 6px', borderRadius: 3 }}>
-            python parser.py --save {bid.bid_id} '...'
-          </code> to unlock scoring.
-        </div>
-      )}
+      {/* Winnability score card — always shown; card handles the review state */}
+      <GoNoGoCard
+        bid={{ due_date: bid.due_date, county: bid.county, geo_status: bid.geo_status }}
+        spec={spec ? {
+          // columns first, raw_extract as fallback
+          flooring_is_primary: spec.flooring_is_primary ?? spec.raw_extract?.flooring_is_primary ?? null,
+          award_method: spec.award_method ?? spec.raw_extract?.award_method ?? null,
+          project_city: spec.project_city ?? spec.raw_extract?.project_city ?? null,
+        } : null}
+        bidId={bid.bid_id}
+      />
 
       {/* Download bid package — only when estimate exists */}
       {estimate && (
