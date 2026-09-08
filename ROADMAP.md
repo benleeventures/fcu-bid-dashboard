@@ -11,7 +11,7 @@
 |--------|--------|-------|
 | Bid Scanner (14 sources) | ✅ Running | 4-county geo gate + agency-type tagging live (spec §1/§2, 2026-08). UCLA + Long Beach BuySpeed + LAUSD Facilities + SecureBids + RAMP added 2026-09 |
 | Dashboard (Next.js + Supabase) | ✅ Live on Vercel | Showing bid results |
-| Scanner Health Dashboard (`/scanner`) | ✅ Built (2026-08) | Funnel + volume-over-time + per-source visibility matrix + PlanetBids portal grid. **Fully data-driven** — every source wrapped in `funnel.guard()` auto-appears in the matrix (ok / empty / error + broken-streak) on the next full `python main.py` run; no source list to maintain. The 2026-09 additions (UCLA, Long Beach, LAUSD Facilities, SecureBids) show up automatically. Needs `supabase/add_scan_analytics.sql` + `backfill_scan_run.sql` applied. See `docs/scanner-dashboard.md` |
+| Scanner Health Dashboard (`/scanner`) | ✅ Built (2026-08) | Funnel + volume-over-time + per-source visibility matrix + PlanetBids portal grid. **Fully data-driven** — every source wrapped in `funnel.guard()` auto-appears; no source list to maintain. Matrix `!` column split (2026-09): red `Nd` = blocked/error streak (real alarm), grey `Nd dry` = ran-fine-but-0-rows streak. Quality Bidders / Caltrans CCOP now return all rows with an `is_relevant` flag (were pre-filtering → false "empty"). Needs `supabase/add_scan_analytics.sql` + `backfill_scan_run.sql` applied. See `docs/scanner-dashboard.md` |
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
 | Document Download | ✅ Done | Playwright-based, all sources |
 | AI Parsing → bid_specs | ✅ Done (manual mode) | `--parse-all` prints prompts for Claude Code; `--ollama` for auto |

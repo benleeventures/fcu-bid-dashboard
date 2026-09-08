@@ -37,7 +37,7 @@ widget reads it) — remove once that widget moves to `scan_run`.
 | status | meaning |
 |--------|---------|
 | `ok` | returned rows normally |
-| `empty` | loaded but returned 0 rows, no exception. **For every source except PlanetBids we cannot distinguish a genuine "nothing matched" from a silent block** — a source sitting at `empty` for days is the signal to investigate. |
+| `empty` | loaded but returned 0 rows, no exception. Most sources now return *all* rows with an `is_relevant` flag, so `empty` genuinely means "portal had nothing" — but a source that used to produce rows and goes `empty` for a week is still worth a look (see `dryStreak`). |
 | `blocked` | PlanetBids only — WAF / blank page, from the run manifest |
 | `partial` | PlanetBids only — some portals ok, some still blocked/pending |
 | `error` | the scraper raised; see `note` / `scan_run.error_summary` |
@@ -51,7 +51,7 @@ longer aborts the whole scan; it's recorded as `error` and the run continues.
 - **Funnel** — latest full run, step-to-step conversion %, with 7/30-day totals underneath.
 - **Document pull** — of the *distinct* relevant bids found in the last 30d (90d in the fetch), their current `bids.parse_status`: parsed / pending / no_docs / unparseable / skipped. Answers "can we actually get the docs to bid?" This is a **cohort snapshot**, not a per-run count — the scanner only scrapes listing pages; download+parse happens later, async, in `parser.py` (`com.fcu.parser`), and resolves over ~3 attempts. Card hides itself if the `add_parse_status` migration isn't applied.
 - **Volume over time** — 30-day line chart (raw / relevant / new) + "bids filtered out per day" bars.
-- **Source visibility** — source × last-14-days grid, cell coloured by status, number = raw rows. A source red-flagged (`Nd`) has scraped 0 for ≥2 consecutive days.
+- **Source visibility** — source × last-14-days grid, cell coloured by status, number = raw rows. The `!` column has two signals: **red `Nd`** = `failStreak` — `blocked`/`error` on the last ≥2 scanned days (real alarm); **grey `Nd dry`** = `dryStreak` — ran fine but matched 0 rows for ≥7 scanned days (quiet portal, or a silent break worth checking). Each plan room (SoCal / CyberCopy / Crisp) is now its own row — no more phantom "Plan Rooms" wrapper.
 - **PlanetBids portals** — latest sweep, 38-portal grid by county, coloured by outcome.
 - **Recent runs** — last 25 runs.
 

@@ -1213,9 +1213,9 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
         m = re.search(r"href='(/bids/\d+)'", url_cell)
         url = (QUALITYBIDDERS_BASE + m.group(1)) if m else QUALITYBIDDERS_BASE + "/bids"
 
-        if not _is_relevant(title):
-            continue
-
+        # Keep every open CA bid with an is_relevant flag (like the other
+        # sources) rather than pre-filtering — a 0-row return otherwise reads
+        # as "source broken" on the scanner-health matrix.
         bids.append({
             "bid_id": f"QB-{bid_num}",
             "title": title,
@@ -1225,13 +1225,14 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
             "published_raw": posted,
             "due_date": _parse_date(due_raw),
             "due_date_raw": due_raw,
-            "is_relevant": True,
+            "is_relevant": _is_relevant(title),
             "search_keyword": "flooring",
             "url": url,
             "source": "Quality Bidders",
         })
 
-    print(f"  ✓ {len(rows)} open bids fetched, {len(bids)} flooring-relevant")
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(rows)} open bids fetched, {relevant} flooring-relevant")
     return bids
 
 
@@ -1846,27 +1847,27 @@ async def _search_ccop(page, keywords: list[str]) -> list[dict]:
                 status   = lines[i + 5] if lines[i + 4] == "Status:" else ""
                 desc     = lines[i + 6] if i + 6 < len(lines) else ""
 
-                if _is_relevant(desc):
-                    url = bid_links.get(proj_id, CCOP_URL)
-                    all_bids.append({
-                        "bid_id": f"CCOP-{proj_id}",
-                        "title": desc[:120],
-                        "agency": "Caltrans",
-                        "state": "California",
-                        "published_date": None,
-                        "published_raw": "",
-                        "due_date": _parse_date(due_raw),
-                        "due_date_raw": due_raw,
-                        "is_relevant": True,
-                        "search_keyword": "flooring",
-                        "url": url,
-                        "source": "Caltrans CCOP",
-                    })
+                url = bid_links.get(proj_id, CCOP_URL)
+                all_bids.append({
+                    "bid_id": f"CCOP-{proj_id}",
+                    "title": desc[:120],
+                    "agency": "Caltrans",
+                    "state": "California",
+                    "published_date": None,
+                    "published_raw": "",
+                    "due_date": _parse_date(due_raw),
+                    "due_date_raw": due_raw,
+                    "is_relevant": _is_relevant(desc),
+                    "search_keyword": "flooring",
+                    "url": url,
+                    "source": "Caltrans CCOP",
+                })
                 i += 7
             else:
                 i += 1
 
-        print(f"  ✓ 149 projects scanned, {len(all_bids)} flooring-relevant")
+        relevant = sum(1 for b in all_bids if b["is_relevant"])
+        print(f"  ✓ {len(all_bids)} projects scanned, {relevant} flooring-relevant")
 
     except Exception as e:
         print(f"  ⚠ Caltrans CCOP error: {e}")
@@ -1952,19 +1953,6 @@ async def _search_crisp(page) -> list[dict]:
     return all_bids
 
 
-async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
-    """Scrape all configured CyberCopy plan rooms + Crisp."""
-    all_bids: list[dict] = []
-    for base_url, source_name in PLAN_ROOMS:
-        print(f"\nSearching {source_name}...")
-        bids = await _search_plan_room(page, base_url, source_name)
-        relevant = sum(1 for b in bids if b["is_relevant"])
-        print(f"  ✓ {len(bids)} open bids ({relevant} flooring-relevant)")
-        all_bids.extend(bids)
-    all_bids.extend(await _search_crisp(page))
-    return all_bids
-
-
 async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True,
                    live_page=None, funnel=None) -> list[dict]:
     """
@@ -2031,11 +2019,16 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                     all_bids.extend(og_bids)
 
             if src in (None, "planrooms"):
-                with funnel.guard("Plan Rooms"):
-                    pr_page = await context.new_page()
-                    pr_bids = await _search_plan_rooms(pr_page, keywords)
-                    all_bids.extend(pr_bids)
-                    await pr_page.close()
+                # Guard each plan room on its own so the scanner-health matrix
+                # shows a real status per room, not one phantom "Plan Rooms" row
+                # that never has bids attributed to it.
+                pr_page = await context.new_page()
+                for base_url, source_name in PLAN_ROOMS:
+                    with funnel.guard(source_name):
+                        all_bids.extend(await _search_plan_room(pr_page, base_url, source_name))
+                with funnel.guard("Crisp Plan Room"):
+                    all_bids.extend(await _search_crisp(pr_page))
+                await pr_page.close()
 
             if src in (None, "caltrans"):
                 with funnel.guard("Caltrans CCOP"):
