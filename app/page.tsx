@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import BidTable from './BidTable'
+import Nav from './Nav'
 
 export const revalidate = 300 // re-fetch every 5 min
 
@@ -111,61 +112,55 @@ export default async function Home() {
 
   const sources = Array.from(new Set(bids.map(b => b.source).filter(Boolean))) as string[]
 
+  const lastScanLabel = lastScan
+    ? new Date(lastScan.scanned_at).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : null
+
+  const stats: { label: string; value: string | number; accent: string }[] = [
+    { label: 'Total Bids',       value: bids.length,      accent: 'var(--gold)' },
+    { label: 'Flooring Relevant', value: relevant.length,  accent: 'var(--green)' },
+    { label: 'Due This Week',    value: dueThisWeek.length, accent: dueThisWeek.length > 0 ? 'var(--orange)' : 'var(--ink-faint)' },
+    { label: 'Submitted',        value: submitted.length,  accent: 'var(--gold)' },
+    { label: 'Won',              value: won.length,        accent: 'var(--green)' },
+    { label: 'Lost',             value: lost.length,       accent: lost.length > 0 ? 'var(--red)' : 'var(--ink-faint)' },
+    { label: 'Win Rate',         value: (won.length + lost.length) > 0 ? `${Math.round(won.length / (won.length + lost.length) * 100)}%` : '—', accent: 'var(--gold)' },
+    { label: 'Sources',          value: sources.length,    accent: 'var(--ink-faint)' },
+  ]
+
   return (
-    <main style={{ maxWidth: 1200, margin: '0 auto', padding: '16px 12px' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 8,
-              background: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'IBM Plex Mono', fontWeight: 500, fontSize: 14, color: 'var(--charcoal)'
-            }}>FCU</div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.3px' }}>Bid Dashboard</h1>
-          </div>
-          <p style={{ color: 'var(--gray)', marginTop: 4, fontFamily: 'IBM Plex Mono', fontSize: 11 }}>
-            Floor Covering Unlimited — Government Contracts
-          </p>
-        </div>
-        <div style={{ textAlign: 'right', color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
-          {lastScan && (
-            <>
-              Last scan: {new Date(lastScan.scanned_at).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} PT
-              <br />{lastScan.duration_secs}s · {lastScan.new_bids} new bids
-              <br />
-            </>
-          )}
-          <a href="/scanner" style={{ color: 'var(--gold-light)' }}>Scanner health →</a>
-        </div>
-      </div>
+    <>
+      <Nav active="bids" />
 
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 28 }}>
-        {[
-          { label: 'Total Bids', value: bids.length, accent: 'var(--gold)' },
-          { label: 'Flooring Relevant', value: relevant.length, accent: 'var(--green)' },
-          { label: 'Due This Week', value: dueThisWeek.length, accent: dueThisWeek.length > 0 ? 'var(--orange)' : 'var(--gray)' },
-          { label: 'Submitted', value: submitted.length, accent: 'var(--gold)' },
-          { label: 'Won', value: won.length, accent: 'var(--green)' },
-          { label: 'Lost', value: lost.length, accent: lost.length > 0 ? 'var(--red)' : 'var(--gray)' },
-          { label: 'Win Rate', value: (won.length + lost.length) > 0 ? `${Math.round(won.length / (won.length + lost.length) * 100)}%` : '—', accent: 'var(--gold)' },
-          { label: 'Sources', value: sources.length, accent: 'var(--gray)' },
-        ].map(stat => (
-          <div key={stat.label} style={{
-            background: 'var(--charcoal-soft)', borderRadius: 12,
-            padding: '16px 20px', border: '1px solid var(--charcoal-mid)'
-          }}>
-            <div style={{ fontSize: 28, fontWeight: 700, color: stat.accent, fontFamily: 'IBM Plex Mono' }}>
-              {stat.value}
+      <main style={{ maxWidth: 1240, margin: '0 auto', padding: '28px 24px 64px' }}>
+        {/* Page heading */}
+        <header style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 24 }}>
+          <div>
+            <h1 style={{ fontSize: 30, letterSpacing: '-0.5px' }}>Government Bid Tracker</h1>
+            <p style={{ color: 'var(--ink-dim)', marginTop: 4, fontSize: 13 }}>
+              Floor Covering Unlimited — public-works & institutional opportunities
+            </p>
+          </div>
+          {lastScanLabel && (
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)', textAlign: 'right', lineHeight: 1.5 }}>
+              Last scan {lastScanLabel} PT<br />
+              {lastScan!.duration_secs}s · {lastScan!.new_bids} new bids
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gray)', marginTop: 2 }}>{stat.label}</div>
-          </div>
-        ))}
-      </div>
+          )}
+        </header>
 
-      {/* Table (client component for filtering) */}
-      <BidTable bids={bids} sources={sources} today={today.toISOString()} in3={in3.toISOString()} in7={in7.toISOString()} />
-    </main>
+        {/* Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 28 }}>
+          {stats.map(stat => (
+            <div key={stat.label} className="stat-card" style={{ ['--_accent' as any]: stat.accent }}>
+              <div className="stat-card__value">{stat.value}</div>
+              <div className="stat-card__label">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Table (client component for filtering) */}
+        <BidTable bids={bids} sources={sources} today={today.toISOString()} in3={in3.toISOString()} in7={in7.toISOString()} />
+      </main>
+    </>
   )
 }

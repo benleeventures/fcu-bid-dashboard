@@ -141,27 +141,35 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
+  // Prefer the human "raw" due string, but fall back to a clean formatted date
+  // when the raw value is just a machine timestamp (e.g. "2026-09-22T15:00:00").
+  function prettyDue(raw: string | null, iso: string | null): string {
+    if (raw && !/^\d{4}-\d{2}-\d{2}([T ]|$)/.test(raw.trim())) return raw
+    return formatDate(iso ?? raw)
+  }
+
   return (
     <div>
       {/* Filters */}
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16, alignItems: 'center' }}>
+      <div className="toolbar" style={{ marginBottom: 12 }}>
         <input
           type="text"
           placeholder="Search bids…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={inputStyle}
+          className="field"
+          style={{ flex: '1 1 200px', minWidth: 160 }}
         />
-        <select value={filterSource} onChange={e => setFilterSource(e.target.value)} style={inputStyle}>
+        <select value={filterSource} onChange={e => setFilterSource(e.target.value)} className="field">
           <option value="">All sources</option>
           {sources.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={filterDue} onChange={e => setFilterDue(e.target.value)} style={inputStyle}>
+        <select value={filterDue} onChange={e => setFilterDue(e.target.value)} className="field">
           <option value="">Any due date</option>
           <option value="week">Due this week</option>
           <option value="urgent">Due in 3 days</option>
         </select>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={inputStyle}>
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="field">
           <option value="">All statuses</option>
           <option value="active">Active</option>
           <option value="submitted">Submitted</option>
@@ -169,12 +177,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           <option value="lost">Lost</option>
           <option value="no_bid">No Bid</option>
         </select>
-        <select value={filterRelevant} onChange={e => setFilterRelevant(e.target.value)} style={inputStyle}>
+        <select value={filterRelevant} onChange={e => setFilterRelevant(e.target.value)} className="field">
           <option value="">All bids</option>
           <option value="yes">Flooring relevant</option>
           <option value="no">Not relevant</option>
         </select>
-        <span style={{ color: 'var(--gray)', fontSize: 12, marginLeft: 'auto', fontFamily: 'IBM Plex Mono' }}>
+        <span style={{ color: 'var(--ink-dim)', fontSize: 12, marginLeft: 'auto', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
           {displayBids.length} bids
         </span>
       </div>
@@ -186,7 +194,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
             onClick={() => setShowArchived(v => !v)}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono',
+              color: 'var(--ink-dim)', fontSize: 11, fontFamily: 'var(--font-mono)',
               padding: 0, textDecoration: 'underline', textUnderlineOffset: 3,
             }}
           >
@@ -196,49 +204,40 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       )}
 
       {/* Legend */}
-      <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, fontFamily: 'IBM Plex Mono', color: 'var(--gray)', flexWrap: 'wrap' }}>
-        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: 'var(--red)', marginRight: 4, verticalAlign: 'middle' }} />Due &lt;3 days</span>
-        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: 'var(--orange)', marginRight: 4, verticalAlign: 'middle' }} />Due this week</span>
-        <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: 'rgba(48,209,88,0.35)', marginRight: 4, verticalAlign: 'middle' }} />Flooring relevant</span>
+      <div className="legend" style={{ marginBottom: 12 }}>
+        <span><span className="legend__dot" style={{ background: 'var(--red)' }} />Due &lt;3 days</span>
+        <span><span className="legend__dot" style={{ background: 'var(--orange)' }} />Due this week</span>
+        <span><span className="legend__dot" style={{ background: 'var(--green)' }} />Flooring relevant</span>
         <span><span style={{ color: 'var(--star)' }}>★</span> Pinned favorite</span>
       </div>
 
       {/* Table */}
-      <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid var(--charcoal-mid)' }}>
-        <table style={{ width: '100%', minWidth: 920, borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+      <div className="table-wrap">
+        <table className="data-table">
           <thead>
-            <tr style={{ background: 'var(--charcoal-soft)', borderBottom: '1px solid var(--charcoal-mid)' }}>
-              <th style={{ ...thStyle, width: 28 }} />
-              <th style={{ ...thStyle, width: 140 }}>Bid ID</th>
-              <th style={{ ...thStyle, width: 220 }}>Title</th>
-              <th style={{ ...thStyle, width: 170 }}>Agency</th>
-              <th style={{ ...thStyle, width: 110 }}>Source</th>
-              <th
-                onClick={() => toggleSort('published_date')}
-                style={{ ...thStyle, width: 100, cursor: 'pointer', userSelect: 'none' }}
-              >
+            <tr>
+              <th style={{ width: 26 }} />
+              <th style={{ width: 118 }}>Bid ID</th>
+              <th style={{ width: 250 }}>Title</th>
+              <th style={{ width: 148 }}>Agency</th>
+              <th style={{ width: 120 }}>Source</th>
+              <th className="is-sortable" onClick={() => toggleSort('published_date')} style={{ width: 92 }}>
                 Published{sortIndicator('published_date')}
               </th>
-              <th
-                onClick={() => toggleSort('due_date')}
-                style={{ ...thStyle, width: 120, cursor: 'pointer', userSelect: 'none' }}
-              >
+              <th className="is-sortable" onClick={() => toggleSort('due_date')} style={{ width: 108 }}>
                 Due Date{sortIndicator('due_date')}
               </th>
-              <th
-                onClick={() => toggleSort('walk_date')}
-                style={{ ...thStyle, width: 110, cursor: 'pointer', userSelect: 'none' }}
-              >
+              <th className="is-sortable" onClick={() => toggleSort('walk_date')} style={{ width: 96 }}>
                 Job Walk{sortIndicator('walk_date')}
               </th>
-              <th style={{ ...thStyle, width: 80 }}>Status</th>
-              <th style={{ ...thStyle, width: 64 }} />
+              <th style={{ width: 78 }}>Status</th>
+              <th style={{ width: 58 }} />
             </tr>
           </thead>
           <tbody>
             {displayBids.length === 0 ? (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: 40, color: 'var(--gray)' }}>
+                <td colSpan={10} style={{ textAlign: 'center', padding: 48, color: 'var(--ink-dim)' }}>
                   No bids match your filters.
                 </td>
               </tr>
@@ -246,94 +245,76 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
               const badge = urgencyBadge(b.due_date)
               const isExpanded = expandedId === b.bid_id
               const hasSpec = !!b.spec
-              const rowBg = isExpanded
-                ? 'var(--charcoal-mid)'
-                : b.is_relevant
-                  ? 'rgba(48, 209, 88, 0.05)'
-                  : (i % 2 === 0 ? 'var(--charcoal)' : 'var(--charcoal-soft)')
               const isFav = localFavorite.get(b.bid_id) ?? b.is_favorite
               return [
                 <tr
                   key={b.id}
                   onClick={() => setExpandedId(isExpanded ? null : b.bid_id)}
-                  style={{
-                    background: rowBg,
-                    borderBottom: isExpanded ? 'none' : '1px solid var(--charcoal-mid)',
-                    cursor: 'pointer',
-                  }}
+                  className={`row${b.is_relevant ? ' row--relevant' : ''}${isExpanded ? ' row--expanded' : ''}`}
+                  style={isExpanded ? { borderBottom: 'none' } : undefined}
                 >
-                  <td style={{ ...tdStyle, width: 24, textAlign: 'center' }}>
+                  <td style={{ width: 24, textAlign: 'center' }}>
                     <span
                       onClick={e => handleFavorite(e, b.bid_id)}
                       title={isFav ? 'Unpin from top' : 'Pin to top'}
                       style={{
                         cursor: 'pointer',
-                        color: isFav ? 'var(--star)' : 'var(--charcoal-mid)',
+                        color: isFav ? 'var(--star)' : 'var(--border-strong)',
                         fontSize: 14,
                         transition: 'color 0.15s',
                         display: 'inline-block',
                       }}
                     >★</span>
                   </td>
-                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, color: 'var(--gray)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <a
                       href={`/bids/${encodeURIComponent(b.bid_id)}`}
                       onClick={e => e.stopPropagation()}
-                      style={{ color: 'var(--gold-light)', textDecoration: 'none' }}
+                      style={{ color: 'var(--gold-strong)', textDecoration: 'none' }}
                     >
                       {b.bid_id}
                     </a>
                   </td>
-                  <td style={{ ...tdStyle, overflow: 'hidden' }}>
+                  <td style={{ overflow: 'hidden' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                      <span style={{ color: 'var(--white)' }}>{b.title}</span>
-                      {b.search_keyword && (
-                        <span style={{
-                          fontSize: 10, padding: '1px 5px', borderRadius: 4,
-                          background: 'var(--charcoal-mid)', color: 'var(--gray)', fontFamily: 'IBM Plex Mono'
-                        }}>{b.search_keyword}</span>
-                      )}
-                      {!hasSpec && (
-                        <span style={{
-                          fontSize: 10, padding: '1px 5px', borderRadius: 4,
-                          background: 'var(--charcoal-mid)', color: 'var(--gray)', fontFamily: 'IBM Plex Mono'
-                        }}>No docs</span>
-                      )}
+                      <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{b.title}</span>
+                      {b.search_keyword && <span className="chip">{b.search_keyword}</span>}
+                      {!hasSpec && <span className="chip">No docs</span>}
                       <ScorePill bid={b} spec={b.spec ?? null} />
                     </div>
                   </td>
-                  <td style={{ ...tdStyle, color: 'var(--gray)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.agency || '—'}</td>
-                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
+                  <td style={{ color: 'var(--ink-dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.agency || '—'}</td>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 11, whiteSpace: 'nowrap' }}>
                     <span style={{
-                      padding: '2px 7px', borderRadius: 4,
-                      background: sourceColor(b.source) + '22',
+                      padding: '2px 7px', borderRadius: 5,
+                      background: sourceColor(b.source) + '1F',
                       color: sourceColor(b.source),
                     }}>{b.source || '—'}</span>
                   </td>
-                  <td style={{ ...tdStyle, color: 'var(--gray)', fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
+                  <td style={{ color: 'var(--ink-dim)', fontFamily: 'var(--font-mono)', fontSize: 11, whiteSpace: 'nowrap' }}>
                     {formatDate(b.published_date)}
                   </td>
-                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap' }}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 11, whiteSpace: 'nowrap' }}>
                     {badge && (
                       <div style={{
-                        display: 'inline-block', padding: '1px 6px', borderRadius: 4, marginBottom: 3,
-                        background: badge.color + '28', color: badge.color,
+                        display: 'inline-block', padding: '1px 6px', borderRadius: 5, marginBottom: 3,
+                        background: badge.color + '26', color: badge.color,
                         fontSize: 10, fontWeight: 700,
                       }}>{badge.label}</div>
                     )}
-                    <div style={{ color: badge ? badge.color : 'var(--white)' }}>
-                      {b.due_date_raw || formatDate(b.due_date)}
+                    <div style={{ color: badge ? badge.color : 'var(--ink)' }}>
+                      {prettyDue(b.due_date_raw, b.due_date)}
                     </div>
                   </td>
-                  <td style={{ ...tdStyle, fontFamily: 'IBM Plex Mono', fontSize: 11, whiteSpace: 'nowrap', color: 'var(--gray)' }}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 11, whiteSpace: 'nowrap', color: 'var(--ink-dim)' }}>
                     {formatDate(b.spec?.walk_date ?? null)}
                   </td>
-                  <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>
+                  <td style={{ whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
-                  <td style={{ ...tdStyle, width: 64, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right', paddingRight: 16 }}>
+                  <td style={{ width: 64, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right', paddingRight: 16 }}>
                     {b.url && (
-                      <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-light)', marginRight: 10 }}>↗</a>
+                      <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-strong)', marginRight: 10 }}>↗</a>
                     )}
                     <button
                       onClick={e => showArchived ? restoreBid(e, b.bid_id) : archiveBid(e, b.bid_id)}
@@ -350,11 +331,11 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   </td>
                 </tr>,
                 isExpanded && (
-                  <tr key={`${b.id}-detail`} style={{ background: 'var(--charcoal-mid)', borderBottom: '1px solid var(--charcoal-mid)' }}>
+                  <tr key={`${b.id}-detail`} className="row--expanded">
                     <td colSpan={10} style={{ padding: '0 14px 16px 14px' }}>
                       {hasSpec ? <SpecPanel spec={b.spec!} /> : (
-                        <div style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', padding: '8px 0' }}>
-                          No spec parsed yet. Run <code style={{ background: 'var(--charcoal-soft)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --bid-id={b.bid_id}</code> to extract.
+                        <div style={{ color: 'var(--ink-dim)', fontSize: 12, fontFamily: 'var(--font-mono)', padding: '8px 0' }}>
+                          No spec parsed yet. Run <code style={{ background: 'var(--surface)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --bid-id={b.bid_id}</code> to extract.
                         </div>
                       )}
                     </td>
@@ -390,79 +371,51 @@ function ScorePill({ bid, spec }: { bid: Bid; spec: BidSpec | null }) {
 
 function StatusBadge({ status }: { status: BidStatus | 'active' }) {
   const cfg: Record<string, { label: string; color: string }> = {
-    active:    { label: 'Active',     color: 'var(--gray)' },
-    submitted: { label: 'Submitted',  color: 'var(--gold)' },
+    active:    { label: 'Active',     color: 'var(--ink-dim)' },
+    submitted: { label: 'Submitted',  color: 'var(--gold-strong)' },
     won:       { label: 'Won',        color: 'var(--green)' },
     lost:      { label: 'Lost',       color: 'var(--red)' },
-    no_bid:    { label: 'No Bid',     color: '#636366' },
-    expired:   { label: 'Expired',    color: '#AAAAAA' },
+    no_bid:    { label: 'No Bid',     color: '#8B8578' },
+    expired:   { label: 'Expired',    color: '#A79F8D' },
   }
   const { label, color } = cfg[status] ?? cfg.active
   if (status === 'active') return null
   return (
     <span style={{
-      padding: '2px 7px', borderRadius: 4, fontSize: 10,
-      fontFamily: 'IBM Plex Mono', fontWeight: 600,
-      background: color + '22', color,
+      padding: '2px 7px', borderRadius: 5, fontSize: 10,
+      fontFamily: 'var(--font-mono)', fontWeight: 600,
+      background: color + '1F', color,
     }}>{label}</span>
   )
 }
 
 function sourceColor(source: string | null): string {
   switch (source) {
-    case 'PlanetBids': return '#C8922A'
-    case 'SAM.gov':    return '#30D158'
-    default:           return '#8E8E93'
+    case 'PlanetBids': return '#A9761A'
+    case 'SAM.gov':    return '#2A8A3E'
+    default:           return '#8B8578'
   }
-}
-
-const inputStyle: React.CSSProperties = {
-  background: 'var(--charcoal-soft)',
-  border: '1px solid var(--charcoal-mid)',
-  borderRadius: 8,
-  color: 'var(--white)',
-  padding: '7px 12px',
-  fontSize: 13,
-  outline: 'none',
-  fontFamily: 'Plus Jakarta Sans, sans-serif',
-}
-
-const thStyle: React.CSSProperties = {
-  padding: '10px 14px',
-  textAlign: 'left',
-  fontSize: 11,
-  fontWeight: 600,
-  color: 'var(--gray)',
-  fontFamily: 'IBM Plex Mono',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  whiteSpace: 'nowrap',
-}
-
-const tdStyle: React.CSSProperties = {
-  padding: '10px 14px',
-  verticalAlign: 'top',
-  lineHeight: 1.4,
 }
 
 function SpecPanel({ spec }: { spec: BidSpec }) {
   const tri = (val: boolean | null) => val === true ? '✓' : val === false ? '✗' : '?'
-  const triColor = (val: boolean | null) => val === true ? 'var(--green)' : val === false ? 'var(--red)' : 'var(--gray)'
+  const triColor = (val: boolean | null) => val === true ? 'var(--green)' : val === false ? 'var(--red)' : 'var(--ink-dim)'
 
   return (
     <div style={{
       marginTop: 10,
       padding: '14px 16px',
-      background: 'var(--charcoal-soft)',
-      borderRadius: 8,
-      border: '1px solid var(--charcoal-mid)',
+      background: 'var(--surface)',
+      borderRadius: 10,
+      border: '1px solid var(--border)',
+      boxShadow: 'var(--shadow-sm)',
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
       gap: '10px 20px',
       fontSize: 12,
     }}>
       {spec.summary && (
-        <div style={{ gridColumn: '1 / -1', color: 'var(--white)', marginBottom: 4, lineHeight: 1.5 }}>
+        <div style={{ gridColumn: '1 / -1', color: 'var(--ink)', marginBottom: 4, lineHeight: 1.5 }}>
           {spec.summary}
         </div>
       )}
@@ -479,8 +432,8 @@ function SpecPanel({ spec }: { spec: BidSpec }) {
 function SpecItem({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10, color: 'var(--gray)', fontFamily: 'IBM Plex Mono', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-      <div style={{ color: color || 'var(--white)', fontFamily: 'IBM Plex Mono', fontSize: 12 }}>{value}</div>
+      <div style={{ fontSize: 10, color: 'var(--ink-dim)', fontFamily: 'var(--font-mono)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+      <div style={{ color: color || 'var(--ink)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{value}</div>
     </div>
   )
 }
