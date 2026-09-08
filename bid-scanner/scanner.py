@@ -1213,9 +1213,9 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
         m = re.search(r"href='(/bids/\d+)'", url_cell)
         url = (QUALITYBIDDERS_BASE + m.group(1)) if m else QUALITYBIDDERS_BASE + "/bids"
 
-        if not _is_relevant(title):
-            continue
-
+        # Keep every open CA bid with an is_relevant flag (like the other
+        # sources) rather than pre-filtering — a 0-row return otherwise reads
+        # as "source broken" on the scanner-health matrix.
         bids.append({
             "bid_id": f"QB-{bid_num}",
             "title": title,
@@ -1225,13 +1225,14 @@ async def _search_qualitybidders(keywords: list[str]) -> list[dict]:
             "published_raw": posted,
             "due_date": _parse_date(due_raw),
             "due_date_raw": due_raw,
-            "is_relevant": True,
+            "is_relevant": _is_relevant(title),
             "search_keyword": "flooring",
             "url": url,
             "source": "Quality Bidders",
         })
 
-    print(f"  ✓ {len(rows)} open bids fetched, {len(bids)} flooring-relevant")
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(rows)} open bids fetched, {relevant} flooring-relevant")
     return bids
 
 
@@ -1567,6 +1568,71 @@ async def _search_lausd_fsd(keywords: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# RAMP — Regional Alliance Marketplace for Procurement (rampla.org)
+# ---------------------------------------------------------------------------
+# rampla.org is a Salesforce site and its DNS is geo-restricted, but the City
+# of LA publishes the same open opportunities as a Socrata open dataset on
+# data.lacity.org — no login, refreshed daily, reachable everywhere. RAMP is a
+# shared marketplace: one feed covers LA County, LADWP, LA Public Works, Port
+# of LA, LAWA, HACLA and more — all LA County.
+
+RAMP_API = "https://data.lacity.org/resource/hf3r-utnq.json"
+
+
+def _fetch_ramp_sync() -> list[dict]:
+    """Pull open RAMP opportunities from the data.lacity.org Socrata feed."""
+    resp = requests.get(
+        RAMP_API,
+        params={"$where": "stagename in('Open','Amended')",
+                "$order": "bidpost desc", "$limit": 2000},
+        headers={"User-Agent": USER_AGENT, "Accept-Language": "en-US,en;q=0.9"},
+        timeout=25,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+async def _search_ramp(keywords: list[str]) -> list[dict]:
+    """RAMP LA County — open opportunities via the LA City open-data feed."""
+    print("\nSearching RAMP LA County (data.lacity.org feed)...")
+    try:
+        rows = await asyncio.to_thread(_fetch_ramp_sync)
+    except Exception as e:
+        print(f"  ⚠ RAMP error: {e}")
+        return []
+
+    bids = []
+    for r in rows:
+        rid = str(r.get("rampid") or "").strip()
+        if not rid:
+            continue
+        title = re.sub(r"\s*-\s*Closing:\s*$", "", (r.get("title") or "").strip())
+        close_raw = r.get("closedate") or ""
+        url = r.get("url")
+        if isinstance(url, dict):
+            url = url.get("url", "")
+        bids.append({
+            "bid_id": f"RAMP-{rid}",
+            "title": title[:480],
+            "agency": (r.get("department") or "Los Angeles County").strip(),
+            "state": "California",
+            "county": "Los Angeles",
+            "published_date": _parse_date((r.get("bidpost") or "")[:10]) or None,
+            "published_raw": (r.get("bidpost") or "")[:10],
+            "due_date": _parse_date(close_raw[:10]) if close_raw else None,
+            "due_date_raw": close_raw[:10],
+            "is_relevant": _is_relevant(title, f"{title} {r.get('category', '')}"),
+            "search_keyword": "open bids",
+            "url": url or "https://www.rampla.org/s/",
+            "source": "RAMP LA County",
+        })
+
+    relevant = sum(1 for b in bids if b["is_relevant"])
+    print(f"  ✓ {len(bids)} open opportunities, {relevant} flooring-relevant")
+    return bids
+
+
+# ---------------------------------------------------------------------------
 # SecureBids (Colbi Technologies) — securebids.com / colbisecurebids.com
 # ---------------------------------------------------------------------------
 # Same vendor as Quality Bidders, different product. Public JSON API, no login
@@ -1781,27 +1847,27 @@ async def _search_ccop(page, keywords: list[str]) -> list[dict]:
                 status   = lines[i + 5] if lines[i + 4] == "Status:" else ""
                 desc     = lines[i + 6] if i + 6 < len(lines) else ""
 
-                if _is_relevant(desc):
-                    url = bid_links.get(proj_id, CCOP_URL)
-                    all_bids.append({
-                        "bid_id": f"CCOP-{proj_id}",
-                        "title": desc[:120],
-                        "agency": "Caltrans",
-                        "state": "California",
-                        "published_date": None,
-                        "published_raw": "",
-                        "due_date": _parse_date(due_raw),
-                        "due_date_raw": due_raw,
-                        "is_relevant": True,
-                        "search_keyword": "flooring",
-                        "url": url,
-                        "source": "Caltrans CCOP",
-                    })
+                url = bid_links.get(proj_id, CCOP_URL)
+                all_bids.append({
+                    "bid_id": f"CCOP-{proj_id}",
+                    "title": desc[:120],
+                    "agency": "Caltrans",
+                    "state": "California",
+                    "published_date": None,
+                    "published_raw": "",
+                    "due_date": _parse_date(due_raw),
+                    "due_date_raw": due_raw,
+                    "is_relevant": _is_relevant(desc),
+                    "search_keyword": "flooring",
+                    "url": url,
+                    "source": "Caltrans CCOP",
+                })
                 i += 7
             else:
                 i += 1
 
-        print(f"  ✓ 149 projects scanned, {len(all_bids)} flooring-relevant")
+        relevant = sum(1 for b in all_bids if b["is_relevant"])
+        print(f"  ✓ {len(all_bids)} projects scanned, {relevant} flooring-relevant")
 
     except Exception as e:
         print(f"  ⚠ Caltrans CCOP error: {e}")
@@ -1887,19 +1953,6 @@ async def _search_crisp(page) -> list[dict]:
     return all_bids
 
 
-async def _search_plan_rooms(page, keywords: list[str]) -> list[dict]:
-    """Scrape all configured CyberCopy plan rooms + Crisp."""
-    all_bids: list[dict] = []
-    for base_url, source_name in PLAN_ROOMS:
-        print(f"\nSearching {source_name}...")
-        bids = await _search_plan_room(page, base_url, source_name)
-        relevant = sum(1 for b in bids if b["is_relevant"])
-        print(f"  ✓ {len(bids)} open bids ({relevant} flooring-relevant)")
-        all_bids.extend(bids)
-    all_bids.extend(await _search_crisp(page))
-    return all_bids
-
-
 async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True,
                    live_page=None, funnel=None) -> list[dict]:
     """
@@ -1920,7 +1973,8 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     src = source.lower() if source else None
     all_bids = []
 
-    needs_browser = src is None or src not in ("sam", "qualitybidders", "ucla", "lausd", "securebids")
+    needs_browser = src is None or src not in (
+        "sam", "qualitybidders", "ucla", "lausd", "securebids", "ramp")
 
     if needs_browser:
         async with async_playwright() as p:
@@ -1965,11 +2019,16 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                     all_bids.extend(og_bids)
 
             if src in (None, "planrooms"):
-                with funnel.guard("Plan Rooms"):
-                    pr_page = await context.new_page()
-                    pr_bids = await _search_plan_rooms(pr_page, keywords)
-                    all_bids.extend(pr_bids)
-                    await pr_page.close()
+                # Guard each plan room on its own so the scanner-health matrix
+                # shows a real status per room, not one phantom "Plan Rooms" row
+                # that never has bids attributed to it.
+                pr_page = await context.new_page()
+                for base_url, source_name in PLAN_ROOMS:
+                    with funnel.guard(source_name):
+                        all_bids.extend(await _search_plan_room(pr_page, base_url, source_name))
+                with funnel.guard("Crisp Plan Room"):
+                    all_bids.extend(await _search_crisp(pr_page))
+                await pr_page.close()
 
             if src in (None, "caltrans"):
                 with funnel.guard("Caltrans CCOP"):
@@ -2011,6 +2070,11 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
         with funnel.guard("SecureBids"):
             sb_bids = await _search_securebids(keywords)
             all_bids.extend(sb_bids)
+
+    if src in (None, "ramp"):
+        with funnel.guard("RAMP LA County"):
+            ramp_bids = await _search_ramp(keywords)
+            all_bids.extend(ramp_bids)
 
     funnel.note_raw(all_bids)
 

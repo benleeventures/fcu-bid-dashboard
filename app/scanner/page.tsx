@@ -214,7 +214,7 @@ export default async function ScannerPage() {
                 <tbody>
                   {matrix.rows.map(row => (
                     <tr key={row.source}>
-                      <td style={{ padding: '3px 8px', whiteSpace: 'nowrap', color: row.brokenStreak >= 2 ? 'var(--red)' : 'var(--white)' }}>
+                      <td style={{ padding: '3px 8px', whiteSpace: 'nowrap', color: row.failStreak >= 2 ? 'var(--red)' : row.dryStreak >= 7 ? 'var(--gray)' : 'var(--white)' }}>
                         {row.source}
                       </td>
                       {row.cells.map((cell, i) => (
@@ -231,8 +231,8 @@ export default async function ScannerPage() {
                           )}
                         </td>
                       ))}
-                      <td style={{ padding: '3px 8px', textAlign: 'center', color: 'var(--red)', fontWeight: 700 }}>
-                        {row.brokenStreak >= 2 ? `${row.brokenStreak}d` : ''}
+                      <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: 700, color: row.failStreak >= 2 ? 'var(--red)' : 'var(--gray)' }}>
+                        {row.failStreak >= 2 ? `${row.failStreak}d` : row.dryStreak >= 7 ? `${row.dryStreak}d dry` : ''}
                       </td>
                     </tr>
                   ))}

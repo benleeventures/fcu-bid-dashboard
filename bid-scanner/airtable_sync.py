@@ -50,6 +50,7 @@ _SOURCE_MAP = {
     "Long Beach BuySpeed": "Long Beach BuySpeed",
     "LAUSD Facilities": "LAUSD Facilities",
     "SecureBids": "SecureBids (Colbi)",
+    "RAMP LA County": "RAMP LA County",
 }
 
 # Sources whose `agency` field is already a specific city name

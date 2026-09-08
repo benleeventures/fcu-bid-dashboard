@@ -178,7 +178,8 @@ export type SourceRow = {
   source: string
   cells: MatrixCell[]           // one per day column, oldest → newest
   lastRaw: number
-  brokenStreak: number          // consecutive most-recent days with 0 raw / blocked / error
+  failStreak: number            // consecutive most-recent scanned days that were blocked/error
+  dryStreak: number             // consecutive most-recent scanned days that returned 0 rows
 }
 
 const STATUS_RANK: Record<SourceStatus, number> = {
@@ -224,18 +225,34 @@ export function sourceMatrix(
 
   const rows: SourceRow[] = Array.from(grid.entries()).map(([source, row]: [string, Map<number, { status: SourceStatus; raw: number }>]) => {
     const cells: MatrixCell[] = columns.map((_, i) => row.get(i) ?? null)
-    let brokenStreak = 0
+    // failStreak: hard failures (blocked/error) — the real alarm.
+    // dryStreak: days the source ran fine but matched nothing — informational,
+    //            long fuse (could be a quiet week, could be a silent break).
+    let failStreak = 0
+    let dryStreak = 0
+    let failing = true
+    let dry = true
     for (let i = cells.length - 1; i >= 0; i--) {
       const c = cells[i]
       if (c === null) continue                 // not scanned that day — skip, don't break
-      if (c.raw === 0 || c.status === 'blocked' || c.status === 'error') brokenStreak++
-      else break
+      if (failing) {
+        if (c.status === 'blocked' || c.status === 'error') failStreak++
+        else failing = false
+      }
+      if (dry) {
+        if (c.raw === 0) dryStreak++
+        else dry = false
+      }
+      if (!failing && !dry) break
     }
     const lastCell = cells.slice().reverse().find(c => c !== null) as MatrixCell
-    return { source, cells, lastRaw: lastCell?.raw ?? 0, brokenStreak }
+    return { source, cells, lastRaw: lastCell?.raw ?? 0, failStreak, dryStreak }
   })
 
-  rows.sort((a, b) => b.brokenStreak - a.brokenStreak || a.source.localeCompare(b.source))
+  rows.sort((a, b) =>
+    b.failStreak - a.failStreak ||
+    b.dryStreak - a.dryStreak ||
+    a.source.localeCompare(b.source))
   return { columns, rows }
 }
 
