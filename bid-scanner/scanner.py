@@ -63,7 +63,7 @@ FLOORING_SERVICE_PATTERNS = [
     "floor restoration", "vct restoration", "terrazzo restoration",
     "tile and grout cleaning", "grout cleaning",
     "carpet cleaning", "carpet care", "carpet extraction", "carpet shampoo",
-    "shampoo carpet", "steam clean", "spot cleaning",
+    "shampoo carpet", "carpet steam", "carpet spot",
     "blind cleaning", "shade cleaning", "drapery cleaning", "blind repair",
     "window covering repair", "re-cord",
     "floor repair", "flooring repair", "carpet repair", "seam repair",
