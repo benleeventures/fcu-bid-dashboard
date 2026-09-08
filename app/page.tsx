@@ -14,6 +14,10 @@ export type BidSpec = {
   walk_date: string | null
   walk_date_raw: string | null
   summary: string | null
+  flooring_is_primary: boolean | null
+  award_method: string | null
+  project_city: string | null
+  bid_type: string | null
 }
 
 export type BidStatus = 'active' | 'submitted' | 'won' | 'lost' | 'no_bid'
@@ -37,6 +41,8 @@ export type Bid = {
   bid_status: BidStatus | null
   submitted_amount: number | null
   award_amount: number | null
+  county: string | null
+  geo_status: string | null
   spec?: BidSpec | null
 }
 
@@ -53,7 +59,7 @@ async function getBids(): Promise<Bid[]> {
   // order by recency. PostgREST hard-caps responses at 1000 rows.
   const { data, error } = await sb
     .from('bids')
-    .select('*, spec:bid_specs(flooring_types,total_sqft,rooms,prevailing_wage,bid_bond,bid_bond_pct,walk_required,walk_date,walk_date_raw,summary)')
+    .select('*, spec:bid_specs(flooring_types,total_sqft,rooms,prevailing_wage,bid_bond,bid_bond_pct,walk_required,walk_date,walk_date_raw,summary,flooring_is_primary,award_method,project_city,bid_type)')
     .neq('bid_status', 'expired')
     .order('first_seen_at', { ascending: false })
     .limit(1000)

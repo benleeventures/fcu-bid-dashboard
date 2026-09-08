@@ -1,84 +1,119 @@
 """
-FCU Go/No-Go scoring — Python port of app/lib/scoring.ts.
+FCU winnability score (scoring v2) — Python port of app/lib/scoring.ts.
 Single source of truth for score computation used by parser.py and jobwalk.py.
+
+Full write-up: bid-scanner/docs/scoring.md
+
+    score = geography(0–60) + lead_time(0–30) + award_adj(−6…+10)  → clamp 0–100
+    verdict:  >= 58 GO   ·   33–57 MAYBE   ·   < 33 NO-GO
+
+Hard NO-GO (score 0): flooring is a minor part of a larger multi-trade scope.
+(Past-due archiving is handled by expirer.py, not here.)
+
+NEEDS MANUAL REVIEW (no score) when a scoring input is missing — see REVIEW_LABELS.
 """
 
+from geo import drive_band
 
-def score_go_no_go(bid: dict, spec: dict | None) -> dict:
+REVIEW_LABELS = {
+    "no_docs":       "Bid documents not downloaded / parsed",
+    "no_location":   "Job location not identified",
+    "no_due_date":   "No bid due date on file",
+    "no_scope_read": "Scope not assessed by parser",
+}
+
+_GEO_BAND_SCORE = {"A": 60, "B": 48, "C": 32, "D": 16}
+
+
+def _lead_time_score(due_date, today):
+    """due_date: datetime.date or ISO string. Returns 0–30, or None when there
+    is no usable due date (caller flags no_due_date)."""
+    from datetime import date as _date
+    if not due_date:
+        return None
+    if isinstance(due_date, str):
+        try:
+            due_date = _date.fromisoformat(due_date[:10])
+        except ValueError:
+            return None
+    if today is None:
+        today = _date.today()
+    days = (due_date - today).days
+    if days >= 21:
+        return 30
+    if days >= 14:
+        return 24
+    if days >= 10:
+        return 15
+    if days >= 7:
+        return 8
+    if days >= 4:
+        return 3
+    return 0
+
+
+def _award_adj(award_method):
+    if award_method in ("best_value", "qualifications"):
+        return 10
+    if award_method == "low_bid":
+        return -6
+    return 0
+
+
+def score_go_no_go(bid: dict, spec: dict | None, today=None) -> dict:
     """
-    Returns {"score": int, "verdict": "go"|"maybe"|"no_go"}.
-    bid  — needs: is_relevant
-    spec — needs: total_sqft, prevailing_wage, bid_bond, walk_required,
-                  raw_extract.dvbe_required, raw_extract.dbe_goal_pct
-    Due date is not a scoring factor — expirer handles archiving past-due bids.
+    Returns {"score": int|None, "verdict": str|None,
+             "needs_review": bool, "review_reasons": list[str]}.
+
+    bid  — needs: due_date, county, geo_status
+    spec — needs: flooring_is_primary, award_method, project_city
+                  (falls back to spec["raw_extract"] for the parsed fields)
     """
-    score = 55
-
-    # 0. Materials-/supply-only or service-only solicitation — FCU installs
-    #    floor covering, it does not sell product or hold cleaning/maintenance
-    #    contracts. Hard no-go regardless of every other factor.
-    raw0 = (spec.get("raw_extract") or spec) if spec else {}
-    if spec and any(
-        spec.get(k) is True or raw0.get(k) is True
-        for k in ("materials_only", "service_only")
-    ):
-        return {"score": 0, "verdict": "no_go"}
-
-    # 1. Flooring scope match
-    if bid.get("is_relevant"):
-        score += 20
-    else:
-        score -= 25
-
-    # 2. Square footage
-    sqft = spec.get("total_sqft") if spec else None
-    if sqft:
-        if sqft >= 20_000:
-            score += 15
-        elif sqft >= 5_000:
-            score += 10
-        elif sqft >= 1_000:
-            score += 3
-        else:
-            score -= 10
-
-    # 3. Prevailing wage
-    if spec:
-        if spec.get("prevailing_wage") is True:
-            score -= 8
-        elif spec.get("prevailing_wage") is False:
-            score += 5
-
-    # 4. Bid bond
-    if spec and spec.get("bid_bond") is True:
-        score -= 5
-
-    # 5. Mandatory job walk
-    if spec and spec.get("walk_required") is True:
-        score -= 5
-
-    # 6. DVBE (FCU is certified — competitive edge)
     raw = (spec.get("raw_extract") or {}) if spec else {}
-    if raw.get("dvbe_required") is True:
-        score += 12
 
-    # 7. DBE goal
-    dbe = raw.get("dbe_goal_pct")
-    if dbe and dbe > 0:
-        score -= 10
+    def field(key):
+        if spec and spec.get(key) is not None:
+            return spec.get(key)
+        return raw.get(key)
 
-    # 8. Spec parsed
-    if spec:
-        score += 5
-    else:
-        score -= 5
+    # ── Not parsed at all ───────────────────────────────────────────────────
+    if not spec:
+        return {"score": None, "verdict": None, "needs_review": True,
+                "review_reasons": ["no_docs"]}
 
+    # ── Hard NO-GO: flooring is a minor slice of a bigger multi-trade scope ──
+    if field("flooring_is_primary") is False:
+        return {"score": 0, "verdict": "no_go", "needs_review": False,
+                "review_reasons": []}
+
+    # ── Missing-input checks → NEEDS MANUAL REVIEW ──────────────────────────
+    reasons = []
+
+    project_city = (field("project_city") or "").strip()
+    band = drive_band(project_city or None, bid.get("county"))
+    if band is None or (bid.get("geo_status") == "unknown" and not project_city):
+        reasons.append("no_location")
+
+    lead = _lead_time_score(bid.get("due_date"), today)
+    if lead is None:
+        reasons.append("no_due_date")
+
+    if field("flooring_is_primary") is None:
+        reasons.append("no_scope_read")
+
+    if reasons:
+        return {"score": None, "verdict": None, "needs_review": True,
+                "review_reasons": reasons}
+
+    # ── Score ──────────────────────────────────────────────────────────────
+    score = _GEO_BAND_SCORE[band] + lead + _award_adj(field("award_method"))
     clamped = min(100, max(0, round(score)))
-    if clamped >= 65:
+    if clamped >= 58:
         verdict = "go"
-    elif clamped >= 40:
+    elif clamped >= 33:
         verdict = "maybe"
     else:
         verdict = "no_go"
 
-    return {"score": clamped, "verdict": verdict}
+    return {"score": clamped, "verdict": verdict,
+            "needs_review": False, "review_reasons": []}

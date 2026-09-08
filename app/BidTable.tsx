@@ -372,15 +372,18 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
 function ScorePill({ bid, spec }: { bid: Bid; spec: BidSpec | null }) {
   if (!spec) return null
   const result = scoreGoNoGo(bid, spec)
-  const cfg = verdictConfig[result.verdict]
+  const cfg = result.needsReview ? verdictConfig.review : verdictConfig[result.verdict!]
   return (
-    <span style={{
-      fontSize: 10, padding: '1px 6px', borderRadius: 4,
-      background: cfg.bg, color: cfg.color,
-      fontFamily: 'IBM Plex Mono', fontWeight: 700,
-      letterSpacing: '0.04em',
-    }}>
-      {cfg.label} {result.score}
+    <span
+      title={result.needsReview ? result.reviewReasons.map(r => r.label).join('; ') : undefined}
+      style={{
+        fontSize: 10, padding: '1px 6px', borderRadius: 4,
+        background: cfg.bg, color: cfg.color,
+        fontFamily: 'IBM Plex Mono', fontWeight: 700,
+        letterSpacing: '0.04em',
+      }}
+    >
+      {result.needsReview ? cfg.label : `${cfg.label} ${result.score}`}
     </span>
   )
 }

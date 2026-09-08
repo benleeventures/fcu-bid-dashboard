@@ -110,14 +110,20 @@ def build():
         (
             "Step 4 — Relevance Check",
             "Every surviving bid title is checked against a broader list of 30+ flooring-specific terms "
-            "(VCT, vinyl plank, hardwood, epoxy floor, ceramic tile, shades, linoleum, etc.) to catch variations the keyword search may have missed.\n\n"
-            "Optional AI second pass: if enabled, a local AI model reviews construction-type bids "
-            "(e.g. \"Gymnasium Renovation\") that didn't match the term list, to judge whether flooring work is likely included. "
+            "(VCT, vinyl plank, hardwood, epoxy floor, ceramic tile, shades, linoleum, etc.) to catch variations the keyword search may have missed. "
+            "Flooring installation, wholesale supply (furnish-only), and floor-care maintenance (strip & wax, carpet cleaning, "
+            "blind cleaning/repair, on-call flooring repair) all count. Only services with no floor-covering component "
+            "(janitorial, pest control, landscaping, glass washing) are dropped.\n\n"
+            "Optional AI second pass: if enabled, an AI model reviews construction-type bids "
+            "(e.g. \"Gymnasium Renovation\") that didn't match the term list, to judge whether flooring is the primary scope. "
             "Each bid is flagged Relevant: Yes / No."
         ),
         (
-            "Step 5 — Go / No-Go Score (after document parsing)",
-            "Once bid documents are downloaded and parsed, each bid is scored 0–100 and assigned a verdict."
+            "Step 5 — Winnability Score (after document parsing)",
+            "Once bid documents are downloaded and parsed, each bid is scored 0–100 from three factors: "
+            "how far the job site is from the Chatsworth shop, how many days are left to bid, and the award method "
+            "(best-value work scores higher than pure low-bid). A bid missing any of those inputs is marked "
+            "NEEDS REVIEW instead of scored."
         ),
         (
             "Step 6 — New-Bid Email Digest",
@@ -133,33 +139,31 @@ def build():
 
     # ── Score table ──────────────────────────────────────────────────────────
     story.append(HRFlowable(width="100%", thickness=0.5, color=MID_GRAY, spaceAfter=10))
-    story.append(Paragraph("Go / No-Go Scoring Breakdown", section_style))
+    story.append(Paragraph("Winnability Scoring Breakdown", section_style))
     story.append(Paragraph(
-        "After the bid documents are parsed, each bid receives a score based on these factors:",
+        "After the bid documents are parsed, each bid is scored 0–100 from three factors — "
+        "how far the job is, how much time is left to bid, and how the contract is awarded:",
         body_style
     ))
 
     score_rows = [
         ["Factor", "Score Impact"],
-        ["Flooring confirmed in scope", "+20"],
-        ["Job size — large (20,000+ sq ft)", "+15"],
-        ["Job size — medium (5,000–20,000 sq ft)", "+10"],
-        ["Job size — small (1,000–5,000 sq ft)", "+3"],
-        ["DVBE requirement (FCU is certified — competitive edge)", "+12"],
-        ["No prevailing wage requirement", "+5"],
-        ["Documents parsed (more info = better score)", "+5"],
-        ["Prevailing wage required (higher labor cost)", "−8"],
-        ["DBE subcontractor goal required", "−10"],
-        ["Bid bond required", "−5"],
-        ["Mandatory job walk", "−5"],
-        ["Job size too small (under 1,000 sq ft)", "−10"],
-        ["Flooring not in scope", "−25"],
+        ["Job site ≤ 45 min from the Chatsworth shop", "60"],
+        ["Job site ≤ 75 min (central LA / Ventura county)", "48"],
+        ["Job site ≤ 110 min (South Bay / north Orange County)", "32"],
+        ["Job site > 110 min (deep Orange County / San Diego)", "16"],
+        ["21+ days left to bid", "+30"],
+        ["10–13 days left to bid", "+15"],
+        ["Under 4 days left to bid", "+0"],
+        ["Best-value / qualifications award (favors FCU)", "+10"],
+        ["Low-bid-only award (pure price fight)", "−6"],
+        ["Flooring is only a minor part of a larger project", "NO-GO"],
     ]
 
     def impact_color(val):
-        if val.startswith("+"):
+        if val.startswith("+") or val[0].isdigit():
             return colors.HexColor("#1A6B2E")
-        if val.startswith("−"):
+        if val.startswith("−") or val == "NO-GO":
             return colors.HexColor("#A00000")
         return CHARCOAL
 
@@ -198,15 +202,17 @@ def build():
     # Verdict key
     verdict_data = [
         ["Verdict", "Score Range", "Meaning"],
-        ["GO",    "65 – 100", "Worth estimating — assign to Joanne"],
-        ["MAYBE", "40 – 64",  "Review case by case — Ben / Joanne call"],
-        ["NO-GO", "0 – 39",   "Skip — below our threshold"],
+        ["GO",     "58 – 100", "Worth estimating — assign to Joanne"],
+        ["MAYBE",  "33 – 57",  "Review case by case — Ben / Joanne call"],
+        ["NO-GO",  "0 – 32",   "Skip — below our threshold"],
+        ["NEEDS REVIEW", "—",  "Missing an input (location / due date / scope) — a person must look"],
     ]
     verdict_table = Table(verdict_data, colWidths=[1.2*inch, 1.4*inch, 4.0*inch])
     verdict_colors = [
         colors.HexColor("#1A6B2E"),
         colors.HexColor("#7A5A00"),
         colors.HexColor("#A00000"),
+        colors.HexColor("#555555"),
     ]
     verdict_style = [
         ("BACKGROUND",    (0, 0), (-1, 0), CHARCOAL),

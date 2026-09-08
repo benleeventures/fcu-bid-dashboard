@@ -25,8 +25,11 @@ JSON schema for --save:
   {
     "flooring_types": ["carpet", "LVT", "VCT"],
     "total_sqft": 4500,
-    "materials_only": false,
-    "service_only": false,
+    "non_flooring_service": false,
+    "flooring_is_primary": true,
+    "bid_type": "furnish_install",
+    "award_method": "low_bid",
+    "project_city": "Van Nuys",
     "rooms": "Classrooms, hallways, admin offices",
     "prevailing_wage": true,
     "bid_bond": true,
@@ -211,8 +214,9 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
     if spec.get("walk_date_raw"):
         walk_date = _parse_date(spec["walk_date_raw"])
 
-    # Fetch bid for scoring
-    bid_resp = sb.table("bids").select("is_relevant,due_date").eq("bid_id", bid_id).limit(1).execute()
+    # Fetch bid for scoring (geography + lead time)
+    bid_resp = sb.table("bids").select(
+        "is_relevant,due_date,county,geo_status").eq("bid_id", bid_id).limit(1).execute()
     bid = (bid_resp.data or [{}])[0]
 
     from scoring import score_go_no_go
@@ -232,10 +236,22 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
         "summary":         (spec.get("summary") or "")[:1000],
         "raw_extract":     spec,
         "pdf_filename":    Path(pdf_path).name if pdf_path else None,
+        "award_method":       spec.get("award_method"),
+        "flooring_is_primary": spec.get("flooring_is_primary"),
+        "project_city":       (spec.get("project_city") or "")[:120] or None,
+        "bid_type":           spec.get("bid_type"),
         "go_score":        go["score"],
-        "go_verdict":      go["verdict"],
+        "go_verdict":      "review" if go["needs_review"] else go["verdict"],
     }
-    sb.table("bid_specs").upsert(row, on_conflict="bid_id").execute()
+    try:
+        sb.table("bid_specs").upsert(row, on_conflict="bid_id").execute()
+    except Exception:
+        # scoring-v2 columns not migrated yet — retry without them
+        for k in ("award_method", "flooring_is_primary", "project_city", "bid_type"):
+            row.pop(k, None)
+        if row["go_verdict"] == "review":
+            row["go_verdict"] = None
+        sb.table("bid_specs").upsert(row, on_conflict="bid_id").execute()
     try:
         sb.table("bids").update({
             "parse_status":     "parsed",
@@ -244,17 +260,19 @@ def save_spec(bid_id: str, spec: dict, pdf_path: str = ""):
     except Exception:
         pass  # parse_status column not migrated yet — spec still saved
 
-    # Materials-only or service-only jobs surfaced by the parser: drop them off
-    # the relevant list so they leave the dashboard star + Airtable tracker.
-    if (spec.get("materials_only") is True or spec.get("service_only") is True) and bid.get("is_relevant"):
-        reason = "materials-only" if spec.get("materials_only") is True else "service-only"
+    # Non-flooring service contract surfaced by the parser (janitorial / pest /
+    # landscaping / glass washing with no floor-covering work): drop it off the
+    # relevant list so it leaves the dashboard star + Airtable tracker.
+    if spec.get("non_flooring_service") is True and bid.get("is_relevant"):
         try:
             sb.table("bids").update({"is_relevant": False}).eq("bid_id", bid_id).execute()
-            print(f"  ⚠ {bid_id}: {reason} per docs — marked not relevant")
+            print(f"  ⚠ {bid_id}: non-flooring service per docs — marked not relevant")
         except Exception:
             pass
 
-    print(f"✓ Saved spec for {bid_id}  [{go['verdict'].upper()} {go['score']}]")
+    _verdict = go["verdict"].upper() if go["verdict"] else "REVIEW"
+    _sc = go["score"] if go["score"] is not None else "—"
+    print(f"✓ Saved spec for {bid_id}  [{_verdict} {_sc}]")
 
     if os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
         from airtable_sync import update_job_walk
@@ -1420,8 +1438,11 @@ Extract the following fields and return ONLY a valid JSON object — no markdown
 {
   "flooring_types": ["list of flooring types found: carpet, LVT, VCT, tile, hardwood, window_coverings, blinds, etc. Empty array if none."],
   "total_sqft": <number or null — total square footage of flooring scope>,
-  "materials_only": <true if this solicitation is for the PURCHASE / SUPPLY / DELIVERY of flooring materials with NO installation labor in scope (installation "by others", "by owner", or not mentioned at all). false if the contractor installs the flooring. null if genuinely unclear.>,
-  "service_only": <true if this is a recurring cleaning / maintenance / janitorial / pest-control / strip-and-wax SERVICE contract rather than a flooring installation or replacement project. false otherwise.>,
+  "non_flooring_service": <true ONLY if this is a janitorial / custodial / pest-control / landscaping / exterior-glass-washing service contract with NO floor-covering or window-covering work in scope. false otherwise. (Floor stripping/waxing, carpet cleaning, floor refinishing, blind cleaning/repair, and on-call flooring repair are floor-covering work — those are false.)>,
+  "flooring_is_primary": <true if floor-covering or window-covering work — installation, wholesale supply, OR maintenance — is the primary scope / stated purpose of this solicitation. false if flooring is only a minor component of a larger multi-trade construction or renovation project (e.g. a full building remodel where flooring is one of many trades). null if genuinely unclear.>,
+  "bid_type": <one of "furnish_install" (contractor supplies material AND installs), "install_only" (labor only — owner supplies the material), "furnish_only" (supply / deliver product, no installation), "maintenance" (cleaning / stripping / waxing / refinishing / repair service). null if unclear.>,
+  "award_method": <one of "low_bid" (lowest responsive price wins — IFB / sealed bid), "best_value" (price plus other factors), "qualifications" (qualifications-based / RFQ). null if not stated.>,
+  "project_city": "<city or municipality where the work is performed, e.g. 'Van Nuys'. Empty string if not stated.>",
   "rooms": "<comma-separated list of rooms or areas, e.g. 'Classrooms, hallways, admin offices'. Empty string if not specified.>",
   "prevailing_wage": <true if prevailing wage or certified payroll is required, false if not, null if unclear>,
   "bid_bond": <true if a bid bond is required, false if not, null if unclear>,
@@ -1647,7 +1668,9 @@ def _parse_with_ollama(pdf_path: Path) -> dict | None:
     print("  ↻ Retrying with strict JSON prompt...")
     retry_prompt = (
         "Return ONLY a valid JSON object with these exact keys. No explanation, no markdown.\n\n"
-        '{"flooring_types":[],"total_sqft":null,"rooms":"","prevailing_wage":null,'
+        '{"flooring_types":[],"total_sqft":null,"non_flooring_service":false,'
+        '"flooring_is_primary":null,"bid_type":null,"award_method":null,"project_city":"",'
+        '"rooms":"","prevailing_wage":null,'
         '"bid_bond":null,"bid_bond_pct":null,"walk_required":false,"walk_date_raw":"",'
         '"dvbe_required":null,"dvbe_pct":null,"dbe_goal_pct":null,"summary":""}\n\n'
         f"BID DOCUMENT TEXT:\n{text[:6000]}"
@@ -1731,14 +1754,20 @@ def cmd_parse_all(backend: str = "manual"):
 def cmd_recalculate():
     """Recompute go_score + go_verdict for all existing bid_specs."""
     sb = _sb()
-    specs_resp = sb.table("bid_specs").select("bid_id,total_sqft,prevailing_wage,bid_bond,walk_required,raw_extract").execute()
+    try:
+        specs_resp = sb.table("bid_specs").select(
+            "bid_id,flooring_is_primary,award_method,project_city,raw_extract").execute()
+    except Exception:
+        print("⚠ scoring-v2 columns missing — run supabase/add_scoring_v2.sql first.")
+        return
     specs = specs_resp.data or []
     if not specs:
         print("No specs found.")
         return
 
     bid_ids = [s["bid_id"] for s in specs]
-    bids_resp = sb.table("bids").select("bid_id,is_relevant,due_date").in_("bid_id", bid_ids).execute()
+    bids_resp = sb.table("bids").select(
+        "bid_id,is_relevant,due_date,county,geo_status").in_("bid_id", bid_ids).execute()
     bids_by_id = {b["bid_id"]: b for b in (bids_resp.data or [])}
 
     from scoring import score_go_no_go
@@ -1746,11 +1775,12 @@ def cmd_recalculate():
     for spec in specs:
         bid = bids_by_id.get(spec["bid_id"], {})
         go = score_go_no_go(bid, spec)
+        verdict = "review" if go["needs_review"] else go["verdict"]
         sb.table("bid_specs").update({
             "go_score":   go["score"],
-            "go_verdict": go["verdict"],
+            "go_verdict": verdict,
         }).eq("bid_id", spec["bid_id"]).execute()
-        print(f"  {spec['bid_id']}  [{go['verdict'].upper()} {go['score']}]")
+        print(f"  {spec['bid_id']}  [{(verdict or '?').upper()} {go['score'] if go['score'] is not None else '—'}]")
         updated += 1
 
     print(f"\n✓ Recalculated {updated} specs")

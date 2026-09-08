@@ -52,42 +52,45 @@ RELEVANT_KEYWORDS = [
     "ceramic tile", "porcelain tile", "tile installation", "tile replacement",
 ]
 
-# Materials-/supply-only solicitations — FCU is an installer, not a distributor.
-# These buy product with no installation labor, so they're never a fit even when
-# the title mentions flooring. Checked against title + description.
-MATERIALS_ONLY_PATTERNS = [
-    "materials only", "material only", "materials-only", "material-only",
-    "furnish only", "furnish and deliver", "furnish & deliver",
-    "supply only", "supply and deliver", "supply & deliver", "delivery only",
-    "purchase and delivery", "no installation", "installation not included",
-    "installation by others", "installation by owner", "material purchase",
-    "carpet purchase", "purchase of carpet", "purchase of flooring",
-    "product only", "supply of carpet", "supply of flooring", "no labor",
+# Flooring / window-covering SERVICE work — strip-and-wax, carpet cleaning, floor
+# refinishing, blind cleaning & repair, on-call flooring repair. FCU wholesales
+# product with or without install AND takes maintenance contracts (it holds a
+# quarterly CHP floor-maintenance job and wants more), so these are real targets,
+# not noise. A hit here makes a bid relevant the same as an install keyword.
+FLOORING_SERVICE_PATTERNS = [
+    "strip and wax", "strip & wax", "stripping and waxing", "floor waxing",
+    "floor buffing", "floor stripping", "floor refinishing", "floor sealing",
+    "floor restoration", "vct restoration", "terrazzo restoration",
+    "tile and grout cleaning", "grout cleaning",
+    "carpet cleaning", "carpet care", "carpet extraction", "carpet shampoo",
+    "shampoo carpet", "steam clean", "spot cleaning",
+    "blind cleaning", "shade cleaning", "drapery cleaning", "blind repair",
+    "window covering repair", "re-cord",
+    "floor repair", "flooring repair", "carpet repair", "seam repair",
+    "on-call flooring", "flooring maintenance", "floor maintenance", "floor care",
 ]
 
-# Service contracts, not installation — cleaning, maintenance, pest, janitorial.
-# The word "carpet" or "floor" makes these look relevant, but FCU installs floor
-# covering; it doesn't hold recurring service contracts.
-SERVICE_ONLY_PATTERNS = [
-    "carpet cleaning", "floor cleaning", "cleaning service", "cleaning contract",
+# Services with NO floor-covering component — janitorial, pest, landscaping, glass
+# washing. The word "carpet" or "floor" can make these look relevant, but they are
+# not FCU's business. Generic "cleaning service" is deliberately absent — it's too
+# broad, and "carpet cleaning service" must survive via FLOORING_SERVICE_PATTERNS.
+NON_FLOORING_SERVICE_PATTERNS = [
     "janitorial", "custodial", "housekeeping", "pest control", "extermination",
-    "fumigation", "strip and wax", "stripping and waxing", "strip & wax",
-    "floor waxing", "floor buffing", "carpet care", "carpet extraction",
-    "steam cleaning", "carpet shampoo", "shampoo carpet", "spot cleaning",
-    "grounds maintenance", "landscape maintenance", "window washing",
+    "fumigation", "grounds maintenance", "landscape maintenance", "landscaping",
+    "window washing", "glass cleaning", "pressure washing", "power washing",
 ]
 
-# If any of these also appear, it's an install job after all — keep it.
-# Note: these are all *affirmative* install phrases; negated forms like
-# "no installation" / "installation not included" stay in MATERIALS_ONLY_PATTERNS
-# and never appear here, so they aren't accidentally rescued.
-_INSTALL_OVERRIDE = [
+# Affirmative install / real-flooring-work phrases. If any appears alongside a
+# non-flooring-service match, the bid still has flooring work in scope — keep it.
+_INSTALL_PHRASES = [
     "furnish and install", "furnish & install", "furnish/install",
     "supply and install", "supply & install", "labor and material",
     "labor and materials", "turnkey", "install and furnish",
     "and installation", "& installation", "and install ", "install and",
     "including installation", "installation included", "installation of ",
     "installation for ", "install carpet", "install flooring", "installed by",
+    "install", "installation", "replace", "replacement", "demolition",
+    "new carpet", "new flooring", "renovation", "tenant improvement",
 ]
 
 # Construction bids that didn't match keywords → Ollama second-pass
@@ -134,17 +137,23 @@ def _claude_relevance(title: str, description: str = "") -> bool:
                     "flooring installation (carpet, vinyl, LVT, VCT, tile, hardwood, "
                     "rubber, epoxy, window coverings, blinds) is the PRIMARY and "
                     "dominant scope of work — not a minor component of a larger project.\n\n"
+                    "FCU is a flooring/window-covering wholesaler that supplies "
+                    "product with or without install, and also takes floor-care "
+                    "maintenance contracts.\n"
                     "Examples that should be YES: 'Flooring Replacement at City Hall', "
-                    "'Carpet Installation Gymnasium', 'VCT Tile Replacement School'.\n"
+                    "'Carpet Installation Gymnasium', 'VCT Tile Replacement School', "
+                    "'Furnish and Deliver Carpet Tile' (wholesale supply is fine), "
+                    "'Strip and Wax VCT Floors - Quarterly', 'Carpet Cleaning Services', "
+                    "'Blind Cleaning and Repair', 'On-Call Flooring Repair' "
+                    "(floor / window-covering maintenance is fine).\n"
                     "Examples that should be NO: 'Aquatic Center Improvements', "
                     "'Street Improvements', 'Restroom Rehabilitation', "
-                    "'Building Renovation' (flooring is incidental), "
-                    "'Furnish and Deliver Carpet Tile', 'Flooring Materials — Supply Only' "
-                    "(product purchase, no installation labor), "
-                    "'Carpet Cleaning Services', 'Janitorial & Pest Control' "
-                    "(recurring service, not installation).\n\n"
+                    "'Building Renovation' (flooring is incidental to a larger scope), "
+                    "'Janitorial & Pest Control', 'Landscape Maintenance', "
+                    "'Window Washing Services' (no floor-covering work).\n\n"
                     f"{context}\n\n"
-                    "Is commercial flooring the PRIMARY scope? Answer YES or NO only."
+                    "Is flooring / window-covering work (install, supply, OR "
+                    "maintenance) the PRIMARY scope? Answer YES or NO only."
                 ),
             }],
         )
@@ -153,39 +162,32 @@ def _claude_relevance(title: str, description: str = "") -> bool:
         return False
 
 
-def _is_materials_only(title: str, description: str = "") -> bool:
-    """True if the solicitation is for supplying flooring product with no
-    installation labor. Overridden when the text also names install/turnkey work."""
+def _is_non_flooring_service(title: str, description: str = "") -> bool:
+    """True if the solicitation is a janitorial / pest / landscaping / glass-washing
+    service contract with no floor-covering or window-covering work in scope.
+    A bare "carpet" / "floor" mention does not rescue it — only an affirmative
+    install phrase or a flooring-service pattern does."""
     blob = f"{title} {description}".lower()
-    if not any(p in blob for p in MATERIALS_ONLY_PATTERNS):
+    if not any(p in blob for p in NON_FLOORING_SERVICE_PATTERNS):
         return False
-    return not any(p in blob for p in _INSTALL_OVERRIDE)
-
-
-# Any of these means real flooring work is in scope — not just a service run.
-_SERVICE_OVERRIDE = _INSTALL_OVERRIDE + [
-    "install", "installation", "replace", "replacement", "demolition",
-    "new carpet", "new flooring", "renovation", "tenant improvement",
-]
-
-
-def _is_service_only(title: str, description: str = "") -> bool:
-    """True if the solicitation is a cleaning / maintenance / pest / janitorial
-    service contract rather than a flooring installation."""
-    blob = f"{title} {description}".lower()
-    if not any(p in blob for p in SERVICE_ONLY_PATTERNS):
+    if any(p in blob for p in _INSTALL_PHRASES):
         return False
-    return not any(p in blob for p in _SERVICE_OVERRIDE)
+    if any(p in blob for p in FLOORING_SERVICE_PATTERNS):
+        return False
+    return True
 
 
 def _is_relevant(title: str, description: str = "") -> bool:
-    # Materials-only or service-only jobs are never a fit — bail before any
-    # keyword match
-    if _is_materials_only(title, description) or _is_service_only(title, description):
+    # Non-flooring service contracts (janitorial / pest / landscaping / glass) are
+    # never a fit — bail before any keyword match.
+    if _is_non_flooring_service(title, description):
         return False
     t = title.lower()
-    # Fast keyword match — unambiguous flooring titles pass immediately
+    # Fast keyword match — flooring install OR flooring/window-covering service
+    # (supply-only and maintenance are both legitimate FCU work).
     if any(kw in t for kw in RELEVANT_KEYWORDS):
+        return True
+    if any(p in t for p in FLOORING_SERVICE_PATTERNS):
         return True
     # Claude second pass for construction-adjacent titles
     if any(kw in t for kw in _CONSTRUCTION_TRIGGERS):

@@ -257,23 +257,26 @@ lives in the session notes; summary:
 - **Ben's 5:** RAMP / LACDA / BAVN / LAUSD all have creds in the sheet; **Public Purchase is
   the gap — no FCU account.**
 
-### Materials-only / service-only filter — ✅ 2026-09
+### Relevance filter + winnability score (scoring v2) — ✅ 2026-09
 
-FCU installs flooring. It does not bid product-only supply contracts, and it does not
-hold recurring cleaning / maintenance / pest / janitorial service contracts. Two layers:
+Full reference: **`bid-scanner/docs/scoring.md`**.
 
-- **Scanner:** `_is_materials_only()` matches `MATERIALS_ONLY_PATTERNS` ("furnish/supply only",
-  "furnish and deliver", "no installation", "installation by others", "material purchase", …);
-  `_is_service_only()` matches `SERVICE_ONLY_PATTERNS` ("carpet cleaning", "janitorial",
-  "pest control", "strip and wax", "carpet extraction", …). Both back off when the text also
-  names real install / replacement work (`_INSTALL_OVERRIDE` / `_SERVICE_OVERRIDE`). Folded into
-  `_is_relevant()`, so a hit gets `is_relevant=False` and never reaches the digest or Airtable.
-  Row is still stored in Supabase for the record.
-- **Parser:** `_EXTRACTION_PROMPT` extracts `materials_only` and `service_only`. On `--save`,
-  either flag flips the bid to `is_relevant=False`. `score_go_no_go` (both `.py` and
-  `app/lib/scoring.ts`) returns a hard **NO-GO / 0**. Dashboard bid page shows a
-  "Materials only" / "Service contract" flag.
-- No migration — both flags live inside `bid_specs.raw_extract`.
+- **Relevance (`scanner.py`).** FCU wholesales flooring/window product with or without
+  install AND takes floor-care maintenance contracts (Ben, 2026-09). So the filter keeps
+  install, furnish-only supply, install-only, and flooring/window-covering **maintenance**
+  (`FLOORING_SERVICE_PATTERNS`: strip & wax, carpet cleaning, refinishing, blind cleaning/
+  repair, on-call flooring repair). Only services with **no** floor-covering component
+  (`_is_non_flooring_service` / `NON_FLOORING_SERVICE_PATTERNS`: janitorial, pest,
+  landscaping, glass washing) are dropped. Parser backstop: `non_flooring_service` flips
+  `is_relevant=False` on `--save`.
+- **Score (`scoring.py` + `app/lib/scoring.ts`).** `geography(0–60, drive-time bands from
+  Chatsworth) + lead_time(0–30) + award_adj(−6…+10)`, clamp 0–100. GO ≥ 58 · MAYBE 33–57 ·
+  NO-GO < 33. Hard NO-GO when `flooring_is_primary=false` (or past-due, dashboard only).
+  **NEEDS REVIEW** (`go_verdict='review'`, no score) when an input is missing — no docs /
+  no location / no due date / no scope read; the bid page shows a ✕/✓ checklist.
+- **Migration — needs applying:** `supabase/add_scoring_v2.sql` (adds `award_method`,
+  `flooring_is_primary`, `project_city`, `bid_type` to `bid_specs`; allows
+  `go_verdict='review'`). Then `python parser.py --recompute-scores`.
 
 ### Geographic + agency-type gate (spec §1 / §2) — ✅ Session 1 (2026-08)
 
