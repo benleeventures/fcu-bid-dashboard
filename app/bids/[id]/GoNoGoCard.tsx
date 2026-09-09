@@ -25,14 +25,15 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
   const missing = new Set(result.reviewReasons.map(r => r.code))
 
   return (
-    <div style={{
-      marginBottom: 24,
-      padding: '18px 20px',
-      background: 'var(--charcoal-soft)',
-      borderRadius: 12,
-      border: `1px solid ${cfg.color}55`,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 14 }}>
+    <div
+      className="card"
+      style={{
+        marginBottom: 24,
+        padding: '20px 22px',
+        boxShadow: `inset 3px 0 0 ${cfg.color}, var(--shadow-sm)`,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
         {!result.needsReview && (
           <div style={{
             width: 64, height: 64, borderRadius: '50%',
@@ -41,10 +42,10 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
             alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}>
-            <span style={{ fontSize: 20, fontWeight: 700, fontFamily: 'IBM Plex Mono', color: cfg.color, lineHeight: 1 }}>
+            <span style={{ fontSize: 20, fontWeight: 700, fontFamily: 'var(--font-mono)', color: cfg.color, lineHeight: 1 }}>
               {result.score}
             </span>
-            <span style={{ fontSize: 8, color: 'var(--gray)', fontFamily: 'IBM Plex Mono', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: 8, color: 'var(--ink-faint)', fontFamily: 'var(--font-mono)', letterSpacing: '0.05em' }}>
               /100
             </span>
           </div>
@@ -55,20 +56,20 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
             display: 'inline-block',
             padding: '4px 12px', borderRadius: 6,
             background: cfg.bg, color: cfg.color,
-            fontSize: 13, fontFamily: 'IBM Plex Mono', fontWeight: 700,
+            fontSize: 12, fontFamily: 'var(--font-mono)', fontWeight: 700,
             letterSpacing: '0.08em',
-            marginBottom: 4,
+            marginBottom: 5,
           }}>
             {cfg.label}
           </div>
-          <div style={{ fontSize: 11, color: 'var(--gray)', fontFamily: 'IBM Plex Mono' }}>
+          <div style={{ fontSize: 11, color: 'var(--ink-dim)', fontFamily: 'var(--font-mono)' }}>
             {result.needsReview ? 'Needs a human — missing inputs below' : 'Winnability score'}
           </div>
         </div>
 
         {!result.needsReview && (
           <div style={{ flex: 1, marginLeft: 8 }}>
-            <div style={{ height: 6, borderRadius: 3, background: 'var(--charcoal-mid)', overflow: 'hidden' }}>
+            <div style={{ height: 6, borderRadius: 3, background: 'var(--surface-sunken)', overflow: 'hidden' }}>
               <div style={{
                 height: '100%',
                 width: `${result.score}%`,
@@ -82,20 +83,19 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
       </div>
 
       {result.needsReview ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {CHECKLIST.map(item => {
-            // no_docs blocks everything downstream from being assessable
             const isMissing = missing.has(item.code) || (missing.has('no_docs') && item.code !== 'no_docs')
             return (
               <div key={item.code} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
                 <span style={{
-                  fontFamily: 'IBM Plex Mono', fontSize: 12, fontWeight: 700,
+                  fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700,
                   color: isMissing ? 'var(--red)' : 'var(--green)',
                   width: 14, textAlign: 'center', flexShrink: 0,
                 }}>
                   {isMissing ? '✕' : '✓'}
                 </span>
-                <span style={{ fontSize: 12, color: isMissing ? 'var(--white)' : 'var(--gray)' }}>
+                <span style={{ fontSize: 13, color: isMissing ? 'var(--ink)' : 'var(--ink-dim)' }}>
                   {item.label}
                 </span>
               </div>
@@ -103,13 +103,13 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
           })}
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {result.factors.map((f, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-              <span style={{ fontSize: 12, fontFamily: 'IBM Plex Mono', color: 'var(--white)', width: 96, flexShrink: 0 }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+              <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink)', width: 96, flexShrink: 0 }}>
                 {f.label}
               </span>
-              <span style={{ fontSize: 11, color: 'var(--gray)', lineHeight: 1.4 }}>
+              <span style={{ fontSize: 12.5, color: 'var(--ink-dim)', lineHeight: 1.45 }}>
                 {f.detail}
               </span>
             </div>
@@ -117,9 +117,9 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
         </div>
       )}
 
-      <div style={{ marginTop: 12, fontSize: 10, color: 'var(--gray)', fontFamily: 'IBM Plex Mono' }}>
+      <div style={{ marginTop: 14, fontSize: 10.5, color: 'var(--ink-faint)', fontFamily: 'var(--font-mono)' }}>
         {result.needsReview
-          ? <>Run <code style={{ background: 'var(--charcoal-mid)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --save {bidId} &apos;…&apos;</code> to fill the gaps</>
+          ? <>Run <code style={{ background: 'var(--surface-sunken)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --save {bidId} &apos;…&apos;</code> to fill the gaps</>
           : 'Scoring method → bid-scanner/docs/scoring.md'}
       </div>
     </div>
