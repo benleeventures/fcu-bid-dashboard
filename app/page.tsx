@@ -53,15 +53,20 @@ async function getBids(): Promise<Bid[]> {
   if (!url || !key) return []
 
   const sb = createClient(url, key)
-  // The table is dominated by ~900 past-due "expired" rows. The old query
-  // ordered by due_date asc + limit 500, so those expired rows filled the
-  // entire window and starved the view of every current bid. Exclude expired
-  // at the query level (BidTable's archive toggle covered them anyway) and
-  // order by recency. PostgREST hard-caps responses at 1000 rows.
+  // PostgREST hard-caps responses at 1000 rows. The bids table has ~2000 rows
+  // and the non-expired slice alone (~1000) can blow past that cap, silently
+  // truncating the view. Bound the query so it can never approach 1000:
+  //   - always include flooring-relevant bids (currently ~115)
+  //   - plus any non-relevant bid first seen in the last 30 days (recent scans;
+  //     the expirer archives non-relevant bids older than that)
+  //   - never include expired (the expirer archives past-due bids daily;
+  //     BidTable's archive toggle surfaces them on demand)
+  const recentCutoff = new Date(Date.now() - 30 * 86400000).toISOString()
   const { data, error } = await sb
     .from('bids')
     .select('*, spec:bid_specs(flooring_types,total_sqft,rooms,prevailing_wage,bid_bond,bid_bond_pct,walk_required,walk_date,walk_date_raw,summary,flooring_is_primary,award_method,project_city,bid_type)')
     .neq('bid_status', 'expired')
+    .or(`is_relevant.eq.true,first_seen_at.gte.${recentCutoff}`)
     .order('first_seen_at', { ascending: false })
     .limit(1000)
 
