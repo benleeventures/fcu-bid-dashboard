@@ -189,7 +189,7 @@ select.field {
 .data-table tbody tr { transition: background .1s ease; }
 .data-table tbody tr.row { cursor: pointer; }
 .data-table tbody tr.row:hover { background: var(--gold-tint); }
-.data-table tbody tr.row--relevant { box-shadow: inset 3px 0 0 var(--green); }
+.data-table tbody tr.row--review { box-shadow: inset 3px 0 0 var(--gold); }
 .data-table tbody tr.row--expanded { background: var(--gold-tint-strong); }
 
 /* ---------- Chips / badges / legend ---------- */
@@ -199,6 +199,7 @@ select.field {
   font-family: var(--font-mono); font-size: 10px; font-weight: 600;
   background: var(--surface-sunken); color: var(--ink-dim);
 }
+.chip--review { background: rgba(200,146,42,.16); color: var(--gold); }
 .legend { display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
   font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
 .legend__dot { display: inline-block; width: 8px; height: 8px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }

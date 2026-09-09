@@ -7,7 +7,7 @@ component (janitorial / pest / landscaping / glass washing) are filtered out.
     python test_relevance_filter.py
 """
 
-from scanner import _is_non_flooring_service, _is_relevant
+from scanner import _is_non_flooring_service, _is_other_trade, _is_relevant
 
 # Wholesale supply / furnish-only — now legitimate FCU work.
 SUPPLY_ONLY = [
@@ -61,16 +61,49 @@ NOT_PRIMARY = [
     ("Restroom Rehabilitation - Building 4", ""),
 ]
 
+# Other-trade projects FCU can't self-perform — rejected even when a construction
+# trigger word ("modernization" / "renovation") would otherwise reach the Claude
+# second pass. No flooring keyword present, so nothing rescues them.
+OTHER_TRADE = [
+    ("Roof Replacement and Building Modernization Project", ""),
+    ("HVAC and Boiler Replacement - Districtwide", ""),
+    ("Fire Alarm System Upgrade at Community College", ""),
+    ("Slurry Seal and Pavement Marking Improvements", ""),
+    ("Elevator Modernization Project", ""),
+    ("Storefront Glazing and Curtain Wall Renovation", ""),
+]
+
+# Other-trade wording BUT a real flooring scope in the title — multi-prime bids
+# where FCU bids the flooring package. Must stay relevant.
+OTHER_TRADE_WITH_FLOORING = [
+    ("Clean Energy Campus - Heating and Cooling Plant - Flooring", ""),
+    ("Roof, HVAC and Flooring Replacement - Increment 1", ""),
+    ("Gymnasium Floor Refinishing and Bleacher Repair", ""),
+]
+
 
 def run():
     fails = 0
 
-    for title, desc in SUPPLY_ONLY + FLOORING_SERVICE + INSTALL_JOBS:
+    for title, desc in SUPPLY_ONLY + FLOORING_SERVICE + INSTALL_JOBS + OTHER_TRADE_WITH_FLOORING:
         if not _is_relevant(title, desc):
             print(f"FAIL (should be relevant): {title!r}")
             fails += 1
         if _is_non_flooring_service(title, desc):
             print(f"FAIL (should NOT be non-flooring-service): {title!r}")
+            fails += 1
+
+    for title, desc in OTHER_TRADE_WITH_FLOORING:
+        if _is_other_trade(title, desc):
+            print(f"FAIL (flooring scope should rescue): {title!r}")
+            fails += 1
+
+    for title, desc in OTHER_TRADE:
+        if _is_relevant(title, desc):
+            print(f"FAIL (should NOT be relevant — other trade): {title!r}")
+            fails += 1
+        if not _is_other_trade(title, desc):
+            print(f"FAIL (should be other-trade): {title!r}")
             fails += 1
 
     for title, desc in NON_FLOORING_SERVICE:
