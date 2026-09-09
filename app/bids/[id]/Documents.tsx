@@ -1,3 +1,5 @@
+import { docCapability } from '../../lib/docSources'
+
 type Doc = {
   filename: string
   public_url: string
@@ -5,8 +7,6 @@ type Doc = {
   bytes: number | null
   kind: string | null
 }
-
-import { docCapability } from '../../lib/docSources'
 
 type Props = {
   docs: Doc[]
@@ -41,22 +41,34 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
 
   let status: { text: string; color: string }
   if (count === 0 && cap === 'unsupported') {
-    status = { text: `The tracker can't retrieve documents from ${srcName} automatically — get them from the portal`, color: 'var(--ink-dim)' }
+    status = { text: `Automated retrieval not available for ${srcName}`, color: 'var(--ink-dim)' }
   } else if (count === 0) {
     status = { text: `No documents retrieved yet — check the portal`, color: 'var(--ink-dim)' }
   } else if (cap === 'page-images' || allImages) {
-    status = { text: `${count} plan-room page image${count > 1 ? 's' : ''} — full document set is on the portal`, color: 'var(--orange)' }
+    status = { text: `${count} plan-room page image${count > 1 ? 's' : ''} — full set is on the portal`, color: 'var(--orange)' }
   } else if (docsExpected != null && count >= docsExpected) {
     status = { text: `${count} document${count > 1 ? 's' : ''} — full set`, color: 'var(--green)' }
   } else if (docsExpected != null && count < docsExpected) {
     status = { text: `${count} of ${docsExpected} documents — verify against portal`, color: 'var(--orange)' }
   } else {
-    status = { text: `Primary document only — the tracker can't get the rest from ${srcName}, check the portal`, color: 'var(--orange)' }
+    status = { text: `${count} document${count > 1 ? 's' : ''} — portal may have more`, color: 'var(--orange)' }
   }
+
+  // Prominent callout when the tracker structurally can't (or only partly can)
+  // fetch this source's documents — so the team knows a thin/empty list is a
+  // tooling limit, not "this bid has no documents".
+  const callout =
+    cap === 'unsupported'
+      ? `The bid tracker can't pull documents from ${srcName} automatically${
+          source === 'PlanetBids' ? ' (no per-bid document URL is exposed)' : ''
+        }. Any missing documents for this bid are a tooling limitation — download them directly from the portal.`
+      : cap === 'primary-only' && count > 0
+      ? `${srcName} doesn't give the tracker a guaranteed complete document list — treat the files below as a starting point and confirm the full set on the portal.`
+      : null
 
   return (
     <div className="card" style={{ marginBottom: 24, padding: '18px 22px' }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: count ? 14 : 0 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: (count || callout) ? 12 : 0 }}>
         <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--ink-dim)' }}>
           BID DOCUMENTS
         </div>
@@ -72,6 +84,29 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
           )}
         </div>
       </div>
+
+      {callout && (
+        <div style={{
+          display: 'flex', gap: 10, alignItems: 'flex-start',
+          padding: '10px 12px', marginBottom: count ? 12 : 0,
+          borderRadius: 'var(--r-sm)',
+          background: 'var(--orange-tint)',
+          border: '1px solid var(--border-strong)',
+        }}>
+          <span aria-hidden style={{ fontSize: 13, flexShrink: 0, lineHeight: 1.4 }}>⚠</span>
+          <span style={{ fontSize: 12.5, color: 'var(--ink-dim)', lineHeight: 1.5 }}>
+            {callout}
+            {portalUrl && (
+              <>
+                {' '}
+                <a href={portalUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-strong)', whiteSpace: 'nowrap' }}>
+                  Open portal ↗
+                </a>
+              </>
+            )}
+          </span>
+        </div>
+      )}
 
       {count > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

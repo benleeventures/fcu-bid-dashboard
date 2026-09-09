@@ -16,21 +16,21 @@ const CAPABILITY: Record<string, DocCapability> = {
   'BidNet Direct': 'full',
   'Caltrans CCOP': 'full',
   'Cal eProcure': 'full',
+  'SAM.gov': 'full',                  // enumerates every Attachments/Links file
+  'Long Beach BuySpeed': 'full',      // Playwright clicks every downloadFile() control
 
   'Crisp Plan Room': 'page-images',
   'SoCal Plan Room': 'page-images',
 
-  'SAM.gov': 'primary-only',
-  'UCLA Capital Programs': 'primary-only',
-  'Quality Bidders': 'primary-only',
-  'RAMP LA County': 'primary-only',
+  'UCLA Capital Programs': 'primary-only',  // url points straight at one Ad-for-Bids PDF
+  'Quality Bidders': 'primary-only',        // downloads every doc link, but the set isn't guaranteed
+  'RAMP LA County': 'primary-only',         // Salesforce SPA — often yields nothing
   'SecureBids': 'primary-only',
+  'Bid Locker': 'primary-only',             // best-effort JS-download capture, unverified
 
-  'PlanetBids': 'unsupported',       // stored URL is the portal search page, no per-bid detail
-  'OpenGov': 'unsupported',          // Cloudflare Turnstile — scan is manual, no doc step
-  'Bid Locker': 'unsupported',       // attachments are javascript:downloadFile(id)
-  'Long Beach BuySpeed': 'unsupported',
-  'LAUSD Facilities': 'unsupported', // one combined bid-date report, not per-bid
+  'PlanetBids': 'unsupported',        // stored URL is the portal search page, no per-bid detail
+  'OpenGov': 'unsupported',           // Cloudflare Turnstile — scan is manual, no doc step
+  'LAUSD Facilities': 'unsupported',  // one combined bid-date report, not per-bid
 }
 
 export function docCapability(source: string | null | undefined): DocCapability {

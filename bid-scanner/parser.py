@@ -364,6 +364,11 @@ async def download_all(only: str | None = None):
 
     print(f"  {len(pending)} to download\n")
 
+    # bid_id -> attachment-link count, for handlers that can enumerate the full
+    # set. Read by the reconcile pass to set bids.docs_expected (→ "N of M" in
+    # the dashboard). Left unset = source can't tell us the total.
+    docs_expected: dict[str, int] = {}
+
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=True)
         context = await browser.new_context(
@@ -499,46 +504,48 @@ async def download_all(only: str | None = None):
                     print(f"    ⚠ Direct PDF error: {e}\n")
                 continue
 
+            # Long Beach BuySpeed / Bid Locker — attachments are javascript:
+            # downloadFile(id) calls; let Playwright run the JS and capture them.
+            if source in ("Long Beach BuySpeed", "Bid Locker"):
+                page = await context.new_page()
+                try:
+                    n = await _download_via_clicks(page, context, bid_id, url)
+                    if n:
+                        docs_expected[bid_id] = n
+                        print(f"    ✓ {n} document(s) captured\n")
+                    else:
+                        print("    ⚠ No downloadable documents found\n")
+                except Exception as e:
+                    print(f"    ⚠ {source} error: {e}\n")
+                finally:
+                    await page.close()
+                continue
+
             page = await context.new_page()
             try:
                 await page.goto(url, timeout=30000, wait_until="domcontentloaded")
 
-                if source == "SAM.gov":
-                    pdf_href = await _find_samgov_pdf(page, context)
+                is_samgov = source == "SAM.gov"
+                if is_samgov:
+                    scored = await _find_samgov_docs(page, context)
                 else:
                     await page.wait_for_timeout(2000)
-                    pdf_href = await _find_generic_pdf(page)
+                    scored = await _find_generic_docs(page)
 
-                if not pdf_href:
-                    print("    ⚠ No PDF link found\n"); await page.close(); continue
+                if not scored:
+                    print("    ⚠ No document links found\n"); await page.close(); continue
 
-                # SAM.gov hrefs are relative — resolve to absolute
-                if pdf_href.startswith("/"):
-                    pdf_href = "https://sam.gov" + pdf_href
-
-                pdf_href = urllib.parse.urljoin(page.url, pdf_href)
-                resp = await context.request.get(pdf_href, timeout=30000)
-                data = await resp.body()
-                if not data:
-                    print("    ⚠ Empty response\n"); await page.close(); continue
-
-                if data[:2] == b"PK":
-                    # ZIP or DOCX — extract best content
-                    content, ext = _extract_best_pdf_from_zip(data, bid_id)
-                    if content:
-                        save_path = SPECS_DIR / f"{_safe_id(bid_id)}{ext}"
-                        save_path.write_bytes(content)
-                        print(f"    ✓ Extracted from ZIP → {save_path.name} ({len(content)//1024} KB)\n")
-                    else:
-                        print("    ⚠ ZIP contained no usable content\n")
-                    await page.close(); continue
-
-                if b"%PDF" not in data[:10]:
-                    ct = resp.headers.get("content-type", "unknown")
-                    print(f"    ⚠ Not a valid PDF (content-type: {ct})\n"); await page.close(); continue
-
-                out.write_bytes(data)
-                print(f"    ✓ Saved {out.name} ({len(data)//1024} KB)\n")
+                n = await _download_scored_docs(context, bid_id, scored, page.url)
+                if n:
+                    # SAM's selector only matches real attachment files, so the
+                    # count is trustworthy → "N of M" in the dashboard. Generic
+                    # portal link-scraping is noisier — leave docs_expected unset
+                    # so the card stays at "check the portal for the full set".
+                    if is_samgov:
+                        docs_expected[bid_id] = sum(1 for s, _, _ in scored if s > -15)
+                    print(f"    ✓ {n} document(s) saved\n")
+                else:
+                    print("    ⚠ No usable documents downloaded\n")
 
             except Exception as e:
                 print(f"    ⚠ Error: {e}\n")
@@ -559,7 +566,8 @@ async def download_all(only: str | None = None):
         if _flat_pdf(bid_id).exists() or (_bid_dir(bid_id).exists() and any(_bid_dir(bid_id).iterdir())):
             try:
                 from storage import sync_bid_docs
-                sync_bid_docs(bid_id, source=b.get("source") or "", source_url=b.get("url"))
+                sync_bid_docs(bid_id, source=b.get("source") or "", source_url=b.get("url"),
+                              expected=docs_expected.get(bid_id))
             except Exception as e:
                 print(f"    ⚠ doc mirror failed for {bid_id}: {e}")
             continue
@@ -1062,11 +1070,12 @@ def _extract_best_pdf_from_zip(zip_data: bytes, bid_id: str) -> tuple[bytes | No
         return None, ""
 
 
-async def _find_samgov_pdf(page, context) -> str | None:
+async def _find_samgov_docs(page, context) -> list[tuple[int, str, str]]:
     """
-    SAM.gov: click the Attachments/Links tab, find the best spec PDF.
-    Confirmed working: files served from /api/prod/opps/v3/opportunities/resources/files/
-    with api_key=null — no login required for public solicitations.
+    SAM.gov: click the Attachments/Links tab, return (score, href, text) for
+    every attachment. Files served from
+    /api/prod/opps/v3/opportunities/resources/files/ with api_key=null — no login
+    for public solicitations.
 
     Note: DB stores /workspace/contract/opp/<id>/view URLs — redirect to /opp/<id>/view first.
     """
@@ -1094,30 +1103,27 @@ async def _find_samgov_pdf(page, context) -> str | None:
         await tab.click()
         await page.wait_for_timeout(3000)
 
-    # Collect all PDF links with scoring
+    # Collect all attachment links with scoring
     links = await page.query_selector_all("a[href*='/api/prod/opps/v3/opportunities/resources/files/']")
-    candidates = []
+    candidates: list[tuple[int, str, str]] = []
     for link in links:
         href = await link.get_attribute("href") or ""
-        text = (await link.inner_text()).strip().lower()
+        text = (await link.inner_text()).strip()
+        tl = text.lower()
         if not href:
             continue
         score = 0
-        # Prefer SOW, specs, RFP over amendments and reports
-        if any(k in text for k in ["sow", "scope", "specification", "rfp", "ifb", "itb", "solicitation"]):
+        # Prefer SOW, specs, RFP over amendments and reports for the "primary" pick
+        if any(k in tl for k in ["sow", "scope", "specification", "rfp", "ifb", "itb", "solicitation"]):
             score += 10
-        if any(k in text for k in ["carpet", "floor", "resilient", "09 68", "09 65"]):
+        if any(k in tl for k in ["carpet", "floor", "resilient", "09 68", "09 65"]):
             score += 8
-        if any(k in text for k in ["amend", "acm report", "environmental", "contractor guide"]):
-            score -= 5
-        if "download all" in text:
-            score -= 20  # skip "Download All" zip link
-        candidates.append((score, href))
-
-    if not candidates:
-        return None
-    candidates.sort(key=lambda x: x[0], reverse=True)
-    return candidates[0][1]
+        if any(k in tl for k in ["amend", "acm report", "environmental", "contractor guide"]):
+            score -= 3      # still download it, just not primary
+        if "download all" in tl:
+            score -= 20     # skip the "Download All" zip
+        candidates.append((score, href, text))
+    return candidates
 
 
 async def _download_crisp_docs(page, context, bid_id: str, bid_url: str, logged_in: bool = False) -> bool:
@@ -1362,35 +1368,200 @@ def _parse_with_claude_images(images: list[bytes]) -> dict | None:
     return _extract_json(raw)
 
 
-async def _find_generic_pdf(page) -> str | None:
-    """Generic: scored PDF link search for Quality Bidders, PlanetBids, etc."""
-    links = await page.query_selector_all("a[href*='.pdf'], a[href*='download'], a[href*='attachment'], a[href*='s3.amazonaws']")
-    candidates = []
+async def _find_generic_docs(page) -> list[tuple[int, str, str]]:
+    """Generic: scored search for *every* document link on a bid page (Quality
+    Bidders, RAMP, SecureBids, PlanetBids detail pages, agency portals…).
+    Returns (score, href, link_text) for each candidate — the caller downloads
+    them all and uses the score only to pick the flat "primary" file."""
+    links = await page.query_selector_all(
+        "a[href*='.pdf'], a[href*='download'], a[href*='attachment'], "
+        "a[href*='s3.amazonaws'], a[href$='.doc'], a[href$='.docx'], a[href*='.zip']"
+    )
+    candidates: list[tuple[int, str, str]] = []
     for link in links:
         href = await link.get_attribute("href") or ""
-        text = (await link.inner_text()).strip().lower()
+        text = (await link.inner_text()).strip()
+        tl = text.lower()
         if not href:
             continue
-        # Skip known false positives: CaleProcure diversity guide, external resource docs
-        if any(k in href.lower() for k in ["prismic.io", "diversity", "dgs.ca.gov", "dir.ca.gov"]):
+        # Hard-skip external boilerplate (CaleProcure diversity guide, DGS/DIR refs)
+        if any(k in href.lower() for k in ["prismic.io", "dgs.ca.gov", "dir.ca.gov"]):
             continue
-        if any(k in text for k in ["diversity data", "diversity procedures"]):
+        if any(k in tl for k in ["diversity data", "diversity procedures"]):
             continue
         score = 0
-        if any(k in text for k in ["addendum", "add #", "notice of"]):
-            score -= 10
+        if any(k in tl for k in ["addendum", "add #", "notice of"]):
+            score -= 4      # still a real doc — download it, just don't make it primary
         if any(k in href.lower() for k in ["diversity", "procedures", "training"]):
-            score -= 20
-        if any(k in text for k in ["invitation", "itb", "rfp", "ifb", "specification", "scope", "bid package"]):
+            score -= 20      # junk — _download_scored_docs drops score <= -15
+        if any(k in tl for k in ["invitation", "itb", "rfp", "ifb", "specification",
+                                 "scope", "bid package", "sow", "plans", "project manual"]):
             score += 5
         if href.lower().endswith(".pdf") or "s3.amazonaws" in href:
             score += 3
-        candidates.append((score, href))
+        candidates.append((score, href, text))
+    return candidates
 
-    if not candidates:
-        return None
-    candidates.sort(key=lambda x: x[0], reverse=True)
-    return candidates[0][1]
+
+def _doc_filename(url: str, text: str, content_type: str, idx: int) -> str:
+    """Best filename for a downloaded doc: URL basename → link text → doc{idx}."""
+    import urllib.parse as _up
+    import re as _re
+    exts = (".pdf", ".doc", ".docx", ".xls", ".xlsx", ".zip", ".txt")
+
+    base = _up.unquote(Path(_up.urlparse(url).path).name)
+    if base and any(base.lower().endswith(e) for e in exts):
+        return _safe_id(base)
+
+    # Clean the link text: first line only, drop "(opens in new window/tab)"
+    clean = text.splitlines()[0] if text else ""
+    clean = _re.sub(r"\s*\(opens in (?:a )?new (?:window|tab)\)\s*$", "", clean, flags=_re.I).strip()
+    m = _re.search(r"([-\w. ]+\.(?:pdf|docx?|xlsx?|zip|txt))\b", clean, _re.I)
+    if m:
+        return _safe_id(m.group(1))
+
+    stem = _safe_id(clean)[:60].strip("_") or f"doc{idx:02d}"
+    ct = (content_type or "").lower()
+    ext = (".docx" if "word" in ct else ".zip" if "zip" in ct
+           else ".xlsx" if ("excel" in ct or "spreadsheet" in ct)
+           else ".txt" if "text/plain" in ct else ".pdf")
+    return f"{stem}{ext}"
+
+
+async def _download_scored_docs(context, bid_id: str, scored: list[tuple[int, str, str]],
+                                page_url: str, max_docs: int = 15) -> int:
+    """Download every candidate doc (not just the top-scored one) into the per-bid
+    dir; copy the best valid PDF to the flat {bid_id}.pdf the parser reads.
+    Returns the number of files saved."""
+    import urllib.parse as _up
+
+    seen: set[str] = set()
+    ordered: list[tuple[int, str, str]] = []
+    for score, href, text in sorted(scored, key=lambda x: x[0], reverse=True):
+        if score <= -15:
+            continue
+        absu = _up.urljoin(page_url, href)
+        if absu in seen:
+            continue
+        seen.add(absu)
+        ordered.append((score, absu, text))
+    ordered = ordered[:max_docs]
+    if not ordered:
+        return 0
+
+    bid_dir = _bid_dir(bid_id)
+    bid_dir.mkdir(parents=True, exist_ok=True)
+    flat = _flat_pdf(bid_id)
+
+    saved = 0
+    best_pdf: bytes | None = None
+    for i, (score, absu, text) in enumerate(ordered):
+        try:
+            resp = await context.request.get(absu, timeout=30000)
+            data = await resp.body()
+        except Exception as e:
+            print(f"    ⚠ {text[:40] or absu[:50]}: {e}")
+            continue
+        if not data:
+            continue
+        name = _doc_filename(absu, text, resp.headers.get("content-type", ""), i)
+
+        if data[:4] == b"%PDF":
+            (bid_dir / name).write_bytes(data)
+            saved += 1
+            if best_pdf is None:
+                best_pdf = data
+            print(f"    ✓ {name} ({len(data)//1024} KB)")
+        elif data[:2] == b"PK":
+            content, ext = _extract_best_pdf_from_zip(data, bid_id)
+            if content:
+                zn = Path(name).stem + ext
+                (bid_dir / zn).write_bytes(content)
+                saved += 1
+                if best_pdf is None and ext == ".pdf":
+                    best_pdf = content
+                print(f"    ✓ {zn} (from zip, {len(content)//1024} KB)")
+        elif data[:4] == b"\xd0\xcf\x11\xe0":
+            (bid_dir / (Path(name).stem + ".doc")).write_bytes(data)
+            saved += 1
+            print(f"    ✓ {Path(name).stem}.doc ({len(data)//1024} KB)")
+        elif ("text/plain" in resp.headers.get("content-type", "")
+              and b"<html" not in data[:200].lower() and len(data) > 40):
+            # wage determinations, addenda notes, etc. served as .txt
+            tn = Path(name).stem + ".txt"
+            (bid_dir / tn).write_bytes(data)
+            saved += 1
+            print(f"    ✓ {tn} ({len(data)//1024} KB)")
+        # else: HTML / error page — skip
+
+    if best_pdf is not None and not flat.exists():
+        flat.write_bytes(best_pdf)
+    return saved
+
+
+async def _download_via_clicks(page, context, bid_id: str, url: str) -> int:
+    """For portals whose attachments are `javascript:downloadFile(id)` calls
+    (Long Beach BuySpeed, Bid Locker): load the detail page, click each likely
+    download control, and capture whatever file Playwright reports. Returns files
+    saved. Copies the first PDF captured to the flat {bid_id}.pdf."""
+    bid_dir = _bid_dir(bid_id)
+    bid_dir.mkdir(parents=True, exist_ok=True)
+    flat = _flat_pdf(bid_id)
+
+    try:
+        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+        await page.wait_for_timeout(2500)
+    except Exception as e:
+        print(f"    ⚠ detail page load failed: {e}")
+        return 0
+
+    controls = await page.query_selector_all(
+        "a[href*='downloadFile'], a[onclick*='downloadFile'], a[onclick*='download'], "
+        "a[href*='/download'], a[href$='.pdf'], a[id*='ownload'], a[title*='ownload'], "
+        "button[onclick*='download']"
+    )
+    # plus any anchor whose visible text is a document name
+    for a in await page.query_selector_all("a"):
+        try:
+            t = ((await a.inner_text()) or "").strip().lower()
+        except Exception:
+            continue
+        if t and any(t.endswith(e) for e in (".pdf", ".doc", ".docx", ".xls", ".xlsx", ".zip")):
+            controls.append(a)
+
+    seen: set[str] = set()
+    saved = 0
+    best_pdf: bytes | None = None
+    for el in controls[:25]:
+        try:
+            key = ((await el.get_attribute("href")) or (await el.get_attribute("onclick"))
+                   or (await el.inner_text()) or "")
+        except Exception:
+            key = ""
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        try:
+            async with page.expect_download(timeout=8000) as di:
+                await el.click()
+            dl = await di.value
+            name = _safe_id(dl.suggested_filename or f"doc{saved:02d}.pdf")
+            dest = bid_dir / name
+            await dl.save_as(str(dest))
+            data = dest.read_bytes()
+            if not data:
+                dest.unlink()
+                continue
+            saved += 1
+            if best_pdf is None and data[:4] == b"%PDF":
+                best_pdf = data
+            print(f"    ✓ {name} ({len(data)//1024} KB)")
+        except Exception:
+            continue   # not a download trigger / timed out
+
+    if best_pdf is not None and not flat.exists():
+        flat.write_bytes(best_pdf)
+    return saved
 
 
 # ─────────────────────────────────────────────
