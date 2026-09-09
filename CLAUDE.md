@@ -57,6 +57,7 @@ origin/main), NOT the primary checkout. They self-update via
 ## Multi-Session Git Workflow
 Multiple Claude Code sessions run in parallel, one branch per session. Follow this every session:
 
+0. **FIRST STEP of every new session: start a fresh branch.** Do not trust the branch you open on — the shared `/Users/leo-claude/fcu` checkout gets left on whatever the last session used, often something already merged, and the session gitStatus snapshot is stale. Before editing anything: `git fetch origin`, then `git checkout -b <type>/<short-topic> origin/main` (types: `feat/`, `fix/`, `docs/`, `chore/`). Never commit onto `main` or onto an existing branch from a previous session. One session = one new branch, even for a one-line change.
 1. **Separate working directory per session.** Never run two sessions on different branches in the same folder — a `checkout` in one corrupts the others. Use `git worktree add ../fcu-<branch> <branch>` (or the `EnterWorktree` helper) or a separate clone.
 2. **One branch = one scoped, non-overlapping change.** Keep sessions in different areas (`bid-scanner/`, `agent/`, docs). Merge and delete branches fast — don't let them live for days.
 3. **Sync main before every merge:** `git fetch origin` → `git rebase origin/main` → **re-run tests/build on the result.** A branch that passed in isolation can break once other sessions' work lands under it.
