@@ -27,6 +27,27 @@ in the Airtable UI — the API can't do them.
 | Notes | `Notes` | scanner writes the geo-uncertainty flag here |
 | — | `Days to Due` | formula: `DATETIME_DIFF({Bid Due Date}, TODAY(), 'days')` — drives the colour rules below |
 
+### 1b. Bid document fields — ✅ created 2026-09
+
+`parser.py` mirrors each bid's downloaded documents to Supabase Storage and then
+fills two fields on the matching row (`airtable_sync.update_bid_documents`).
+Both are optional — if a field is deleted the update skips it quietly.
+
+| Field | Type | Filled by |
+|---|---|---|
+| `Docs Folder` | URL (`fldvpss5pMpxDdCQA`) | link to the dashboard bid page, which lists every mirrored document. Always current. |
+| `Bid Documents` | Attachment (`fldfio875c11Tdd8r`) | Airtable fetches its own copies from the public storage URLs. |
+
+Both were added via the Airtable metadata API — no UI step needed. If they ever
+get removed, recreate as **URL** and **Attachment** with these exact names.
+
+**Snapshot caveat:** the `Bid Documents` attachments are copies Airtable made at
+sync time. If a document is re-downloaded (corrected addendum, retry), the
+Airtable copy does **not** auto-update — re-run `python parser.py --sync-docs <bid_id>`
+to refresh it. The `Docs Folder` link never goes stale.
+
+Requires `DASHBOARD_URL` in `bid-scanner/.env` (already set for the digest).
+
 ---
 
 ## 2. Conditional formatting — DO THIS IN THE UI
@@ -80,5 +101,7 @@ collaborator. Once Robert has an Airtable seat on this base:
   a row Robert has touched.
 - `parser.py --save` back-fills `Job Walk Date` / `Job Walk Mandatory` on the
   existing row once a spec PDF is parsed.
+- `parser.py` (download step, or `--sync-docs`) back-fills `Docs Folder` /
+  `Bid Documents` once the bid's documents are mirrored to cloud storage.
 - Rows flagged **"Needs county check"** in `Notes` are `geo_status = unknown` —
   Robert confirms the county and clears the note during qualification.

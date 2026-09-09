@@ -15,6 +15,10 @@ Workflows:
   Do one bid end-to-end (download docs if missing → parse with Claude):
     python parser.py --parse <bid_id>
 
+  Mirror already-downloaded documents to Supabase Storage (disk-only, no crawl):
+    python parser.py --sync-docs            # backfill every bid in output/specs/
+    python parser.py --sync-docs --bid <id> # just one bid
+
   Scope --download / --parse-all to a single bid:
     python parser.py --download --bid <bid_id>
     python parser.py --parse-all --claude --bid <bid_id>
@@ -548,9 +552,16 @@ async def download_all(only: str | None = None):
 
     # Reconcile: any bid we just tried but still has no local document gets an
     # attempt bump; at the cap it's marked no_docs and leaves the queue.
+    # Any bid that DOES have local files gets those files mirrored to Supabase
+    # Storage now — same process, same loop, no second crawl (see storage.py).
     for b in pending:
         bid_id = b["bid_id"]
         if _flat_pdf(bid_id).exists() or (_bid_dir(bid_id).exists() and any(_bid_dir(bid_id).iterdir())):
+            try:
+                from storage import sync_bid_docs
+                sync_bid_docs(bid_id, source=b.get("source") or "", source_url=b.get("url"))
+            except Exception as e:
+                print(f"    ⚠ doc mirror failed for {bid_id}: {e}")
             continue
         attempts = (b.get("parse_attempts") or 0) + 1
         if attempts >= MAX_PARSE_ATTEMPTS:
@@ -1864,6 +1875,9 @@ if __name__ == "__main__":
             sys.exit(1)
         asyncio.run(download_all(only=bid_id))
         cmd_parse_all(backend="claude", only=bid_id)
+    elif "--sync-docs" in argv:
+        from storage import sync_all_local
+        sync_all_local(only=_opt("--bid"))
     elif "--download" in argv:
         asyncio.run(download_all(only=_opt("--bid")))
     elif "--pending" in argv:

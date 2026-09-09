@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Nav from '../../Nav'
 import BidOutcomeTracker from './BidOutcomeTracker'
 import GoNoGoCard from './GoNoGoCard'
+import Documents from './Documents'
 import type { BidStatus } from '../../actions/bids'
 
 export const revalidate = 0
@@ -23,9 +24,10 @@ export default async function BidDetailPage({ params }: { params: { id: string }
   const bidId = decodeURIComponent(params.id)
   const client = sb()
 
-  const [{ data: bid }, { data: spec }] = await Promise.all([
+  const [{ data: bid }, { data: spec }, { data: docs }] = await Promise.all([
     client.from('bids').select('*').eq('bid_id', bidId).single(),
     client.from('bid_specs').select('*').eq('bid_id', bidId).maybeSingle(),
+    client.from('bid_documents').select('*').eq('bid_id', bidId).order('kind'),
   ])
 
   if (!bid) {
@@ -102,6 +104,14 @@ export default async function BidDetailPage({ params }: { params: { id: string }
             </p>
           )}
         </header>
+
+        {/* Mirrored bid documents */}
+        <Documents
+          docs={docs ?? []}
+          docsExpected={bid.docs_expected ?? null}
+          docsSyncedAt={bid.docs_synced_at ?? null}
+          portalUrl={bid.url ?? null}
+        />
 
         {/* Winnability score card — always shown; card handles the review state */}
         <GoNoGoCard

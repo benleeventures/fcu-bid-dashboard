@@ -193,3 +193,59 @@ def update_job_walk(bid_id: str, walk_required, walk_date: str | None) -> bool:
 
     table.update(matches[0]["id"], fields)
     return True
+
+
+def update_bid_documents(bid_id: str, doc_rows: list[dict]) -> bool:
+    """
+    Populate two fields on an existing Opportunities record once the
+    bid-scanner has mirrored the bid's documents to Supabase Storage:
+
+      "Docs Folder"    (URL)        — the dashboard bid page, which lists every
+                                      mirrored document. Always current.
+      "Bid Documents"  (Attachment) — Airtable fetches its own copies from the
+                                      public storage URLs. Point-in-time snapshot;
+                                      re-run `parser.py --sync-docs <id>` to refresh.
+
+    Both fields are optional and created manually in the base (see
+    docs/airtable-tracker-setup.md). If either is missing, Airtable 422s and we
+    retry with just the one that's present, then give up quietly — the mirror
+    and the dashboard link still work regardless.
+    """
+    table = _get_table()
+    if not table or not bid_id:
+        return False
+
+    matches = table.all(formula=f"{{Bid ID}}='{bid_id}'", fields=["Bid ID"])
+    if not matches:
+        return False
+    rec_id = matches[0]["id"]
+
+    try:
+        from notify import DASHBOARD_URL as dashboard          # shared default
+    except Exception:
+        dashboard = os.getenv("DASHBOARD_URL", "").strip().rstrip("/")
+    fields: dict = {}
+    if dashboard:
+        fields["Docs Folder"] = f"{dashboard}/bids/{bid_id}"
+    if doc_rows:
+        fields["Bid Documents"] = [
+            {"url": r["public_url"], "filename": r["filename"]}
+            for r in doc_rows if r.get("public_url")
+        ]
+    if not fields:
+        return False
+
+    try:
+        table.update(rec_id, fields)
+        return True
+    except Exception:
+        # One of the fields doesn't exist in the base yet — try each alone.
+        landed = False
+        for key in ("Docs Folder", "Bid Documents"):
+            if key in fields:
+                try:
+                    table.update(rec_id, {key: fields[key]})
+                    landed = True
+                except Exception:
+                    pass
+        return landed
