@@ -33,8 +33,8 @@ export default async function BidDetailPage({ params }: { params: { id: string }
       <>
         <Nav />
         <main style={{ maxWidth: 900, margin: '0 auto', padding: '28px 24px 64px' }}>
-          <a href="/" className="app-nav__link" style={{ display: 'inline-block', padding: '4px 0', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-            ← All bids
+          <a href="/" className="btn">
+            <span aria-hidden style={{ opacity: .6 }}>←</span> All bids
           </a>
           <p style={{ color: 'var(--ink-dim)', marginTop: 32, fontFamily: 'var(--font-mono)' }}>Bid not found: {bidId}</p>
         </main>
@@ -48,19 +48,13 @@ export default async function BidDetailPage({ params }: { params: { id: string }
 
   return (
     <>
-      <Nav
-        right={
-          <a href="/settings" className="app-nav__link" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-            ⚙ Rate settings
-          </a>
-        }
-      />
+      <Nav />
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '28px 24px 64px' }}>
         {/* Back link + portal */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
-          <a href="/" style={{ color: 'var(--ink-dim)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
-            ← All bids
+          <a href="/" className="btn">
+            <span aria-hidden style={{ opacity: .6 }}>←</span> All bids
           </a>
           {bid.url && (
             <a href={bid.url} target="_blank" rel="noopener noreferrer" className="btn">
