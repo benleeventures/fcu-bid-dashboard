@@ -69,8 +69,21 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
   return (
     <div className="card" style={{ marginBottom: 24, padding: '18px 22px' }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: (count || callout) ? 12 : 0 }}>
-        <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--ink-dim)' }}>
-          BID DOCUMENTS
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--ink-dim)' }}>
+            BID DOCUMENTS
+          </span>
+          <span
+            title="Automatic document retrieval is still being built out — not every portal is covered yet. Always confirm the full set on the source portal."
+            style={{
+              fontSize: 9, fontFamily: 'var(--font-mono)', fontWeight: 700,
+              letterSpacing: '0.06em', color: 'var(--gold-strong)',
+              background: 'var(--gold-tint)', border: '1px solid var(--gold-tint-strong)',
+              padding: '2px 5px', borderRadius: 3,
+            }}
+          >
+            WIP
+          </span>
         </div>
         <div style={{ fontSize: 12, color: status.color, fontFamily: 'var(--font-mono)' }}>
           {status.text}
@@ -145,6 +158,16 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
           )}
         </div>
       )}
+
+      <div style={{
+        marginTop: (count || callout) ? 12 : 10, paddingTop: 10,
+        borderTop: '1px solid var(--border)',
+        fontSize: 10.5, color: 'var(--ink-faint)', fontFamily: 'var(--font-mono)', lineHeight: 1.5,
+      }}>
+        Automatic document retrieval is a work in progress — coverage varies by portal
+        and PlanetBids / OpenGov aren&apos;t supported yet. Always confirm the complete
+        document set on the source portal before bidding.
+      </div>
     </div>
   )
 }
