@@ -125,6 +125,22 @@ whose scanned PDF the vision fallback couldn't read, stayed "pending" indefinite
 - ⚠ Deploy: `setup/launchd/com.fcu.parser.plist` switched `--ollama` → `--claude`;
   reload it on the Mac mini after merge (`launchctl unload/load`).
 
+### Scheduled jobs run from a dedicated worktree — 2026-09
+
+The 6 launchd jobs used to `git -C ~/fcu pull && python …` against the **primary
+checkout**. When a session left that checkout on an un-pushed feature branch the
+`pull` failed and `&&` killed the python step — every job (scraper, parser,
+digest, jobwalk, expirer) silently stopped.
+
+Now they run from `~/fcu-cron`, a worktree pinned to `main` that no one checks a
+branch into, and pull with `--ff-only origin main` followed by `;` (non-fatal).
+
+- ⚠ Deploy after merge: `bash setup/launchd/install.sh` on the Mac mini
+  (creates `~/fcu-cron`, copies `.env` + cookies, reloads all 6 jobs), then the
+  one-time `sudo cp setup/newsyslog/com.fcu.bid-scanner.conf /etc/newsyslog.d/`.
+- `~/fcu/bid-scanner/.env` is the source of truth for secrets; `install.sh` only
+  copies it across if `~/fcu-cron` doesn't already have one.
+
 ### Phase 4: Intelligence
 - [ ] Bid results tracking and logging
 - [ ] Competitive intelligence dashboard (win/loss by agency, job type)
