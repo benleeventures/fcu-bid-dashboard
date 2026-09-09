@@ -12,6 +12,13 @@ Workflows:
     python parser.py --parse-all --claude # auto-parse via Claude (text layer → vision) — production default
     python parser.py --parse-all --ollama # auto-parse via local Ollama (offline fallback)
 
+  Do one bid end-to-end (download docs if missing → parse with Claude):
+    python parser.py --parse <bid_id>
+
+  Scope --download / --parse-all to a single bid:
+    python parser.py --download --bid <bid_id>
+    python parser.py --parse-all --claude --bid <bid_id>
+
   Save extracted spec (after reading PDF manually or with Claude Code):
     python parser.py --save <bid_id> '<json>'
 
@@ -303,13 +310,20 @@ def _parse_date(raw: str) -> str | None:
 # PDF download via Playwright
 # ─────────────────────────────────────────────
 
-async def download_all():
+async def download_all(only: str | None = None):
     import json as _json
     from playwright.async_api import async_playwright
     import urllib.parse
 
     SPECS_DIR.mkdir(parents=True, exist_ok=True)
     bids = get_unprocessed_bids()
+
+    if only:
+        bids = [b for b in bids if str(b["bid_id"]) == str(only)]
+        if not bids:
+            print(f"Bid {only} is not in the download queue "
+                  f"(already parsed, past due, terminal parse state, or not relevant).")
+            return
 
     # Skip bids already downloaded or past their due date
     from datetime import date as _date
@@ -1684,7 +1698,7 @@ def _parse_with_ollama(pdf_path: Path) -> dict | None:
     return None
 
 
-def cmd_parse_all(backend: str = "manual"):
+def cmd_parse_all(backend: str = "manual", only: str | None = None):
     """
     Parse all downloaded PDFs that don't yet have bid_specs.
 
@@ -1702,6 +1716,13 @@ def cmd_parse_all(backend: str = "manual"):
     bids = {b["bid_id"]: b for b in get_unprocessed_bids()}
     docs = sorted([*SPECS_DIR.glob("*.pdf"), *SPECS_DIR.glob("*.txt")])
     pending = [p for p in docs if p.stem in bids]
+
+    if only:
+        pending = [p for p in pending if p.stem == str(only)]
+        if not pending:
+            print(f"Bid {only} has no downloaded document to parse "
+                  f"(run --download first) or is already parsed / out of the queue.")
+            return
 
     if not pending:
         print("✓ All downloaded documents have been parsed (or none yet — run --download).")
@@ -1831,15 +1852,25 @@ def cmd_rfq(bid_id: str):
 if __name__ == "__main__":
     argv = sys.argv[1:]
 
+    def _opt(flag: str) -> str | None:
+        return argv[argv.index(flag) + 1] if flag in argv and argv.index(flag) + 1 < len(argv) else None
+
     if not argv or "--list" in argv:
         cmd_list()
+    elif "--parse" in argv:
+        bid_id = _opt("--parse")
+        if not bid_id:
+            print("Usage: python parser.py --parse <bid_id>")
+            sys.exit(1)
+        asyncio.run(download_all(only=bid_id))
+        cmd_parse_all(backend="claude", only=bid_id)
     elif "--download" in argv:
-        asyncio.run(download_all())
+        asyncio.run(download_all(only=_opt("--bid")))
     elif "--pending" in argv:
         cmd_pending()
     elif "--parse-all" in argv:
         backend = "claude" if "--claude" in argv else "ollama" if "--ollama" in argv else "manual"
-        cmd_parse_all(backend=backend)
+        cmd_parse_all(backend=backend, only=_opt("--bid"))
     elif "--writeoff-backlog" in argv:
         cmd_writeoff_backlog()
     elif "--save" in argv:

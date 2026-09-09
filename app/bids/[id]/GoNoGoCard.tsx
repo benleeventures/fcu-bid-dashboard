@@ -119,7 +119,7 @@ export default function GoNoGoCard({ bid, spec, bidId }: Props) {
 
       <div style={{ marginTop: 14, fontSize: 10.5, color: 'var(--ink-faint)', fontFamily: 'var(--font-mono)' }}>
         {result.needsReview
-          ? <>Run <code style={{ background: 'var(--surface-sunken)', padding: '1px 5px', borderRadius: 3 }}>python parser.py --save {bidId} &apos;…&apos;</code> to fill the gaps</>
+          ? <>Run <code style={{ background: 'var(--surface-sunken)', padding: '1px 5px', borderRadius: 3 }}>cd ~/fcu-cron/bid-scanner &amp;&amp; python parser.py --parse {bidId}</code> to fill the gaps</>
           : 'Scoring method → bid-scanner/docs/scoring.md'}
       </div>
     </div>
