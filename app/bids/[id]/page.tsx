@@ -111,6 +111,7 @@ export default async function BidDetailPage({ params }: { params: { id: string }
           docsExpected={bid.docs_expected ?? null}
           docsSyncedAt={bid.docs_synced_at ?? null}
           portalUrl={bid.url ?? null}
+          source={bid.source ?? null}
         />
 
         {/* Winnability score card — always shown; card handles the review state */}

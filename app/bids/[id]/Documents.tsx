@@ -6,11 +6,14 @@ type Doc = {
   kind: string | null
 }
 
+import { docCapability } from '../../lib/docSources'
+
 type Props = {
   docs: Doc[]
   docsExpected: number | null
   docsSyncedAt: string | null
   portalUrl: string | null
+  source: string | null
 }
 
 function fmtBytes(n: number | null): string {
@@ -30,21 +33,25 @@ function icon(ct: string | null, name: string): string {
   return 'FILE'
 }
 
-export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl }: Props) {
+export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl, source }: Props) {
   const count = docs.length
+  const cap = docCapability(source)
   const allImages = count > 0 && docs.every(d => d.kind === 'page_image')
+  const srcName = source || 'this portal'
 
   let status: { text: string; color: string }
-  if (count === 0) {
-    status = { text: 'No documents mirrored — open the portal for bid documents', color: 'var(--ink-dim)' }
-  } else if (allImages) {
-    status = { text: `${count} plan-room page image${count > 1 ? 's' : ''} — verify the full set on the portal`, color: 'var(--orange)' }
+  if (count === 0 && cap === 'unsupported') {
+    status = { text: `The tracker can't retrieve documents from ${srcName} automatically — get them from the portal`, color: 'var(--ink-dim)' }
+  } else if (count === 0) {
+    status = { text: `No documents retrieved yet — check the portal`, color: 'var(--ink-dim)' }
+  } else if (cap === 'page-images' || allImages) {
+    status = { text: `${count} plan-room page image${count > 1 ? 's' : ''} — full document set is on the portal`, color: 'var(--orange)' }
   } else if (docsExpected != null && count >= docsExpected) {
-    status = { text: `${count} document${count > 1 ? 's' : ''} mirrored`, color: 'var(--green)' }
+    status = { text: `${count} document${count > 1 ? 's' : ''} — full set`, color: 'var(--green)' }
   } else if (docsExpected != null && count < docsExpected) {
-    status = { text: `${count} of ${docsExpected} documents mirrored — verify against portal`, color: 'var(--orange)' }
+    status = { text: `${count} of ${docsExpected} documents — verify against portal`, color: 'var(--orange)' }
   } else {
-    status = { text: 'Primary document only — check the portal for the full set', color: 'var(--orange)' }
+    status = { text: `Primary document only — the tracker can't get the rest from ${srcName}, check the portal`, color: 'var(--orange)' }
   }
 
   return (
