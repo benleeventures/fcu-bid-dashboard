@@ -80,6 +80,33 @@ NON_FLOORING_SERVICE_PATTERNS = [
     "window washing", "glass cleaning", "pressure washing", "power washing",
 ]
 
+# Other-trade solicitations FCU can't self-perform — roofing, HVAC, plumbing,
+# electrical, paving, glazing, etc. Used as a hard reject in _is_relevant so a
+# stray construction-trigger word ("modernization", "renovation") can't push a
+# clearly-not-flooring bid through the Claude second pass. A real flooring /
+# window-covering keyword in the title or description rescues it (multi-prime
+# bids are often split by trade, and FCU bids the flooring package directly),
+# so these patterns are deliberately specific — no bare "roof" / "fire" / "concrete".
+OTHER_TRADE_PATTERNS = [
+    "roofing", "re-roof", "reroof", "roof replacement", "roof repair",
+    "roof coating", "built-up roof", "roof membrane",
+    "hvac", "heating and cooling", "heating & cooling", "air conditioning",
+    "boiler", "chiller", "rooftop unit", "ductwork", "mechanical upgrade",
+    "plumbing", "sanitary sewer", "storm drain", "water main", "domestic water",
+    "electrical upgrade", "switchgear", "switchboard", "lighting retrofit",
+    "power distribution", "photovoltaic", "solar array", "generator replacement",
+    "fire alarm", "fire sprinkler", "fire suppression",
+    "elevator", "escalator",
+    "paving", "asphalt", "slurry seal", "seal coat", "chip seal",
+    "pavement rehabilitation", "street resurfacing", "road resurfacing",
+    "pavement marking", "pavement striping",
+    "fence replacement", "chain link fence", "fencing and gate", "perimeter fencing",
+    "curtain wall", "storefront glazing", "window replacement", "reglazing",
+    "masonry", "tuckpointing", "waterproofing", "building envelope",
+    "tree removal", "tree trimming", "irrigation system", "hardscape",
+    "shade structure", "playground equipment", "bleacher",
+]
+
 # Affirmative install / real-flooring-work phrases. If any appears alongside a
 # non-flooring-service match, the bid still has flooring work in scope — keep it.
 _INSTALL_PHRASES = [
@@ -177,10 +204,35 @@ def _is_non_flooring_service(title: str, description: str = "") -> bool:
     return True
 
 
+def _is_other_trade(title: str, description: str = "") -> bool:
+    """True if the solicitation clearly centers a trade FCU can't self-perform
+    (roofing / HVAC / plumbing / electrical / paving / glazing / …) and carries
+    no flooring or window-covering keyword. A flooring term rescues it — the bid
+    may be a trade-package split where FCU bids the flooring scope directly."""
+    blob = f"{title} {description}".lower()
+    hits = [p for p in OTHER_TRADE_PATTERNS if p in blob]
+    if not hits:
+        return False
+    # Strip the matched other-trade phrases before looking for a flooring term,
+    # so "curtain wall" / "window replacement" can't self-rescue via the
+    # "curtain" / "window covering" keywords.
+    residual = blob
+    for p in hits:
+        residual = residual.replace(p, " ")
+    if any(kw in residual for kw in RELEVANT_KEYWORDS):
+        return False
+    if any(p in residual for p in FLOORING_SERVICE_PATTERNS):
+        return False
+    return True
+
+
 def _is_relevant(title: str, description: str = "") -> bool:
     # Non-flooring service contracts (janitorial / pest / landscaping / glass) are
     # never a fit — bail before any keyword match.
     if _is_non_flooring_service(title, description):
+        return False
+    # Other-trade projects (roofing / HVAC / paving / …) with no flooring keyword.
+    if _is_other_trade(title, description):
         return False
     t = title.lower()
     # Fast keyword match — flooring install OR flooring/window-covering service

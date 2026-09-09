@@ -53,20 +53,19 @@ async function getBids(): Promise<Bid[]> {
   if (!url || !key) return []
 
   const sb = createClient(url, key)
-  // PostgREST hard-caps responses at 1000 rows. The bids table has ~2000 rows
-  // and the non-expired slice alone (~1000) can blow past that cap, silently
-  // truncating the view. Bound the query so it can never approach 1000:
-  //   - always include flooring-relevant bids (currently ~115)
-  //   - plus any non-relevant bid first seen in the last 30 days (recent scans;
-  //     the expirer archives non-relevant bids older than that)
+  // The dashboard is a working list of bids FCU can actually deliver, so it
+  // shows flooring-relevant bids only. Non-relevant bids (RAMP dumps the whole
+  // LA County procurement feed, ~400/scan; BidNet returns janitorial/roofing/
+  // HVAC) are pure noise here — they stay in Supabase for the /scanner health
+  // matrix, but never render in this table. Relevant bids we couldn't parse
+  // still show, with a "Needs manual review" badge, as a manual-check queue.
   //   - never include expired (the expirer archives past-due bids daily;
   //     BidTable's archive toggle surfaces them on demand)
-  const recentCutoff = new Date(Date.now() - 30 * 86400000).toISOString()
   const { data, error } = await sb
     .from('bids')
     .select('*, spec:bid_specs(flooring_types,total_sqft,rooms,prevailing_wage,bid_bond,bid_bond_pct,walk_required,walk_date,walk_date_raw,summary,flooring_is_primary,award_method,project_city,bid_type)')
     .neq('bid_status', 'expired')
-    .or(`is_relevant.eq.true,first_seen_at.gte.${recentCutoff}`)
+    .eq('is_relevant', true)
     .order('first_seen_at', { ascending: false })
     .limit(1000)
 
@@ -105,12 +104,13 @@ export default async function Home() {
   const in7 = new Date(today); in7.setDate(today.getDate() + 7)
   const in3 = new Date(today); in3.setDate(today.getDate() + 3)
 
-  const relevant    = bids.filter(b => b.is_relevant)
   const dueThisWeek = bids.filter(b => {
     if (!b.due_date) return false
     const d = new Date(b.due_date)
     return d >= today && d <= in7
   })
+  // Relevant bids we couldn't pull full specs for — the manual-check queue.
+  const needsReview = bids.filter(b => !b.spec)
 
   const sources = Array.from(new Set(bids.map(b => b.source).filter(Boolean))) as string[]
 
@@ -119,10 +119,10 @@ export default async function Home() {
     : null
 
   const stats: { label: string; value: string | number; accent: string }[] = [
-    { label: 'Bids found',       value: bids.length,       accent: 'var(--gold)' },
-    { label: 'Flooring jobs',    value: relevant.length,   accent: 'var(--green)' },
-    { label: 'Due this week',    value: dueThisWeek.length, accent: dueThisWeek.length > 0 ? 'var(--orange)' : 'var(--ink-faint)' },
-    { label: 'Websites checked', value: sources.length,    accent: 'var(--ink-faint)' },
+    { label: 'Flooring jobs',    value: bids.length,        accent: 'var(--green)' },
+    { label: 'Due this week',    value: dueThisWeek.length,  accent: dueThisWeek.length > 0 ? 'var(--orange)' : 'var(--ink-faint)' },
+    { label: 'Needs review',     value: needsReview.length,  accent: needsReview.length > 0 ? 'var(--gold)' : 'var(--ink-faint)' },
+    { label: 'Websites checked', value: sources.length,      accent: 'var(--ink-faint)' },
   ]
 
   return (

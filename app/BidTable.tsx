@@ -22,7 +22,6 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [filterSource, setFilterSource] = useState('')
   const [filterDue, setFilterDue] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
-  const [filterRelevant, setFilterRelevant] = useState('')
   const [search, setSearch] = useState('')
   const [showArchived, setShowArchived] = useState(false)
   const [localStatus, setLocalStatus] = useState<Map<string, string>>(new Map())
@@ -89,8 +88,6 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
         if (d < t || d > d3) return false
       }
       if (filterStatus && (b.bid_status ?? 'active') !== filterStatus) return false
-      if (filterRelevant === 'yes' && !b.is_relevant) return false
-      if (filterRelevant === 'no' && b.is_relevant) return false
       return true
     })
 
@@ -112,7 +109,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     }
 
     return filtered
-  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, filterRelevant, sortField, sortDir, localStatus, t, d3, d7])
+  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, sortField, sortDir, localStatus, t, d3, d7])
 
   function urgencyBadge(due_date: string | null): { label: string; color: string } | null {
     if (!due_date) return null
@@ -167,11 +164,6 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           <option value="lost">We lost</option>
           <option value="no_bid">Not bidding</option>
         </select>
-        <select value={filterRelevant} onChange={e => setFilterRelevant(e.target.value)} className="field">
-          <option value="">All trades</option>
-          <option value="yes">Flooring work</option>
-          <option value="no">Other trades</option>
-        </select>
         <span style={{ color: 'var(--ink-dim)', fontSize: 12, marginLeft: 'auto', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
           {displayBids.length} shown
         </span>
@@ -197,7 +189,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       <div className="legend" style={{ marginBottom: 12 }}>
         <span><span className="legend__dot" style={{ background: 'var(--red)' }} />Due within 3 days</span>
         <span><span className="legend__dot" style={{ background: 'var(--orange)' }} />Due this week</span>
-        <span><span className="legend__dot" style={{ background: 'var(--green)' }} />Flooring work</span>
+        <span><span className="legend__dot" style={{ background: 'var(--gold)' }} />Needs manual review</span>
         <span>Click a row to open the full bid</span>
       </div>
 
@@ -239,13 +231,13 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                 <tr
                   key={b.id}
                   onClick={() => router.push(`/bids/${encodeURIComponent(b.bid_id)}`)}
-                  className={`row${b.is_relevant ? ' row--relevant' : ''}`}
+                  className={`row${!hasSpec ? ' row--review' : ''}`}
                 >
                   <td style={{ overflow: 'hidden' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{b.title}</span>
                       {b.search_keyword && <span className="chip">{b.search_keyword}</span>}
-                      {!hasSpec && <span className="chip">Details not loaded</span>}
+                      {!hasSpec && <span className="chip chip--review">Needs manual review</span>}
                       <ScorePill bid={b} spec={b.spec ?? null} />
                     </div>
                   </td>
