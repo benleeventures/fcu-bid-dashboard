@@ -220,7 +220,10 @@ def update_bid_documents(bid_id: str, doc_rows: list[dict]) -> bool:
         return False
     rec_id = matches[0]["id"]
 
-    dashboard = os.getenv("DASHBOARD_URL", "").strip().rstrip("/")
+    try:
+        from notify import DASHBOARD_URL as dashboard          # shared default
+    except Exception:
+        dashboard = os.getenv("DASHBOARD_URL", "").strip().rstrip("/")
     fields: dict = {}
     if dashboard:
         fields["Docs Folder"] = f"{dashboard}/bids/{bid_id}"

@@ -1,10 +1,13 @@
 -- FCU Bid Agent — bid_documents table + bids doc-status columns
 -- Run in Supabase Dashboard → SQL Editor.
 --
--- ALSO (one-time, manual, in Supabase Dashboard → Storage):
---   Create a bucket named  bid-docs  with "Public bucket" ENABLED.
---   Public-read is intentional — bid solicitations are already public records,
---   and permanent non-expiring URLs are what the dashboard + Airtable need.
+-- STATUS: ✅ applied 2026-09. The public `bid-docs` bucket exists. Kept here as
+-- the schema of record; safe to re-run (all statements are IF NOT EXISTS).
+--
+-- The bucket was created via the storage API (public=true). If it's ever lost,
+-- recreate a bucket named  bid-docs  with "Public bucket" ENABLED — public-read
+-- is intentional (bid solicitations are already public records, and the
+-- dashboard + Airtable need permanent non-expiring URLs).
 --
 -- Mirrors documents the bid-scanner already downloaded to output/specs/ into
 -- Supabase Storage so they can be linked from the dashboard bid page and pushed
