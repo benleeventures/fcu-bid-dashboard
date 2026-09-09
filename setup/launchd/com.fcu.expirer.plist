@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>git -C /Users/leo-claude/fcu pull --quiet &amp;&amp; /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu/bid-scanner/expirer.py</string>
+        <string>git -C /Users/leo-claude/fcu-cron pull --quiet --ff-only origin main; /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu-cron/bid-scanner/expirer.py</string>
     </array>
 
     <key>EnvironmentVariables</key>
@@ -20,7 +20,7 @@
 
 
     <key>WorkingDirectory</key>
-    <string>/Users/leo-claude/fcu/bid-scanner</string>
+    <string>/Users/leo-claude/fcu-cron/bid-scanner</string>
 
     <!-- Mon–Fri 7:30 AM -->
     <key>StartCalendarInterval</key>
@@ -33,9 +33,9 @@
     </array>
 
     <key>StandardOutPath</key>
-    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.cron.log</string>
+    <string>/Users/leo-claude/fcu-cron/bid-scanner/logs/expirer.cron.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/leo-claude/fcu/bid-scanner/logs/expirer.cron.log</string>
+    <string>/Users/leo-claude/fcu-cron/bid-scanner/logs/expirer.cron.log</string>
 
     <key>RunAtLoad</key>
     <false/>
