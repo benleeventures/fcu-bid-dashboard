@@ -35,10 +35,10 @@ type ScoringSpec = {
 } | null
 
 export const REVIEW_LABELS: Record<string, string> = {
-  no_docs: 'Bid documents not downloaded / parsed',
+  no_docs: 'Bid documents not reviewed yet',
   no_location: 'Job location not identified',
   no_due_date: 'No bid due date on file',
-  no_scope_read: 'Scope not assessed by parser',
+  no_scope_read: 'Scope of work not reviewed yet',
   past_due: 'Bid due date has passed',
 }
 

@@ -59,6 +59,16 @@ export const STATUS_COLOR: Record<string, string> = {
   pending: 'var(--gold)',
 }
 
+// Plain-language names for the status codes above (shown to non-technical users).
+export const STATUS_WORD: Record<string, string> = {
+  ok: 'working',
+  empty: 'nothing new',
+  partial: 'partly working',
+  blocked: 'blocked',
+  error: 'error',
+  pending: 'checking',
+}
+
 // ── Funnel ────────────────────────────────────────────────────────────────
 
 export type FunnelStep = { label: string; value: number; note?: string }
@@ -67,11 +77,11 @@ export function funnelSteps(r: ScanRun | null): FunnelStep[] {
   if (!r) return []
   const inArea = r.geo_in + r.geo_unknown
   return [
-    { label: 'Raw scraped', value: r.raw_found },
-    { label: 'In-area', value: inArea, note: `${r.geo_out} out-of-area dropped` },
-    { label: 'After dedup', value: r.after_dedup, note: `${r.dedup_removed} duplicates removed` },
-    { label: 'Flooring-relevant', value: r.relevant },
-    { label: 'New', value: r.new_bids, note: `${r.updated_bids} already known` },
+    { label: 'Listings found', value: r.raw_found },
+    { label: 'In our area', value: inArea, note: `${r.geo_out} outside our area, set aside` },
+    { label: 'After removing duplicates', value: r.after_dedup, note: `${r.dedup_removed} duplicates removed` },
+    { label: 'Flooring work', value: r.relevant },
+    { label: 'New to us', value: r.new_bids, note: `${r.updated_bids} we had already seen` },
   ]
 }
 

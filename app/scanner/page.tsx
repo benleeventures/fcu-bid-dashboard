@@ -2,9 +2,10 @@ import { createClient } from '@supabase/supabase-js'
 import {
   ScanRun, SourceStat, PortalStat, BidParseRow,
   funnelSteps, dailySeries, windowTotals, sourceMatrix, latestPortalRun,
-  docPull, STATUS_COLOR, pct,
+  docPull, STATUS_COLOR, STATUS_WORD, pct,
 } from './lib'
 import { Funnel, DocPullChart, VolumeChart, FilteredOutBars } from './Charts'
+import Nav from '../Nav'
 
 export const revalidate = 300
 const MONO = 'IBM Plex Mono, monospace'
@@ -69,8 +70,8 @@ function Card({ title, children, sub }: { title: string; sub?: string; children:
       background: 'var(--charcoal-soft)', border: '1px solid var(--charcoal-mid)',
       borderRadius: 12, padding: '18px 20px', marginBottom: 20,
     }}>
-      <h2 style={{ fontSize: 14, fontWeight: 700, marginBottom: sub ? 2 : 14 }}>{title}</h2>
-      {sub && <p style={{ fontSize: 11, color: 'var(--gray)', fontFamily: MONO, marginBottom: 14 }}>{sub}</p>}
+      <h2 style={{ fontSize: 17, fontWeight: 600, marginBottom: sub ? 3 : 14 }}>{title}</h2>
+      {sub && <p style={{ fontSize: 12, color: 'var(--ink-dim)', marginBottom: 14, lineHeight: 1.5 }}>{sub}</p>}
       {children}
     </section>
   )
@@ -112,103 +113,91 @@ export default async function ScannerPage() {
   const hasData = runs.length > 0
 
   return (
-    <main style={{ maxWidth: 1000, margin: '0 auto', padding: '24px 16px' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 28 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 8, background: 'var(--gold)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: MONO, fontWeight: 500, fontSize: 14, color: 'var(--charcoal)',
-            }}>◔</div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.3px' }}>Scanner Health</h1>
-          </div>
-          <p style={{ color: 'var(--gray)', marginTop: 4, fontFamily: MONO, fontSize: 11 }}>
-            Funnel throughput · volume trends · per-source visibility
+    <>
+      <Nav active="scanner" />
+      <main style={{ maxWidth: 1000, margin: '0 auto', padding: '28px 24px 64px' }}>
+        {/* Header */}
+        <header style={{ marginBottom: 24 }}>
+          <h1 style={{ fontSize: 28, letterSpacing: '-0.4px' }}>Bid Finder Status</h1>
+          <p style={{ color: 'var(--ink-dim)', marginTop: 4, fontSize: 13 }}>
+            Is the bid finder running, and is it missing anything?
           </p>
-        </div>
-        <a href="/" style={{ color: 'var(--gold-light)', fontFamily: MONO, fontSize: 11 }}>← Bid Dashboard</a>
-      </div>
+        </header>
 
       {!hasData ? (
-        <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--gray)', fontFamily: MONO, fontSize: 13 }}>
+        <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--ink-dim)', fontSize: 14 }}>
           <div style={{ fontSize: 32, marginBottom: 16 }}>📡</div>
-          <div style={{ fontWeight: 500, marginBottom: 8 }}>No scan telemetry yet</div>
-          <div>Apply <code style={{ color: 'var(--gold)' }}>supabase/add_scan_analytics.sql</code>, then run <code style={{ color: 'var(--gold)' }}>python main.py</code>.</div>
+          <div style={{ fontWeight: 500, marginBottom: 8 }}>No history yet</div>
+          <div>This page fills in after the bid finder runs.</div>
         </div>
       ) : (
         <>
           {/* Window summary */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 12, marginBottom: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(165px, 1fr))', gap: 12, marginBottom: 24, maxWidth: 900 }}>
             {[
-              { label: 'Runs (7d)', value: w7.runs, accent: 'var(--gray)' },
-              { label: 'Raw scraped (7d)', value: w7.raw.toLocaleString(), accent: 'var(--gold)' },
-              { label: 'Relevant (7d)', value: w7.relevant.toLocaleString(), accent: 'var(--green)' },
-              { label: 'New (7d)', value: w7.new.toLocaleString(), accent: 'var(--gold-light)' },
-              { label: 'Filtered out (7d)', value: w7.filteredOut.toLocaleString(), accent: 'var(--orange)' },
-              { label: 'Raw→New (7d)', value: pct(w7.new, w7.raw), accent: 'var(--gray)' },
+              { label: 'Checks this week', value: w7.runs, accent: 'var(--ink-faint)' },
+              { label: 'Listings this week', value: w7.raw.toLocaleString(), accent: 'var(--gold)' },
+              { label: 'Flooring this week', value: w7.relevant.toLocaleString(), accent: 'var(--green)' },
+              { label: 'New this week', value: w7.new.toLocaleString(), accent: 'var(--gold-light)' },
+              { label: 'Skipped this week', value: w7.filteredOut.toLocaleString(), accent: 'var(--orange)' },
             ].map(s => (
-              <div key={s.label} style={{
-                background: 'var(--charcoal-soft)', border: '1px solid var(--charcoal-mid)',
-                borderRadius: 12, padding: '14px 16px',
-              }}>
-                <div style={{ fontSize: 22, fontWeight: 700, color: s.accent, fontFamily: MONO }}>{s.value}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray)', marginTop: 2 }}>{s.label}</div>
+              <div key={s.label} className="stat-card" style={{ ['--_accent' as any]: s.accent }}>
+                <div className="stat-card__value">{s.value}</div>
+                <div className="stat-card__label">{s.label}</div>
               </div>
             ))}
           </div>
 
           {/* Funnel */}
           <Card
-            title="Funnel — latest full run"
-            sub={latestFull ? `${fmtPT(latestFull.started_at)} PT · ${latestFull.mode} · ${latestFull.duration_secs ?? '?'}s` : undefined}
+            title="How the last full check went"
+            sub={latestFull ? `Last full check: ${fmtPT(latestFull.started_at)} PT` : undefined}
           >
             <Funnel steps={steps} />
             <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--charcoal-mid)', display: 'flex', gap: 24, fontSize: 11, fontFamily: MONO, color: 'var(--gray)' }}>
-              <span>7-day: {w7.raw.toLocaleString()} raw → {w7.relevant} relevant → {w7.new} new</span>
-              <span>30-day: {w30.raw.toLocaleString()} raw → {w30.relevant} relevant → {w30.new} new</span>
+              <span>This week: {w7.raw.toLocaleString()} listings → {w7.relevant} flooring → {w7.new} new</span>
+              <span>Past 30 days: {w30.raw.toLocaleString()} listings → {w30.relevant} flooring → {w30.new} new</span>
             </div>
           </Card>
 
           {/* Document pull — parse_status disposition of the relevant-bid cohort */}
           {dp90.total > 0 && (
             <Card
-              title="Document pull — can we fully scrape it?"
-              sub={`${dp30.total} relevant bids (distinct) found in the last 30d · parse_status resolves async over ~3 days after discovery`}
+              title="Bid document downloads"
+              sub={`Of the ${dp30.total} flooring jobs found in the last 30 days, how many did we get the full bid packet for? (updates over the ~3 days after a bid is found)`}
             >
               <DocPullChart d={dp30} />
               <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--charcoal-mid)', display: 'flex', gap: 24, fontSize: 11, fontFamily: MONO, color: 'var(--gray)' }}>
-                <span>30-day: {dp30.parsed} pulled · {dp30.noDocs + dp30.unparseable} unpullable · {dp30.pending} pending</span>
-                <span>90-day: {dp90.parsed}/{dp90.total} pulled ({pct(dp90.parsed, dp90.total)})</span>
+                <span>Last 30 days: {dp30.parsed} downloaded · {dp30.noDocs + dp30.unparseable} not available · {dp30.pending} still checking</span>
+                <span>Past 90 days: {dp90.parsed} of {dp90.total} downloaded ({pct(dp90.parsed, dp90.total)})</span>
               </div>
             </Card>
           )}
 
           {/* Volume over time */}
-          <Card title="Volume over time" sub="Per day, all run types · last 30 days">
+          <Card title="Bids found per day" sub="Last 30 days">
             <VolumeChart data={series} />
             <div style={{ marginTop: 16 }}>
               <div style={{ fontSize: 11, fontFamily: MONO, color: 'var(--gray)', marginBottom: 6 }}>
-                Bids filtered out per day (out-of-area + duplicates + not-relevant)
+                Bids skipped per day (outside our area, duplicates, or other trades)
               </div>
               <FilteredOutBars data={series} />
             </div>
           </Card>
 
           {/* Source visibility matrix */}
-          <Card title="Source visibility" sub="Status per source per day · last 14 days · number = raw rows">
+          <Card title="Each website, day by day" sub="Last 14 days · number = listings seen that day">
             <div style={{ overflowX: 'auto' }}>
               <table style={{ borderCollapse: 'collapse', fontSize: 11, fontFamily: MONO, minWidth: 640 }}>
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', color: 'var(--gray)', fontWeight: 500 }}>Source</th>
+                    <th style={{ textAlign: 'left', padding: '4px 8px', color: 'var(--gray)', fontWeight: 500 }}>Website</th>
                     {matrix.columns.map(c => (
                       <th key={c} style={{ padding: '4px 3px', color: 'var(--gray)', fontWeight: 500, writingMode: 'vertical-rl', fontSize: 9 }}>
                         {c.slice(5)}
                       </th>
                     ))}
-                    <th style={{ padding: '4px 8px', color: 'var(--gray)', fontWeight: 500 }}>!</th>
+                    <th style={{ padding: '4px 8px', color: 'var(--gray)', fontWeight: 500 }} title="Days in a row with a problem">⚠</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -220,7 +209,7 @@ export default async function ScannerPage() {
                       {row.cells.map((cell, i) => (
                         <td key={i} style={{ padding: 2, textAlign: 'center' }}>
                           {cell ? (
-                            <div title={`${cell.status} · ${cell.raw} raw`} style={{
+                            <div title={`${STATUS_WORD[cell.status] ?? cell.status} · ${cell.raw} listings`} style={{
                               width: 22, height: 18, borderRadius: 3, margin: '0 auto',
                               background: STATUS_COLOR[cell.status] ?? 'var(--gray)',
                               color: '#fff', fontSize: 9, lineHeight: '18px',
@@ -232,7 +221,7 @@ export default async function ScannerPage() {
                         </td>
                       ))}
                       <td style={{ padding: '3px 8px', textAlign: 'center', fontWeight: 700, color: row.failStreak >= 2 ? 'var(--red)' : 'var(--gray)' }}>
-                        {row.failStreak >= 2 ? `${row.failStreak}d` : row.dryStreak >= 7 ? `${row.dryStreak}d dry` : ''}
+                        {row.failStreak >= 2 ? `${row.failStreak}d` : row.dryStreak >= 7 ? `${row.dryStreak}d quiet` : ''}
                       </td>
                     </tr>
                   ))}
@@ -245,9 +234,9 @@ export default async function ScannerPage() {
           {/* PlanetBids portal grid */}
           {portalRun.length > 0 && (
             <Card
-              title="PlanetBids portals — latest sweep"
+              title="City & agency portals — last check"
               sub={`${portalRun.length} portals · ` + ['ok', 'empty', 'blocked', 'error', 'pending']
-                .filter(s => portalCounts[s]).map(s => `${portalCounts[s]} ${s}`).join(' · ')}
+                .filter(s => portalCounts[s]).map(s => `${portalCounts[s]} ${STATUS_WORD[s] ?? s}`).join(' · ')}
             >
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 6 }}>
                 {portalRun.map(p => (
@@ -256,7 +245,7 @@ export default async function ScannerPage() {
                     border: '1px solid var(--charcoal-mid)', borderRadius: 6, fontSize: 11,
                   }}>
                     <StatusDot status={p.status} />
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${p.agency} (${p.county ?? '?'}) — ${p.status}`}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${p.agency} (${p.county ?? '?'}) — ${STATUS_WORD[p.status] ?? p.status}`}>
                       {p.agency}
                     </span>
                     {p.bid_count > 0 && <span style={{ marginLeft: 'auto', fontFamily: MONO, color: 'var(--gold-light)' }}>{p.bid_count}</span>}
@@ -268,19 +257,19 @@ export default async function ScannerPage() {
           )}
 
           {/* Run log */}
-          <Card title="Recent runs">
+          <Card title="Recent checks">
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 560 }}>
                 <thead>
                   <tr style={{ color: 'var(--gray)', fontFamily: MONO, fontSize: 11, textAlign: 'right' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 8px' }}>Started (PT)</th>
-                    <th style={{ textAlign: 'left', padding: '6px 8px' }}>Mode</th>
-                    <th style={{ padding: '6px 8px' }}>Dur</th>
-                    <th style={{ padding: '6px 8px' }}>Raw</th>
-                    <th style={{ padding: '6px 8px' }}>Dedup</th>
-                    <th style={{ padding: '6px 8px' }}>Rel</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px' }}>Time (PT)</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px' }}>Type</th>
+                    <th style={{ padding: '6px 8px' }}>Took</th>
+                    <th style={{ padding: '6px 8px' }}>Found</th>
+                    <th style={{ padding: '6px 8px' }}>After dupes</th>
+                    <th style={{ padding: '6px 8px' }}>Flooring</th>
                     <th style={{ padding: '6px 8px' }}>New</th>
-                    <th style={{ padding: '6px 8px' }}>Digest</th>
+                    <th style={{ padding: '6px 8px' }}>Email sent</th>
                   </tr>
                 </thead>
                 <tbody style={{ fontFamily: MONO }}>
@@ -288,7 +277,9 @@ export default async function ScannerPage() {
                     <tr key={r.id} style={{ borderTop: '1px solid var(--charcoal-mid)', textAlign: 'right' }}>
                       <td style={{ textAlign: 'left', padding: '6px 8px' }}>{fmtPT(r.started_at)}</td>
                       <td style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--gray)' }}>
-                        {r.error_summary ? <span style={{ color: 'var(--red)' }} title={r.error_summary}>{r.mode} ⚠</span> : r.mode}
+                        {r.error_summary
+                          ? <span style={{ color: 'var(--red)' }} title={r.error_summary}>{runTypeLabel(r.mode)} ⚠</span>
+                          : runTypeLabel(r.mode)}
                       </td>
                       <td style={{ padding: '6px 8px', color: 'var(--gray)' }}>{r.duration_secs ?? '—'}s</td>
                       <td style={{ padding: '6px 8px' }}>{r.raw_found}</td>
@@ -304,8 +295,13 @@ export default async function ScannerPage() {
           </Card>
         </>
       )}
-    </main>
+      </main>
+    </>
   )
+}
+
+function runTypeLabel(mode: string): string {
+  return { full: 'full', quick: 'quick', legacy: 'older', partial: 'partial' }[mode] ?? mode
 }
 
 function Legend({ items }: { items: string[] }) {
@@ -314,7 +310,7 @@ function Legend({ items }: { items: string[] }) {
       {items.map(s => (
         <span key={s} style={{ fontSize: 10.5, fontFamily: MONO, color: 'var(--gray)', display: 'flex', alignItems: 'center', gap: 5 }}>
           <span style={{ width: 10, height: 10, borderRadius: 2, background: STATUS_COLOR[s] ?? 'var(--gray)', display: 'inline-block' }} />
-          {s}
+          {STATUS_WORD[s] ?? s}
         </span>
       ))}
     </div>

@@ -11,9 +11,8 @@ export function Funnel({ steps }: { steps: FunnelStep[] }) {
   if (!steps.length) {
     return (
       <div style={{ color: 'var(--gray)', fontFamily: MONO, fontSize: 12 }}>
-        No instrumented run yet — the funnel populates after the next full
-        {' '}<code style={{ color: 'var(--gold-light)' }}>python main.py</code>
-        {' '}(scheduled Mon–Fri 6 AM PT). Backfilled history still shows below.
+        No full check recorded yet — this fills in after the next full run
+        (weekday mornings). Earlier history still shows below.
       </div>
     )
   }
@@ -62,11 +61,11 @@ export function Funnel({ steps }: { steps: FunnelStep[] }) {
 // ── Document pull (parse_status disposition) ─────────────────────────────
 
 const DOC_SEGMENTS: { key: DocPullKey; label: string; color: string }[] = [
-  { key: 'parsed',      label: 'Docs pulled & parsed', color: 'var(--green)' },
-  { key: 'pending',     label: 'Still pending',        color: 'var(--gold)' },
-  { key: 'noDocs',      label: "No docs — can't pull", color: 'var(--red)' },
-  { key: 'unparseable', label: 'Downloaded, unparseable', color: 'var(--orange)' },
-  { key: 'skipped',     label: 'Written off (past due / backlog)', color: 'var(--gray)' },
+  { key: 'parsed',      label: 'Full bid packet downloaded', color: 'var(--green)' },
+  { key: 'pending',     label: 'Still checking',             color: 'var(--gold)' },
+  { key: 'noDocs',      label: 'No documents posted',        color: 'var(--red)' },
+  { key: 'unparseable', label: 'Downloaded, needs a manual look', color: 'var(--orange)' },
+  { key: 'skipped',     label: 'Skipped — bid date already passed', color: 'var(--gray)' },
 ]
 
 export function DocPullChart({ d }: { d: DocPull }) {
@@ -109,9 +108,9 @@ export function DocPullChart({ d }: { d: DocPull }) {
 type Series = { key: keyof DayPoint; label: string; color: string }
 
 const SERIES: Series[] = [
-  { key: 'raw', label: 'Raw scraped', color: 'var(--gold)' },
-  { key: 'relevant', label: 'Relevant', color: 'var(--green)' },
-  { key: 'new', label: 'New', color: 'var(--gold-light)' },
+  { key: 'raw', label: 'Listings found', color: 'var(--gold)' },
+  { key: 'relevant', label: 'Flooring work', color: 'var(--green)' },
+  { key: 'new', label: 'New to us', color: 'var(--gold-light)' },
 ]
 
 export function VolumeChart({ data }: { data: DayPoint[] }) {
