@@ -3,8 +3,9 @@
 # FCU scheduled jobs — installer.
 #
 # The launchd jobs (scraper, parser, digest, jobwalk, expirer, supervisor) run
-# out of a DEDICATED git worktree at ~/fcu-cron that is pinned to `main` and
-# that no human ever checks a branch into. Each job does
+# out of a DEDICATED git worktree at ~/fcu-cron kept on a DETACHED HEAD at
+# origin/main — no human ever works in it, and it does not hold the `main`
+# branch (so the primary checkout can). Each job does
 #   git -C ~/fcu-cron pull --quiet --ff-only origin main
 # before running, so the schedule always executes freshly-merged code without
 # depending on whatever branch someone left the primary checkout on.
@@ -24,15 +25,16 @@ RUNTIME_FILES=(bid-scanner/.env bid-scanner/cookies.json bid-scanner/cookies_ope
 echo "primary checkout : $REPO"
 echo "cron worktree    : $CRON_TREE"
 
-# 1. Create the dedicated worktree on main if it isn't there yet.
+# 1. Create the dedicated worktree if it isn't there yet. Detached HEAD, so it
+#    never claims the `main` branch — the primary checkout keeps that.
+git -C "$REPO" fetch --quiet origin main
 if [ ! -e "$CRON_TREE/.git" ]; then
-  echo "creating cron worktree on main…"
-  git -C "$REPO" fetch --quiet origin main
-  git -C "$REPO" worktree add "$CRON_TREE" main
+  echo "creating cron worktree (detached at origin/main)…"
+  git -C "$REPO" worktree add --detach "$CRON_TREE" origin/main
 fi
-git -C "$CRON_TREE" checkout --quiet main
+git -C "$CRON_TREE" checkout --quiet --detach origin/main
 git -C "$CRON_TREE" pull --quiet --ff-only origin main
-echo "cron worktree at $(git -C "$CRON_TREE" rev-parse --short HEAD)"
+echo "cron worktree at $(git -C "$CRON_TREE" rev-parse --short HEAD) (detached)"
 
 # 2. Copy over the git-ignored runtime files (secrets / cookies) that a fresh
 #    worktree doesn't get. Only copies what's missing — never clobbers.

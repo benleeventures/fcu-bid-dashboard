@@ -132,8 +132,10 @@ checkout**. When a session left that checkout on an un-pushed feature branch the
 `pull` failed and `&&` killed the python step — every job (scraper, parser,
 digest, jobwalk, expirer) silently stopped.
 
-Now they run from `~/fcu-cron`, a worktree pinned to `main` that no one checks a
-branch into, and pull with `--ff-only origin main` followed by `;` (non-fatal).
+Now they run from `~/fcu-cron`, a worktree on a **detached HEAD at origin/main**
+that no one works in (detached so it doesn't hold the `main` branch — the primary
+checkout keeps that), and pull with `--ff-only origin main` followed by `;`
+(non-fatal).
 
 - ⚠ Deploy after merge: `bash setup/launchd/install.sh` on the Mac mini
   (creates `~/fcu-cron`, copies `.env` + cookies, reloads all 6 jobs), then the
