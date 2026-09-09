@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { getRates } from '../../actions/settings'
-import EstimateWorksheet from './EstimateWorksheet'
+import Nav from '../../Nav'
 import BidOutcomeTracker from './BidOutcomeTracker'
 import GoNoGoCard from './GoNoGoCard'
 import type { BidStatus } from '../../actions/bids'
@@ -24,154 +23,112 @@ export default async function BidDetailPage({ params }: { params: { id: string }
   const bidId = decodeURIComponent(params.id)
   const client = sb()
 
-  const [
-    { data: bid },
-    { data: spec },
-    { data: estimate },
-    rates,
-  ] = await Promise.all([
+  const [{ data: bid }, { data: spec }] = await Promise.all([
     client.from('bids').select('*').eq('bid_id', bidId).single(),
     client.from('bid_specs').select('*').eq('bid_id', bidId).maybeSingle(),
-    client.from('estimates').select('*').eq('bid_id', bidId).maybeSingle(),
-    getRates(),
   ])
 
   if (!bid) {
     return (
-      <main style={{ maxWidth: 800, margin: '0 auto', padding: '32px 16px' }}>
-        <a href="/" style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>← Back</a>
-        <p style={{ color: 'var(--gray)', marginTop: 32, fontFamily: 'IBM Plex Mono' }}>Bid not found: {bidId}</p>
-      </main>
+      <>
+        <Nav />
+        <main style={{ maxWidth: 900, margin: '0 auto', padding: '28px 24px 64px' }}>
+          <a href="/" className="app-nav__link" style={{ display: 'inline-block', padding: '4px 0', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+            ← All bids
+          </a>
+          <p style={{ color: 'var(--ink-dim)', marginTop: 32, fontFamily: 'var(--font-mono)' }}>Bid not found: {bidId}</p>
+        </main>
+      </>
     )
   }
-
-  // Determine if estimate is stale (rates changed after estimate was saved)
-  const isStale = !!(
-    estimate &&
-    estimate.rates_version &&
-    rates.updatedAt &&
-    new Date(rates.updatedAt) > new Date(estimate.rates_version)
-  )
 
   const formatDate = (s: string | null) => s
     ? new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : '—'
 
   return (
-    <main style={{ maxWidth: 900, margin: '0 auto', padding: '32px 16px' }}>
-      {/* Nav */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-        <a href="/" style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
-          ← All bids
-        </a>
-        <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-          {bid.url && (
-            <a href={bid.url} target="_blank" rel="noopener noreferrer" style={{
-              color: 'var(--gold)', fontSize: 12, fontFamily: 'IBM Plex Mono',
-              textDecoration: 'none', border: '1px solid var(--gold)', borderRadius: 6,
-              padding: '4px 10px',
-            }}>
-              Open Portal ↗
-            </a>
-          )}
-          <a href="/settings" style={{ color: 'var(--gray)', fontSize: 12, fontFamily: 'IBM Plex Mono', textDecoration: 'none' }}>
+    <>
+      <Nav
+        right={
+          <a href="/settings" className="app-nav__link" style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>
             ⚙ Rate settings
           </a>
-        </div>
-      </div>
-
-      {/* Bid header */}
-      <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid var(--charcoal-mid)' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 8 }}>
-          {bid.is_relevant && <span style={{ color: 'var(--star)', fontSize: 16, marginTop: 3 }}>★</span>}
-          <h1 style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.3, letterSpacing: '-0.3px' }}>{bid.title}</h1>
-        </div>
-        <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', fontSize: 12, fontFamily: 'IBM Plex Mono', color: 'var(--gray)' }}>
-          <span style={{ color: 'var(--gold-light)' }}>{bid.bid_id}</span>
-          {bid.agency && <span>{bid.agency}</span>}
-          {bid.source && <span>{bid.source}</span>}
-          {bid.due_date && <span>Due: <span style={{ color: 'var(--white)' }}>{bid.due_date_raw || formatDate(bid.due_date)}</span></span>}
-          {bid.url && <a href={bid.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold)', textDecoration: 'none' }}>Portal ↗</a>}
-        </div>
-
-        {/* Spec summary strip */}
-        {spec && (
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 14, fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
-            {spec.total_sqft && <span style={{ color: 'var(--white)' }}>{spec.total_sqft.toLocaleString()} SF</span>}
-            {spec.flooring_types?.length && <span style={{ color: 'var(--gray)' }}>{spec.flooring_types.join(' · ')}</span>}
-            {bidTypeLabel(spec.bid_type ?? spec.raw_extract?.bid_type) && (
-              <span style={{ color: 'var(--gray)' }}>{bidTypeLabel(spec.bid_type ?? spec.raw_extract?.bid_type)}</span>
-            )}
-            {(spec.project_city || spec.raw_extract?.project_city) && (
-              <span style={{ color: 'var(--gray)' }}>{spec.project_city || spec.raw_extract?.project_city}</span>
-            )}
-            {(spec.flooring_is_primary === false || spec.raw_extract?.flooring_is_primary === false) && (
-              <span style={{ color: 'var(--red)' }}>Flooring is minor scope</span>
-            )}
-            {spec.prevailing_wage === true  && <span style={{ color: 'var(--orange)' }}>Prevailing wage</span>}
-            {spec.bid_bond === true         && <span style={{ color: 'var(--orange)' }}>Bid bond {spec.bid_bond_pct ? spec.bid_bond_pct + '%' : ''}</span>}
-            {spec.walk_required === true    && <span style={{ color: 'var(--orange)' }}>Job walk {spec.walk_date_raw || spec.walk_date || ''}</span>}
-          </div>
-        )}
-        {spec?.summary && (
-          <p style={{ marginTop: 12, fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, maxWidth: 700 }}>
-            {spec.summary}
-          </p>
-        )}
-      </div>
-
-      {/* Winnability score card — always shown; card handles the review state */}
-      <GoNoGoCard
-        bid={{ due_date: bid.due_date, county: bid.county, geo_status: bid.geo_status }}
-        spec={spec ? {
-          // columns first, raw_extract as fallback
-          flooring_is_primary: spec.flooring_is_primary ?? spec.raw_extract?.flooring_is_primary ?? null,
-          award_method: spec.award_method ?? spec.raw_extract?.award_method ?? null,
-          project_city: spec.project_city ?? spec.raw_extract?.project_city ?? null,
-        } : null}
-        bidId={bid.bid_id}
-      />
-
-      {/* Download bid package — only when estimate exists */}
-      {estimate && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-          <a
-            href={`/api/bids/${encodeURIComponent(bidId)}/package`}
-            download
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              background: 'var(--charcoal-soft)', color: 'var(--gold)',
-              border: '1px solid var(--gold)', borderRadius: 8,
-              padding: '8px 16px', fontSize: 12, fontFamily: 'IBM Plex Mono',
-              fontWeight: 600, textDecoration: 'none', letterSpacing: '0.02em',
-            }}
-          >
-            ↓ Download Bid Package PDF
-          </a>
-        </div>
-      )}
-
-      {/* Estimate worksheet */}
-      <EstimateWorksheet
-        bidId={bidId}
-        spec={spec}
-        estimate={estimate}
-        rates={rates}
-        isStale={isStale}
-      />
-
-      {/* Bid outcome tracker */}
-      <BidOutcomeTracker
-        bidId={bidId}
-        initialStatus={(bid.bid_status as BidStatus) ?? 'active'}
-        initialSubmitted={bid.submitted_amount ?? null}
-        initialAward={bid.award_amount ?? null}
-        estimateTotal={
-          estimate
-            ? ((estimate.selected_markup === 30 ? estimate.markup_30 : estimate.markup_25) ?? null)
-            : null
         }
       />
-    </main>
+
+      <main style={{ maxWidth: 900, margin: '0 auto', padding: '28px 24px 64px' }}>
+        {/* Back link + portal */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
+          <a href="/" style={{ color: 'var(--ink-dim)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
+            ← All bids
+          </a>
+          {bid.url && (
+            <a href={bid.url} target="_blank" rel="noopener noreferrer" className="btn">
+              Open Portal <span aria-hidden style={{ opacity: .6 }}>↗</span>
+            </a>
+          )}
+        </div>
+
+        {/* Bid header */}
+        <header style={{ marginBottom: 24, paddingBottom: 22, borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+            {bid.is_relevant && <span style={{ color: 'var(--star)', fontSize: 18, lineHeight: 1.2 }}>★</span>}
+            <h1 style={{ fontSize: 28, letterSpacing: '-0.4px', lineHeight: 1.15 }}>{bid.title}</h1>
+          </div>
+          <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-dim)' }}>
+            <span style={{ color: 'var(--gold-strong)' }}>{bid.bid_id}</span>
+            {bid.agency && <span>{bid.agency}</span>}
+            {bid.source && <span>{bid.source}</span>}
+            {bid.due_date && <span>Due: <span style={{ color: 'var(--ink)' }}>{bid.due_date_raw || formatDate(bid.due_date)}</span></span>}
+            {bid.url && <a href={bid.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-strong)' }}>Portal ↗</a>}
+          </div>
+
+          {/* Spec summary strip */}
+          {spec && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 14 }}>
+              {spec.total_sqft && <span className="chip">{spec.total_sqft.toLocaleString()} SF</span>}
+              {spec.flooring_types?.length && <span className="chip">{spec.flooring_types.join(' · ')}</span>}
+              {bidTypeLabel(spec.bid_type ?? spec.raw_extract?.bid_type) && (
+                <span className="chip">{bidTypeLabel(spec.bid_type ?? spec.raw_extract?.bid_type)}</span>
+              )}
+              {(spec.project_city || spec.raw_extract?.project_city) && (
+                <span className="chip">{spec.project_city || spec.raw_extract?.project_city}</span>
+              )}
+              {(spec.flooring_is_primary === false || spec.raw_extract?.flooring_is_primary === false) && (
+                <span className="chip" style={{ background: 'var(--red-tint)', color: 'var(--red)' }}>Flooring is minor scope</span>
+              )}
+              {spec.prevailing_wage === true && <span className="chip" style={{ background: 'var(--orange-tint)', color: 'var(--orange)' }}>Prevailing wage</span>}
+              {spec.bid_bond === true && <span className="chip" style={{ background: 'var(--orange-tint)', color: 'var(--orange)' }}>Bid bond {spec.bid_bond_pct ? spec.bid_bond_pct + '%' : ''}</span>}
+              {spec.walk_required === true && <span className="chip" style={{ background: 'var(--orange-tint)', color: 'var(--orange)' }}>Job walk {spec.walk_date_raw || spec.walk_date || ''}</span>}
+            </div>
+          )}
+          {spec?.summary && (
+            <p style={{ marginTop: 14, fontSize: 13.5, color: 'var(--ink-dim)', lineHeight: 1.6, maxWidth: 720 }}>
+              {spec.summary}
+            </p>
+          )}
+        </header>
+
+        {/* Winnability score card — always shown; card handles the review state */}
+        <GoNoGoCard
+          bid={{ due_date: bid.due_date, county: bid.county, geo_status: bid.geo_status }}
+          spec={spec ? {
+            flooring_is_primary: spec.flooring_is_primary ?? spec.raw_extract?.flooring_is_primary ?? null,
+            award_method: spec.award_method ?? spec.raw_extract?.award_method ?? null,
+            project_city: spec.project_city ?? spec.raw_extract?.project_city ?? null,
+          } : null}
+          bidId={bid.bid_id}
+        />
+
+        {/* Bid outcome tracker */}
+        <BidOutcomeTracker
+          bidId={bidId}
+          initialStatus={(bid.bid_status as BidStatus) ?? 'active'}
+          initialSubmitted={bid.submitted_amount ?? null}
+          initialAward={bid.award_amount ?? null}
+          estimateTotal={null}
+        />
+      </main>
+    </>
   )
 }
