@@ -222,11 +222,15 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 
 ## Portal Coverage
 
-**Cloud doc mirror (2026-09):** the "docs mirrored" column below reflects what
-`storage.sync_bid_docs` pushes to the `bid-docs` bucket. `BidNet`/`CCOP` =
-complete set; generic portals = primary PDF only; `PlanetBids` = nothing yet
-(Phase 2 needs a per-bid detail URL out of `_search_planetbids`); `OpenGov` =
-nothing (blocked); `Long Beach`/`Bid Locker` = nothing (`javascript:downloadFile`).
+**Cloud doc mirror (2026-09):** `storage.sync_bid_docs` pushes downloaded docs
+to the public `bid-docs` bucket; the bid page shows them + an honest per-source
+status (`app/lib/docSources.ts`). Full set: BidNet, CCOP, Cal eProcure, **SAM.gov**
+(now enumerates the Attachments/Links tab), **Long Beach BuySpeed** (Playwright
+clicks every `downloadFile()` control — verified 11/11 on a live bid). Best-effort
+(all page links, set not guaranteed): Quality Bidders, RAMP, SecureBids, UCLA,
+Bid Locker. **Still zero:** `PlanetBids` (~37 portals — needs a per-bid detail URL
+out of `_search_planetbids`, Phase 2) and `OpenGov` (Cloudflare). The bid page
+shows a callout naming the source when retrieval isn't available.
 
 | Portal | Status | Notes |
 |--------|--------|-------|
@@ -242,7 +246,7 @@ nothing (blocked); `Long Beach`/`Bid Locker` = nothing (`javascript:downloadFile
 | Crisp / SoCal plan rooms | ✅ Active | CyberCopy platform. `PLAN_ROOMS` now also includes **CyberCopy Plan Room** (cybercopyplanroom.com, login-sheet row 30) — verified 2026-09 the scraper contract works (0 open public projects at time of check) |
 | LAUSD Facilities (FSD) | ✅ Active | `--source lausd` — parses the public "Updated Bid Information Report (Sorted by Bid Date)" PDF (URL resolved each run from procurement.lausd.org — needs full browser headers or it serves a stub). The report is LAUSD FCC's own authoritative list, human-regenerated ~daily on business days; scraper warns if the "Printed:" date is >10 days stale. Every project LA County / K-12. **Thin per-entry info** → relevance leans on the required licence (C-15 = flooring) + keywords. **Depth comes from Crisp:** LAUSD distributes bidding docs through the Crisp plan room, which we already scrape *with* full spec download — same 7-digit project number, so `_dedup` collapses the FSD row into the Crisp one (Crisp runs first). Login-sheet rows 13–18 |
 | LAUSD Supplier Portal / ARRIBA | ⬜ Not connected | vendors.lausd.net SAP portal (Firefox-only) — PO/supplier side, separate from FSD bids. Needs working creds. Login-sheet rows 14/15/18 |
-| Long Beach BuySpeed | ✅ Active | `--source longbeach` — public BuySpeed advanced search, no login. Filters Status="Sent" and drops past-opening-date leftovers; paginates PrimeFaces results. Every bid stamped LA County. Retires the PlanetBids Long Beach portal (15810, still in `PLANETBIDS_SKIP`). Live 2026-09 (18 advertised bids, 0 flooring at check time). **Doc download = follow-up:** bidDetail.sda is public but attachments are `javascript:downloadFile(id)` — the generic parser can't pull them yet |
+| Long Beach BuySpeed | ✅ Active | `--source longbeach` — public BuySpeed advanced search, no login. Filters Status="Sent" and drops past-opening-date leftovers; paginates PrimeFaces results. Every bid stamped LA County. Retires the PlanetBids Long Beach portal (15810, still in `PLANETBIDS_SKIP`). Live 2026-09 (18 advertised bids, 0 flooring at check time). **Doc download ✅ (2026-09):** `parser._download_via_clicks` loads bidDetail.sda and clicks every `downloadFile()` control — verified pulling the full 11-file set on a live RFP |
 | RAMP LA County | ✅ Active | `--source ramp` — rampla.org's DNS is US-geo-restricted, but LA City publishes the same open opportunities as a Socrata dataset (`data.lacity.org/resource/hf3r-utnq.json`), no login, refreshed daily, reachable anywhere. One feed = LA County + LADWP + LA Public Works + Port of LA + LAWA + HACLA (+ a few LAUSD). All LA County. Live 2026-09 (415 open opps). **No FCU login needed after all.** |
 | City of LA BAVN | ⬜ Blocked (geo + creds) | labavn.org (the sheet's `angeleno.lacity.org` is wrong — real host is **labavn.org**). DNS won't resolve outside the US → build/test on the Mac mini. No open-data feed found. Cred also marked "not valid 8/26" |
 | LACDA | ⬜ Blocked (geo + creds) | lacda.org/vendors (login-sheet row 2) — LA County Development Authority (housing). Returns Azure 403 outside the US → build/test on the Mac mini. No open-data feed found. Lower volume. Cred present, never verified |

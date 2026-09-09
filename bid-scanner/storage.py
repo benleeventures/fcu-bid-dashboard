@@ -28,11 +28,14 @@ BUCKET = "bid-docs"
 # portal (not just a best-guess primary PDF). For these, captured == complete,
 # so we record docs_expected = docs_captured and the dashboard shows "N of N".
 # Everything else leaves docs_expected NULL → dashboard shows "primary only".
-COMPLETE_SOURCES = {"BidNet Direct", "Caltrans CCOP", "Cal eProcure"}
+# The dashboard's full per-source classification (incl. "unsupported" portals
+# we can't retrieve from at all) lives in app/lib/docSources.ts — keep in sync.
+COMPLETE_SOURCES = {"BidNet Direct", "Caltrans CCOP", "Cal eProcure", "SAM.gov",
+                    "Long Beach BuySpeed"}
 
 # Extensions we treat as real bid documents. Everything else in a bid dir
 # (thumbnails, .DS_Store, .json state) is skipped.
-_DOC_EXTS = {".pdf", ".docx", ".doc", ".xlsx", ".xls", ".zip", ".jpg", ".jpeg", ".png"}
+_DOC_EXTS = {".pdf", ".docx", ".doc", ".xlsx", ".xls", ".zip", ".txt", ".jpg", ".jpeg", ".png"}
 
 
 def _enabled() -> bool:
