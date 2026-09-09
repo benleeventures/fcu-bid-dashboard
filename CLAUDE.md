@@ -44,6 +44,16 @@ Commercial flooring installation: carpet, hard surface, blinds, ceiling work, ho
 
 > **ROADMAP.md** — always read this before any bid agent work. Contains current build status, pricing rates, phase checklist, and portal coverage.
 
+## Scheduled jobs & manual scanner runs
+The 6 launchd jobs run from `~/fcu-cron` (a detached-HEAD worktree pinned to
+origin/main), NOT the primary checkout. They self-update via
+`git pull --ff-only origin main` before each run.
+
+- **Run** bid-scanner manually from `~/fcu-cron/bid-scanner` — it has the current
+  cookies and resume state. Pull it first: `git -C ~/fcu-cron pull --ff-only origin main`.
+- **Edit** scraper code in the primary checkout.
+- After editing any `setup/launchd/*.plist`, run `bash setup/launchd/install.sh`.
+
 ## Multi-Session Git Workflow
 Multiple Claude Code sessions run in parallel, one branch per session. Follow this every session:
 
