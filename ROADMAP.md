@@ -228,14 +228,17 @@ status (`app/lib/docSources.ts`). Full set: BidNet, CCOP, Cal eProcure, **SAM.go
 (now enumerates the Attachments/Links tab), **Long Beach BuySpeed** (Playwright
 clicks every `downloadFile()` control — verified 11/11 on a live bid). Best-effort
 (all page links, set not guaranteed): Quality Bidders, RAMP, SecureBids, UCLA,
-Bid Locker. **Still zero:** `PlanetBids` (~37 portals — needs a per-bid detail URL
-out of `_search_planetbids`, Phase 2) and `OpenGov` (Cloudflare). The bid page
-shows a callout naming the source when retrieval isn't available.
+Bid Locker. **Still zero:** `OpenGov` (Cloudflare). `PlanetBids` bids now come in
+via **VendorLine** carrying a real per-bid detail URL
+(`vendors.planetbids.com/portal/{cid}/bo/bo-detail/{bid}`) — doc mirroring off
+that URL is the next step (was blocked on not having the URL). The bid page shows
+a callout naming the source when retrieval isn't available.
 
 | Portal | Status | Notes |
 |--------|--------|-------|
 | SAM.gov | ✅ Active | Federal; NAICS 238330 + CA place-of-performance. Now runs through the 4-county geo gate — out-of-area federal work is dropped |
-| PlanetBids | ✅ Active | Manual run (`--source planetbids`), user solves one CAPTCHA. ~37 portals scanned, each county-tagged (see `PLANETBIDS_PORTALS`; `PLANETBIDS_SKIP` excludes chronically-broken ones). Per-portal outcome tracked in `output/planetbids_state.json`; if the WAF blocks mid-run, re-run `--source planetbids --resume` to retry only the missed portals (auto-loops via `rerun_planetbids.sh`), or add `--give-up` to accept a partial run |
+| VendorLine | ✅ Active (2026-09) | **Primary PlanetBids path — runs in the scheduled full scan, no CAPTCHA.** PlanetBids "Pro" plan (`VENDORLINE_EMAIL`/`_PASSWORD`, account `info@floorcoveringunlimited.com`, ~$349/yr, expires 2027-06). One authenticated `POST /api/search` per keyword covers **every** PlanetBids CA agency + the external portals VendorLine aggregates (`bid_source` 1). `_search_vendorline`: headless browser login → lift the ~5-min OAuth `access_token` from the `token-exchange` response → run all `/api/search` calls *inside the page* (Cloudflare blocks a raw client); 401 → re-land on `/app/home` for a fresh token, retry once. `states:[52]` (CA) then the 4-county geo gate narrows. County stamped from `_VL_COUNTY_BY_CID` (borrowed from `PLANETBIDS_PORTALS`; portal ID == `company_id`), else inferred from agency name. Per-bid detail URL = `vendors.planetbids.com/portal/{cid}/bo/bo-detail/{bid}` (unlocks PlanetBids doc mirroring — was Phase 2). Live 2026-09: 7 keywords → ~69 raw → 38 CA bids |
+| PlanetBids (legacy per-portal) | ⚠ Manual/backup | Old per-portal walk. `--source planetbids`, user solves one CAPTCHA. ~37 portals, each county-tagged (`PLANETBIDS_PORTALS`; `PLANETBIDS_SKIP` excludes chronically-broken ones). Per-portal outcome in `output/planetbids_state.json`; WAF block mid-run → `--source planetbids --resume` (auto-loops via `rerun_planetbids.sh`) or `--give-up`. **No longer in the daily scan** — kept for the intel scanner (`--intel`, live_page) and as a fallback if VendorLine access lapses |
 | BidNet Direct | ⚠ Partial | Doc download works; public listing page blocked by bot detection |
 | Cal eProcure | ✅ Active | Statewide — most rows land as `geo_status=unknown` and get flagged for county check |
 | OpenGov | ⚠ Manual | 5 SoCal portals (NorCal portals removed 2026-08). Run `--source opengov` on demand |
