@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Bid, BidSpec, BidStatus } from './page'
 import { scoreGoNoGo, verdictConfig } from './lib/scoring'
-import { updateBidStatus, updateBidFavorite } from './actions/bids'
+import { updateBidStatus } from './actions/bids'
 
 type Props = {
   bids: Bid[]
@@ -13,19 +14,18 @@ type Props = {
   in7: string
 }
 
-type SortField = 'due_date' | 'published_date' | 'walk_date'
+type SortField = 'due_date' | 'published_date' | 'walk_date' | 'first_seen_at'
 type SortDir   = 'asc' | 'desc'
 
 export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
+  const router = useRouter()
   const [filterSource, setFilterSource] = useState('')
   const [filterDue, setFilterDue] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
   const [filterRelevant, setFilterRelevant] = useState('')
   const [search, setSearch] = useState('')
-  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showArchived, setShowArchived] = useState(false)
   const [localStatus, setLocalStatus] = useState<Map<string, string>>(new Map())
-  const [localFavorite, setLocalFavorite] = useState<Map<string, boolean>>(new Map())
   const [sortField, setSortField] = useState<SortField | null>(null)
   const [sortDir, setSortDir] = useState<SortDir>('asc')
 
@@ -39,16 +39,6 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     e.stopPropagation()
     setLocalStatus(m => new Map(m).set(bidId, 'active'))
     updateBidStatus(bidId, 'active')
-  }
-
-  function handleFavorite(e: React.MouseEvent, bidId: string) {
-    e.stopPropagation()
-    const current = localFavorite.has(bidId)
-      ? localFavorite.get(bidId)!
-      : (bids.find(b => b.bid_id === bidId)?.is_favorite ?? false)
-    const next = !current
-    setLocalFavorite(m => new Map(m).set(bidId, next))
-    updateBidFavorite(bidId, next)
   }
 
   function toggleSort(field: SortField) {
@@ -107,8 +97,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
     // Sort by selected column (nulls to bottom)
     if (sortField) {
       filtered.sort((a, b) => {
-        const av = sortField === 'walk_date' ? (a.spec?.walk_date ?? null) : (a[sortField as 'due_date' | 'published_date'] ?? null)
-        const bv = sortField === 'walk_date' ? (b.spec?.walk_date ?? null) : (b[sortField as 'due_date' | 'published_date'] ?? null)
+        const av = sortField === 'walk_date'
+          ? (a.spec?.walk_date ?? null)
+          : (a[sortField as 'due_date' | 'published_date' | 'first_seen_at'] ?? null)
+        const bv = sortField === 'walk_date'
+          ? (b.spec?.walk_date ?? null)
+          : (b[sortField as 'due_date' | 'published_date' | 'first_seen_at'] ?? null)
         if (!av && !bv) return 0
         if (!av) return 1
         if (!bv) return -1
@@ -117,12 +111,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
       })
     }
 
-    // Pin favorites to top, preserving sort order within each group
-    const isFav = (b: Bid) => localFavorite.get(b.bid_id) ?? b.is_favorite
-    const favs = filtered.filter(isFav)
-    const rest = filtered.filter(b => !isFav(b))
-    return [...favs, ...rest]
-  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, filterRelevant, sortField, sortDir, localStatus, localFavorite, t, d3, d7])
+    return filtered
+  }, [bids, showArchived, filterSource, filterDue, search, filterStatus, filterRelevant, sortField, sortDir, localStatus, t, d3, d7])
 
   function urgencyBadge(due_date: string | null): { label: string; color: string } | null {
     if (!due_date) return null
@@ -208,7 +198,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
         <span><span className="legend__dot" style={{ background: 'var(--red)' }} />Due within 3 days</span>
         <span><span className="legend__dot" style={{ background: 'var(--orange)' }} />Due this week</span>
         <span><span className="legend__dot" style={{ background: 'var(--green)' }} />Flooring work</span>
-        <span><span style={{ color: 'var(--star)' }}>★</span> Pinned to top</span>
+        <span>Click a row to open the full bid</span>
       </div>
 
       {/* Table */}
@@ -216,11 +206,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
         <table className="data-table">
           <thead>
             <tr>
-              <th style={{ width: 26 }} />
-              <th style={{ width: 118 }}>Bid #</th>
               <th style={{ width: 250 }}>Project</th>
               <th style={{ width: 148 }}>Agency</th>
               <th style={{ width: 120 }}>Found on</th>
+              <th className="is-sortable" onClick={() => toggleSort('first_seen_at')} style={{ width: 92 }}>
+                Added{sortIndicator('first_seen_at')}
+              </th>
               <th className="is-sortable" onClick={() => toggleSort('published_date')} style={{ width: 92 }}>
                 Posted{sortIndicator('published_date')}
               </th>
@@ -237,44 +228,19 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
           <tbody>
             {displayBids.length === 0 ? (
               <tr>
-                <td colSpan={10} style={{ textAlign: 'center', padding: 48, color: 'var(--ink-dim)' }}>
+                <td colSpan={9} style={{ textAlign: 'center', padding: 48, color: 'var(--ink-dim)' }}>
                   No bids match what you picked above.
                 </td>
               </tr>
-            ) : displayBids.flatMap((b, i) => {
+            ) : displayBids.map((b) => {
               const badge = urgencyBadge(b.due_date)
-              const isExpanded = expandedId === b.bid_id
               const hasSpec = !!b.spec
-              const isFav = localFavorite.get(b.bid_id) ?? b.is_favorite
-              return [
+              return (
                 <tr
                   key={b.id}
-                  onClick={() => setExpandedId(isExpanded ? null : b.bid_id)}
-                  className={`row${b.is_relevant ? ' row--relevant' : ''}${isExpanded ? ' row--expanded' : ''}`}
-                  style={isExpanded ? { borderBottom: 'none' } : undefined}
+                  onClick={() => router.push(`/bids/${encodeURIComponent(b.bid_id)}`)}
+                  className={`row${b.is_relevant ? ' row--relevant' : ''}`}
                 >
-                  <td style={{ width: 24, textAlign: 'center' }}>
-                    <span
-                      onClick={e => handleFavorite(e, b.bid_id)}
-                      title={isFav ? 'Unpin from top' : 'Pin to top'}
-                      style={{
-                        cursor: 'pointer',
-                        color: isFav ? 'var(--star)' : 'var(--border-strong)',
-                        fontSize: 14,
-                        transition: 'color 0.15s',
-                        display: 'inline-block',
-                      }}
-                    >★</span>
-                  </td>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    <a
-                      href={`/bids/${encodeURIComponent(b.bid_id)}`}
-                      onClick={e => e.stopPropagation()}
-                      style={{ color: 'var(--gold-strong)', textDecoration: 'none' }}
-                    >
-                      {b.bid_id}
-                    </a>
-                  </td>
                   <td style={{ overflow: 'hidden' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{b.title}</span>
@@ -290,6 +256,9 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       background: sourceColor(b.source) + '1F',
                       color: sourceColor(b.source),
                     }}>{b.source || '—'}</span>
+                  </td>
+                  <td style={{ color: 'var(--ink-dim)', fontFamily: 'var(--font-mono)', fontSize: 11, whiteSpace: 'nowrap' }}>
+                    {formatDate(b.first_seen_at)}
                   </td>
                   <td style={{ color: 'var(--ink-dim)', fontFamily: 'var(--font-mono)', fontSize: 11, whiteSpace: 'nowrap' }}>
                     {formatDate(b.published_date)}
@@ -329,21 +298,8 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                       {showArchived ? '↩' : '×'}
                     </button>
                   </td>
-                </tr>,
-                isExpanded && (
-                  <tr key={`${b.id}-detail`} className="row--expanded">
-                    <td colSpan={10} style={{ padding: '0 14px 16px 14px' }}>
-                      {hasSpec ? <SpecPanel spec={b.spec!} /> : (
-                        <div style={{ color: 'var(--ink-dim)', fontSize: 12.5, padding: '10px 2px', lineHeight: 1.5 }}>
-                          We haven&rsquo;t gone through this bid&rsquo;s documents yet. The project
-                          details (square footage, flooring type, job walk, bond) will show up
-                          here once we have.
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ),
-              ].filter(Boolean)
+                </tr>
+              )
             })}
           </tbody>
         </table>
@@ -397,45 +353,4 @@ function sourceColor(source: string | null): string {
     case 'SAM.gov':    return '#2A8A3E'
     default:           return '#8B8578'
   }
-}
-
-function SpecPanel({ spec }: { spec: BidSpec }) {
-  const tri = (val: boolean | null) => val === true ? 'Yes' : val === false ? 'No' : 'Not stated'
-  const triColor = (val: boolean | null) => val === true ? 'var(--green)' : val === false ? 'var(--red)' : 'var(--ink-dim)'
-
-  return (
-    <div style={{
-      marginTop: 10,
-      padding: '14px 16px',
-      background: 'var(--surface)',
-      borderRadius: 10,
-      border: '1px solid var(--border)',
-      boxShadow: 'var(--shadow-sm)',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-      gap: '10px 20px',
-      fontSize: 12,
-    }}>
-      {spec.summary && (
-        <div style={{ gridColumn: '1 / -1', color: 'var(--ink)', marginBottom: 4, lineHeight: 1.5 }}>
-          {spec.summary}
-        </div>
-      )}
-      <SpecItem label="Flooring type" value={(spec.flooring_types || []).join(', ') || '—'} />
-      <SpecItem label="Total square feet" value={spec.total_sqft ? spec.total_sqft.toLocaleString() + ' sq ft' : '—'} />
-      <SpecItem label="Areas / rooms" value={spec.rooms || '—'} />
-      <SpecItem label="Prevailing wage" value={tri(spec.prevailing_wage)} color={triColor(spec.prevailing_wage)} />
-      <SpecItem label="Bid bond" value={spec.bid_bond ? `Yes${spec.bid_bond_pct ? ` — ${spec.bid_bond_pct}%` : ''}` : tri(spec.bid_bond)} color={triColor(spec.bid_bond)} />
-      <SpecItem label="Job walk" value={spec.walk_required ? `Required${spec.walk_date_raw || spec.walk_date ? ` — ${spec.walk_date_raw || spec.walk_date}` : ''}` : tri(spec.walk_required)} color={triColor(spec.walk_required)} />
-    </div>
-  )
-}
-
-function SpecItem({ label, value, color }: { label: string; value: string; color?: string }) {
-  return (
-    <div>
-      <div style={{ fontSize: 11, color: 'var(--ink-dim)', marginBottom: 2 }}>{label}</div>
-      <div style={{ color: color || 'var(--ink)', fontSize: 13, fontWeight: 500 }}>{value}</div>
-    </div>
-  )
 }
