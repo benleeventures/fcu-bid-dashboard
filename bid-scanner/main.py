@@ -4,7 +4,8 @@ FCU Bid Scanner — entry point
 Usage:
   python main.py                        # run full scan (all sources)
   python main.py --source sam           # SAM.gov only (headless, no cookies needed)
-  python main.py --source planetbids    # PlanetBids only (requires CAPTCHA solve)
+  python main.py --source vendorline    # VendorLine only — all PlanetBids CA agencies, no CAPTCHA (runs in the full scan too)
+  python main.py --source planetbids    # legacy per-portal PlanetBids walk (requires CAPTCHA solve) — manual/intel backup
   python main.py --source planetbids --resume  # retry only portals blocked/missed last run
   python main.py --source planetbids --resume --give-up  # ...and don't fail if a few won't load
   python main.py --source opengov       # OpenGov only (requires I'm-not-a-robot solve)

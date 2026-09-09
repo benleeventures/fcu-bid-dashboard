@@ -742,6 +742,194 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
 
 
 # ---------------------------------------------------------------------------
+# VendorLine (PlanetBids' aggregated vendor feed — replaces per-portal scraping)
+# ---------------------------------------------------------------------------
+#
+# VendorLine (vendorline.planetbids.com, "Pro" plan) is a single authenticated
+# search over EVERY PlanetBids agency plus a slice of external portals — no
+# per-portal CAPTCHA, no WAF. One `POST /api/search` with a keyword + state
+# filter returns what the old `_search_planetbids` walked ~40 portals to get.
+#
+# Auth: log in through the browser (plain email/password, no CAPTCHA); the SPA
+# does an OAuth code exchange and we lift the short-lived (~5 min) `access_token`
+# out of the `token-exchange` response. All API calls run *inside the page*
+# (page.evaluate → fetch) so Cloudflare sees a real browser; a raw client is
+# blocked. On a 401 we re-land on /app/home to mint a fresh token and retry once.
+
+VENDORLINE_MARKETING = "https://vendor.planetbids.com"
+VENDORLINE_APP = "https://vendorline.planetbids.com/app/home"
+VENDORLINE_API = "https://api-external.prod.planetbids.com/api/search"
+VENDORLINE_CA_STATE_ID = 52          # /api/states — California
+VENDORLINE_DETAIL = "https://vendors.planetbids.com/portal/{cid}/bo/bo-detail/{bid}"
+
+# company_id -> county, borrowed from PLANETBIDS_PORTALS (portal IDs ARE the
+# VendorLine company_ids). Lets us stamp county without a lookup for the agencies
+# we already know; everything else falls through to geo.classify_location, which
+# reads it off the agency name.
+_VL_COUNTY_BY_CID = {int(pid): county for pid, (_name, county) in PLANETBIDS_PORTALS.items()}
+
+
+async def _vendorline_login(page) -> bool:
+    """Log in to VendorLine. Returns True once /app/home has loaded."""
+    email = os.getenv("VENDORLINE_EMAIL", "")
+    password = os.getenv("VENDORLINE_PASSWORD", "")
+    if not email or not password:
+        print("    ⚠ VENDORLINE_EMAIL / VENDORLINE_PASSWORD not set — skipping")
+        return False
+    try:
+        await page.goto(VENDORLINE_MARKETING, wait_until="domcontentloaded", timeout=45000)
+        await page.click('a:has-text("Login"), button:has-text("Login")', timeout=15000)
+        await page.wait_for_load_state("domcontentloaded", timeout=20000)
+        await page.fill('input[type="email"], input[name="email"], input[type="text"]', email, timeout=15000)
+        await page.fill('input[type="password"], input[name="password"]', password, timeout=15000)
+        await page.click('button:has-text("Login"), button[type="submit"]')
+        await page.wait_for_url("**/app/**", timeout=30000)
+        await page.wait_for_load_state("domcontentloaded", timeout=15000)
+        return True
+    except Exception as e:
+        print(f"    ⚠ VendorLine login failed: {e}")
+        return False
+
+
+async def _vl_api_search(page, body: dict, token_box: dict) -> dict:
+    """One `POST /api/search`, run inside the page. Re-mints the token and
+    retries once on 401. Returns the parsed JSON (``{}`` on hard failure)."""
+    js = """async ([token, body]) => {
+        const r = await fetch("%s", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "PBToken " + token,
+                "Accept": "*/*",
+            },
+            body: JSON.stringify(body),
+        });
+        let j = null;
+        try { j = await r.json(); } catch (e) { j = null; }
+        return { status: r.status, body: j };
+    }""" % VENDORLINE_API
+
+    for attempt in (1, 2):
+        res = await page.evaluate(js, [token_box.get("token", ""), body])
+        if res["status"] == 200 and res["body"]:
+            return res["body"]
+        if res["status"] == 401 and attempt == 1:
+            # token expired mid-scan — reload the app to mint a fresh one
+            await page.goto(VENDORLINE_APP, wait_until="domcontentloaded", timeout=30000)
+            await asyncio.sleep(6)
+            continue
+        print(f"    ⚠ VendorLine /search returned {res['status']}")
+        return {}
+    return {}
+
+
+async def _search_vendorline(browser_context, keywords: list[str]) -> list[dict]:
+    """
+    Search VendorLine for open California bids across every PlanetBids agency
+    (plus the external portals VendorLine aggregates). One authenticated search
+    per keyword — no CAPTCHA, no per-portal walk.
+
+    Returns bid dicts in the same shape as `_search_planetbids` (source
+    "VendorLine"). County is stamped from `_VL_COUNTY_BY_CID` when known;
+    otherwise geo.classify_location infers it from the agency name downstream.
+    """
+    print("\nSearching VendorLine (all PlanetBids CA agencies, no CAPTCHA)...")
+
+    page = await browser_context.new_page()
+    token_box: dict = {}
+
+    async def _on_response(response):
+        if "/api/oauth/token-exchange" in response.url or response.url.endswith("/oauth/refresh/"):
+            try:
+                data = await response.json()
+                if data.get("access_token"):
+                    token_box["token"] = data["access_token"]
+            except Exception:
+                pass
+
+    page.on("response", _on_response)
+
+    try:
+        if not await _vendorline_login(page):
+            return []
+        await asyncio.sleep(5)   # let the post-login token-exchange land
+        if not token_box.get("token"):
+            print("    ⚠ VendorLine login OK but no access token captured — skipping")
+            return []
+
+        kw_lower = [k.lower() for k in keywords]
+        skip_stages = {"closed", "canceled", "cancelled", "awarded", "rejected"}
+        by_id: dict[str, dict] = {}
+
+        for keyword in keywords:
+            records: list[dict] = []
+            page_num = 1
+            while page_num <= 20:
+                payload = {
+                    "search_type": 4,          # 4 = full Bid Search (not just AI matches)
+                    "stages": [3],             # 3 = open / accepting bids
+                    "bid_type": "0",           # 0 = all solicitation types
+                    "keyword": keyword,
+                    "states": [VENDORLINE_CA_STATE_ID],
+                    "page": page_num,
+                    "ai_status": "all",
+                }
+                data = await _vl_api_search(page, payload, token_box)
+                rows = data.get("data") or []
+                records.extend(rows)
+                total_pages = (data.get("meta") or {}).get("total_pages") or 1
+                if page_num >= total_pages or not rows:
+                    break
+                page_num += 1
+
+            kept = 0
+            for rec in records:
+                title = (rec.get("project") or "").strip()
+                if not title:
+                    continue
+                bid_id = str(rec.get("bid_id") or "")
+                cid = rec.get("company_id")
+                due = _parse_date(str(rec.get("due_date") or "")[:10])
+                posted = _parse_date(str(rec.get("posted_date") or "")[:10])
+                key = f"VL-{cid}-{bid_id}"
+
+                bid = {
+                    "bid_id": key,
+                    "title": title,
+                    "agency": (rec.get("agency") or "").strip(),
+                    "state": "California",
+                    "published_date": posted.isoformat() if posted else None,
+                    "published_raw": str(rec.get("posted_date") or ""),
+                    "due_date": due.isoformat() if due else None,
+                    "due_date_raw": str(rec.get("due_date") or ""),
+                    "is_relevant": _is_relevant(title),
+                    "search_keyword": next(
+                        (kw for kw, kl in zip(keywords, kw_lower) if kl in title.lower()),
+                        keyword,
+                    ),
+                    "url": VENDORLINE_DETAIL.format(cid=cid, bid=bid_id) if cid and bid_id else VENDORLINE_APP,
+                    "source": "VendorLine",
+                    "county": _VL_COUNTY_BY_CID.get(cid),
+                }
+                # keep the earliest keyword hit; prefer a row we can mark relevant
+                prev = by_id.get(key)
+                if prev is None or (bid["is_relevant"] and not prev["is_relevant"]):
+                    by_id[key] = bid
+                    kept += 1
+
+            print(f"  → {keyword!r}: {len(records)} hits, {kept} new")
+
+        all_bids = list(by_id.values())
+        rel = sum(1 for b in all_bids if b["is_relevant"])
+        print(f"  ✓ {len(all_bids)} unique open bids, {rel} flooring-relevant")
+        return all_bids
+
+    finally:
+        page.remove_listener("response", _on_response)
+        await page.close()
+
+
+# ---------------------------------------------------------------------------
 # SAM.gov (federal CA opportunities)
 # ---------------------------------------------------------------------------
 
@@ -2047,6 +2235,15 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                             b.setdefault("source", "BidNet Direct")
                         all_bids.extend(bids)
                     await page.close()
+
+            # VendorLine covers every PlanetBids agency in one authenticated
+            # search — it's the default PlanetBids path for scheduled scans.
+            # `--source planetbids` still runs the old per-portal walk (used by
+            # the manual CAPTCHA run and the intel scanner's live_page).
+            if src in (None, "vendorline"):
+                with funnel.guard("VendorLine"):
+                    vl_bids = await _search_vendorline(context, keywords)
+                    all_bids.extend(vl_bids)
 
             if src == "planetbids" or (src is None and live_page is not None):
                 with funnel.guard("PlanetBids"):
