@@ -14,6 +14,7 @@
 | Scanner Health Dashboard (`/scanner`) | ✅ Built (2026-08) | Funnel + volume-over-time + per-source visibility matrix + PlanetBids portal grid. **Fully data-driven** — every source wrapped in `funnel.guard()` auto-appears; no source list to maintain. Matrix `!` column split (2026-09): red `Nd` = blocked/error streak (real alarm), grey `Nd dry` = ran-fine-but-0-rows streak. Quality Bidders / Caltrans CCOP now return all rows with an `is_relevant` flag (were pre-filtering → false "empty"). Needs `supabase/add_scan_analytics.sql` + `backfill_scan_run.sql` applied. See `docs/scanner-dashboard.md` |
 | Estimate Worksheet | ✅ Done | In dashboard — labor rates, 25/30% markup, approve flow |
 | Document Download | ✅ Done | Playwright-based, all sources |
+| Bid Document Cloud Mirror | ✅ Built (2026-09) | Downloaded docs pushed to Supabase Storage (public `bid-docs` bucket) → one `bid_documents` row per file → shown on the dashboard bid page + pushed to Airtable (`Docs Folder` link + `Bid Documents` attachments). Runs inside `parser.py` `download_all` reconcile pass — no second crawl. `--sync-docs` backfills from local `output/specs/`. **Coverage is honest, not complete:** BidNet + CCOP mirror the full set; generic portals mirror the one primary PDF; **PlanetBids (~37 portals) mirrors nothing** (no per-bid detail URL yet — Phase 2). Needs `supabase/add_bid_documents.sql` applied + the public `bid-docs` bucket created + `Docs Folder`/`Bid Documents` fields added to Airtable (`docs/airtable-tracker-setup.md` §1b) |
 | AI Parsing → bid_specs | ✅ Done (manual mode) | `--parse-all` prints prompts for Claude Code; `--ollama` for auto |
 | New-Bid Email Digest | ✅ Done | Fires via Resend after each scanner run with new relevant bids. "View ↗" links point to the dashboard bid page (`DASHBOARD_URL/bids/<id>`), which links out to the source portal in turn |
 | Job Walk Alert Email | ✅ Done | Fires via Resend when `walk_required=True` after parsing |
@@ -220,6 +221,12 @@ Rep quotes older than **30 days** are flagged stale and must be refreshed.
 ---
 
 ## Portal Coverage
+
+**Cloud doc mirror (2026-09):** the "docs mirrored" column below reflects what
+`storage.sync_bid_docs` pushes to the `bid-docs` bucket. `BidNet`/`CCOP` =
+complete set; generic portals = primary PDF only; `PlanetBids` = nothing yet
+(Phase 2 needs a per-bid detail URL out of `_search_planetbids`); `OpenGov` =
+nothing (blocked); `Long Beach`/`Bid Locker` = nothing (`javascript:downloadFile`).
 
 | Portal | Status | Notes |
 |--------|--------|-------|
