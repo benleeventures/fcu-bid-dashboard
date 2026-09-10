@@ -78,8 +78,7 @@ export default async function BidDetailPage({ params }: { params: { id: string }
 
         {/* Bid header */}
         <header style={{ marginBottom: 24, paddingBottom: 22, borderBottom: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
-            {bid.is_relevant && <span style={{ color: 'var(--star)', fontSize: 18, lineHeight: 1.2 }}>★</span>}
+          <div style={{ marginBottom: 10 }}>
             <h1 style={{ fontSize: 28, letterSpacing: '-0.4px', lineHeight: 1.15 }}>{bid.title}</h1>
           </div>
           <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--ink-dim)' }}>

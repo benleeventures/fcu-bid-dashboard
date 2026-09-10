@@ -192,6 +192,26 @@ select.field {
 .data-table tbody tr.row--review { box-shadow: inset 3px 0 0 var(--gold); }
 .data-table tbody tr.row--expanded { background: var(--gold-tint-strong); }
 
+/* Row "not bidding" / restore control */
+.row-action {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0;
+  border-radius: 7px; cursor: pointer;
+  font-size: 16px; line-height: 1;
+  background: var(--red-tint);
+  border: 1px solid rgba(217, 48, 37, .28);
+  color: var(--red);
+  transition: background .12s ease, border-color .12s ease, color .12s ease, transform .12s ease;
+}
+.row-action:hover { background: var(--red); border-color: var(--red); color: #fff; transform: translateY(-1px); }
+.row-action:active { transform: translateY(0); }
+.row-action--restore {
+  background: var(--green-tint);
+  border-color: rgba(42, 138, 62, .30);
+  color: var(--green);
+}
+.row-action--restore:hover { background: var(--green); border-color: var(--green); color: #fff; }
+
 /* ---------- Chips / badges / legend ---------- */
 .chip {
   display: inline-flex; align-items: center; gap: 4px;

@@ -27,22 +27,6 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
   const [localStatus, setLocalStatus] = useState<Map<string, string>>(new Map())
   const [sortField, setSortField] = useState<SortField | null>(null)
   const [sortDir, setSortDir] = useState<SortDir>('asc')
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-
-  function copyRow(e: React.MouseEvent, b: Bid) {
-    e.stopPropagation()
-    // Tab-separated row for pasting straight into an Airtable grid:
-    // Project · Agency · Due · Source · Listing URL · Bid ID
-    const row = [
-      b.title ?? '', b.agency ?? '', b.due_date_raw || b.due_date || '',
-      b.source ?? '', b.url ?? '', b.bid_id,
-    ].map(v => String(v).replace(/\t|\n/g, ' ')).join('\t')
-    navigator.clipboard?.writeText(row).then(
-      () => { setCopiedId(b.bid_id); setTimeout(() => setCopiedId(c => c === b.bid_id ? null : c), 2000) },
-      () => {},
-    )
-  }
-
   function archiveBid(e: React.MouseEvent, bidId: string) {
     e.stopPropagation()
     setLocalStatus(m => new Map(m).set(bidId, 'no_bid'))
@@ -229,7 +213,7 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                 Job walk{sortIndicator('walk_date')}
               </th>
               <th style={{ width: 78 }}>Status</th>
-              <th style={{ width: 92 }} />
+              <th style={{ width: 64 }} />
             </tr>
           </thead>
           <tbody>
@@ -288,30 +272,12 @@ export default function BidTable({ bids, sources, today, in3, in7 }: Props) {
                   <td style={{ whiteSpace: 'nowrap' }}>
                     <StatusBadge status={b.bid_status ?? 'active'} />
                   </td>
-                  <td style={{ width: 92, fontSize: 11, whiteSpace: 'nowrap', textAlign: 'right', paddingRight: 16 }}>
-                    {b.url && (
-                      <a href={b.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--gold-strong)', marginRight: 10 }}>↗</a>
-                    )}
-                    <button
-                      onClick={e => copyRow(e, b)}
-                      style={{
-                        background: 'none', border: 'none', cursor: 'pointer',
-                        color: copiedId === b.bid_id ? 'var(--green)' : 'var(--ink-dim)',
-                        fontSize: 13, lineHeight: 1, padding: '0 2px', marginRight: 8, opacity: 0.7,
-                      }}
-                      title="Copy as a row for Airtable (Project · Agency · Due · Source · URL · Bid ID)"
-                    >
-                      {copiedId === b.bid_id ? '✓' : '⎘'}
-                    </button>
+                  <td style={{ width: 64, whiteSpace: 'nowrap', textAlign: 'center', paddingLeft: 8, paddingRight: 8 }}>
                     <button
                       onClick={e => showArchived ? restoreBid(e, b.bid_id) : archiveBid(e, b.bid_id)}
-                      style={{
-                        background: 'none', border: 'none', cursor: 'pointer',
-                        color: showArchived ? 'var(--green)' : 'var(--red)',
-                        fontSize: 15, lineHeight: 1,
-                        padding: '0 2px', opacity: 0.6,
-                      }}
+                      className={`row-action${showArchived ? ' row-action--restore' : ''}`}
                       title={showArchived ? 'Move back to open bids' : 'Hide this bid — we are not bidding it'}
+                      aria-label={showArchived ? 'Move back to open bids' : 'Hide this bid — we are not bidding it'}
                     >
                       {showArchived ? '↩' : '×'}
                     </button>
