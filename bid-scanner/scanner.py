@@ -226,25 +226,65 @@ def _is_other_trade(title: str, description: str = "") -> bool:
     return True
 
 
-def _is_relevant(title: str, description: str = "") -> bool:
+# Reason codes returned by _relevance_reason for bids the filter rejects.
+# Surfaced on bids.relevance_reason and grouped in the dashboard's /filtered
+# audit view so the team can spot the filter dropping real flooring work.
+#   non_flooring_service — janitorial / pest / landscaping / glass, no floor scope
+#   other_trade          — roofing / HVAC / paving / … , no flooring keyword
+#   claude_rejected      — construction-adjacent title, Claude second pass said NO
+#   no_keyword           — nothing flooring-related in the title at all
+RELEVANCE_REASONS = ("non_flooring_service", "other_trade", "claude_rejected", "no_keyword")
+
+# _relevance_reason may invoke _claude_relevance (a network call). Cache the
+# verdict by title so the per-scrape _is_relevant() call and the final
+# run_scan() pass that stamps b["relevance_reason"] don't pay for it twice.
+_RELEVANCE_REASON_CACHE: dict[str, str | None] = {}
+
+
+def _relevance_reason(title: str, description: str = "") -> str | None:
+    """None if the bid is relevant to FCU; otherwise one of RELEVANCE_REASONS
+    explaining why the filter rejected it. _is_relevant() is the bool view of
+    this."""
+    key = (title or "").strip().lower()
+    if key in _RELEVANCE_REASON_CACHE:
+        return _RELEVANCE_REASON_CACHE[key]
+    reason = _compute_relevance_reason(title, description)
+    _RELEVANCE_REASON_CACHE[key] = reason
+    return reason
+
+
+def _compute_relevance_reason(title: str, description: str = "") -> str | None:
     # Non-flooring service contracts (janitorial / pest / landscaping / glass) are
     # never a fit — bail before any keyword match.
     if _is_non_flooring_service(title, description):
-        return False
+        return "non_flooring_service"
     # Other-trade projects (roofing / HVAC / paving / …) with no flooring keyword.
     if _is_other_trade(title, description):
-        return False
+        return "other_trade"
     t = title.lower()
     # Fast keyword match — flooring install OR flooring/window-covering service
     # (supply-only and maintenance are both legitimate FCU work).
     if any(kw in t for kw in RELEVANT_KEYWORDS):
-        return True
+        return None
     if any(p in t for p in FLOORING_SERVICE_PATTERNS):
-        return True
+        return None
     # Claude second pass for construction-adjacent titles
     if any(kw in t for kw in _CONSTRUCTION_TRIGGERS):
-        return _claude_relevance(title, description)
-    return False
+        return None if _claude_relevance(title, description) else "claude_rejected"
+    return "no_keyword"
+
+
+def _is_relevant(title: str, description: str = "") -> bool:
+    return _relevance_reason(title, description) is None
+
+
+def stamp_relevance_reasons(bids: list[dict]) -> None:
+    """Set b["relevance_reason"] on every rejected bid (None on relevant ones).
+    Call once per scan, after scraping, before persistence — the verdict is a
+    cache hit from the scrapers' own _is_relevant() calls. Covers run_scan and
+    the standalone --source planetbids / opengov paths in main.py."""
+    for b in bids:
+        b["relevance_reason"] = None if b.get("is_relevant") else _relevance_reason(b.get("title", ""))
 
 
 def _safe_bid_id(bid_id: str) -> str:
@@ -2505,6 +2545,10 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     pre_dedup = len(all_bids)
     deduped = _dedup(all_bids)
     funnel.note_final(deduped, pre_dedup)
+
+    # Stamp why the filter rejected each non-relevant bid (cache hit — the
+    # verdict was computed during scraping). Powers the /filtered audit view.
+    stamp_relevance_reasons(deduped)
 
     # Sort: relevant first, then by soonest due date
     today = date.today()

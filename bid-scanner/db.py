@@ -52,6 +52,7 @@ def _serialize_bid(bid: dict) -> dict:
         "published_raw":  (bid.get("published_raw") or "")[:100],
         "url":            (bid.get("url") or "")[:1000],
         "is_relevant":    bool(bid.get("is_relevant", False)),
+        "relevance_reason": bid.get("relevance_reason") or None,
         "search_keyword": (bid.get("search_keyword") or "")[:100],
         "county":         bid.get("county") or None,
         "geo_status":     bid.get("geo_status") or None,
