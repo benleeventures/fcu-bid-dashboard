@@ -14,6 +14,8 @@ Usage:
   python main.py --source lausd         # LAUSD Facilities bid-date report only (public PDF)
   python main.py --source securebids    # SecureBids / Colbi CA agencies only (public API)
   python main.py --source ramp          # RAMP LA County only (data.lacity.org open-data feed)
+  python main.py --vl-docs              # fetch bid documents for relevant VendorLine bids (opens Chrome, solve one CAPTCHA) → Supabase + dashboard + Airtable
+  python main.py --vl-docs --bid VL-57760-144851   # ...just one bid
   python main.py --intel                # competitive intel: VendorLine finds closed/awarded flooring bids (all CA agencies, last 12 mo), scrape tabulations (+ GC watchlist)
   python main.py --intel --intel-months 24     # widen the look-back window
   python main.py --intel --intel-since 2024-09-01   # explicit look-back start
@@ -32,6 +34,8 @@ from pathlib import Path
 SOURCE  = next((sys.argv[sys.argv.index("--source") + 1] for i, a in enumerate(sys.argv) if a == "--source"), None) if "--source" in sys.argv else None
 HEADLESS = "--headless" in sys.argv
 INTEL   = "--intel" in sys.argv
+VL_DOCS = "--vl-docs" in sys.argv
+VL_DOCS_BID = next((sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--bid"), None)
 GC_WATCHLIST = "--gc-watchlist" in sys.argv
 RESUME  = "--resume" in sys.argv
 GIVE_UP = "--give-up" in sys.argv   # PlanetBids: exit 0 even if some portals stay blocked
@@ -63,6 +67,16 @@ async def main():
         # data the intel scans have already collected. No browser needed.
         from gc_watchlist import run as run_gc_watchlist
         run_gc_watchlist()
+        return
+
+    if VL_DOCS:
+        # On-demand — open real Chrome, user solves one CAPTCHA, pull bid documents
+        # for relevant VendorLine bids off their PlanetBids portal detail pages.
+        from vendorline_docs import run_vl_doc_sync
+        print("=" * 60)
+        print("FCU — VendorLine document retrieval")
+        print("=" * 60)
+        await run_vl_doc_sync(only=VL_DOCS_BID)
         return
 
     if INTEL:

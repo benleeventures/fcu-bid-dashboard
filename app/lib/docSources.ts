@@ -10,6 +10,7 @@ export type DocCapability =
   | 'full'          // downloader enumerates the entire document set
   | 'primary-only'  // downloader grabs one best-guess PDF; more may exist on the portal
   | 'page-images'   // plan-room web viewer — page images, not source files
+  | 'on-demand'     // retrievable, but only via a manual CAPTCHA-solved sweep (not the nightly run)
   | 'unsupported'   // no automated retrieval path exists yet for this portal
 
 const CAPABILITY: Record<string, DocCapability> = {
@@ -28,6 +29,7 @@ const CAPABILITY: Record<string, DocCapability> = {
   'SecureBids': 'primary-only',
   'Bid Locker': 'primary-only',             // best-effort JS-download capture, unverified
 
+  'VendorLine': 'on-demand',          // PlanetBids portal docs — fetched by `main.py --vl-docs` (manual CAPTCHA solve)
   'PlanetBids': 'unsupported',        // stored URL is the portal search page, no per-bid detail
   'OpenGov': 'unsupported',           // Cloudflare Turnstile — scan is manual, no doc step
   'LAUSD Facilities': 'unsupported',  // one combined bid-date report, not per-bid
