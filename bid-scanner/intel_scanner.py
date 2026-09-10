@@ -191,6 +191,20 @@ async def _scan_awarded_portal(page, portal_id: str, agency: str,
 # Bid detail: submissions + award data
 # ---------------------------------------------------------------------------
 
+async def _warm_portal(page, portal_id: str) -> None:
+    """Load a portal's bo-search page so the SPA has portal context before we
+    deep-link into its bo-detail pages. Without this the detail route renders a
+    shell and never fires the /papi/ submissions + awards calls."""
+    url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-search"
+    try:
+        async with page.expect_response(lambda r: "/papi/bids" in r.url, timeout=20000):
+            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+        await page.wait_for_timeout(1500)
+    except Exception:
+        # bot-check or slow portal — detail fetch will still try, just note it
+        await page.wait_for_timeout(1500)
+
+
 # Phrases the bare "awarded to <x>" regex catches that aren't a company.
 _AWARD_JUNK = {
     "date", "the", "a", "be", "them", "it", "vendor", "bidder", "no one",
@@ -285,15 +299,26 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
     page.on("response", on_response)
 
     loaded = False
-    try:
-        await page.goto(detail_url, wait_until="domcontentloaded", timeout=25000)
-        await page.wait_for_timeout(2000)
-        body = await page.inner_text("body")
-        # A real detail page will mention the bid or have tab-like content
-        if len(body) > 200 and ("submission" in body.lower() or "award" in body.lower() or "vendor" in body.lower() or "bid" in body.lower()):
+    body = ""
+    for attempt in (1, 2, 3):
+        try:
+            await page.goto(detail_url, wait_until="domcontentloaded", timeout=25000)
+            await page.wait_for_timeout(3500 if attempt == 1 else 6000)
+            body = await page.inner_text("body")
+        except Exception as e:
+            print(f"      ⚠ Detail page load error: {e}")
+            body = ""
+        low = body.lower()
+        if any(w in low for w in ("confirm you are human", "security check", "verify you are")):
+            print(f"      ⚠ CAPTCHA wall on {detail_url}")
+            break
+        if len(body) > 200 and any(w in low for w in ("submission", "award", "vendor", "line item", "bid detail")):
             loaded = True
-    except Exception as e:
-        print(f"      ⚠ Detail page load error: {e}")
+            break
+        if attempt < 3:
+            await page.wait_for_timeout(2500)   # SPA still booting — retry
+        else:
+            print(f"      ⚠ thin detail page ({len(body)} chars) after {attempt} tries — {detail_url}")
 
     if loaded:
         # Click Submissions tab to trigger lazy load
@@ -690,6 +715,8 @@ async def run_intel_scan(live_page, discovery: str = "vendorline",
         if not new_bids:
             continue
         print(f"  → {agency}: {len(new_bids)} new → fetching detail pages...")
+        if discovery == "vendorline":
+            await _warm_portal(page, portal_id)   # legacy path already warmed via _scan_awarded_portal
         for bid in new_bids:
             await _process_awarded_bid(page, portal_id, agency, bid, ctx)
 
