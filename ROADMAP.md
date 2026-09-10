@@ -16,7 +16,7 @@
 | Document Download | ✅ Done | Playwright-based, all sources |
 | Bid Document Cloud Mirror | ✅ Built (2026-09) | Downloaded docs pushed to Supabase Storage (public `bid-docs` bucket) → one `bid_documents` row per file → shown on the dashboard bid page + pushed to Airtable (`Docs Folder` link + `Bid Documents` attachments). Runs inside `parser.py` `download_all` reconcile pass — no second crawl. `--sync-docs` backfills from local `output/specs/`. **Coverage is honest, not complete:** BidNet + CCOP mirror the full set; generic portals mirror the one primary PDF; **legacy PlanetBids (~37 portals) mirrors nothing** (no per-bid detail URL). **VendorLine bids: on-demand — `python main.py --vl-docs` (opens Chrome, solve one CAPTCHA) walks each relevant VendorLine bid's PlanetBids `bo-detail` Bid Documents tab, downloads the set, and hands off to the same `storage.sync_bid_docs` mirror. `--bid VL-<cid>-<id>` scopes to one. Then `parser.py --parse-all --claude` scores them.** Infra all provisioned 2026-09 (migration applied, public `bid-docs` bucket, Airtable `Docs Folder`+`Bid Documents` fields; round-trip verified on a SAM.gov bid). **Backfill the existing 22 bids with local docs:** `python parser.py --sync-docs` from `~/fcu-cron/bid-scanner` |
 | AI Parsing → bid_specs | ✅ Done (manual mode) | `--parse-all` prints prompts for Claude Code; `--ollama` for auto |
-| New-Bid Email Digest | ✅ Done | Fires via Resend after each scanner run with new relevant bids. "View ↗" links point to the dashboard bid page (`DASHBOARD_URL/bids/<id>`), which links out to the source portal in turn |
+| New-Bid Email Digest | ✅ Done | Fires via Resend after each scanner run with new relevant bids. "View ↗" links point to the dashboard bid page (`DASHBOARD_URL/bids/<id>`), which links out to the source portal in turn. Bids from no-auto-download sources (legacy PlanetBids, LAUSD Facilities, VendorLine) carry a **DOCS: PULL FROM PORTAL** tag (`feat/digest-manual-review`, 2026-09) |
 | Job Walk Alert Email | ✅ Done | Fires via Resend when `walk_required=True` after parsing |
 | Compliance Alert Email | ✅ Done | Fires via Resend on `--save` when bid_bond/prevailing_wage/dvbe/dbe flags set |
 | RFQ Email Generator | ✅ Done | `--rfq <bid_id>` CLI + "Send RFQ →" button in dashboard; sends draft to Joanne |
@@ -120,7 +120,9 @@ whose scanned PDF the vision fallback couldn't read, stayed "pending" indefinite
 - **Claude extraction** — `_parse_with_claude_text` (text layer) → `_parse_with_claude`
   (vision) for scanned. Model = `PARSER_CLAUDE_MODEL` env (default `claude-sonnet-5`).
 - **poppler PATH** fixed for launchd (a8b7e4b) so the vision fallback actually runs.
-- **Digest** now separates actionable "pending" from "gave up" (no_docs/unparseable).
+- **Digest** now separates actionable "pending" from "gave up" (no_docs/unparseable),
+  and **itemises both** (title + agency + due + dashboard link, capped at 15/section)
+  so no manual-review bid falls through — not just a count (`feat/digest-manual-review`, 2026-09).
 - **One-time**: after running the migration, `python parser.py --writeoff-backlog`
   clears the pre-existing backlog to `skipped`.
 - ⚠ Deploy: `setup/launchd/com.fcu.parser.plist` switched `--ollama` → `--claude`;
@@ -317,6 +319,12 @@ Full reference: **`bid-scanner/docs/scoring.md`**.
   (`_is_non_flooring_service` / `NON_FLOORING_SERVICE_PATTERNS`: janitorial, pest,
   landscaping, glass washing) are dropped. Parser backstop: `non_flooring_service` flips
   `is_relevant=False` on `--save`.
+- **`bids.relevance_reason`** (migration `supabase/add_relevance_reason.sql`, `feat/digest-manual-review`
+  2026-09): records *why* a rejected bid was dropped — `non_flooring_service` / `other_trade` /
+  `claude_rejected` / `no_keyword` (NULL when relevant). `scanner._relevance_reason()` is the
+  reason-returning form of `_is_relevant()` (cached by title so the Claude 2nd pass runs once).
+  Feeds the dashboard's planned `/filtered` audit view (`feat/dashboard-filtered-audit`). Forward-only,
+  no backfill.
 - **Score (`scoring.py` + `app/lib/scoring.ts`).** `geography(0–60, drive-time bands from
   Chatsworth) + lead_time(0–30) + award_adj(−6…+10)`, clamp 0–100. GO ≥ 58 · MAYBE 33–57 ·
   NO-GO < 33. Hard NO-GO when `flooring_is_primary=false` (or past-due, dashboard only).

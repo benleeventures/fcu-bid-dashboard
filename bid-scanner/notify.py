@@ -31,6 +31,13 @@ COOKIES_FILE = Path(__file__).parent / "cookies.json"
 # Public dashboard base URL — overridable via .env for staging/preview deploys.
 DASHBOARD_URL = os.getenv("DASHBOARD_URL", "https://bids.floorcoveringunlimited.com").rstrip("/")
 
+# Sources the pipeline never auto-downloads bid documents from — legacy
+# PlanetBids (~37 portals, no per-bid detail URL), LAUSD Facilities (one
+# combined report PDF), and VendorLine (docs are on-demand via `--vl-docs`,
+# manual CAPTCHA). New bids from these always need a human to pull the spec
+# from the portal, so the new-bid digest flags them.
+_NO_AUTO_DOC_SOURCES = {"PlanetBids", "LAUSD Facilities", "VendorLine"}
+
 
 def dashboard_bid_url(bid_id: str) -> str:
     """Link to a bid's detail page on the FCU dashboard. From there the user can
@@ -306,6 +313,7 @@ def send_new_bids_digest(new_bids: list[dict]):
     subject = f"[FCU Bid Agent] {count} new relevant bid{'s' if count > 1 else ''} found"
 
     rows = ""
+    manual_doc_count = 0
     for b in new_bids:
         due = b.get("due_date") or b.get("due_date_raw") or "—"
         bid_id = b.get("bid_id", "")
@@ -316,9 +324,17 @@ def send_new_bids_digest(new_bids: list[dict]):
             if bid_id else
             (f'<a href="{b.get("url","")}" style="color:#C8922A;">View ↗</a>' if b.get("url") else "—")
         )
+        manual_doc = b.get("source") in _NO_AUTO_DOC_SOURCES
+        if manual_doc:
+            manual_doc_count += 1
+        title_cell = (
+            f"{b.get('title','')[:80]}"
+            + ('<br><span style="font-size:10px;font-weight:600;color:#FF9F0A;letter-spacing:.04em;">'
+               'DOCS: PULL FROM PORTAL</span>' if manual_doc else '')
+        )
         rows += f"""
         <tr>
-          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;font-weight:600;color:#F5F5F0;">{b.get('title','')[:80]}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;font-weight:600;color:#F5F5F0;">{title_cell}</td>
           <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;color:#8E8E93;">{b.get('agency','')}</td>
           <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;color:#8E8E93;font-family:monospace;">{b.get('source','')}</td>
           <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;color:#8E8E93;font-family:monospace;">{due}</td>
@@ -351,9 +367,11 @@ def send_new_bids_digest(new_bids: list[dict]):
       <tbody>{rows}</tbody>
     </table>
 
-    <p style="margin-top:24px;font-size:12px;color:#8E8E93;">
-      Review all bids in the <a href="{DASHBOARD_URL}" style="color:#C8922A;">FCU Dashboard</a>.
-      Parse specs with: <code style="background:#2C2C2E;padding:2px 6px;border-radius:3px;">python parser.py --pending</code>
+    <p style="margin-top:24px;font-size:12px;color:#8E8E93;line-height:1.7;">
+      Every bid above still needs a human pass — specs are parsed by the 6:30am job and
+      tracked in the 7am digest.
+      {f'<br><span style="color:#FF9F0A;">{manual_doc_count} bid{"s" if manual_doc_count != 1 else ""} marked DOCS: PULL FROM PORTAL</span> — those sources have no auto-download; open the portal and grab the spec.' if manual_doc_count else ''}
+      <br>Review all bids in the <a href="{DASHBOARD_URL}" style="color:#C8922A;">FCU Dashboard</a>.
     </p>
   </div>
 </body>

@@ -154,6 +154,8 @@ async def main():
         funnel = ScanFunnel(mode="planetbids")
         for b in bids:
             b.setdefault("source", "PlanetBids")
+        from scanner import stamp_relevance_reasons
+        stamp_relevance_reasons(bids)
         funnel.note_raw(bids)
         for b in bids:
             enrich(b)
@@ -212,6 +214,8 @@ async def main():
         funnel = ScanFunnel(mode="opengov")
         for b in bids:
             b.setdefault("source", "OpenGov")
+        from scanner import stamp_relevance_reasons
+        stamp_relevance_reasons(bids)
         funnel.note_raw(bids)
         for b in bids:
             enrich(b)

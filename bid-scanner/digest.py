@@ -50,9 +50,10 @@ def run():
     # unparseable) — surfaced separately so the pending number stays honest.
     MAX_PARSE_ATTEMPTS = 3
     TERMINAL = {"parsed", "no_docs", "unparseable", "skipped"}
+    _COLS = "bid_id,title,agency,due_date,due_date_raw,url,source,parse_status,parse_attempts"
     try:
         all_relevant_resp = (
-            sb.table("bids").select("bid_id,parse_status,parse_attempts")
+            sb.table("bids").select(_COLS)
             .eq("is_relevant", True).execute()
         )
     except Exception:
@@ -64,17 +65,27 @@ def run():
         parsed_resp = sb.table("bid_specs").select("bid_id").in_("bid_id", chunk).execute()
         parsed_ids.update(r["bid_id"] for r in (parsed_resp.data or []))
 
-    unprocessed_count = sum(
-        1 for b in all_relevant
-        if b["bid_id"] not in parsed_ids
-        and (b.get("parse_status") or "") not in TERMINAL
-        and (b.get("parse_attempts") or 0) < MAX_PARSE_ATTEMPTS
+    def _due_key(b):
+        return b.get("due_date") or "9999-12-31"
+
+    # "pending" = still actionable (no spec, not terminal, under the attempt cap).
+    # "stuck" = gave up (no_docs / unparseable) — a human has to pull docs from
+    # the portal or write it off. Both itemised below so nothing falls through.
+    pending_bids = sorted(
+        (b for b in all_relevant
+         if b["bid_id"] not in parsed_ids
+         and (b.get("parse_status") or "") not in TERMINAL
+         and (b.get("parse_attempts") or 0) < MAX_PARSE_ATTEMPTS),
+        key=_due_key,
     )
-    stuck_count = sum(
-        1 for b in all_relevant
-        if b["bid_id"] not in parsed_ids
-        and (b.get("parse_status") or "") in {"no_docs", "unparseable"}
+    stuck_bids = sorted(
+        (b for b in all_relevant
+         if b["bid_id"] not in parsed_ids
+         and (b.get("parse_status") or "") in {"no_docs", "unparseable"}),
+        key=_due_key,
     )
+    unprocessed_count = len(pending_bids)
+    stuck_count = len(stuck_bids)
 
     recipients = _admin_recipients()
     if not recipients:
@@ -132,20 +143,57 @@ def run():
           <div style="margin-top:8px;">{flags_html}</div>
         </div>"""
 
-    pending_note = ""
-    if unprocessed_count > 0 or stuck_count > 0:
-        stuck_line = (
-            f'<br><span style="color:#8E8E93;">{stuck_count} gave up (no docs / unparseable) — see dashboard.</span>'
-            if stuck_count else ""
+    def _review_rows(rows: list[dict]) -> str:
+        out = ""
+        for b in rows:
+            title = (b.get("title") or b["bid_id"])[:80]
+            agency = b.get("agency") or "—"
+            due = b.get("due_date_raw") or b.get("due_date") or "—"
+            link = f'<a href="{dashboard_bid_url(b["bid_id"])}" style="color:#C8922A;">Review ↗</a>'
+            out += f"""
+            <tr>
+              <td style="padding:8px 12px;border-bottom:1px solid #2C2C2E;font-size:13px;color:#F5F5F0;">{title}</td>
+              <td style="padding:8px 12px;border-bottom:1px solid #2C2C2E;font-size:12px;color:#8E8E93;">{agency}</td>
+              <td style="padding:8px 12px;border-bottom:1px solid #2C2C2E;font-size:12px;color:#8E8E93;font-family:monospace;">{due}</td>
+              <td style="padding:8px 12px;border-bottom:1px solid #2C2C2E;font-size:12px;font-family:monospace;">{link}</td>
+            </tr>"""
+        return out
+
+    def _review_table(heading: str, sub: str, rows: list[dict], accent: str, cap: int = 15) -> str:
+        if not rows:
+            return ""
+        shown, extra = rows[:cap], max(0, len(rows) - cap)
+        more = (
+            f'<p style="margin:10px 0 0;font-size:12px;color:#8E8E93;">'
+            f'+ {extra} more — <a href="{DASHBOARD_URL}" style="color:#C8922A;">see the dashboard</a></p>'
+            if extra else ""
         )
-        pending_note = f"""
-        <div style="background:#3A3A3C;border-radius:8px;padding:14px 16px;margin-top:4px;">
-          <p style="margin:0;font-size:13px;color:#8E8E93;">
-            <strong style="color:#F5F5F0;">{unprocessed_count} relevant bid{'s' if unprocessed_count != 1 else ''}</strong>
-            awaiting parsing. The 6:30am job auto-parses via
-            <code style="background:#2C2C2E;padding:2px 6px;border-radius:3px;">--parse-all --claude</code>.{stuck_line}
-          </p>
+        return f"""
+        <div style="margin-top:20px;">
+          <h2 style="font-size:13px;font-weight:700;color:{accent};letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px;">{heading} ({len(rows)})</h2>
+          <p style="margin:0 0 10px;font-size:12px;color:#8E8E93;">{sub}</p>
+          <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">
+            <thead><tr style="background:#3A3A3C;">
+              <th style="padding:8px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Title</th>
+              <th style="padding:8px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Agency</th>
+              <th style="padding:8px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Due</th>
+              <th style="padding:8px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;"></th>
+            </tr></thead>
+            <tbody>{_review_rows(shown)}</tbody>
+          </table>
+          {more}
         </div>"""
+
+    pending_note = (
+        _review_table(
+            "Awaiting parse", "No spec yet — the 6:30am <code>--parse-all --claude</code> job retries these automatically.",
+            pending_bids, "#8E8E93",
+        )
+        + _review_table(
+            "Needs a human — stuck", "Auto-parse gave up (no docs found, or the docs won't parse). Pull the spec from the portal manually, or mark no-bid.",
+            stuck_bids, "#FF9F0A",
+        )
+    )
 
     count = len(fresh_specs)
     subject = (

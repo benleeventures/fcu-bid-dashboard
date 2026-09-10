@@ -7,7 +7,12 @@ component (janitorial / pest / landscaping / glass washing) are filtered out.
     python test_relevance_filter.py
 """
 
-from scanner import _is_non_flooring_service, _is_other_trade, _is_relevant
+from scanner import (
+    _is_non_flooring_service,
+    _is_other_trade,
+    _is_relevant,
+    _relevance_reason,
+)
 
 # Wholesale supply / furnish-only — now legitimate FCU work.
 SUPPLY_ONLY = [
@@ -113,6 +118,33 @@ def run():
         if not _is_non_flooring_service(title, desc):
             print(f"FAIL (should be non-flooring-service): {title!r}")
             fails += 1
+        if _relevance_reason(title, desc) != "non_flooring_service":
+            print(f"FAIL (reason should be non_flooring_service): {title!r} → {_relevance_reason(title, desc)!r}")
+            fails += 1
+
+    # relevance_reason: None for anything relevant, a code for anything rejected.
+    for title, desc in SUPPLY_ONLY + FLOORING_SERVICE + INSTALL_JOBS + OTHER_TRADE_WITH_FLOORING:
+        if _relevance_reason(title, desc) is not None:
+            print(f"FAIL (reason should be None — relevant): {title!r} → {_relevance_reason(title, desc)!r}")
+            fails += 1
+
+    for title, desc in OTHER_TRADE:
+        if _relevance_reason(title, desc) != "other_trade":
+            print(f"FAIL (reason should be other_trade): {title!r} → {_relevance_reason(title, desc)!r}")
+            fails += 1
+
+    import os as _os
+    if not _os.getenv("ANTHROPIC_API_KEY"):
+        # Fast path: no key → construction-adjacent titles fall to claude_rejected,
+        # bare non-flooring titles to no_keyword.
+        for title, desc in NOT_PRIMARY:
+            if _relevance_reason(title, desc) != "claude_rejected":
+                print(f"FAIL (reason should be claude_rejected): {title!r} → {_relevance_reason(title, desc)!r}")
+                fails += 1
+        for title, desc in NOT_RELEVANT_NO_ANCHOR:
+            if _relevance_reason(title, desc) != "no_keyword":
+                print(f"FAIL (reason should be no_keyword): {title!r} → {_relevance_reason(title, desc)!r}")
+                fails += 1
 
     for title, desc in NOT_RELEVANT_NO_ANCHOR:
         if _is_relevant(title, desc):
