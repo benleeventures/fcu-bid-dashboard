@@ -42,6 +42,8 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
   let status: { text: string; color: string }
   if (count === 0 && cap === 'unsupported') {
     status = { text: `Automated retrieval not available for ${srcName}`, color: 'var(--ink-dim)' }
+  } else if (count === 0 && cap === 'on-demand') {
+    status = { text: `Not fetched yet — run the VendorLine document sweep`, color: 'var(--ink-dim)' }
   } else if (count === 0) {
     status = { text: `No documents retrieved yet — check the portal`, color: 'var(--ink-dim)' }
   } else if (cap === 'page-images' || allImages) {
@@ -62,6 +64,8 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
       ? `The bid tracker can't pull documents from ${srcName} automatically${
           source === 'PlanetBids' ? ' (no per-bid document URL is exposed)' : ''
         }. Any missing documents for this bid are a tooling limitation — download them directly from the portal.`
+      : cap === 'on-demand' && count === 0
+      ? `${srcName} documents live on the agency's PlanetBids portal, behind a CAPTCHA. They're fetched by a manual sweep (\`main.py --vl-docs\`), not the nightly run — until then, download them directly from the portal.`
       : cap === 'primary-only' && count > 0
       ? `${srcName} doesn't give the tracker a guaranteed complete document list — treat the files below as a starting point and confirm the full set on the portal.`
       : null
@@ -164,9 +168,10 @@ export default function Documents({ docs, docsExpected, docsSyncedAt, portalUrl,
         borderTop: '1px solid var(--border)',
         fontSize: 10.5, color: 'var(--ink-faint)', fontFamily: 'var(--font-mono)', lineHeight: 1.5,
       }}>
-        Automatic document retrieval is a work in progress — coverage varies by portal
-        and PlanetBids / OpenGov aren&apos;t supported yet. Always confirm the complete
-        document set on the source portal before bidding.
+        Automatic document retrieval is a work in progress — coverage varies by portal.
+        PlanetBids / OpenGov aren&apos;t supported in the nightly run; VendorLine bids are
+        fetched by a manual sweep. Always confirm the complete document set on the source
+        portal before bidding.
       </div>
     </div>
   )
