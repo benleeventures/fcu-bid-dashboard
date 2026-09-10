@@ -362,6 +362,15 @@ writes `Owner` (when `AIRTABLE_OWNER_EMAIL` is set — pending Robert's base sea
 are UI-only** — steps documented in `docs/airtable-tracker-setup.md` §2 (red ≤48h, amber ≤5d
 off the `Days to Due` formula). Someone needs to click through that once.
 
+**Dashboard "Add to Airtable" button** (`feat/dashboard-airtable-button`, 2026-09): the bid
+detail page has a manual push for bids the scanner didn't auto-sync (unscored / borderline /
+older rows) — `app/actions/airtable.ts` ports the `airtable_sync.py` field map, dedupes on
+the Airtable `Bid ID`, stamps `bids.airtable_synced_at` (migration `add_airtable_sync.sql`).
+Also a "⎘ Copy row" button on the detail page **and** each bid-table row → TSV
+(Project·Agency·Due·Source·URL·Bid ID) for pasting straight into an Airtable grid.
+**Needs `AIRTABLE_API_KEY` + `AIRTABLE_BASE_ID` in the Vercel env** (they only live on the
+scanner host today); button returns a clear error until then.
+
 ### PlanetBids block-detection + resume — ✅ Session 5 (2026-08)
 
 The scraper walks ~40 portals in one browser session. When PlanetBids' WAF trips,

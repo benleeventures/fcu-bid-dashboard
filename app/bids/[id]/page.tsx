@@ -3,6 +3,7 @@ import Nav from '../../Nav'
 import BidOutcomeTracker from './BidOutcomeTracker'
 import GoNoGoCard from './GoNoGoCard'
 import Documents from './Documents'
+import AddToAirtable from './AddToAirtable'
 import type { BidStatus } from '../../actions/bids'
 
 export const revalidate = 0
@@ -47,6 +48,16 @@ export default async function BidDetailPage({ params }: { params: { id: string }
   const formatDate = (s: string | null) => s
     ? new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : '—'
+
+  // Tab-separated row for pasting straight into an Airtable grid.
+  const copyRow = [
+    bid.title ?? '',
+    bid.agency ?? '',
+    bid.due_date_raw || bid.due_date || '',
+    bid.source ?? '',
+    bid.url ?? '',
+    bid.bid_id,
+  ].map(v => String(v).replace(/\t|\n/g, ' ')).join('\t')
 
   return (
     <>
@@ -103,6 +114,14 @@ export default async function BidDetailPage({ params }: { params: { id: string }
               {spec.summary}
             </p>
           )}
+
+          <div style={{ marginTop: 16 }}>
+            <AddToAirtable
+              bidId={bid.bid_id}
+              syncedAt={bid.airtable_synced_at ?? null}
+              copyRow={copyRow}
+            />
+          </div>
         </header>
 
         {/* Mirrored bid documents */}
