@@ -118,9 +118,9 @@ export default async function ScannerPage() {
       <main style={{ maxWidth: 1000, margin: '0 auto', padding: '28px 24px 64px' }}>
         {/* Header */}
         <header style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 28, letterSpacing: '-0.4px' }}>Bid Finder Status</h1>
+          <h1 style={{ fontSize: 28, letterSpacing: '-0.4px' }}>Scanner Status</h1>
           <p style={{ color: 'var(--ink-dim)', marginTop: 4, fontSize: 13 }}>
-            Is the bid finder running, and is it missing anything?
+            Is the scanner running, and is it missing anything?
           </p>
         </header>
 
@@ -128,7 +128,7 @@ export default async function ScannerPage() {
         <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--ink-dim)', fontSize: 14 }}>
           <div style={{ fontSize: 32, marginBottom: 16 }}>📡</div>
           <div style={{ fontWeight: 500, marginBottom: 8 }}>No history yet</div>
-          <div>This page fills in after the bid finder runs.</div>
+          <div>This page fills in after the scanner runs.</div>
         </div>
       ) : (
         <>
