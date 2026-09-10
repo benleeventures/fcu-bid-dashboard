@@ -119,12 +119,15 @@ def sync_new_bids(bids: list[dict]) -> int:
             "Status": "Surfaced",
             "Listing URL": b.get("url") or None,
         }
-        if b.get("county"):
-            fields["County"] = b["county"]
         if agency:
             fields["Agency or GC"] = agency
+        # "City / County / Area" is one free-text field: a city name for
+        # city-bearing sources, otherwise the county (the base has no
+        # dedicated County column).
         if source in _CITY_BEARING_SOURCES and agency:
             fields["City / County / Area"] = agency
+        elif b.get("county"):
+            fields["City / County / Area"] = b["county"]
         if b.get("geo_status") == "unknown":
             fields["Notes"] = "Needs county check — place of performance not confirmed"
         if owner_email:
@@ -139,9 +142,9 @@ def sync_new_bids(bids: list[dict]) -> int:
 
     # typecast=True lets Airtable auto-create new single-select options
     # (e.g. a new Source Platform value) instead of 422-ing.
-    # Newer optional fields ("County", "Agency or GC", "Notes") may still not
-    # exist in the base — if Airtable rejects an unknown field, strip the
-    # optional ones and retry with the core set so the sync still lands.
+    # Optional fields ("Agency or GC", "Notes") may not exist in the base —
+    # if Airtable rejects an unknown field, strip the optional ones and retry
+    # with the core set so the sync still lands.
     _CORE_FIELDS = {
         "Project Name", "Bid ID", "Date Surfaced", "Source Platform",
         "Bid Due Date", "Status", "Listing URL", "City / County / Area",

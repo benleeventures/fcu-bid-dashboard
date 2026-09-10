@@ -109,27 +109,37 @@ export async function addBidToAirtable(bidId: string): Promise<Result> {
       'Status': 'Surfaced',
       'Listing URL': bid.url ?? null,
     }
-    if (bid.county) fields['County'] = bid.county
     if (agency) fields['Agency or GC'] = agency
+    // "City / County / Area" is one free-text field: a city name for city-bearing
+    // sources, otherwise the county (the base has no dedicated County column).
     if (CITY_BEARING_SOURCES.has(source) && agency) fields['City / County / Area'] = agency
+    else if (bid.county) fields['City / County / Area'] = bid.county
     if (bid.geo_status === 'unknown') fields['Notes'] = 'Needs county check — place of performance not confirmed'
     if (ownerEmail) fields['Owner'] = { email: ownerEmail }
 
-    let create = await at(
+    const post = (f: Record<string, unknown>) => at(
       `${baseId}/${TABLE}`,
-      { method: 'POST', body: JSON.stringify({ records: [{ fields }], typecast: true }) },
+      { method: 'POST', body: JSON.stringify({ records: [{ fields: f }], typecast: true }) },
       apiKey,
     )
 
-    // A missing optional column / bad collaborator email → retry with the
-    // always-present core set so the opportunity still lands (matches airtable_sync.py).
-    if (!create.ok && create.status === 422) {
-      const core = Object.fromEntries(Object.entries(fields).filter(([k]) => CORE_FIELDS.has(k)))
-      create = await at(
-        `${baseId}/${TABLE}`,
-        { method: 'POST', body: JSON.stringify({ records: [{ fields: core }], typecast: true }) },
-        apiKey,
-      )
+    let working = { ...fields }
+    let create = await post(working)
+
+    // Schema drift: if the base is missing a column we tried to write, Airtable
+    // 422s with the offending name. Drop just that field and retry (a few times),
+    // then fall back to the core set so the opportunity still lands.
+    for (let i = 0; i < 4 && !create.ok && create.status === 422; i++) {
+      const body = await create.clone().text()
+      const missing = body.match(/Unknown field name:\s*"([^"]+)"/)?.[1]
+      if (missing && missing in working) {
+        delete working[missing]
+        create = await post(working)
+      } else {
+        working = Object.fromEntries(Object.entries(fields).filter(([k]) => CORE_FIELDS.has(k)))
+        create = await post(working)
+        break
+      }
     }
 
     if (!create.ok) {
