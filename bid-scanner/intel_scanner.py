@@ -191,6 +191,71 @@ async def _scan_awarded_portal(page, portal_id: str, agency: str,
 # Bid detail: submissions + award data
 # ---------------------------------------------------------------------------
 
+# Phrases the bare "awarded to <x>" regex catches that aren't a company.
+_AWARD_JUNK = {
+    "date", "the", "a", "be", "them", "it", "vendor", "bidder", "no one",
+    "the lowest bidder", "the lowest responsible bidder",
+    "the lowest responsive responsible bidder", "the successful bidder",
+    "the apparent low bidder", "a vendor", "the vendor", "the contractor",
+}
+
+
+def _parse_award_line(body_text, submissions, winner_name, winner_amount):
+    """Read the authoritative award sentence off the detail page.
+
+    Two phrasings:
+      "...awarded to <Vendor> for $<amount>. View"  — unambiguous: trust it,
+          and add a synthetic submission row if that vendor wasn't scraped.
+      "...awarded to <x>"                           — also matches junk
+          ("has not been awarded to date", "to be awarded to the lowest
+          bidder"), so it may only *tag* a name already in `submissions`.
+
+    Returns (winner_name, winner_amount, submissions). Pure — unit-tested.
+    """
+    m = re.search(
+        r"awarded\s+to\s+(.+?)\s+for\s+\$?([\d,]+(?:\.\d+)?)",
+        body_text or "", re.IGNORECASE,
+    )
+    if m:
+        award_amt = _parse_amount(m.group(2))
+        cand = re.sub(r"\s+View$", "", m.group(1).strip()).strip().rstrip(".")
+        if cand and len(cand) < 120 and cand.lower() not in _AWARD_JUNK:
+            winner_name = cand
+            for s in submissions:
+                s["is_winner"] = s["raw_vendor_name"].lower() == cand.lower()
+            if not any(s["is_winner"] for s in submissions):
+                submissions.append({
+                    "raw_vendor_name": cand, "bid_amount": award_amt,
+                    "rank": None, "is_winner": True,
+                })
+            if award_amt is not None:
+                winner_amount = award_amt
+            else:
+                won = next((s for s in submissions if s["is_winner"]), None)
+                winner_amount = won["bid_amount"] if won else winner_amount
+        return winner_name, winner_amount, submissions
+
+    if submissions:
+        m = re.search(r"awarded\s+to\s+([^\n.]+)", body_text or "", re.IGNORECASE)
+        cand = (re.split(r"\s+for\s+\$", m.group(1).strip(), 1)[0].strip().rstrip(".").lower()
+                if m else "")
+        # exact match, or a scraped name that prefixes the candidate (handles a
+        # trailing " on <date>", " in the amount of ...", etc.)
+        hit = next(
+            (s for s in submissions if cand and (
+                s["raw_vendor_name"].lower() == cand
+                or cand.startswith(s["raw_vendor_name"].lower() + " ")
+            )),
+            None,
+        )
+        if hit:
+            winner_name = hit["raw_vendor_name"]
+            for s in submissions:
+                s["is_winner"] = s is hit
+            winner_amount = hit["bid_amount"] or winner_amount
+    return winner_name, winner_amount, submissions
+
+
 async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
     """
     Navigate to an awarded bid's detail page and extract submission tabulation
@@ -374,42 +439,17 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
             if not winner_name:
                 winner_name = with_amount[0]["raw_vendor_name"]
 
-    # Authoritative award line, always checked — the "recommend/derive lowest bid"
-    # guess above is wrong whenever the award went to other than the low bidder.
-    #   "The project has been awarded to <Vendor> for $<amount>. View"
+    # Authoritative award line, always checked — the "recommend/derive lowest
+    # bid" guess above is wrong whenever the award went to other than the low
+    # bidder. Parsed in _parse_award_line (pure, unit-tested).
     if loaded:
         try:
             body_text = await page.inner_text("body")
         except Exception:
             body_text = ""
-        # Prefer the phrasing that carries the dollar figure; fall back to a
-        # name-only match. Capture to end of line, then trim trailing "View" /
-        # " for $..." / period in post-processing.
-        m = re.search(
-            r"awarded\s+to\s+(.+?)\s+for\s+\$?([\d,]+(?:\.\d+)?)",
-            body_text, re.IGNORECASE,
+        winner_name, winner_amount, submissions = _parse_award_line(
+            body_text, submissions, winner_name, winner_amount,
         )
-        award_amt = _parse_amount(m.group(2)) if m else None
-        if not m:
-            m = re.search(r"awarded\s+to\s+([^\n]+)", body_text, re.IGNORECASE)
-        if m:
-            award_winner = re.split(r"\s+for\s+\$", m.group(1), 1)[0].strip()
-            award_winner = re.sub(r"\s+View$", "", award_winner).strip().rstrip(".")
-            if award_winner and len(award_winner) < 120:
-                winner_name = award_winner
-                for s in submissions:
-                    s["is_winner"] = s["raw_vendor_name"].lower() == award_winner.lower()
-                if not any(s["is_winner"] for s in submissions):
-                    submissions.append({
-                        "raw_vendor_name": award_winner,
-                        "bid_amount": award_amt,
-                        "rank": None, "is_winner": True,
-                    })
-                if award_amt:
-                    winner_amount = award_amt
-                elif winner_name:
-                    won = next((s for s in submissions if s["is_winner"]), None)
-                    winner_amount = won["bid_amount"] if won else winner_amount
         if not awarded_at:
             m2 = re.search(
                 r"[Aa]warded\s+on\s+(\w+ \d+,\s*\d{4}|\d{1,2}/\d{1,2}/\d{4})", body_text,
