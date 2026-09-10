@@ -130,8 +130,12 @@ export async function addBidToAirtable(bidId: string): Promise<Result> {
     // 422s with the offending name. Drop just that field and retry (a few times),
     // then fall back to the core set so the opportunity still lands.
     for (let i = 0; i < 4 && !create.ok && create.status === 422; i++) {
-      const body = await create.clone().text()
-      const missing = body.match(/Unknown field name:\s*"([^"]+)"/)?.[1]
+      // Airtable: {"error":{"type":"UNKNOWN_FIELD_NAME","message":"Unknown field name: \"X\""}}
+      let missing: string | undefined
+      try {
+        const msg = (JSON.parse(await create.clone().text()))?.error?.message ?? ''
+        missing = msg.match(/Unknown field name:\s*"([^"]+)"/)?.[1]
+      } catch { /* non-JSON body — fall through to core */ }
       if (missing && missing in working) {
         delete working[missing]
         create = await post(working)
