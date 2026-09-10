@@ -191,6 +191,71 @@ async def _scan_awarded_portal(page, portal_id: str, agency: str,
 # Bid detail: submissions + award data
 # ---------------------------------------------------------------------------
 
+# Phrases the bare "awarded to <x>" regex catches that aren't a company.
+_AWARD_JUNK = {
+    "date", "the", "a", "be", "them", "it", "vendor", "bidder", "no one",
+    "the lowest bidder", "the lowest responsible bidder",
+    "the lowest responsive responsible bidder", "the successful bidder",
+    "the apparent low bidder", "a vendor", "the vendor", "the contractor",
+}
+
+
+def _parse_award_line(body_text, submissions, winner_name, winner_amount):
+    """Read the authoritative award sentence off the detail page.
+
+    Two phrasings:
+      "...awarded to <Vendor> for $<amount>. View"  — unambiguous: trust it,
+          and add a synthetic submission row if that vendor wasn't scraped.
+      "...awarded to <x>"                           — also matches junk
+          ("has not been awarded to date", "to be awarded to the lowest
+          bidder"), so it may only *tag* a name already in `submissions`.
+
+    Returns (winner_name, winner_amount, submissions). Pure — unit-tested.
+    """
+    m = re.search(
+        r"awarded\s+to\s+(.+?)\s+for\s+\$?([\d,]+(?:\.\d+)?)",
+        body_text or "", re.IGNORECASE,
+    )
+    if m:
+        award_amt = _parse_amount(m.group(2))
+        cand = re.sub(r"\s+View$", "", m.group(1).strip()).strip().rstrip(".")
+        if cand and len(cand) < 120 and cand.lower() not in _AWARD_JUNK:
+            winner_name = cand
+            for s in submissions:
+                s["is_winner"] = s["raw_vendor_name"].lower() == cand.lower()
+            if not any(s["is_winner"] for s in submissions):
+                submissions.append({
+                    "raw_vendor_name": cand, "bid_amount": award_amt,
+                    "rank": None, "is_winner": True,
+                })
+            if award_amt is not None:
+                winner_amount = award_amt
+            else:
+                won = next((s for s in submissions if s["is_winner"]), None)
+                winner_amount = won["bid_amount"] if won else winner_amount
+        return winner_name, winner_amount, submissions
+
+    if submissions:
+        m = re.search(r"awarded\s+to\s+([^\n.]+)", body_text or "", re.IGNORECASE)
+        cand = (re.split(r"\s+for\s+\$", m.group(1).strip(), 1)[0].strip().rstrip(".").lower()
+                if m else "")
+        # exact match, or a scraped name that prefixes the candidate (handles a
+        # trailing " on <date>", " in the amount of ...", etc.)
+        hit = next(
+            (s for s in submissions if cand and (
+                s["raw_vendor_name"].lower() == cand
+                or cand.startswith(s["raw_vendor_name"].lower() + " ")
+            )),
+            None,
+        )
+        if hit:
+            winner_name = hit["raw_vendor_name"]
+            for s in submissions:
+                s["is_winner"] = s is hit
+            winner_amount = hit["bid_amount"] or winner_amount
+    return winner_name, winner_amount, submissions
+
+
 async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
     """
     Navigate to an awarded bid's detail page and extract submission tabulation
@@ -374,6 +439,24 @@ async def _fetch_bid_detail(page, portal_id: str, numeric_bid_id: str) -> dict:
             if not winner_name:
                 winner_name = with_amount[0]["raw_vendor_name"]
 
+    # Authoritative award line, always checked — the "recommend/derive lowest
+    # bid" guess above is wrong whenever the award went to other than the low
+    # bidder. Parsed in _parse_award_line (pure, unit-tested).
+    if loaded:
+        try:
+            body_text = await page.inner_text("body")
+        except Exception:
+            body_text = ""
+        winner_name, winner_amount, submissions = _parse_award_line(
+            body_text, submissions, winner_name, winner_amount,
+        )
+        if not awarded_at:
+            m2 = re.search(
+                r"[Aa]warded\s+on\s+(\w+ \d+,\s*\d{4}|\d{1,2}/\d{1,2}/\d{4})", body_text,
+            )
+            if m2:
+                awarded_at = _parse_award_date(m2.group(1).strip())
+
     return {
         "submissions":    submissions,
         "winner_name":    winner_name,
@@ -439,20 +522,8 @@ async def _scrape_detail_dom(page) -> tuple[list[dict], str | None, str | None]:
     except Exception:
         pass
 
-    try:
-        body_text = await page.inner_text("body")
-        m = re.search(r"[Aa]warded\s+to\s+([^\n]+)", body_text)
-        if m:
-            winner_name = m.group(1).strip()
-        m2 = re.search(
-            r"[Aa]warded\s+on\s+(\w+ \d+,\s*\d{4}|\d{1,2}/\d{1,2}/\d{4})",
-            body_text,
-        )
-        if m2:
-            awarded_at = _parse_award_date(m2.group(1).strip())
-    except Exception:
-        pass
-
+    # winner_name / awarded_at from the award prose are handled centrally in
+    # _fetch_bid_detail (runs whether or not the API path produced submissions).
     return submissions, winner_name, awarded_at
 
 
@@ -484,114 +555,152 @@ def _parse_award_date(s: str) -> str | None:
 # Main entry point
 # ---------------------------------------------------------------------------
 
-async def run_intel_scan(live_page) -> dict:
+async def _process_awarded_bid(page, portal_id, agency, bid, ctx) -> None:
     """
-    Scan all PlanetBids portals for awarded bids, fetch submission tabulations,
-    resolve vendor names, and persist to Supabase.
+    Fetch one bid's detail page, resolve every vendor name, and upsert the award
+    + submissions to Supabase. ``ctx`` carries the mutable scan state
+    (``existing_vendors``, ``existing_keys``, counters).
+    """
+    from db import upsert_vendor, add_vendor_alias, upsert_intel_award
 
-    Designed to be called after CAPTCHA is solved (reuses live browser session).
-    Only processes bids not already in bid_intel (idempotent).
+    existing_vendors = ctx["existing_vendors"]
+    print(f"        ↳ {bid['title'][:60]}")
+    detail = await _fetch_bid_detail(page, portal_id, bid["numeric_bid_id"])
+
+    resolved_subs = []
+    for sub in detail.get("submissions", []):
+        raw = sub["raw_vendor_name"]
+        vendor = resolve_vendor(raw, existing_vendors)
+        if vendor:
+            ctx["vendors_resolved"] += 1
+            aliases = vendor.get("aliases") or []
+            if raw.lower() not in [a.lower() for a in aliases]:
+                add_vendor_alias(vendor["id"], raw)
+                vendor.setdefault("aliases", []).append(raw)
+            vendor_id = vendor["id"]
+        else:
+            vendor_id = upsert_vendor(raw)
+            ctx["vendors_created"] += 1
+            existing_vendors.append({"id": vendor_id, "canonical_name": raw, "aliases": []})
+        resolved_subs.append({**sub, "vendor_id": vendor_id})
+
+    winner_name = detail.get("winner_name") or ""
+    winner_vendor = resolve_vendor(winner_name, existing_vendors) if winner_name else None
+    if winner_vendor:
+        winner_vendor_id = winner_vendor["id"]
+    elif winner_name:
+        winner_vendor_id = upsert_vendor(winner_name)
+        ctx["vendors_created"] += 1
+        existing_vendors.append({"id": winner_vendor_id, "canonical_name": winner_name, "aliases": []})
+    else:
+        winner_sub = next(
+            (s for s in resolved_subs if s.get("is_winner") or s.get("rank") == 1), None,
+        )
+        winner_vendor_id = winner_sub["vendor_id"] if winner_sub else None
+
+    award = {
+        "portal_id":        portal_id,
+        "numeric_bid_id":   bid["numeric_bid_id"],
+        "agency":           agency,
+        "title":            bid["title"],
+        "awarded_at":       detail.get("awarded_at"),
+        "winner_vendor_id": winner_vendor_id,
+        "winner_amount":    detail.get("winner_amount"),
+        "total_bidders":    detail.get("total_bidders") or len(resolved_subs),
+        "url":              detail.get("url"),
+    }
+    upsert_intel_award(award, resolved_subs)
+    ctx["existing_keys"].add((portal_id, bid["numeric_bid_id"]))
+    ctx["new_awards"] += 1
+
+
+async def _discover_via_vendorline(live_page, months_back, since) -> dict[str, tuple[str, list]]:
     """
-    from scanner import PLANETBIDS_PORTALS
-    from db import (
-        fetch_all_vendors, upsert_vendor, add_vendor_alias,
-        fetch_existing_intel_keys, upsert_intel_award,
-    )
+    Use VendorLine to find closed/awarded flooring bids across every CA agency.
+    Returns ``{portal_id: (agency, [bid, ...])}`` in the shape the detail loop
+    expects. Runs in its own page inside the live (CAPTCHA-solved) context.
+    """
+    from datetime import timedelta
+    from scanner import _vendorline_awarded, SEARCH_KEYWORDS
+
+    if since is None and months_back:
+        since = (datetime.now().date() - timedelta(days=round(months_back * 30.44))).isoformat()
+
+    rows = await _vendorline_awarded(live_page.context, SEARCH_KEYWORDS, since_date=since)
+    by_portal: dict[str, tuple[str, list]] = {}
+    for r in rows:
+        by_portal.setdefault(r["portal_id"], (r["agency"], []))[1].append(r)
+    return by_portal
+
+
+async def run_intel_scan(live_page, discovery: str = "vendorline",
+                         months_back: int = 12, since: str | None = None) -> dict:
+    """
+    Find closed/awarded flooring bids, fetch submission tabulations, resolve
+    vendor names, and persist to Supabase. Reuses the live (CAPTCHA-solved)
+    browser session. Idempotent — skips bids already in ``bid_intel``.
+
+    discovery="vendorline" (default): one authenticated VendorLine search covers
+        every CA PlanetBids agency. ``months_back`` / ``since`` bound how far
+        back to look (default: last 12 months).
+    discovery="portals": legacy per-portal walk over ``PLANETBIDS_PORTALS``
+        (~37 agencies, no date bound). Fallback when VendorLine is unavailable.
+    """
+    from db import fetch_all_vendors, fetch_existing_intel_keys
 
     print("\n" + "=" * 60)
-    print("PLANETBIDS INTEL SCAN — awarded bids + submission tabulations")
+    print("INTEL SCAN — closed/awarded bids + submission tabulations")
     print("=" * 60)
 
-    existing_vendors = fetch_all_vendors()
-    existing_keys    = fetch_existing_intel_keys()
-    print(f"\n  {len(existing_vendors)} vendors in DB | {len(existing_keys)} awards already processed\n")
+    ctx = {
+        "existing_vendors": fetch_all_vendors(),
+        "existing_keys":    fetch_existing_intel_keys(),
+        "new_awards":       0,
+        "vendors_resolved": 0,
+        "vendors_created":  0,
+    }
+    print(f"\n  {len(ctx['existing_vendors'])} vendors in DB | "
+          f"{len(ctx['existing_keys'])} awards already processed\n")
 
     page = live_page
-    new_awards = 0
-    vendors_resolved = 0
-    vendors_created = 0
+    bids_by_portal: dict[str, tuple[str, list]] = {}
 
-    for portal_id, (agency, _county) in PLANETBIDS_PORTALS.items():
-        print(f"  → {agency}...")
-        awarded_bids = await _scan_awarded_portal(page, portal_id, agency)
+    if discovery == "vendorline":
+        try:
+            bids_by_portal = await _discover_via_vendorline(live_page, months_back, since)
+        except Exception as e:
+            print(f"  ⚠ VendorLine discovery failed ({e}) — falling back to portal walk")
+        if not bids_by_portal:
+            print("  ⚠ VendorLine returned nothing — falling back to portal walk")
+            discovery = "portals"
 
-        new_for_portal = [
-            b for b in awarded_bids
-            if (b["portal_id"], b["numeric_bid_id"]) not in existing_keys
+    if discovery == "portals":
+        from scanner import PLANETBIDS_PORTALS
+        for portal_id, (agency, _county) in PLANETBIDS_PORTALS.items():
+            print(f"  → {agency}...")
+            awarded = await _scan_awarded_portal(page, portal_id, agency)
+            if awarded:
+                bids_by_portal.setdefault(portal_id, (agency, []))[1].extend(awarded)
+
+    for portal_id, (agency, bids) in bids_by_portal.items():
+        new_bids = [
+            b for b in bids
+            if (portal_id, b["numeric_bid_id"]) not in ctx["existing_keys"]
         ]
+        if not new_bids:
+            continue
+        print(f"  → {agency}: {len(new_bids)} new → fetching detail pages...")
+        for bid in new_bids:
+            await _process_awarded_bid(page, portal_id, agency, bid, ctx)
 
-        if not new_for_portal:
-            continue  # portal already printed counts if relevant awards existed
-
-        print(f"      {len(new_for_portal)} new → fetching detail pages...")
-
-        for bid in new_for_portal:
-            print(f"        ↳ {bid['title'][:60]}")
-            detail = await _fetch_bid_detail(page, portal_id, bid["numeric_bid_id"])
-
-            # Resolve vendor names for all submissions
-            resolved_subs = []
-            for sub in detail.get("submissions", []):
-                raw = sub["raw_vendor_name"]
-                vendor = resolve_vendor(raw, existing_vendors)
-                if vendor:
-                    vendors_resolved += 1
-                    aliases = vendor.get("aliases") or []
-                    if raw.lower() not in [a.lower() for a in aliases]:
-                        add_vendor_alias(vendor["id"], raw)
-                        vendor.setdefault("aliases", []).append(raw)
-                    vendor_id = vendor["id"]
-                else:
-                    vendor_id = upsert_vendor(raw)
-                    vendors_created += 1
-                    existing_vendors.append({
-                        "id": vendor_id, "canonical_name": raw, "aliases": [],
-                    })
-                resolved_subs.append({**sub, "vendor_id": vendor_id})
-
-            # Resolve winner vendor
-            winner_name = detail.get("winner_name") or ""
-            winner_vendor = resolve_vendor(winner_name, existing_vendors) if winner_name else None
-            if winner_vendor:
-                winner_vendor_id = winner_vendor["id"]
-            elif winner_name:
-                winner_vendor_id = upsert_vendor(winner_name)
-                vendors_created += 1
-                existing_vendors.append({
-                    "id": winner_vendor_id, "canonical_name": winner_name, "aliases": [],
-                })
-            else:
-                # Derive winner from rank=1 submission
-                winner_sub = next(
-                    (s for s in resolved_subs if s.get("is_winner") or s.get("rank") == 1),
-                    None,
-                )
-                winner_vendor_id = winner_sub["vendor_id"] if winner_sub else None
-
-            award = {
-                "portal_id":        portal_id,
-                "numeric_bid_id":   bid["numeric_bid_id"],
-                "agency":           agency,
-                "title":            bid["title"],
-                "awarded_at":       detail.get("awarded_at"),
-                "winner_vendor_id": winner_vendor_id,
-                "winner_amount":    detail.get("winner_amount"),
-                "total_bidders":    detail.get("total_bidders") or len(resolved_subs),
-                "url":              detail.get("url"),
-            }
-
-            upsert_intel_award(award, resolved_subs)
-            existing_keys.add((portal_id, bid["numeric_bid_id"]))
-            new_awards += 1
-
-    print(f"\n  ✓ {new_awards} new awards processed")
-    print(f"  ✓ {vendors_resolved} vendor names resolved to existing records")
-    print(f"  ✓ {vendors_created} new vendors created")
+    print(f"\n  ✓ {ctx['new_awards']} new awards processed")
+    print(f"  ✓ {ctx['vendors_resolved']} vendor names resolved to existing records")
+    print(f"  ✓ {ctx['vendors_created']} new vendors created")
 
     return {
-        "new_awards":       new_awards,
-        "vendors_resolved": vendors_resolved,
-        "new_vendors":      vendors_created,
+        "new_awards":       ctx["new_awards"],
+        "vendors_resolved": ctx["vendors_resolved"],
+        "new_vendors":      ctx["vendors_created"],
     }
 
 

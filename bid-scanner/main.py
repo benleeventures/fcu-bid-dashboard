@@ -14,7 +14,10 @@ Usage:
   python main.py --source lausd         # LAUSD Facilities bid-date report only (public PDF)
   python main.py --source securebids    # SecureBids / Colbi CA agencies only (public API)
   python main.py --source ramp          # RAMP LA County only (data.lacity.org open-data feed)
-  python main.py --intel                # competitive intel: scan PlanetBids awarded bids (+ GC watchlist)
+  python main.py --intel                # competitive intel: VendorLine finds closed/awarded flooring bids (all CA agencies, last 12 mo), scrape tabulations (+ GC watchlist)
+  python main.py --intel --intel-months 24     # widen the look-back window
+  python main.py --intel --intel-since 2024-09-01   # explicit look-back start
+  python main.py --intel --intel-legacy         # skip VendorLine, walk the ~37 curated portals instead
   python main.py --gc-watchlist         # GC watchlist: seed list + harvest from intel data (no browser)
   python main.py --headless             # suppress browser windows
   python main.py --check-cookies        # just check if cookies are valid
@@ -32,6 +35,9 @@ INTEL   = "--intel" in sys.argv
 GC_WATCHLIST = "--gc-watchlist" in sys.argv
 RESUME  = "--resume" in sys.argv
 GIVE_UP = "--give-up" in sys.argv   # PlanetBids: exit 0 even if some portals stay blocked
+INTEL_LEGACY = "--intel-legacy" in sys.argv   # intel: per-portal walk instead of VendorLine discovery
+INTEL_MONTHS = next((int(sys.argv[i + 1]) for i, a in enumerate(sys.argv) if a == "--intel-months"), 12)
+INTEL_SINCE  = next((sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--intel-since"), None)
 
 try:
     from dotenv import load_dotenv
@@ -92,7 +98,12 @@ async def main():
             print("→ Press Enter here when done.")
             await asyncio.get_event_loop().run_in_executor(None, input, "")
 
-            summary = await run_intel_scan(live_page=page)
+            summary = await run_intel_scan(
+                live_page=page,
+                discovery="portals" if INTEL_LEGACY else "vendorline",
+                months_back=INTEL_MONTHS,
+                since=INTEL_SINCE,
+            )
 
             # Spec §7 — reuse the live session to scan general-construction
             # award winners for the GC watchlist.
