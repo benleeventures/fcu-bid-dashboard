@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import IntelTable from './IntelTable'
 import IntelOverview from './IntelOverview'
+import Nav from '../Nav'
 
 export const dynamic = 'force-dynamic'
 
@@ -182,31 +183,26 @@ export default async function IntelPage() {
   const agencies = Array.from(new Set(intel.map(b => b.agency).filter(Boolean))) as string[]
 
   return (
-    <main style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 8,
-              background: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'IBM Plex Mono', fontWeight: 500, fontSize: 14, color: 'var(--charcoal)'
-            }}>FCU</div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.3px' }}>Competitive Intel</h1>
+    <>
+      <Nav active="intel" />
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
+        {/* Header */}
+        <header style={{
+          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: 8, marginBottom: 32,
+        }}>
+          <div>
+            <h1 style={{ fontSize: 28, letterSpacing: '-0.4px' }}>Competitive Intel</h1>
+            <p style={{ color: 'var(--gray)', marginTop: 4, fontFamily: 'IBM Plex Mono', fontSize: 11 }}>
+              PlanetBids — awarded bids · submission tabulations · vendor analysis
+            </p>
           </div>
-          <p style={{ color: 'var(--gray)', marginTop: 4, fontFamily: 'IBM Plex Mono', fontSize: 11 }}>
-            PlanetBids — awarded bids · submission tabulations · vendor analysis
-          </p>
-        </div>
-        <div style={{ textAlign: 'right', color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
-          <a href="/" style={{ color: 'var(--gold-light)', textDecoration: 'none' }}>← Bid Dashboard</a>
           {intel.length > 0 && (
-            <div style={{ marginTop: 4 }}>
+            <div style={{ color: 'var(--gray)', fontSize: 11, fontFamily: 'IBM Plex Mono' }}>
               {intel.length} awarded bids · {agencies.length} agencies
             </div>
           )}
-        </div>
-      </div>
+        </header>
 
       {intel.length === 0 ? (
         <div style={{
@@ -223,6 +219,7 @@ export default async function IntelPage() {
           <IntelTable bids={intel} agencies={agencies} />
         </>
       )}
-    </main>
+      </main>
+    </>
   )
 }
