@@ -793,29 +793,50 @@ async def _vendorline_login(page) -> bool:
 
 async def _vl_api_search(page, body: dict, token_box: dict) -> dict:
     """One `POST /api/search`, run inside the page. Re-mints the token and
-    retries once on 401. Returns the parsed JSON (``{}`` on hard failure)."""
+    retries once on 401. Returns the parsed JSON (``{}`` on hard failure).
+
+    The in-page fetch is bounded by an AbortController (30s) — a stalled or
+    throttled request can otherwise hang the whole scan, since page.evaluate has
+    no timeout. (Don't wrap the evaluate itself in asyncio.wait_for — cancelling
+    a Playwright call mid-flight wedges the CDP connection.)"""
     js = """async ([token, body]) => {
-        const r = await fetch("%s", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "PBToken " + token,
-                "Accept": "*/*",
-            },
-            body: JSON.stringify(body),
-        });
-        let j = null;
-        try { j = await r.json(); } catch (e) { j = null; }
-        return { status: r.status, body: j };
+        const ctl = new AbortController();
+        const tid = setTimeout(() => ctl.abort(), 30000);
+        try {
+            const r = await fetch("%s", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "PBToken " + token,
+                    "Accept": "*/*",
+                },
+                body: JSON.stringify(body),
+                signal: ctl.signal,
+            });
+            let j = null;
+            try { j = await r.json(); } catch (e) { j = null; }
+            return { status: r.status, body: j };
+        } catch (e) {
+            return { status: -1, body: null, error: String(e) };
+        } finally {
+            clearTimeout(tid);
+        }
     }""" % VENDORLINE_API
 
     for attempt in (1, 2):
-        res = await page.evaluate(js, [token_box.get("token", ""), body])
+        try:
+            res = await page.evaluate(js, [token_box.get("token", ""), body])
+        except Exception as e:
+            print(f"    ⚠ VendorLine /search evaluate failed: {type(e).__name__}")
+            res = {"status": -1, "body": None}
         if res["status"] == 200 and res["body"]:
             return res["body"]
-        if res["status"] == 401 and attempt == 1:
-            # token expired mid-scan — reload the app to mint a fresh one
-            await page.goto(VENDORLINE_APP, wait_until="domcontentloaded", timeout=30000)
+        if res["status"] in (401, -1) and attempt == 1:
+            # token expired / request stalled mid-scan — reload to recover
+            try:
+                await page.goto(VENDORLINE_APP, wait_until="domcontentloaded", timeout=30000)
+            except Exception:
+                pass
             await asyncio.sleep(6)
             continue
         print(f"    ⚠ VendorLine /search returned {res['status']}")
@@ -923,6 +944,138 @@ async def _search_vendorline(browser_context, keywords: list[str]) -> list[dict]
         rel = sum(1 for b in all_bids if b["is_relevant"])
         print(f"  ✓ {len(all_bids)} unique open bids, {rel} flooring-relevant")
         return all_bids
+
+    finally:
+        page.remove_listener("response", _on_response)
+        await page.close()
+
+
+# VendorLine — closed / awarded bids for the competitive-intel scanner
+# ---------------------------------------------------------------------------
+#
+# Same authenticated `/api/search`, but `stages` = closed / recommended / awarded
+# / contract instead of open. Returns the (portal_id, bid_id) pairs the intel
+# scanner needs so it can pull submission tabulations from the public PlanetBids
+# detail page — across EVERY CA agency, not just the ~37 in PLANETBIDS_PORTALS.
+#
+# Only PlanetBids-native rows come back (`bid_source == 0`, non-null company_id).
+# The externally-aggregated rows (`bid_source == 1`) have no company_id and no
+# PlanetBids detail page, so there's nothing to scrape — they're dropped here.
+
+# stage_id: 3 open · 4 closed/under-eval · 5 recommendation of award · 6 awarded
+# · 7 contract. Submissions are public from bid opening on, so 4-7 all carry a
+# bidder tabulation; 6-7 add the confirmed winner.
+VENDORLINE_INTEL_STAGES = (4, 5, 6, 7)
+
+
+def _vl_awarded_row(rec: dict, cutoff) -> dict | None:
+    """Map one `/api/search` record to an intel bid dict, or None if it should
+    be skipped (external aggregate, missing ids, not flooring, before cutoff).
+    Pure — unit-tested in test_vendorline_awarded.py."""
+    if rec.get("bid_source") != 0:
+        return None                          # external aggregate — no detail page
+    cid = rec.get("company_id")
+    bid_id = str(rec.get("bid_id") or "")
+    if not cid or not bid_id:
+        return None
+    title = (rec.get("project") or "").strip()
+    if not title or not _is_relevant(title):
+        return None
+    posted = _parse_date(str(rec.get("posted_date") or "")[:10])
+    if cutoff and posted and posted < cutoff:
+        return None
+    due = _parse_date(str(rec.get("due_date") or "")[:10])
+    return {
+        "portal_id": str(cid),
+        "numeric_bid_id": bid_id,
+        "title": title,
+        "agency": (rec.get("agency") or "").strip(),
+        "stage_id": rec.get("stage_id"),
+        "posted_date": posted.isoformat() if posted else None,
+        "due_date": due.isoformat() if due else None,
+        "url": VENDORLINE_DETAIL.format(cid=cid, bid=bid_id),
+    }
+
+
+async def _vendorline_awarded(
+    browser_context,
+    keywords: list[str],
+    since_date: str | None = None,
+    stages: tuple[int, ...] = VENDORLINE_INTEL_STAGES,
+) -> list[dict]:
+    """
+    Discover closed / awarded California bids across every PlanetBids agency.
+
+    Returns dicts shaped for ``intel_scanner`` — ``{portal_id, numeric_bid_id,
+    title, agency, stage_id, posted_date, due_date, url}`` — deduped on
+    ``(portal_id, numeric_bid_id)``. ``since_date`` (ISO ``YYYY-MM-DD``) drops
+    anything posted earlier; there is no server-side date filter so it's applied
+    client-side after pagination.
+    """
+    print("\nVendorLine — discovering closed/awarded bids (all PlanetBids CA agencies)...")
+    if since_date:
+        print(f"    posted on/after {since_date}")
+
+    page = await browser_context.new_page()
+    token_box: dict = {}
+
+    async def _on_response(response):
+        if "/api/oauth/token-exchange" in response.url or response.url.endswith("/oauth/refresh/"):
+            try:
+                data = await response.json()
+                if data.get("access_token"):
+                    token_box["token"] = data["access_token"]
+            except Exception:
+                pass
+
+    page.on("response", _on_response)
+    cutoff = _parse_date(since_date) if since_date else None
+
+    try:
+        if not await _vendorline_login(page):
+            return []
+        await asyncio.sleep(5)
+        if not token_box.get("token"):
+            print("    ⚠ VendorLine login OK but no access token captured — skipping")
+            return []
+
+        by_key: dict[str, dict] = {}
+        for keyword in keywords:
+            records: list[dict] = []
+            page_num = 1
+            while page_num <= 20:
+                payload = {
+                    "search_type": 4,
+                    "stages": list(stages),
+                    "bid_type": "0",
+                    "keyword": keyword,
+                    "states": [VENDORLINE_CA_STATE_ID],
+                    "page": page_num,
+                    "ai_status": "all",
+                }
+                data = await _vl_api_search(page, payload, token_box)
+                rows = data.get("data") or []
+                records.extend(rows)
+                total_pages = (data.get("meta") or {}).get("total_pages") or 1
+                if page_num >= total_pages or not rows:
+                    break
+                page_num += 1
+
+            kept = 0
+            for rec in records:
+                bid = _vl_awarded_row(rec, cutoff)
+                if bid is None:
+                    continue
+                key = f"{bid['portal_id']}-{bid['numeric_bid_id']}"
+                if key in by_key:
+                    continue
+                by_key[key] = bid
+                kept += 1
+            print(f"  → {keyword!r}: {len(records)} hits, {kept} new PlanetBids-native")
+
+        out = list(by_key.values())
+        print(f"  ✓ {len(out)} unique closed/awarded flooring bids to check")
+        return out
 
     finally:
         page.remove_listener("response", _on_response)

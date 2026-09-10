@@ -145,10 +145,21 @@ checkout keeps that), and pull with `--ff-only origin main` followed by `;`
   copies it across if `~/fcu-cron` doesn't already have one.
 
 ### Phase 4: Intelligence
-- [ ] Bid results tracking and logging
+- [x] Bid results tracking and logging — `--intel` scrapes PlanetBids submission
+      tabulations + award winner/amount into `bid_intel` / `bid_intel_submissions`
+- [x] VendorLine-driven discovery for `--intel` — one authenticated search finds
+      closed/awarded flooring bids across **every** CA PlanetBids agency (default
+      look-back 12 mo; `--intel-months N` / `--intel-since YYYY-MM-DD`). Legacy
+      ~37-portal walk kept as `--intel-legacy` fallback. Still one manual CAPTCHA
+      solve per run for the detail pages.
 - [ ] Competitive intelligence dashboard (win/loss by agency, job type)
 - [ ] Go/no-go scoring model
 - [ ] Markup recommendation engine
+
+**Intel backfill plan:** run `--intel` in look-back chunks — `--intel-months 12`
+first, then `--intel-since`/`--intel-months` for the 12–24 mo window on the next
+run, etc. Idempotent (skips `(portal_id, bid_id)` already in `bid_intel`), so
+re-runs are cheap.
 
 ### GC Watchlist (spec §7) — ✅ Session 4 (2026-08)
 
@@ -238,7 +249,8 @@ a callout naming the source when retrieval isn't available.
 |--------|--------|-------|
 | SAM.gov | ✅ Active | Federal; NAICS 238330 + CA place-of-performance. Now runs through the 4-county geo gate — out-of-area federal work is dropped |
 | VendorLine | ✅ Active (2026-09) | **Primary PlanetBids path — runs in the scheduled full scan, no CAPTCHA.** PlanetBids "Pro" plan (`VENDORLINE_EMAIL`/`_PASSWORD`, account `info@floorcoveringunlimited.com`, ~$349/yr, expires 2027-06). One authenticated `POST /api/search` per keyword covers **every** PlanetBids CA agency + the external portals VendorLine aggregates (`bid_source` 1). `_search_vendorline`: headless browser login → lift the ~5-min OAuth `access_token` from the `token-exchange` response → run all `/api/search` calls *inside the page* (Cloudflare blocks a raw client); 401 → re-land on `/app/home` for a fresh token, retry once. `states:[52]` (CA) then the 4-county geo gate narrows. County stamped from `_VL_COUNTY_BY_CID` (borrowed from `PLANETBIDS_PORTALS`; portal ID == `company_id`), else inferred from agency name. Per-bid detail URL = `vendors.planetbids.com/portal/{cid}/bo/bo-detail/{bid}` (unlocks PlanetBids doc mirroring — was Phase 2). Live 2026-09: 7 keywords → ~69 raw → 38 CA bids |
-| PlanetBids (legacy per-portal) | ⚠ Manual/backup | Old per-portal walk. `--source planetbids`, user solves one CAPTCHA. ~37 portals, each county-tagged (`PLANETBIDS_PORTALS`; `PLANETBIDS_SKIP` excludes chronically-broken ones). Per-portal outcome in `output/planetbids_state.json`; WAF block mid-run → `--source planetbids --resume` (auto-loops via `rerun_planetbids.sh`) or `--give-up`. **No longer in the daily scan** — kept for the intel scanner (`--intel`, live_page) and as a fallback if VendorLine access lapses |
+| PlanetBids (legacy per-portal) | ⚠ Manual/backup | Old per-portal walk. `--source planetbids`, user solves one CAPTCHA. ~37 portals, each county-tagged (`PLANETBIDS_PORTALS`; `PLANETBIDS_SKIP` excludes chronically-broken ones). Per-portal outcome in `output/planetbids_state.json`; WAF block mid-run → `--source planetbids --resume` (auto-loops via `rerun_planetbids.sh`) or `--give-up`. **No longer in the daily scan** — kept as `--intel-legacy` and as a fallback if VendorLine access lapses |
+| Competitive intel (`--intel`) | ✅ Active (2026-09) | VendorLine `_vendorline_awarded` (stages 4-7, `bid_source:0` only, `_is_relevant` titles, look-back default 12 mo) discovers closed/awarded flooring bids across every CA agency → `intel_scanner._fetch_bid_detail` scrapes the public `bo-detail` Submissions/Awards tabs (one manual CAPTCHA solve, reused session) → `bid_intel` + `bid_intel_submissions` + `vendors` (name-normalized). External `bid_source:1` rows have no `company_id`/detail page — skipped. Award prose `"awarded to <V> for $<amt>"` parsed authoritatively (overrides low-bid guess) |
 | BidNet Direct | ⚠ Partial | Doc download works; public listing page blocked by bot detection |
 | Cal eProcure | ✅ Active | Statewide — most rows land as `geo_status=unknown` and get flagged for county check |
 | OpenGov | ⚠ Manual | 5 SoCal portals (NorCal portals removed 2026-08). Run `--source opengov` on demand |
