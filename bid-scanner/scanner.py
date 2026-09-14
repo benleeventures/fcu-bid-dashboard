@@ -737,9 +737,9 @@ async def _search_planetbids(browser_context, keywords: list[str], live_page=Non
                 "title": title,
                 "agency": agency,
                 "state": "California",
-                "published_date": published.isoformat() if published else None,
+                "published_date": published,
                 "published_raw": str(posted_raw),
-                "due_date": due_date.isoformat() if due_date else None,
+                "due_date": due_date,
                 "due_date_raw": str(due_raw),
                 "is_relevant": _is_relevant(title, (
                     attrs.get("description") or attrs.get("scope") or
@@ -959,9 +959,9 @@ async def _search_vendorline(browser_context, keywords: list[str]) -> list[dict]
                     "title": title,
                     "agency": (rec.get("agency") or "").strip(),
                     "state": "California",
-                    "published_date": posted.isoformat() if posted else None,
+                    "published_date": posted,
                     "published_raw": str(rec.get("posted_date") or ""),
-                    "due_date": due.isoformat() if due else None,
+                    "due_date": due,
                     "due_date_raw": str(rec.get("due_date") or ""),
                     "is_relevant": _is_relevant(title),
                     "search_keyword": next(
