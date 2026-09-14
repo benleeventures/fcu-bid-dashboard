@@ -40,6 +40,19 @@ export async function updateBidStatus(
   }
 }
 
+export async function promoteBid(bidId: string): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const { error } = await sb()
+      .from('bids')
+      .update({ is_relevant: true, relevance_reason: null })
+      .eq('bid_id', bidId)
+    if (error) return { ok: false, error: error.message }
+    return { ok: true }
+  } catch (err: any) {
+    return { ok: false, error: err.message }
+  }
+}
+
 export async function updateBidFavorite(
   bidId: string,
   isFavorite: boolean,
