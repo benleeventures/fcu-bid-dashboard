@@ -1903,15 +1903,17 @@ def _lausd_field(pattern: str, text: str, default: str = "") -> str:
 def _fetch_lausd_fsd_sync() -> list[dict]:
     """Download + parse the LAUSD FSD bid-date report PDF. Pure HTTP + pdfplumber."""
     import pdfplumber
+    from curl_cffi import requests as cffi_requests
 
-    # procurement.lausd.org serves a stub/challenge page to bare user-agents —
-    # send a full browser header set so the link is actually in the response.
+    # procurement.lausd.org sits behind Cloudflare Bot Management — a spoofed
+    # header set alone gets a 403 now, so impersonate Chrome's TLS fingerprint
+    # too (curl_cffi), not just its User-Agent string.
     headers = {
         "User-Agent": USER_AGENT,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
     }
-    page = requests.get(LAUSD_BIDDOCS_URL, headers=headers, timeout=25)
+    page = cffi_requests.get(LAUSD_BIDDOCS_URL, headers=headers, timeout=25, impersonate="chrome124")
     page.raise_for_status()
     m = re.search(r'href="(https://media\.edlio\.net/\S+?Bid%20Report\.pdf)"', page.text, re.I) \
         or re.search(r'href="([^"]+)"[^>]*>\s*Updated Bid Report', page.text, re.I)
@@ -1921,7 +1923,7 @@ def _fetch_lausd_fsd_sync() -> list[dict]:
         )
     pdf_url = m.group(1).replace("&amp;", "&")
 
-    pdf_resp = requests.get(pdf_url, headers=headers, timeout=45)
+    pdf_resp = cffi_requests.get(pdf_url, headers=headers, timeout=45, impersonate="chrome124")
     pdf_resp.raise_for_status()
     tmp = os.path.join(os.path.dirname(__file__), "output", "lausd_bidreport.pdf")
     os.makedirs(os.path.dirname(tmp), exist_ok=True)
