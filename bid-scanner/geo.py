@@ -4,8 +4,9 @@ FCU Bid Scanner — geographic + agency-type classification.
 Single source of truth for the spec's two gating filters:
 
   §1  Geographic — hard boundary. In scope: Los Angeles, Orange, Ventura,
-      San Diego counties only. Everything else (other CA counties, other
-      states, federal work outside the four counties) does not appear.
+      Riverside, San Bernardino, San Diego counties. Everything else (other
+      CA counties, other states, federal work outside these six) does not
+      appear.
 
   §2  Agency type — tag each bid so the tracker can prioritise the agencies
       that bid year-round and hold K-12 (dormant until February) separately.
@@ -17,7 +18,7 @@ Every scanner source already hard-filters to California before we get here
 portals), so the real question is *which* California county — not CA vs.
 non-CA. `classify_location` returns one of:
 
-    "in"       place of performance is in one of the four counties
+    "in"       place of performance is in one of the in-scope counties
     "out"      place of performance is elsewhere in CA / another state —
                drop it, it must not appear
     "unknown"  the listing names no city we recognise — keep it, flag it,
@@ -30,10 +31,13 @@ The primary signal is the `agency` string, which is almost always
 
 import re
 
-FOUR_COUNTIES = ("Los Angeles", "Orange", "Ventura", "San Diego")
+# Name is legacy (used to be exactly four) — now six counties. Left unrenamed
+# since other modules import it by this name.
+FOUR_COUNTIES = ("Los Angeles", "Orange", "Ventura", "Riverside",
+                  "San Bernardino", "San Diego")
 
 # ---------------------------------------------------------------------------
-# Incorporated cities of the four in-scope counties
+# Incorporated cities of the in-scope counties
 # ---------------------------------------------------------------------------
 
 _LA_CITIES = {
@@ -82,10 +86,29 @@ _SD_CITIES = {
     "vista",
 }
 
+_RIVERSIDE_CITIES = {
+    "riverside", "moreno valley", "corona", "temecula", "murrieta",
+    "menifee", "hemet", "perris", "eastvale", "jurupa valley",
+    "lake elsinore", "palm springs", "palm desert", "cathedral city",
+    "indio", "coachella", "banning", "beaumont", "indian wells", "la quinta",
+    "rancho mirage", "desert hot springs", "norco", "wildomar", "calimesa",
+    "canyon lake",
+}
+
+_SAN_BERNARDINO_CITIES = {
+    "san bernardino", "fontana", "rancho cucamonga", "ontario", "rialto",
+    "victorville", "hesperia", "chino", "chino hills", "upland", "redlands",
+    "colton", "yucaipa", "montclair", "highland", "apple valley", "adelanto",
+    "barstow", "big bear lake", "loma linda", "needles", "twentynine palms",
+    "yucca valley", "grand terrace",
+}
+
 COUNTY_CITIES = {
     "Los Angeles": _LA_CITIES,
     "Orange": _OC_CITIES,
     "Ventura": _VENTURA_CITIES,
+    "Riverside": _RIVERSIDE_CITIES,
+    "San Bernardino": _SAN_BERNARDINO_CITIES,
     "San Diego": _SD_CITIES,
 }
 
@@ -96,6 +119,7 @@ _AMBIGUOUS_CITIES = {
     "orange", "vista", "bell", "commerce", "industry", "vernon", "avalon",
     "paramount", "ventura", "san marcos", "la verne", "signal hill",
     "del mar", "lake forest", "santee", "brea", "ojai", "stanton",
+    "riverside", "highland", "norco",
 }
 
 # Well-known school-district abbreviations -> county. Only unambiguous ones;
@@ -176,6 +200,10 @@ _BAND_C_CITIES = frozenset({
     "anaheim", "placentia", "yorba linda", "stanton", "garden grove", "orange",
     "villa park", "santa ana", "westminster", "fountain valley", "los alamitos",
     "seal beach", "midway city",
+    # Western Inland Empire — closest Riverside/San Bernardino county cities
+    "ontario", "rancho cucamonga", "fontana", "chino", "chino hills",
+    "upland", "montclair", "rialto", "colton", "san bernardino", "redlands",
+    "highland", "loma linda", "grand terrace", "riverside", "corona", "norco",
 })
 
 # Deep south Orange County — kept explicit so Orange County's default (C) does
@@ -192,6 +220,8 @@ _COUNTY_DEFAULT_BAND = {
     "Ventura": "B",
     "Los Angeles": "C",
     "Orange": "C",
+    "Riverside": "D",
+    "San Bernardino": "D",
     "San Diego": "D",
 }
 
@@ -234,30 +264,27 @@ _OUT_OF_SCOPE_MARKERS = {
     "stockton", "modesto", "turlock", "tracy", "manteca", "lodi", "merced",
     "fresno", "clovis", "visalia", "tulare", "hanford", "madera",
     "bakersfield", "kern county", "delano",
-    # Central Coast (outside 4)
+    # Central Coast (outside scope)
     "santa barbara", "santa maria", "lompoc", "san luis obispo",
     "paso robles", "monterey", "salinas", "seaside", "santa cruz",
     "watsonville", "gilroy", "morgan hill", "hollister",
-    # Inland Empire
-    "riverside", "moreno valley", "corona", "temecula", "murrieta",
-    "menifee", "hemet", "perris", "eastvale", "jurupa valley",
-    "lake elsinore", "palm springs", "palm desert", "cathedral city",
-    "indio", "coachella", "banning", "beaumont", "riverside county",
-    "san bernardino", "fontana", "rancho cucamonga", "ontario", "rialto",
-    "victorville", "hesperia", "chino", "chino hills", "upland", "redlands",
-    "colton", "yucaipa", "montclair", "highland", "apple valley",
-    "san bernardino county", "adelanto", "barstow",
     # Imperial (D11 with SD, but out of scope)
     "el centro", "calexico", "brawley", "imperial county",
     # Far north
     "redding", "chico", "eureka", "shasta county",
 }
 
-# Any "<name> County" that isn't one of the four is out of scope.
-_IN_SCOPE_COUNTY_PHRASES = {
-    "los angeles county", "la county", "orange county", "ventura county",
-    "san diego county",
+# Any "<name> County" that isn't in scope is out of scope.
+_COUNTY_PHRASE_TO_COUNTY = {
+    "los angeles county": "Los Angeles",
+    "la county": "Los Angeles",
+    "orange county": "Orange",
+    "ventura county": "Ventura",
+    "riverside county": "Riverside",
+    "san bernardino county": "San Bernardino",
+    "san diego county": "San Diego",
 }
+_IN_SCOPE_COUNTY_PHRASES = set(_COUNTY_PHRASE_TO_COUNTY)
 _COUNTY_PHRASE_RE = re.compile(r"\b([a-z][a-z .'-]+?) county\b")
 
 # ---------------------------------------------------------------------------
@@ -346,7 +373,8 @@ _AGENCY_TYPE_RULES = [
         r"library district|cemetery district|resource conservation", re.I)),
     ("county", re.compile(
         r"county of |\bLA County\b|los angeles county|orange county|"
-        r"ventura county|san diego county|county sanitation|county public works",
+        r"ventura county|riverside county|san bernardino county|"
+        r"san diego county|county sanitation|county public works",
         re.I)),
     ("state", re.compile(
         r"department of |\bcaltrans\b|\bCHP\b|\bDMV\b|\bDGS\b|\bDVBE\b|"
@@ -420,11 +448,8 @@ def classify_location(title: str, agency: str, state: str | None = None,
             return {"county": county, "geo_status": "in"}
 
     # 1. Explicit county phrase anywhere
-    for phrase in _IN_SCOPE_COUNTY_PHRASES:
+    for phrase, county in _COUNTY_PHRASE_TO_COUNTY.items():
         if phrase in blob:
-            county = "Los Angeles" if phrase in ("los angeles county", "la county") else \
-                     "Orange" if phrase == "orange county" else \
-                     "Ventura" if phrase == "ventura county" else "San Diego"
             return {"county": county, "geo_status": "in"}
 
     # 1b. Names a US state / territory other than California, or a well-known
@@ -444,7 +469,7 @@ def classify_location(title: str, agency: str, state: str | None = None,
         county = _county_for_city(place, explicit_municipal=True)
         if county:
             return {"county": county, "geo_status": "in"}
-        # extracted a real place that isn't in our four counties
+        # extracted a real place that isn't in our in-scope counties
         if place in _OUT_OF_SCOPE_MARKERS:
             return {"county": None, "geo_status": "out"}
 
@@ -502,6 +527,8 @@ PORTAL_COUNTY = {
     "la county public works": "Los Angeles",
     "county of orange": "Orange",
     "county of ventura": "Ventura",
+    "county of riverside": "Riverside",
+    "county of san bernardino": "San Bernardino",
     "county of san diego": "San Diego",
 }
 

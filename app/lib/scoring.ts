@@ -82,6 +82,10 @@ const BAND_C = new Set([
   'anaheim', 'placentia', 'yorba linda', 'stanton', 'garden grove', 'orange',
   'villa park', 'santa ana', 'westminster', 'fountain valley', 'los alamitos',
   'seal beach', 'midway city',
+  // Western Inland Empire — closest Riverside/San Bernardino county cities
+  'ontario', 'rancho cucamonga', 'fontana', 'chino', 'chino hills', 'upland',
+  'montclair', 'rialto', 'colton', 'san bernardino', 'redlands', 'highland',
+  'loma linda', 'grand terrace', 'riverside', 'corona', 'norco',
 ])
 const BAND_D = new Set([
   'irvine', 'tustin', 'costa mesa', 'newport beach', 'newport coast', 'lake forest',
@@ -94,6 +98,8 @@ const COUNTY_DEFAULT_BAND: Record<string, 'A' | 'B' | 'C' | 'D'> = {
   Ventura: 'B',
   'Los Angeles': 'C',
   Orange: 'C',
+  Riverside: 'D',
+  'San Bernardino': 'D',
   'San Diego': 'D',
 }
 const BAND_SCORE = { A: 60, B: 48, C: 32, D: 16 } as const

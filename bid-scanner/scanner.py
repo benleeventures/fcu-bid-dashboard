@@ -1226,8 +1226,11 @@ async def _search_samgov(keywords: list[str]) -> list[dict]:
                         break
 
                 # Place of performance — used by geo.py to keep only 4-county
-                # federal work. SAM cards sometimes show a "City, CALIFORNIA ZIP"
-                # line; capture whatever we can.
+                # federal work. SAM cards sometimes show a "City, STATE ZIP"
+                # line; capture whatever we can, any state (the search's own
+                # sfm[performance][state][0]=CA facet is not reliably
+                # enforced by SAM, so non-CA cards do slip into these
+                # results and must be catchable downstream).
                 pop_raw = ""
                 for i, line in enumerate(lines):
                     if "Place of Performance" in line:
@@ -1235,15 +1238,25 @@ async def _search_samgov(keywords: list[str]) -> list[dict]:
                         break
                 if not pop_raw:
                     m = _re.search(
-                        r"([A-Z][A-Za-z .'-]+,\s*(?:CALIFORNIA|CA)\b[^\n]*)", card_text)
+                        r"([A-Z][A-Za-z .'-]+,\s*[A-Za-z]{2,}\b[^\n]*)", card_text)
                     if m:
                         pop_raw = m.group(1).strip()
 
+                # Leave `state` unset rather than assumed. This used to be
+                # hardcoded to "California" for every result, which silently
+                # disabled geo.classify_location's state-based out-of-state
+                # gate (it only fires when `state` is explicitly a non-CA
+                # value) for every single SAM.gov bid — the reason clearly
+                # out-of-state cards (SAM's own place-of-performance=CA facet
+                # is not reliably enforced) were making it all the way
+                # through. classify_location's text-based matching over
+                # title + agency + pop_raw is the real backstop here; feeding
+                # it a fabricated "California" only masked the problem.
                 ca_bids.append({
                     "bid_id": f"SAM-{notice_id}",
                     "title": title,
                     "agency": agency,
-                    "state": "California",
+                    "state": None,
                     "pop_raw": pop_raw,
                     "published_date": _parse_date(pub_raw),
                     "published_raw": pub_raw,
@@ -1387,7 +1400,7 @@ async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 OPENGOV_PORTALS = {
-    # Four-county municipalities only (spec §1). NorCal portals removed
+    # In-scope municipalities only (spec §1). NorCal portals removed
     # 2026-08 — Sacramento / San Francisco / Alameda County are out of area.
     "cityofbell":       "City of Bell",
     "redondo":          "Redondo Beach",
@@ -2073,7 +2086,7 @@ async def _search_ramp(keywords: list[str]) -> list[dict]:
 # Same vendor as Quality Bidders, different product. Public JSON API, no login
 # (colbisecurebids.com just redirects here). SecureBids hosts agencies in ~10
 # states, so filter to California (stateId 5) at the API and let the geo gate
-# narrow to the four in-scope counties. Auto-discovers agencies each run —
+# narrow to the in-scope counties. Auto-discovers agencies each run —
 # no hardcoded portal list to maintain.
 
 SECUREBIDS_API = "https://api.securebids.com/api/pub"
@@ -2082,9 +2095,16 @@ SECUREBIDS_CA_STATE_ID = 5
 
 # CA region id -> county, for the regions we cover. Region id is often 0 on the
 # agency record (then the geo gate classifies by agency name instead).
-SECUREBIDS_REGION_COUNTY = {2: "Los Angeles", 1: "Orange", 5: "San Diego"}
-# CA regions definitively outside the four counties — skip these agencies.
-SECUREBIDS_OUT_REGIONS = {4, 6, 7, 8, 9, 10, 11}
+# Confirmed by sampling the live agency list (2026-09-14): region 4 contains
+# Needles USD (San Bernardino Co.), region 6 contains Nuview Union SD and
+# "Riverside County Regional Park and Open-Space District" (Riverside Co.).
+SECUREBIDS_REGION_COUNTY = {
+    2: "Los Angeles", 1: "Orange", 6: "Riverside", 4: "San Bernardino",
+    5: "San Diego",
+}
+# CA regions definitively outside scope — skip these agencies before they're
+# even fetched (Sacramento/Central Valley, Bay Area, far north).
+SECUREBIDS_OUT_REGIONS = {7, 8, 9, 10, 11}
 
 
 def _fetch_securebids_sync() -> list[dict]:
@@ -2241,19 +2261,20 @@ SCBPR_BASE = "https://www.southerncaliforniabuildersplanroom.com"
 # Caltrans CCOP — CA Dept of Transportation contracting opportunities
 # ---------------------------------------------------------------------------
 
-# Spec §1: only the SoCal districts covering the four counties —
-# D7 (LA + Ventura), D12 (Orange), D11 (San Diego + Imperial).
+# Spec §1: only the SoCal districts covering the in-scope counties —
+# D7 (LA + Ventura), D8 (San Bernardino + Riverside), D12 (Orange),
+# D11 (San Diego + Imperial).
 # Imperial-County projects in D11 are dropped later by geo.classify_location.
-CCOP_URL = "https://ccop.dot.ca.gov/onestopshop/7,11,12"
+CCOP_URL = "https://ccop.dot.ca.gov/onestopshop/7,8,11,12"
 
 
 async def _search_ccop(page, keywords: list[str]) -> list[dict]:
     """
     Scrape Caltrans Contracting Opportunities Portal — SoCal districts only
-    (D7 / D11 / D12). Public, no auth, all projects load on one page.
+    (D7 / D8 / D11 / D12). Public, no auth, all projects load on one page.
     Filters locally by flooring keywords.
     """
-    print("\nSearching Caltrans CCOP (SoCal districts 7/11/12)...")
+    print("\nSearching Caltrans CCOP (SoCal districts 7/8/11/12)...")
     all_bids: list[dict] = []
 
     try:
@@ -2529,7 +2550,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
 
     # --- Geographic + agency-type gate (spec §1 / §2) ---------------------
     # Enrich every bid with county / geo_status / agency_type / is_k12, then
-    # drop anything whose place of performance is outside the four in-scope
+    # drop anything whose place of performance is outside the in-scope
     # counties (LA, Orange, Ventura, San Diego). "unknown" is kept and flagged
     # for Robert to confirm during qualification — never silently dropped.
     from geo import enrich
