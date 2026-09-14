@@ -16,6 +16,12 @@ OUT_OF_STATE = [
     ("Barracks Renovation Flooring", "US Army", "California", "Fort Bragg, North Carolina"),
     ("Resilient Flooring", "", "TX", ""),
     ("VCT Replacement", "", "California", "Seattle, Washington 98101"),
+    # Regression: SAM.gov scraper used to hardcode state="California" on every
+    # result regardless of actual place of performance, which disabled this
+    # exact check. state is now None (unknown) when the scraper can't tell —
+    # this case must still be caught by the title/agency text match.
+    ("Building 700 (TRADOC Band) Carpet Replacement Project at Fort Eustis, Virginia",
+     "Dept of Defense", None, ""),
 ]
 
 IN_OR_UNKNOWN = [
@@ -25,6 +31,9 @@ IN_OR_UNKNOWN = [
     ("Gym Floor", "City of San Diego", "California", "San Diego, CA 92101"),
     ("VCT Install", "City of Orange", "California", ""),
     ("Flooring", "Ventura County Community College District", "California", ""),
+    ("Flooring Replacement", "County of Riverside", "California", ""),
+    ("Carpet Install", "City of Ontario", "California", ""),
+    ("VCT Replacement", "County of San Bernardino", "California", ""),
     # genuinely ambiguous CA — stays "unknown", not "out"
     ("District-wide Flooring Replacement", "Springfield School District", "California", ""),
 ]
