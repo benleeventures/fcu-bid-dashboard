@@ -26,7 +26,7 @@ import asyncio
 import os
 import re
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import quote, urljoin, urlparse
 
 from intel_scanner import PLANETBIDS_BASE, _warm_portal
 
@@ -130,6 +130,12 @@ def _walk_json_for_docs(node, acc: list[dict]):
                 if isinstance(flat.get(k), str) and flat[k].startswith("http"):
                     url = flat[k]
                     break
+            if not url and flat.get("serverFullPath") and flat.get("serverFilename"):
+                # PlanetBids serves the file straight off its file server —
+                # no /papi/ download endpoint exists for these ids.
+                host_path = str(flat["serverFullPath"]).strip("/")
+                fname = quote(str(flat["serverFilename"]))
+                url = f"https://{host_path}/{fname}"
             acc.append({
                 "name": name,
                 "id": flat.get("documentId") or flat.get("bidDocumentId") or flat.get("id"),
@@ -236,9 +242,6 @@ async def _fetch_bid_documents(page, portal_id: str, numeric_bid_id: str) -> lis
     for d in captured:
         if d.get("url"):
             _add(d["url"], d.get("name") or "")
-        elif d.get("id"):
-            # PlanetBids serves a bid document by id off the papi base
-            _add(f"{PLANETBIDS_BASE}/papi/bidDocuments/{d['id']}", d.get("name") or "")
     for url, text in dom_links:
         _add(url, text)
 
@@ -256,6 +259,37 @@ async def _fetch_bid_documents(page, portal_id: str, numeric_bid_id: str) -> lis
 # ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
+
+_WAF_CHALLENGE_WORDS = ("human verification", "confirm you are human", "security check", "verify you are")
+
+
+async def _unlock_file_host(page, url: str, unlocked_hosts: set[str]) -> None:
+    """The document file server (files-prodNN.planetbids.com, varies by agency)
+    sits behind its own AWS WAF CAPTCHA — separate from the bo-search portal's.
+    A plain HTTP GET can't pass it (no JS challenge execution), so navigate the
+    real, already-open Chrome window there once per host; if a CAPTCHA shows,
+    a human solves it and the resulting aws-waf-token cookie lands in this
+    browser context, letting every later `context.request.get()` to that host
+    through unchallenged for the rest of the session."""
+    host = urlparse(url).netloc
+    if not host or host in unlocked_hosts:
+        return
+    print(f"    → priming file server {host} (one-time this session)...")
+    try:
+        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+    except Exception:
+        pass
+    await page.wait_for_timeout(1500)
+    body = ""
+    try:
+        body = await page.inner_text("body")
+    except Exception:
+        pass
+    if any(w in body.lower() for w in _WAF_CHALLENGE_WORDS):
+        print(f"      ⚠ WAF CAPTCHA on {host} — solve it in the Chrome window, then press Enter.")
+        await asyncio.get_event_loop().run_in_executor(None, input, "")
+    unlocked_hosts.add(host)
+
 
 async def run_vl_doc_sync(only: str | None = None) -> dict:
     from playwright.async_api import async_playwright
@@ -291,6 +325,7 @@ async def run_vl_doc_sync(only: str | None = None) -> dict:
         print("→ Press Enter here when done.")
         await asyncio.get_event_loop().run_in_executor(None, input, "")
 
+        unlocked_hosts: set[str] = set()
         for b in bids:
             bid_id = b["bid_id"]
             m = _BID_ID_RE.match(str(bid_id))
@@ -312,6 +347,13 @@ async def run_vl_doc_sync(only: str | None = None) -> dict:
                 else:
                     mark_parse_status(bid_id, None, "vl-docs attempt — nothing captured")
                 continue
+
+            seen_doc_hosts: set[str] = set()
+            for _, doc_url, _ in scored:
+                h = urlparse(doc_url).netloc
+                if h and h not in seen_doc_hosts:
+                    seen_doc_hosts.add(h)
+                    await _unlock_file_host(page, doc_url, unlocked_hosts)
 
             n = await _download_scored_docs(ctx, bid_id, scored, page.url)
             if not n:
