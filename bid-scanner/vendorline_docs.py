@@ -23,12 +23,18 @@ scores the bid like any other.
 """
 
 import asyncio
+import json
 import os
 import re
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 
 from intel_scanner import PLANETBIDS_BASE, _warm_portal
+
+# TEMP debug: dumps the raw papi JSON so the real download-URL field/endpoint
+# can be identified — the `/papi/bidDocuments/{id}` guess below returns HTML,
+# not files. Remove _dump_debug and its call sites once the real shape is known.
+DEBUG_DIR = Path(__file__).resolve().parent / "output" / "debug" / "vl_docs"
 
 UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -134,6 +140,7 @@ def _walk_json_for_docs(node, acc: list[dict]):
                 "name": name,
                 "id": flat.get("documentId") or flat.get("bidDocumentId") or flat.get("id"),
                 "url": url,
+                "raw": flat,  # TEMP debug — full field set, see DEBUG_DIR dump below
             })
         for v in node.values():
             _walk_json_for_docs(v, acc)
@@ -159,7 +166,11 @@ async def _fetch_bid_documents(page, portal_id: str, numeric_bid_id: str) -> lis
             data = await response.json()
         except Exception:
             return
+        before = len(captured)
         _walk_json_for_docs(data, captured)
+        if len(captured) > before:
+            for d in captured[before:]:
+                d["_source_endpoint"] = url
 
     detail_url = f"{PLANETBIDS_BASE}/portal/{portal_id}/bo/bo-detail/{numeric_bid_id}"
     page.on("response", on_response)
@@ -241,6 +252,15 @@ async def _fetch_bid_documents(page, portal_id: str, numeric_bid_id: str) -> lis
             _add(f"{PLANETBIDS_BASE}/papi/bidDocuments/{d['id']}", d.get("name") or "")
     for url, text in dom_links:
         _add(url, text)
+
+    if captured:
+        # TEMP debug: dump every raw papi doc record to disk + stdout so the
+        # real download-URL field can be read off instead of guessed.
+        DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+        debug_file = DEBUG_DIR / f"{portal_id}_{numeric_bid_id}.json"
+        debug_file.write_text(json.dumps(captured, indent=2, default=str))
+        print(f"      [debug] {len(captured)} raw papi doc record(s) written to {debug_file}")
+        print(f"      [debug] first record: {json.dumps(captured[0], indent=2, default=str)[:1500]}")
 
     if scored:
         print(f"      → {len(captured)} papi doc record(s), {len(dom_links)} DOM link(s), "
