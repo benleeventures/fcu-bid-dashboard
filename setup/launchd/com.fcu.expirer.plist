@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>git -C /Users/leo-claude/fcu-cron pull --quiet --ff-only origin main; /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu-cron/bid-scanner/expirer.py</string>
+        <string>/Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu-cron/bid-scanner/pacific_schedule.py expirer 7 30 &amp;&amp; { git -C /Users/leo-claude/fcu-cron pull --quiet --ff-only origin main; /Users/leo-claude/.pyenv/versions/3.11.9/bin/python3 /Users/leo-claude/fcu-cron/bid-scanner/expirer.py; }</string>
     </array>
 
     <key>EnvironmentVariables</key>
@@ -22,15 +22,12 @@
     <key>WorkingDirectory</key>
     <string>/Users/leo-claude/fcu-cron/bid-scanner</string>
 
-    <!-- Mon–Fri 7:30 AM -->
-    <key>StartCalendarInterval</key>
-    <array>
-        <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
-        <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
-        <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
-        <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
-        <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
-    </array>
+    <!-- Polls every 5 min; pacific_schedule.py gates the actual run to the
+         first poll at/after 7:30 AM Mon-Fri Pacific time (see
+         pacific_schedule.py — StartCalendarInterval isn't safe on this
+         machine since the OS local-time display drifts). -->
+    <key>StartInterval</key>
+    <integer>300</integer>
 
     <key>StandardOutPath</key>
     <string>/Users/leo-claude/fcu-cron/bid-scanner/logs/expirer.cron.log</string>
