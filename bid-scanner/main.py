@@ -307,9 +307,16 @@ async def main():
         print("\nSending scan summary...")
         send_scan_summary(all_bids, duration)
 
-        if new_relevant:
-            print(f"  Sending new-bid digest ({len(new_relevant)} relevant)...")
-            send_new_bids_digest(new_relevant)
+        # SAM.gov bids with unresolved location are saved/synced as usual but
+        # kept out of the email — FCU doesn't bid this contract type today and
+        # an unparsed "place of performance" is too unreliable to surface.
+        digest_bids = [
+            b for b in new_relevant
+            if not (b.get("source") == "SAM.gov" and b.get("geo_status") == "unknown")
+        ]
+        if digest_bids:
+            print(f"  Sending new-bid digest ({len(digest_bids)} relevant)...")
+            send_new_bids_digest(digest_bids)
             funnel.digest_sent = True
 
     if new_relevant and os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
