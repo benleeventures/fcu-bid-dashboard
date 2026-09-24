@@ -10,10 +10,12 @@ moved its Status/Owner/Notes).
 Geographic scope (spec §1) is enforced upstream in scanner.py via geo.py:
 any bid whose place of performance is outside the four in-scope counties
 (LA, Orange, Ventura, San Diego) is dropped before it ever reaches here.
-Federal (SAM.gov) bids that survive that filter — i.e. performed in one of
-the four counties, or flagged geo_status="unknown" — are synced like any
-other source. Bids with geo_status="unknown" carry a "Needs county check"
-note so Robert confirms the county during qualification.
+Federal (SAM.gov) bids that survive that filter and land with a confirmed
+in-scope county sync like any other source. SAM.gov bids whose place of
+performance couldn't be resolved (geo_status="unknown") are dropped here
+too — see sync_new_bids. Other sources' occasional geo_status="unknown"
+bid still syncs, carrying a "Needs county check" note so Robert confirms
+the county during qualification.
 
 Estimated Value still needs a parsed spec doc that doesn't exist until
 later in the pipeline, so it is left blank at discovery time.
@@ -77,13 +79,20 @@ def sync_new_bids(bids: list[dict]) -> int:
     """
     Push bids not already in the Opportunities table. Returns count added.
     Only call with bids you want on the tracker (e.g. is_relevant + new).
-    Federal (SAM.gov) bids are dropped here regardless of relevance.
+
+    SAM.gov bids with an unresolved place of performance (geo_status="unknown")
+    are dropped here rather than synced — in practice SAM's result cards almost
+    never yield a parseable "Place of Performance" line, so this bucket isn't
+    the occasional edge case it was designed for; it's most of what SAM.gov
+    surfaces, and it was swamping the tracker with unverified federal noise.
     """
     table = _get_table()
     if not table or not bids:
         return 0
 
     bids = [b for b in bids if b.get("source") not in _EXCLUDED_SOURCES]
+    bids = [b for b in bids
+            if not (b.get("source") == "SAM.gov" and b.get("geo_status") == "unknown")]
     candidate_ids = {b["bid_id"] for b in bids if b.get("bid_id")}
     if not candidate_ids:
         return 0
