@@ -968,7 +968,12 @@ async def _search_vendorline(browser_context, keywords: list[str]) -> list[dict]
                         (kw for kw, kl in zip(keywords, kw_lower) if kl in title.lower()),
                         keyword,
                     ),
-                    "url": VENDORLINE_DETAIL.format(cid=cid, bid=bid_id) if cid and bid_id else VENDORLINE_APP,
+                    # Externally-aggregated rows (bid_source == 1) have no company_id and
+                    # no PlanetBids detail page. Leave url empty rather than pointing at
+                    # VENDORLINE_APP — that's just the login shell, and it hangs forever
+                    # for anyone without an active VendorLine session (looks like a dead
+                    # link, not a missing one). Digest/dashboard already hide empty urls.
+                    "url": VENDORLINE_DETAIL.format(cid=cid, bid=bid_id) if cid and bid_id else "",
                     "source": "VendorLine",
                     "county": _VL_COUNTY_BY_CID.get(cid),
                 }
