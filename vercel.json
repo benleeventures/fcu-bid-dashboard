@@ -1,3 +1,6 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "crons": [
+    { "path": "/api/cron/scanner-watchdog", "schedule": "0 17 * * 1-5" }
+  ]
 }

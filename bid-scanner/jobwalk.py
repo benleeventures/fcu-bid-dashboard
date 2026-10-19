@@ -89,7 +89,7 @@ def run():
 
     recipients = _operational_recipients()
     if not recipients:
-        log.warning("BEN_EMAIL/JOANNE_EMAIL/TEAM_EMAIL/ADMIN_EMAIL not set — skipping")
+        log.warning("BEN_EMAIL/JOANNE_EMAIL/TEAM_EMAIL/ROBERT_EMAIL not set — skipping")
         return
 
     def _fmt_date(iso: str) -> str:
