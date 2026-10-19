@@ -24,7 +24,7 @@ log = setup("digest")
 
 def run():
     from supabase import create_client
-    from notify import _send_resend, _admin_recipients
+    from notify import _send_resend, _report_recipients
 
     url = os.getenv("SUPABASE_URL", "").strip()
     key = os.getenv("SUPABASE_KEY", "").strip()
@@ -87,9 +87,9 @@ def run():
     unprocessed_count = len(pending_bids)
     stuck_count = len(stuck_bids)
 
-    recipients = _admin_recipients()
+    recipients = _report_recipients()
     if not recipients:
-        log.warning("ADMIN_EMAIL not set — skipping digest")
+        log.info("REPORTS_EMAIL not set — skipping digest")
         return
 
     if not fresh_specs and unprocessed_count == 0:

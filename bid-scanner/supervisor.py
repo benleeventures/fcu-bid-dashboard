@@ -59,8 +59,8 @@ def send_alert():
         return
     ALERT_COOLDOWN_FILE.touch()
     try:
-        from notify import _send_resend, _admin_recipients
-        recipients = _admin_recipients()
+        from notify import _send_resend, _report_recipients
+        recipients = _report_recipients()
         if not recipients:
             return
         _send_resend(

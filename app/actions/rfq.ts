@@ -122,8 +122,7 @@ export async function sendRFQEmails(
 </html>`
 
     if (!toEmail?.trim()) return { ok: false, error: 'Enter a recipient email first' }
-    const JOANNE_CC = process.env.JOANNE_EMAIL ?? process.env.NOTIFY_EMAIL ?? ''
-    const cc = [JOANNE_CC, ...(ccEmail?.trim() ? [ccEmail.trim()] : [])]
+    const cc = [process.env.JOANNE_EMAIL ?? '', ccEmail?.trim() ?? ''].filter(Boolean)
     await sendResend(
       [toEmail.trim()],
       `[RFQ Draft] ${title.slice(0, 55)} — ${materialLines.length} material line${materialLines.length > 1 ? 's' : ''}`,
