@@ -52,7 +52,24 @@ origin/main), NOT the primary checkout. They self-update via
 - **Run** bid-scanner manually from `~/fcu-cron/bid-scanner` — it has the current
   cookies and resume state. Pull it first: `git -C ~/fcu-cron pull --ff-only origin main`.
 - **Edit** scraper code in the primary checkout.
-- After editing any `setup/launchd/*.plist`, run `bash setup/launchd/install.sh`.
+- After editing any `setup/launchd/*.plist` — **and again on the Mac after that PR merges** — run `bash ~/fcu-cron/setup/launchd/install.sh`. Jobs self-update their *code*, not their plists (Oct 2026: stale Sep plists ran for weeks).
+- **Timezone:** the Mac stays on Berlin time on purpose. Jobs poll every 5 min and `bid-scanner/pacific_schedule.py` gates them to Pacific hours (scraper 06:00 PT, Mon–Fri). Never "fix" this by changing the Mac's timezone or using `StartCalendarInterval`.
+- **Reboots:** FileVault is on and macOS auto-updates (Leo's choice). After any reboot, *no job runs until someone logs in* on the Mac. The off-machine watchdog (`app/api/cron/scanner-watchdog`, Vercel Cron 17:00 UTC weekdays) emails Leo if no full scan ran that Pacific day.
+
+**Dashboard stale / no emails? Check in this order:**
+1. `uptime; who` — rebooted and nobody logged in?
+2. `launchctl print gui/$(id -u)/com.fcu.scraper | grep -E 'runs|last exit'`
+3. `for f in ~/fcu-cron/setup/launchd/*.plist; do cmp -s $f ~/Library/LaunchAgents/$(basename $f) || echo STALE $f; done` → re-run install.sh
+4. Logs: `~/fcu-cron/bid-scanner/logs/{scraper,parser,digest}.log`; per-day run markers in `logs/.schedule/`
+5. Live check: `curl` the watchdog needs `CRON_SECRET`; instead query `scan_run` in Supabase (latest `mode='full'`).
+
+## Email routing
+- **`ADMIN_EMAIL` (Leo) is Vercel-only and receives ONLY the scanner-down watchdog alert.** The scanner never reads it. Never add Leo to any other email.
+- New-bid alerts + job walks → `BEN_EMAIL`, `JOANNE_EMAIL`, `TEAM_EMAIL`, `ROBERT_EMAIL`. RFQ drafts → `JOANNE_EMAIL`.
+- Scan summary / daily digest / cookie / supervisor alerts → opt-in `REPORTS_EMAIL` (unset = off). No `NOTIFY_EMAIL` fallback exists anymore.
+
+## Repo is PUBLIC
+`benleeventures/fcu-bid-dashboard` is publicly readable. Never commit `.env`, cookies, tokens, passwords, or scraped bid documents. Treat anything committed as published.
 
 ## GitHub & Vercel access — always via the token wrappers
 Tokens live in `~/fcu/.env` (`GITHUB_TOKEN`, `VERCEL_TOKEN`). **Always** go through these wrappers — never `gh auth login`, the keychain, hand-rolled `GH_TOKEN=$(...)`, or `vercel login`:
@@ -95,7 +112,7 @@ Proposal approved. Architecture: Notion (database) → Python agent → Claude A
 - Frontend: Framer
 - Automation: Python 3.11+
 - Database: Notion API (free tier)
-- AI: Claude API (`claude-sonnet-4-6`)
+- AI: Claude API — bid-scanner parser `claude-sonnet-5` (`PARSER_CLAUDE_MODEL`), sales agent `claude-sonnet-4-6`. Ollama (`llama3.2:3b`) is legacy: only CRISP file-picking + intel vendor matching, both with fallbacks.
 - Email: Gmail API
 - Hosting: Cloud Run (scheduled) or local cron
 
