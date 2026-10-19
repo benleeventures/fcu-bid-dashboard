@@ -17,7 +17,7 @@ set -euo pipefail
 ENV_FILE="${FCU_ENV_FILE:-$HOME/fcu/.env}"
 export VERCEL_TOKEN=$(sed -nE "s/^VERCEL_TOKEN=[[:space:]]*[\"']?([^\"'[:space:]#]+).*/\1/p" "$ENV_FILE" | head -1)
 [ -n "$VERCEL_TOKEN" ] || { echo "VERCEL_TOKEN not found in $ENV_FILE" >&2; exit 1; }
-[ "${2:-}" = "-" ] && export VAL_STDIN="$(cat)"
+[ "${1:-}" = set ] && [ "${3:-}" = "-" ] && export VAL_STDIN="$(cat)"
 
 exec python3 -I - "$@" <<'PY'
 import json, os, sys, urllib.request
