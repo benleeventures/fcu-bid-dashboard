@@ -318,6 +318,11 @@ async def main():
         print(f"  Sending new-bid digest ({len(digest_bids)} relevant)...")
         send_new_bids_digest(digest_bids)
         funnel.digest_sent = True
+    elif SOURCE is None:
+        # Full scheduled run with nothing new — still tell the team the scan ran.
+        # Single-source manual runs (--source X) stay silent.
+        print("  Sending '0 new relevant bids' email...")
+        send_new_bids_digest([], scanned=len(all_bids))
 
     if new_relevant and os.getenv("AIRTABLE_API_KEY", "") and os.getenv("AIRTABLE_BASE_ID", ""):
         from airtable_sync import sync_new_bids
