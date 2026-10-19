@@ -300,16 +300,19 @@ def send_scan_summary(bids: list[dict], duration_secs: float):
 # New Bid Digest
 # ─────────────────────────────────────────────
 
-def send_new_bids_digest(new_bids: list[dict]):
+def send_new_bids_digest(new_bids: list[dict], scanned: int = 0):
     """
     Email a digest of newly discovered relevant bids.
     new_bids: list of bid dicts from the scanner (title, agency, source, due_date, url).
+    scanned: total bids the scan looked at — shown on the zero-bid email so a
+    quiet day is distinguishable from a broken scanner.
     """
     recipients = _operational_recipients()
     if not recipients:
         print("  (New-bid digest skipped — set BEN_EMAIL/JOANNE_EMAIL/TEAM_EMAIL/ROBERT_EMAIL in .env)")
         return
     if not new_bids:
+        _send_zero_bids_digest(recipients, scanned)
         return
 
     count = len(new_bids)
@@ -375,6 +378,35 @@ def send_new_bids_digest(new_bids: list[dict]):
       tracked in the 7am digest.
       {f'<br><span style="color:#FF9F0A;">{manual_doc_count} bid{"s" if manual_doc_count != 1 else ""} marked DOCS: PULL FROM PORTAL</span> — those sources have no auto-download; open the portal and grab the spec.' if manual_doc_count else ''}
       <br>Review all bids in the <a href="{DASHBOARD_URL}" style="color:#C8922A;">FCU Dashboard</a>.
+    </p>
+  </div>
+</body>
+</html>"""
+
+    _send_resend(recipients, subject, html)
+
+
+def _send_zero_bids_digest(recipients: list[str], scanned: int):
+    """Daily 'scanner ran, nothing new' email — confirms the scan actually happened."""
+    subject = "[FCU Bid Agent] 0 new relevant bids today"
+    scanned_line = f"Scanned {scanned:,} bids across all portals — " if scanned else ""
+    html = f"""
+<!DOCTYPE html>
+<html>
+<body style="background:#1C1C1E;color:#F5F5F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;">
+  <div style="max-width:720px;margin:0 auto;padding:32px 24px;">
+    <div style="border-left:3px solid #C8922A;padding-left:16px;margin-bottom:28px;">
+      <p style="margin:0;font-size:11px;color:#8E8E93;letter-spacing:.08em;text-transform:uppercase;">FCU Bid Agent</p>
+      <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;">0 New Relevant Bids Today</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:#8E8E93;">{datetime.now().strftime('%B %d, %Y')}</p>
+    </div>
+
+    <p style="font-size:14px;color:#F5F5F0;line-height:1.7;">
+      {scanned_line}none were new and relevant to FCU. The scanner ran normally; nothing needs action today.
+    </p>
+
+    <p style="margin-top:24px;font-size:12px;color:#8E8E93;line-height:1.7;">
+      Open bids are still tracked in the <a href="{DASHBOARD_URL}" style="color:#C8922A;">FCU Dashboard</a>.
     </p>
   </div>
 </body>
