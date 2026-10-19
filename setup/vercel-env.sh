@@ -47,8 +47,15 @@ elif cmd == "set" and len(args) >= 3:
     typ = args[4] if len(args) > 4 else "encrypted"
     if not val:
         sys.exit("empty value")
-    call("POST", API + "?upsert=true", {"key": key, "value": val, "target": targets, "type": typ})
-    print(f"set {key} ({','.join(targets)}, {typ})")
+    body = {"key": key, "value": val, "target": targets, "type": typ}
+    existing = [e for e in envs if e["key"] == key]
+    if len(existing) > 1:
+        sys.exit(f"{key} has {len(existing)} entries — rm it first, then set")
+    if existing:  # Vercel's upsert flag doesn't overwrite — edit in place
+        call("PATCH", f"{API}/{existing[0]['id']}", body)
+    else:
+        call("POST", API, body)
+    print(f"{'updated' if existing else 'created'} {key} ({','.join(targets)}, {typ})")
 elif cmd == "rm" and len(args) == 2:
     ids = [e["id"] for e in envs if e["key"] == args[1]]
     if not ids:
