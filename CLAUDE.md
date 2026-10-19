@@ -54,6 +54,14 @@ origin/main), NOT the primary checkout. They self-update via
 - **Edit** scraper code in the primary checkout.
 - After editing any `setup/launchd/*.plist`, run `bash setup/launchd/install.sh`.
 
+## GitHub & Vercel access — always via the token wrappers
+Tokens live in `~/fcu/.env` (`GITHUB_TOKEN`, `VERCEL_TOKEN`). **Always** go through these wrappers — never `gh auth login`, the keychain, hand-rolled `GH_TOKEN=$(...)`, or `vercel login`:
+
+- **GitHub:** `bash ~/fcu-cron/setup/gh.sh <gh args>` — e.g. `pr create`, `pr merge`, `pr view`, `api`.
+- **Vercel env vars** (project `fcu-bid-dashboard`, account `ben-2423`): `bash ~/fcu-cron/setup/vercel-env.sh ls | set KEY VALUE [targets] [type] | rm KEY`. Pass secrets as `-` and pipe them on stdin so they never appear in the command line. Changes apply on the next deploy (merge to main).
+
+Both are pre-approved in `.claude/settings.local.json`. If a task needs a permission that isn't there, **ask Leo before editing `settings.local.json`** — don't work around a denial.
+
 ## Multi-Session Git Workflow
 Multiple Claude Code sessions run in parallel, one branch per session. Follow this every session:
 
@@ -61,7 +69,7 @@ Multiple Claude Code sessions run in parallel, one branch per session. Follow th
 1. **Separate working directory per session.** Never run two sessions on different branches in the same folder — a `checkout` in one corrupts the others. Use `git worktree add ../fcu-<branch> <branch>` (or the `EnterWorktree` helper) or a separate clone.
 2. **One branch = one scoped, non-overlapping change.** Keep sessions in different areas (`bid-scanner/`, `agent/`, docs). Merge and delete branches fast — don't let them live for days.
 3. **Sync main before every merge:** `git fetch origin` → `git rebase origin/main` → **re-run tests/build on the result.** A branch that passed in isolation can break once other sessions' work lands under it.
-4. **Merge via PR, not direct to main** (`gh pr create`), even solo — gives a diff to eyeball. Serialize merges: don't let sessions race. Prefer one integrator (usually Leo) merging PRs one at a time.
+4. **Merge via PR, not direct to main** (`bash ~/fcu-cron/setup/gh.sh pr create`), even solo — gives a diff to eyeball. Serialize merges: don't let sessions race. Prefer one integrator (usually Leo) merging PRs one at a time.
 5. **After any merge, rebase the other sessions** onto the new main so they don't reintroduce stale code or hit avoidable conflicts.
 6. **Shared files are conflict magnets** — `ROADMAP.md`, `CLAUDE.md`, `context/`, plan docs, lockfiles. Edit these on their own tiny branches merged immediately, or keep each session's edits in its own section.
 
