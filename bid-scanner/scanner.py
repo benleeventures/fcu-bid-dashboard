@@ -32,13 +32,23 @@ CA_LOCATION_ID = "43"
 SAMGOV_API = "https://api.sam.gov/opportunities/v2/search"
 
 # Keywords to run separate searches for
+# Phase 2 (Ben 2026-10-21): flooring, floor covering, carpet, VCT, LVT,
+# resilient, sheet vinyl, epoxy, gym floor, wood floor, cove base, replace
+# flooring — plus the window-covering terms FCU already watched.
 SEARCH_KEYWORDS = [
     "flooring",
+    "floor covering",
     "carpet",
+    "VCT",
+    "LVT",
     "resilient flooring",
+    "sheet vinyl",
+    "epoxy flooring",
+    "gym floor",
+    "wood floor",
+    "cove base",
     "window covering",
     "blinds",
-    "LVT vinyl",
     "tile installation",
 ]
 
@@ -46,7 +56,10 @@ SEARCH_KEYWORDS = [
 RELEVANT_KEYWORDS = [
     "flooring", "floor covering", "floor repair", "floor replacement",
     "floor install", "install floor", "new floor", "replace floor",
-    "carpet", "resilient", "lvt", "vct", "vinyl tile", "vinyl plank",
+    "carpet", "resilient floor", "resilient tile", "resilient base",
+    "lvt", "vct", "vinyl tile", "vinyl plank", "vinyl composition",
+    "luxury vinyl", "sheet vinyl", "gym floor", "gymnasium floor",
+    "wood floor", "cove base", "rubber base", "floor coating", "resinous floor",
     "hardwood", "laminate", "window covering", "blinds", "shades",
     "curtain", "linoleum", "epoxy floor", "rubber floor",
     "ceramic tile", "porcelain tile", "tile installation", "tile replacement",
@@ -2367,6 +2380,27 @@ def _fetch_securebids_sync() -> list[dict]:
     return out
 
 
+def securebids_title(opp_name: str | None, description: str | None) -> str:
+    """
+    Some agencies (Pasadena USD) put only a number in oppName ("07-26/27") and
+    the real title in description. Use the description when oppName has fewer
+    than two words, keeping the number as a prefix.
+    """
+    name = (opp_name or "").strip()
+    desc = re.sub(r"\s+", " ", description or "").strip()
+    if desc and len(re.findall(r"[A-Za-z]{3,}", name)) < 2:
+        return f"{name} — {desc}" if name else desc
+    return name or desc
+
+
+def securebids_county(location_name: str | None) -> str | None:
+    """'CA - Los Angeles' -> 'Los Angeles' when it's an in-scope county."""
+    from geo import FOUR_COUNTIES
+    m = re.match(r"CA\s*-\s*(.+)$", (location_name or "").strip())
+    county = m.group(1).strip() if m else None
+    return county if county in FOUR_COUNTIES else None
+
+
 async def _search_securebids(keywords: list[str]) -> list[dict]:
     """SecureBids / Colbi — open CA agency opportunities. Pure HTTP, no login."""
     print("\nSearching SecureBids / Colbi (CA agencies)...")
@@ -2380,7 +2414,7 @@ async def _search_securebids(keywords: list[str]) -> list[dict]:
     for e in events:
         if (e.get("eventStatus") or "").lower() != "available":
             continue
-        title = (e.get("oppName") or e.get("description") or "").strip()
+        title = securebids_title(e.get("oppName"), e.get("description"))
         num = e.get("oppNumber") or e.get("eventToken") or ""
         close_raw = e.get("bidCloseDate") or ""
         bids.append({
@@ -2388,7 +2422,7 @@ async def _search_securebids(keywords: list[str]) -> list[dict]:
             "title": title[:480],
             "agency": e["_agencyName"],
             "state": "California",
-            "county": e.get("_county"),
+            "county": e.get("_county") or securebids_county(e.get("locationName")),
             "published_date": None,
             "published_raw": "",
             "due_date": _parse_date(close_raw[:10]) if close_raw else None,
