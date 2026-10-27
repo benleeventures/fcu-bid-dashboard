@@ -70,7 +70,7 @@ export async function addBidToAirtable(bidId: string): Promise<Result> {
     const client = sb()
     const { data: bid, error } = await client
       .from('bids')
-      .select('bid_id,title,agency,source,due_date,url,county,geo_status,airtable_synced_at')
+      .select('bid_id,title,agency,source,due_date,url,county,geo_status,region,airtable_synced_at')
       .eq('bid_id', bidId)
       .single()
 
@@ -98,7 +98,13 @@ export async function addBidToAirtable(bidId: string): Promise<Result> {
 
     const source = bid.source ?? ''
     const agency = (bid.agency ?? '').slice(0, 200)
-    const ownerEmail = process.env.AIRTABLE_OWNER_EMAIL?.trim()
+    // Owner follows region (mirrors bid-scanner/airtable_sync.py): North -> Melvin,
+    // South -> Robert; AIRTABLE_OWNER_EMAIL is the fallback for bids with no region.
+    const regionOwner =
+      bid.region === 'North' ? process.env.AIRTABLE_OWNER_NORTH_EMAIL
+      : bid.region === 'South' ? process.env.AIRTABLE_OWNER_SOUTH_EMAIL
+      : undefined
+    const ownerEmail = (regionOwner || process.env.AIRTABLE_OWNER_EMAIL)?.trim()
 
     const fields: Record<string, unknown> = {
       'Project Name': (bid.title ?? '').slice(0, 500),
@@ -115,6 +121,7 @@ export async function addBidToAirtable(bidId: string): Promise<Result> {
     if (CITY_BEARING_SOURCES.has(source) && agency) fields['City / County / Area'] = agency
     else if (bid.county) fields['City / County / Area'] = bid.county
     if (bid.geo_status === 'unknown') fields['Notes'] = 'Needs county check — place of performance not confirmed'
+    if (bid.region) fields['Region'] = bid.region
     if (ownerEmail) fields['Owner'] = { email: ownerEmail }
 
     const post = (f: Record<string, unknown>) => at(

@@ -107,10 +107,15 @@ def sync_new_bids(bids: list[dict]) -> int:
         for rec in table.all(formula=formula, fields=["Bid ID"]):
             existing_ids.add(rec["fields"].get("Bid ID"))
 
-    # Spec §5: every new opportunity defaults to Robert. Set
-    # AIRTABLE_OWNER_EMAIL in .env once he's a collaborator on the base;
-    # left unset, Owner stays blank for manual assignment.
-    owner_email = os.getenv("AIRTABLE_OWNER_EMAIL", "").strip()
+    # Owner follows region (Phase 2): North -> Melvin, South -> Robert.
+    # AIRTABLE_OWNER_NORTH_EMAIL / _SOUTH_EMAIL are Airtable collaborator
+    # emails; AIRTABLE_OWNER_EMAIL is the fallback for bids with no region.
+    # Unset = Owner stays blank for manual assignment.
+    owner_by_region = {
+        "North": os.getenv("AIRTABLE_OWNER_NORTH_EMAIL", "").strip(),
+        "South": os.getenv("AIRTABLE_OWNER_SOUTH_EMAIL", "").strip(),
+    }
+    default_owner = os.getenv("AIRTABLE_OWNER_EMAIL", "").strip()
 
     to_create = []
     for b in bids:
@@ -139,6 +144,9 @@ def sync_new_bids(bids: list[dict]) -> int:
             fields["City / County / Area"] = b["county"]
         if b.get("geo_status") == "unknown":
             fields["Notes"] = "Needs county check — place of performance not confirmed"
+        if b.get("region"):
+            fields["Region"] = b["region"]
+        owner_email = owner_by_region.get(b.get("region")) or default_owner
         if owner_email:
             fields["Owner"] = {"email": owner_email}
         est = b.get("est_value")
