@@ -272,6 +272,19 @@ a callout naming the source when retrieval isn't available.
 | PQ Bids / Hardesty Associates | ⬜ Verify platform | pqbids.com (row 28), hardestyassociatesplans.com (row 20) — confirm whether either runs the CyberCopy `/projects/public` contract before adding to `PLAN_ROOMS` |
 | El Segundo | ⬜ Check | elsegundo.org (login-sheet row 10) — determine if it's just a PlanetBids portal ID to add vs. its own system |
 
+### Target-agency coverage (Phase 2, 2026-10)
+
+Ben's 23 target districts/agencies live in `bid-scanner/data/target_agencies.json` (where each
+posts, coverage = covered / partial / gap). `/scanner` → **Target agencies** card shows, per
+target: platform, coverage, last time any bid from it was seen, bids and flooring bids in the last
+90 days. Platforms checked 2026-10-27: Long Beach USD (PlanetBids 23758) and Oceanside USD
+(PlanetBids 62973) confirmed in VendorLine results; Simi Valley USD posts on SecureBids + Quality
+Bidders. **Gaps:** Riverside USD (plan-holder login on webapps.riversideunified.org + PQBids — FCU
+needs to register), Garden Grove USD (ggusd.us unreachable from the scanner host), Delano
+(djuhsd.org JavaScript page), Capistrano formal bids (own Active Procurements page; small CUPCCAA
+jobs come via Quality Bidders). A generic district-page watcher was considered and dropped — none
+of the gap sites can be read reliably without a login or a browser.
+
 ### Client login-sheet triage — 2026-09
 
 Ben asked to fold FCU's manual login sheet (38 rows) into scanner coverage. Full mapping

@@ -6,11 +6,34 @@ import {
 } from './lib'
 import { Funnel, DocPullChart, VolumeChart, FilteredOutBars } from './Charts'
 import Nav from '../Nav'
+import { TargetBidRow, TargetRow, targetCoverage } from './targets'
 
 export const revalidate = 300
 const MONO = 'IBM Plex Mono, monospace'
 
 const DOC_PULL_WINDOW_DAYS = 90
+const TARGET_WINDOW_DAYS = 90
+
+async function getTargetBids(): Promise<TargetBidRow[]> {
+  const url = process.env.SUPABASE_URL
+  const key = process.env.SUPABASE_KEY
+  if (!url || !key) return []
+  const sb = createClient(url, key)
+  // A wider look-back than the window so "last seen" covers quiet agencies too.
+  const since = new Date(Date.now() - 2 * TARGET_WINDOW_DAYS * 86400000).toISOString()
+  const rows: TargetBidRow[] = []
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await sb
+      .from('bids')
+      .select('agency, title, source, first_seen_at, last_seen_at, is_relevant, relevance_reason')
+      .gte('last_seen_at', since)
+      .range(from, from + 999)
+    if (error) { console.error('target bids fetch error:', error.message); break }
+    rows.push(...((data ?? []) as TargetBidRow[]))
+    if (!data || data.length < 1000) break
+  }
+  return rows
+}
 
 async function getData(): Promise<{
   runs: ScanRun[]; sources: SourceStat[]; portals: PortalStat[]; parseRows: BidParseRow[]
@@ -92,7 +115,8 @@ function StatusDot({ status }: { status: string }) {
 }
 
 export default async function ScannerPage() {
-  const { runs, sources, portals, parseRows } = await getData()
+  const [{ runs, sources, portals, parseRows }, targetBids] = await Promise.all([getData(), getTargetBids()])
+  const targets = targetCoverage(targetBids, Date.now() - TARGET_WINDOW_DAYS * 86400000)
 
   const dp30 = docPull(parseRows, Date.now() - 30 * 86400000)
   const dp90 = docPull(parseRows)
@@ -256,6 +280,14 @@ export default async function ScannerPage() {
             </Card>
           )}
 
+          {/* Ben's target agencies */}
+          <Card
+            title="Target agencies"
+            sub={`Ben's Phase 2 list. Covered = a source we scan carries their bids. Gap = they post somewhere we don't scan. VendorLine and BidNet are searched by flooring keywords, so an agency on those only shows up when it posts flooring-type work — "never" there means quiet, not missing. Counts are bids first seen in the last ${TARGET_WINDOW_DAYS} days.`}
+          >
+            <TargetTable rows={targets} />
+          </Card>
+
           {/* Run log */}
           <Card title="Recent checks">
             <div style={{ overflowX: 'auto' }}>
@@ -297,6 +329,61 @@ export default async function ScannerPage() {
       )}
       </main>
     </>
+  )
+}
+
+const COVERAGE_STYLE: Record<string, { word: string; color: string }> = {
+  covered: { word: 'Covered', color: 'var(--green)' },
+  partial: { word: 'Partial', color: 'var(--orange)' },
+  gap: { word: 'Gap', color: 'var(--red)' },
+}
+
+function fmtDay(iso: string | null) {
+  if (!iso) return 'never'
+  return new Date(iso).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric' })
+}
+
+function TargetTable({ rows }: { rows: TargetRow[] }) {
+  const th = { textAlign: 'left' as const, padding: '6px 8px', fontWeight: 500 }
+  return (
+    <div style={{ overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 720 }}>
+        <thead>
+          <tr style={{ color: 'var(--gray)', fontFamily: MONO, fontSize: 11 }}>
+            <th style={th}>Agency</th>
+            <th style={th}>Region</th>
+            <th style={th}>Where they post</th>
+            <th style={th}>Coverage</th>
+            <th style={th}>Last seen</th>
+            <th style={{ ...th, textAlign: 'right' }}>Bids</th>
+            <th style={{ ...th, textAlign: 'right' }}>Flooring</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(r => {
+            const cov = COVERAGE_STYLE[r.coverage] ?? COVERAGE_STYLE.gap
+            const stale = !r.lastSeen || Date.now() - Date.parse(r.lastSeen) > 30 * 86400000
+            return (
+              <tr key={r.name} style={{ borderTop: '1px solid var(--charcoal-mid)' }}>
+                <td style={{ padding: '6px 8px', fontWeight: 600 }} title={r.note}>{r.name}{r.note ? ' ⓘ' : ''}</td>
+                <td style={{ padding: '6px 8px', color: 'var(--gray)' }}>{r.region}</td>
+                <td style={{ padding: '6px 8px', color: 'var(--ink-dim)' }}>{r.platform}</td>
+                <td style={{ padding: '6px 8px', color: cov.color, fontWeight: 600 }}>{cov.word}</td>
+                <td style={{ padding: '6px 8px', fontFamily: MONO, color: stale ? 'var(--orange)' : 'var(--white)' }}
+                    title={r.sources.length ? `Seen via ${r.sources.join(', ')}` : 'No bid from this agency in any scan'}>
+                  {fmtDay(r.lastSeen)}
+                </td>
+                <td style={{ padding: '6px 8px', fontFamily: MONO, textAlign: 'right' }}>{r.seen90}</td>
+                <td style={{ padding: '6px 8px', fontFamily: MONO, textAlign: 'right', color: r.flooring90 ? 'var(--gold-light)' : 'var(--gray)', fontWeight: r.flooring90 ? 700 : 400 }}>{r.flooring90}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      <p style={{ marginTop: 10, fontSize: 11, color: 'var(--gray)', lineHeight: 1.6 }}>
+        Last seen in orange = no bid from that agency in 30+ days. Hover a name with ⓘ for what's needed to close the gap; hover a date for which source saw it.
+      </p>
+    </div>
   )
 }
 

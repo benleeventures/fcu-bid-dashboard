@@ -1,0 +1,28 @@
+{
+  "_about": "Ben's Phase 2 target districts and agencies (scope doc 2026-10-21). Read by the dashboard's /scanner coverage panel. match = case-insensitive regex tested against \"agency — title\". coverage: covered = a scanned source carries their bids; partial = only some of their bids reach a scanned source; gap = they post somewhere we don't scan. Platforms checked 2026-10-27.",
+  "targets": [
+    {"name": "LAUSD", "region": "North", "match": "lausd|los angeles unified", "platform": "LAUSD FSD report + Crisp plan room + RAMP", "coverage": "covered"},
+    {"name": "El Monte UHSD", "region": "North", "match": "el monte union high", "platform": "Quality Bidders", "coverage": "covered"},
+    {"name": "Pasadena USD", "region": "North", "match": "pasadena unified", "platform": "SecureBids", "coverage": "covered"},
+    {"name": "Long Beach USD", "region": "North", "match": "long beach unified|lbusd", "platform": "PlanetBids 23758 (VendorLine)", "coverage": "covered"},
+    {"name": "Simi Valley USD", "region": "North", "match": "simi valley unified|simivalleyusd", "platform": "SecureBids + Quality Bidders", "coverage": "covered"},
+    {"name": "CSUN", "region": "North", "match": "northridge|\\bcsun\\b", "platform": "BidNet / VendorLine", "coverage": "covered"},
+    {"name": "UCLA", "region": "North", "match": "\\bucla\\b|university of california, los angeles", "platform": "UCLA Capital Programs", "coverage": "covered"},
+    {"name": "LADWP", "region": "North", "match": "water (&|and) power|ladwp", "platform": "RAMP LA County", "coverage": "covered"},
+    {"name": "LA County", "region": "North", "match": "county of los angeles|los angeles county|\\bla county\\b", "platform": "RAMP LA County", "coverage": "covered"},
+    {"name": "Riverside USD", "region": "South", "match": "riverside unified", "platform": "Own plan-holder site (login) + PQBids", "coverage": "gap", "note": "Needs FCU registered as a plan holder on webapps.riversideunified.org"},
+    {"name": "Rialto USD", "region": "South", "match": "rialto unified", "platform": "PlanetBids (VendorLine)", "coverage": "covered"},
+    {"name": "Anaheim Union HSD", "region": "South", "match": "anaheim union high", "platform": "Quality Bidders", "coverage": "covered"},
+    {"name": "Santa Ana USD", "region": "South", "match": "santa ana unified|sausd", "platform": "Crisp plan room", "coverage": "covered"},
+    {"name": "Garden Grove USD", "region": "South", "match": "garden grove unified|ggusd", "platform": "Own website (ggusd.us)", "coverage": "gap", "note": "ggusd.us doesn't answer from the scanner host"},
+    {"name": "Capistrano USD", "region": "South", "match": "capistrano unified|capousd", "platform": "Own Active Procurements page + Quality Bidders (CUPCCAA)", "coverage": "partial", "note": "Small CUPCCAA jobs via Quality Bidders; formal bids only on capousd.org"},
+    {"name": "San Diego Unified", "region": "South", "match": "san diego unified|sdusd", "platform": "PlanetBids 43764 (VendorLine)", "coverage": "covered"},
+    {"name": "Oceanside USD", "region": "South", "match": "oceanside unified", "platform": "PlanetBids 62973 (VendorLine)", "coverage": "covered"},
+    {"name": "DMV", "region": "Statewide", "match": "motor vehicles|\\bdmv\\b", "platform": "Cal eProcure", "coverage": "covered"},
+    {"name": "CHP", "region": "Statewide", "match": "highway patrol|\\bchp\\b", "platform": "Cal eProcure", "coverage": "covered"},
+    {"name": "DGS", "region": "Statewide", "match": "department of general services|\\bdgs\\b", "platform": "Cal eProcure", "coverage": "covered"},
+    {"name": "Kern HSD", "region": "North", "match": "kern high", "platform": "Quality Bidders + VendorLine", "coverage": "covered"},
+    {"name": "Bakersfield City SD", "region": "North", "match": "bakersfield city", "platform": "PlanetBids (VendorLine)", "coverage": "covered", "note": "Posts on PlanetBids per bcsd.com; not yet seen in any scan — watch this row"},
+    {"name": "Delano USD / JUHSD", "region": "North", "match": "delano", "platform": "Own website (djuhsd.org, JavaScript page)", "coverage": "gap"}
+  ]
+}
