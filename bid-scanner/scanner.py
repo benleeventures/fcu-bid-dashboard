@@ -2676,9 +2676,9 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
 
     # --- Geographic + agency-type gate (spec §1 / §2) ---------------------
     # Enrich every bid with county / geo_status / agency_type / is_k12, then
-    # drop anything whose place of performance is outside the in-scope
-    # counties (LA, Orange, Ventura, San Diego). "unknown" is kept and flagged
-    # for Robert to confirm during qualification — never silently dropped.
+    # drop anything whose place of performance is outside the seven in-scope
+    # counties (geo.FOUR_COUNTIES) or is federal work. Each in-scope bid gets a
+    # North/South region. "unknown" is kept and flagged for a county check.
     from geo import enrich
     for b in all_bids:
         enrich(b)

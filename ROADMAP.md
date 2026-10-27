@@ -336,6 +336,17 @@ Full reference: **`bid-scanner/docs/scoring.md`**.
 
 ### Geographic + agency-type gate (spec §1 / §2) — ✅ Session 1 (2026-08)
 
+**Phase 2 update (2026-10, Ben's scope "San Diego to Bakersfield, Inland Empire included"):**
+seven counties. **North** = Los Angeles, Ventura, **Kern** (→ Melvin); **South** = Orange,
+Riverside, San Bernardino, San Diego (→ Robert). `geo.region_for()` → `bids.region`
+(migration `supabase/add_region.sql`). New resolvers in `classify_location`: every CA K-12
+district → county from the CDE directory (`data/ca_school_districts.csv`, refresh yearly with
+`data/refresh_school_districts.py`), so out-of-area districts drop and in-area ones resolve;
+in-scope community colleges / CSU / UC campuses; LA neighborhoods and unincorporated places.
+`upsert_bids` now re-stamps county / geo_status / region on rows it sees again;
+`python geo_backfill.py [--apply]` re-checks every open bid once (also applies the PR #56
+federal rules — replaces `federal_cleanup.py`).
+
 - `geo.py` classifies every bid: `geo_status` = `in` (LA / Orange / Ventura / San Diego),
   `out` (dropped before dedup), or `unknown` (kept + flagged "Needs county check" in Airtable).
 - Also tags `agency_type` (city / county / state / ccd / k12 / transit / housing / airport /
