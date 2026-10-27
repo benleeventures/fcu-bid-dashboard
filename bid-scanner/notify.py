@@ -302,88 +302,204 @@ def send_scan_summary(bids: list[dict], duration_secs: float):
 
 def send_new_bids_digest(new_bids: list[dict], scanned: int = 0):
     """
-    Email a digest of newly discovered relevant bids.
-    new_bids: list of bid dicts from the scanner (title, agency, source, due_date, url).
-    scanned: total bids the scan looked at — shown on the zero-bid email so a
-    quiet day is distinguishable from a broken scanner.
+    The team's daily bid email, sent after each scan (Phase 2 layout).
+
+    Lists every OPEN relevant bid in the area — not just today's — split by
+    region (North -> Melvin, South -> Robert), prime flooring first, with
+    today's arrivals badged NEW, job-walk dates and a flag on walks < 5 days
+    out. Bids whose county isn't confirmed sit in a separate section.
+    new_bids: this scan's new relevant bids (marks NEW).
+    scanned: total bids the scan looked at — shown on the zero-bid email.
     """
     recipients = _operational_recipients()
     if not recipients:
         print("  (New-bid digest skipped — set BEN_EMAIL/JOANNE_EMAIL/TEAM_EMAIL/ROBERT_EMAIL in .env)")
         return
-    if not new_bids:
+    feed = fetch_open_feed()
+    if not feed:
         _send_zero_bids_digest(recipients, scanned)
         return
+    new_ids = {b.get("bid_id") for b in new_bids if b.get("bid_id")}
+    subject, html = build_feed_digest(feed, new_ids, scanned)
+    _send_resend(recipients, subject, html)
 
-    count = len(new_bids)
-    subject = f"[FCU Bid Agent] {count} new relevant bid{'s' if count > 1 else ''} found"
 
-    rows = ""
-    manual_doc_count = 0
-    for b in new_bids:
-        due = b.get("due_date") or b.get("due_date_raw") or "—"
-        bid_id = b.get("bid_id", "")
-        # Send people to the dashboard bid page — it carries the spec, score and
-        # a link out to the source portal (which may need a portal login).
-        link = (
-            f'<a href="{dashboard_bid_url(bid_id)}" style="color:#C8922A;">View ↗</a>'
-            if bid_id else
-            (f'<a href="{b.get("url","")}" style="color:#C8922A;">View ↗</a>' if b.get("url") else "—")
-        )
-        manual_doc = b.get("source") in _NO_AUTO_DOC_SOURCES
-        if manual_doc:
-            manual_doc_count += 1
-        title_cell = (
-            f"{b.get('title','')[:80]}"
-            + ('<br><span style="font-size:10px;font-weight:600;color:#FF9F0A;letter-spacing:.04em;">'
-               'DOCS: PULL FROM PORTAL</span>' if manual_doc else '')
-        )
-        rows += f"""
-        <tr>
-          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;font-weight:600;color:#F5F5F0;">{title_cell}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;color:#8E8E93;">{b.get('agency','')}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;color:#8E8E93;font-family:monospace;">{b.get('source','')}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;color:#8E8E93;font-family:monospace;">{due}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #2C2C2E;font-family:monospace;">{link}</td>
-        </tr>"""
+# Region sections, in email order. Owner names are display only.
+FEED_SECTIONS = [
+    ("North", "North — Melvin", "Los Angeles · Ventura · Kern"),
+    ("South", "South — Robert", "Orange · Riverside · San Bernardino · San Diego"),
+    (None, "Needs county check", "Location not confirmed yet — not counted above. Open the bid and set the county."),
+]
+_TIER_RANK = {"prime": 0, "package": 1, "mixed": 2}
+_CLOSED_STATUSES = ("expired", "no_bid", "submitted")
 
-    html = f"""
-<!DOCTYPE html>
+
+def fetch_open_feed() -> list[dict]:
+    """Open relevant bids that aren't out of area, with job-walk info merged in
+    from the listing (bids.walk_*) or, failing that, the parsed spec."""
+    from datetime import date as _date
+    from db import get_client
+    sb = get_client()
+    if not sb:
+        return []
+    today = _date.today().isoformat()
+    rows = (sb.table("bids")
+            .select("bid_id,title,agency,source,county,region,geo_status,due_date,due_date_raw,"
+                    "url,scope_tier,walk_date,walk_mandatory,bid_status,first_seen_at")
+            .eq("is_relevant", True)
+            .or_(f"due_date.gte.{today},due_date.is.null")
+            .execute().data or [])
+    rows = [r for r in rows
+            if r.get("geo_status") != "out" and r.get("bid_status") not in _CLOSED_STATUSES]
+    if rows:
+        ids = [r["bid_id"] for r in rows]
+        specs = {}
+        for i in range(0, len(ids), 200):
+            for s in (sb.table("bid_specs").select("bid_id,walk_required,walk_date")
+                      .in_("bid_id", ids[i:i + 200]).execute().data or []):
+                specs[s["bid_id"]] = s
+        for r in rows:
+            s = specs.get(r["bid_id"])
+            if s and not r.get("walk_date") and s.get("walk_date"):
+                r["walk_date"] = s["walk_date"]
+            if s and r.get("walk_mandatory") is None and s.get("walk_required") is not None:
+                r["walk_mandatory"] = s["walk_required"]
+    return rows
+
+
+def _days_until(d: str | None, today) -> int | None:
+    from datetime import date as _date
+    if not d:
+        return None
+    try:
+        return (_date.fromisoformat(str(d)[:10]) - today).days
+    except ValueError:
+        return None
+
+
+def _fmt_day(d: str | None) -> str:
+    from datetime import date as _date
+    try:
+        return _date.fromisoformat(str(d)[:10]).strftime("%a %b %-d")
+    except (TypeError, ValueError):
+        return "—"
+
+
+def _badge(text: str, color: str) -> str:
+    return (f'<span style="display:inline-block;margin:0 6px 4px 0;padding:2px 7px;border-radius:4px;'
+            f'font-size:10px;font-weight:700;letter-spacing:.05em;color:#1C1C1E;background:{color};">{text}</span>')
+
+
+def _feed_row(b: dict, is_new: bool, today) -> str:
+    from html import escape
+    badges = ""
+    if is_new:
+        badges += _badge("NEW", "#C8922A")
+    tier = b.get("scope_tier")
+    if tier == "package":
+        badges += _badge("FLOORING PACKAGE", "#8E8E93")
+    elif tier == "mixed":
+        badges += _badge("MIXED SCOPE", "#8E8E93")
+    if b.get("source") == "SAM.gov":
+        badges += _badge("FEDERAL", "#8E8E93")
+    if b.get("source") in _NO_AUTO_DOC_SOURCES:
+        badges += _badge("DOCS: PULL FROM PORTAL", "#FF9F0A")
+
+    meta = " · ".join(escape(x) for x in (b.get("agency") or "", b.get("county") and f"{b['county']} County",
+                                          b.get("source") or "") if x)
+
+    due_days = _days_until(b.get("due_date"), today)
+    if due_days is None:
+        due = f'Due {escape(b.get("due_date_raw") or "—")}'
+    else:
+        left = "today" if due_days == 0 else f"{due_days} day{'s' if due_days != 1 else ''} left"
+        color = "#FF453A" if due_days <= 3 else "#F5F5F0"
+        due = f'Due <b style="color:{color};">{_fmt_day(b["due_date"])}</b> <span style="color:#8E8E93;">({left})</span>'
+
+    walk_days = _days_until(b.get("walk_date"), today)
+    mand = b.get("walk_mandatory")
+    if b.get("walk_date") and walk_days is not None and walk_days >= 0:
+        label = "MANDATORY walk" if mand else ("Optional walk" if mand is False else "Job walk")
+        if walk_days < 5:
+            when = "today" if walk_days == 0 else f"in {walk_days} day{'s' if walk_days != 1 else ''}"
+            walk = (f'<b style="color:#FF453A;">⚠ {label} {_fmt_day(b["walk_date"])} — {when}</b>')
+        else:
+            walk = f'{label} <b>{_fmt_day(b["walk_date"])}</b>'
+    elif b.get("walk_date") and walk_days is not None:
+        walk = f'<span style="color:#8E8E93;">{"Mandatory walk" if mand else "Walk"} was {_fmt_day(b["walk_date"])}</span>'
+    elif mand:
+        walk = '<span style="color:#FF9F0A;">Mandatory walk — date not read, check the docs</span>'
+    else:
+        walk = '<span style="color:#8E8E93;">No job walk listed</span>'
+
+    link = dashboard_bid_url(b["bid_id"]) if b.get("bid_id") else (b.get("url") or DASHBOARD_URL)
+    return f"""
+      <tr><td style="padding:14px 16px;border-bottom:1px solid #3A3A3C;">
+        <div>{badges}</div>
+        <a href="{link}" style="color:#F5F5F0;font-size:15px;font-weight:600;text-decoration:none;line-height:1.35;">{escape(b.get("title") or "")}</a>
+        <div style="margin-top:4px;font-size:12px;color:#8E8E93;">{meta}</div>
+        <div style="margin-top:8px;font-size:13px;color:#F5F5F0;line-height:1.6;">{due}<br>{walk}</div>
+      </td></tr>"""
+
+
+def build_feed_digest(feed: list[dict], new_ids: set, scanned: int = 0,
+                      today=None) -> tuple[str, str]:
+    """Render (subject, html) for the daily email from fetch_open_feed() rows."""
+    from datetime import date as _date
+    today = today or _date.today()
+
+    def key(b):
+        return (_TIER_RANK.get(b.get("scope_tier"), 3), b.get("due_date") or "9999-12-31")
+
+    groups = {region: sorted([b for b in feed if (b.get("region") if b.get("geo_status") == "in" else None) == region],
+                             key=key)
+              for region, _, _ in FEED_SECTIONS}
+    n_north, n_south, n_check = len(groups["North"]), len(groups["South"]), len(groups[None])
+    n_new = sum(1 for b in feed if b.get("bid_id") in new_ids)
+    walks_soon = sum(1 for b in feed
+                     if (d := _days_until(b.get("walk_date"), today)) is not None and 0 <= d < 5)
+
+    subject = (f"[FCU Bids] {n_new} new · {n_north + n_south} open — "
+               f"North {n_north} / South {n_south}")
+
+    sections = ""
+    for region, heading, sub in FEED_SECTIONS:
+        rows = groups[region]
+        if region is None and not rows:
+            continue
+        body = ("".join(_feed_row(b, b.get("bid_id") in new_ids, today) for b in rows)
+                or '<tr><td style="padding:14px 16px;font-size:13px;color:#8E8E93;">No open bids right now.</td></tr>')
+        accent = "#8E8E93" if region is None else "#C8922A"
+        sections += f"""
+    <h2 style="margin:28px 0 2px;font-size:16px;font-weight:700;border-left:3px solid {accent};padding-left:10px;">
+      {heading} <span style="color:#8E8E93;font-weight:400;">({len(rows)})</span></h2>
+    <p style="margin:0 0 10px 13px;font-size:11px;color:#8E8E93;">{sub}</p>
+    <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">{body}</table>"""
+
+    stats = f"{n_new} new today · {n_north + n_south} open in the area"
+    if walks_soon:
+        stats += f' · <span style="color:#FF453A;">{walks_soon} job walk{"s" if walks_soon != 1 else ""} in the next 5 days</span>'
+    scanned_line = f"Scanned {scanned:,} bids across all portals. " if scanned else ""
+
+    html = f"""<!DOCTYPE html>
 <html>
 <body style="background:#1C1C1E;color:#F5F5F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;">
-  <div style="max-width:720px;margin:0 auto;padding:32px 24px;">
-    <div style="border-left:3px solid #C8922A;padding-left:16px;margin-bottom:28px;">
-      <p style="margin:0;font-size:11px;color:#8E8E93;letter-spacing:.08em;text-transform:uppercase;">FCU Bid Agent</p>
-      <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;">
-        {count} New Relevant Bid{'s' if count > 1 else ''}
-      </h1>
-      <p style="margin:6px 0 0;font-size:13px;color:#8E8E93;">{datetime.now().strftime('%B %d, %Y')}</p>
+  <div style="max-width:680px;margin:0 auto;padding:28px 16px;">
+    <div style="border-left:3px solid #C8922A;padding-left:16px;">
+      <p style="margin:0;font-size:11px;color:#8E8E93;letter-spacing:.08em;text-transform:uppercase;">FCU Bid Agent · {today.strftime('%A, %B %-d, %Y')}</p>
+      <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;">North {n_north} · South {n_south}</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:#8E8E93;">{stats}</p>
     </div>
-
-    <table style="width:100%;border-collapse:collapse;background:#2C2C2E;border-radius:8px;overflow:hidden;">
-      <thead>
-        <tr style="background:#3A3A3C;">
-          <th style="padding:10px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Title</th>
-          <th style="padding:10px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Agency</th>
-          <th style="padding:10px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Source</th>
-          <th style="padding:10px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Due</th>
-          <th style="padding:10px 12px;text-align:left;font-size:10px;color:#8E8E93;letter-spacing:.06em;text-transform:uppercase;">Details</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
-
+    {sections}
     <p style="margin-top:24px;font-size:12px;color:#8E8E93;line-height:1.7;">
-      Every bid above still needs a human pass — specs are parsed by the 6:30am job and
-      tracked in the 7am digest.
-      {f'<br><span style="color:#FF9F0A;">{manual_doc_count} bid{"s" if manual_doc_count != 1 else ""} marked DOCS: PULL FROM PORTAL</span> — those sources have no auto-download; open the portal and grab the spec.' if manual_doc_count else ''}
-      <br>Review all bids in the <a href="{DASHBOARD_URL}" style="color:#C8922A;">FCU Dashboard</a>.
+      {scanned_line}Prime flooring jobs first, then flooring packages of larger projects, then mixed-scope jobs.
+      Federal work appears on Mondays only. Every bid still needs a yes / no / maybe in the tracker.
+      <br>All bids: <a href="{DASHBOARD_URL}" style="color:#C8922A;">FCU Dashboard</a>.
     </p>
   </div>
 </body>
 </html>"""
-
-    _send_resend(recipients, subject, html)
+    return subject, html
 
 
 def _send_zero_bids_digest(recipients: list[str], scanned: int):
