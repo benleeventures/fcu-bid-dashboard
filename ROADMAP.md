@@ -319,6 +319,11 @@ Full reference: **`bid-scanner/docs/scoring.md`**.
   (`_is_non_flooring_service` / `NON_FLOORING_SERVICE_PATTERNS`: janitorial, pest,
   landscaping, glass washing) are dropped. Parser backstop: `non_flooring_service` flips
   `is_relevant=False` on `--save`.
+- **Scope tier (2026-10, Phase 2):** every relevant bid gets `bids.scope_tier` —
+  `prime` (flooring is the whole job), `package` (separate flooring trade package of a larger
+  project), `mixed` (flooring named next to other scopes). `run_scan` sorts prime → package →
+  mixed. New reject reason `not_flooring_item` (vehicle / wheelchair-ramp parts, floor plates,
+  floor-care equipment). Migration `supabase/add_scope_tier.sql`.
 - **`bids.relevance_reason`** (migration `supabase/add_relevance_reason.sql`, `feat/digest-manual-review`
   2026-09): records *why* a rejected bid was dropped — `non_flooring_service` / `other_trade` /
   `claude_rejected` / `no_keyword` (NULL when relevant). `scanner._relevance_reason()` is the

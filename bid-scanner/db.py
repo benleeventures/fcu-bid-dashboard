@@ -64,6 +64,7 @@ def _serialize_bid(bid: dict) -> dict:
         "contact_email":  (bid.get("contact_email") or "")[:200] or None,
         "walk_date":      _date_str(bid.get("walk_date")),
         "walk_mandatory": bid.get("walk_mandatory"),
+        "scope_tier":     bid.get("scope_tier") or None,
     }
 
 
@@ -150,7 +151,8 @@ def _refresh_geo(sb, rows: list[dict]) -> None:
         print(f"  ⚠ DB geo refresh error: {e}")
 
 
-_DETAIL_FIELDS = ("description", "location_raw", "contact_email", "walk_date", "walk_mandatory")
+_DETAIL_FIELDS = ("description", "location_raw", "contact_email", "walk_date", "walk_mandatory",
+                  "scope_tier")
 
 
 def _refresh_details(sb, rows: list[dict]) -> None:

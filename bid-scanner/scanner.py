@@ -246,7 +246,19 @@ def _is_other_trade(title: str, description: str = "") -> bool:
 #   other_trade          — roofing / HVAC / paving / … , no flooring keyword
 #   claude_rejected      — construction-adjacent title, Claude second pass said NO
 #   no_keyword           — nothing flooring-related in the title at all
-RELEVANCE_REASONS = ("non_flooring_service", "other_trade", "claude_rejected", "no_keyword")
+#   not_flooring_item    — a flooring word, but the item isn't floor covering
+#                          (vehicle parts, floor-care equipment repair)
+RELEVANCE_REASONS = ("non_flooring_service", "other_trade", "claude_rejected", "no_keyword",
+                     "not_flooring_item")
+
+# Titles that hit a flooring keyword but aren't floor-covering work: transit /
+# wheelchair-ramp parts ("LOW FLOOR", "W/O FLOORING"), trailer and steel floor
+# plates, floor-care machines. Real BidNet rows, Oct 2026.
+FLOORING_NOISE_PATTERNS = [
+    "low floor", "w/o flooring", "without flooring", "floor plate", "walking floor",
+    "floor care equipment", "floor scrubber", "floor machine", "floor sweeper",
+    "wheelchair",
+]
 
 # _relevance_reason may invoke _claude_relevance (a network call). Cache the
 # verdict by title so the per-scrape _is_relevant() call and the final
@@ -269,6 +281,8 @@ def _relevance_reason(title: str, description: str = "") -> str | None:
 def _compute_relevance_reason(title: str, description: str = "") -> str | None:
     # Non-flooring service contracts (janitorial / pest / landscaping / glass) are
     # never a fit — bail before any keyword match.
+    if any(p in (title or "").lower() for p in FLOORING_NOISE_PATTERNS):
+        return "not_flooring_item"
     if _is_non_flooring_service(title, description):
         return "non_flooring_service"
     # Other-trade projects (roofing / HVAC / paving / …) with no flooring keyword.
@@ -289,6 +303,60 @@ def _compute_relevance_reason(title: str, description: str = "") -> str | None:
 
 def _is_relevant(title: str, description: str = "") -> bool:
     return _relevance_reason(title, description) is None
+
+
+# ---------------------------------------------------------------------------
+# Scope tier (Phase 2, Ben: "Prime flooring scope first. Multi-trade GC jobs
+# only if flooring is a separate package."). Set on relevant bids only:
+#   prime    flooring / floor covering is the whole job (install, supply or care)
+#   package  a separate flooring trade package of a larger project
+#            ("… Modernization: Floor Coverings", "… - Flooring (CSLB C15)")
+#   mixed    flooring named alongside other scopes ("Paint & Flooring",
+#            "Carpet/Furniture/Asbestos") or a renovation Claude judged flooring-led
+# General-construction jobs where flooring is incidental are already rejected
+# (claude_rejected) — they belong with the GC watchlist / email invitations.
+# ---------------------------------------------------------------------------
+
+SCOPE_TIERS = ("prime", "package", "mixed")
+
+_PACKAGE_MARKER_RE = re.compile(
+    r"bid package|\bbp[\s#-]*\d|\bpackage\b|division 0?9\b|\b09 ?6\d ?\d\d\b|\bc-?15\b|cslb c15")
+# Words that mark the part before a separator as a larger project. Not
+# "building" / "construction" alone — "BLDG. 380 – Carpet Replacement" and
+# "Construction Services - Floor Replacement at …" are plain flooring jobs.
+_PROJECT_WORD_RE = re.compile(
+    r"moderni[sz]ation|renovation|rehabilitation|\bproject\b|campus|\bplant\b|"
+    r"\bschool\b|improvements?|tenant improvement|expansion|increment|\bphase\b")
+# Other scopes named next to flooring. A flooring renovation / abatement is
+# still flooring-only, so those words don't count on their own.
+_MIXED_SCOPE_RE = re.compile(
+    r"\bpaint|furniture|asbestos|\blocker|ceiling|casework|drywall|\bdoors?\b|"
+    r"lighting|restroom|bathroom|general construction|remodel|tenant improvement|"
+    r"(?<!flooring )renovation|moderni[sz]ation")
+_PART_SPLIT_RE = re.compile(r"\s*:\s*|\s+[-–—]\s+|\s*-\s*(?=flooring|floor|carpet)")
+
+
+def _has_flooring_term(text: str) -> bool:
+    return (any(kw in text for kw in RELEVANT_KEYWORDS)
+            or any(p in text for p in FLOORING_SERVICE_PATTERNS)
+            or "floor" in text)
+
+
+def scope_tier(title: str) -> str:
+    """Tier a relevant bid's title: 'prime' | 'package' | 'mixed'."""
+    t = (title or "").lower()
+    parts = [p for p in _PART_SPLIT_RE.split(t) if p.strip()]
+    if len(parts) > 1:
+        head, tail = " ".join(parts[:-1]), parts[-1]
+        if (_has_flooring_term(tail) and not _has_flooring_term(head)
+                and not _MIXED_SCOPE_RE.search(tail)
+                and (_PROJECT_WORD_RE.search(head) or _PACKAGE_MARKER_RE.search(t))):
+            return "package"
+    if _PACKAGE_MARKER_RE.search(t) and _has_flooring_term(t) and not _MIXED_SCOPE_RE.search(t):
+        return "package"
+    if _MIXED_SCOPE_RE.search(t):
+        return "mixed"
+    return "prime"
 
 
 def stamp_relevance_reasons(bids: list[dict]) -> None:
@@ -2850,11 +2918,14 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     # Stamp why the filter rejected each non-relevant bid (cache hit — the
     # verdict was computed during scraping). Powers the /filtered audit view.
     stamp_relevance_reasons(deduped)
+    for b in deduped:
+        b["scope_tier"] = scope_tier(b.get("title", "")) if b.get("is_relevant") else None
 
     # Sort: relevant first, then by soonest due date
     today = date.today()
     deduped.sort(key=lambda b: (
         not b["is_relevant"],
+        SCOPE_TIERS.index(b["scope_tier"]) if b.get("scope_tier") else len(SCOPE_TIERS),
         b["due_date"] or date(9999, 1, 1),
     ))
 

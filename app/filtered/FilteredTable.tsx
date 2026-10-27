@@ -42,8 +42,8 @@ const GROUPS: Group[] = [
   {
     key: 'other_noise',
     title: 'Other trades',
-    sub: 'Roofing, HVAC, paving, janitorial, and similar — no floor scope. Mostly genuine noise.',
-    reasons: ['other_trade', 'non_flooring_service'],
+    sub: 'Roofing, HVAC, paving, janitorial, vehicle / floor-care equipment parts, and similar — no floor-covering scope. Mostly genuine noise.',
+    reasons: ['other_trade', 'non_flooring_service', 'not_flooring_item'],
     collapsedByDefault: true,
   },
   {
