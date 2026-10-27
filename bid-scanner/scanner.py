@@ -410,6 +410,141 @@ async def _search_keyword(page, keyword: str) -> list[dict]:
         return []
 
 
+# ---------------------------------------------------------------------------
+# BidNet detail pages (logged in). The public listing has no agency or location,
+# so every BidNet bid used to land as geo "unknown". With FCU's paid account the
+# detail page carries a structured Location ("San Diego County"), pre-bid /
+# job-walk events with Mandatory/Optional attendance, contact and description.
+# ---------------------------------------------------------------------------
+
+BIDNET_DETAIL_CACHE = os.path.join(os.path.dirname(__file__), "output", "bidnet_detail_cache.json")
+BIDNET_DETAIL_MAX = 120          # safety cap per scan (~50 listed on a normal day)
+
+_BN_DATETIME_RE = re.compile(r"^(\d{1,2}/\d{1,2}/\d{4})\b")
+_BN_DESC_STOP = ("See more", "See less", "For more information", "Buyer Preferences",
+                 "Pre-Bidding Events", "Disclaimer", "Documents", "Commodity Codes")
+
+
+def parse_bidnet_detail(lines: list[str]) -> dict:
+    """
+    Pull structured fields out of a logged-in BidNet detail page's text lines.
+    Returns {location, description, contact_email, walk_date, walk_mandatory};
+    a field is None when the page doesn't state it.
+    """
+    out = {"location": None, "description": None, "contact_email": None,
+           "walk_date": None, "walk_mandatory": None}
+
+    def after(label: str) -> str | None:
+        try:
+            return lines[lines.index(label) + 1]
+        except (ValueError, IndexError):
+            return None
+
+    loc = after("Location")
+    if loc and loc.upper() != "LOCATION":
+        out["location"] = loc
+
+    if "Description" in lines:
+        desc = []
+        for l in lines[lines.index("Description") + 1:]:
+            if l.startswith(_BN_DESC_STOP):
+                break
+            desc.append(l)
+        out["description"] = " ".join(desc)[:4000] or None
+
+    if "Contact Information" in lines:
+        for l in lines[lines.index("Contact Information") + 1:][:5]:
+            if re.fullmatch(r"[\w.+-]+@[\w-]+(\.[\w-]+)+", l):
+                out["contact_email"] = l.lower()
+                break
+
+    # Pre-bid / job-walk events: "Event Type / <type> / Attendance / <Mandatory|
+    # Optional> / Event date / <MM/DD/YYYY hh:mm>". Earliest event wins; the walk
+    # is mandatory if any event is.
+    events = []
+    for i, l in enumerate(lines):
+        if l != "Event Type":
+            continue
+        block = lines[i:i + 8]
+        att = next((block[j + 1] for j, x in enumerate(block[:-1]) if x == "Attendance"), "")
+        when = next((block[j + 1] for j, x in enumerate(block[:-1]) if x == "Event date"), "")
+        m = _BN_DATETIME_RE.match(when)
+        events.append((_parse_date(m.group(1)) if m else None, att.lower()))
+    if not events:
+        # Some pages only list "Prebid Conference" under Dates
+        m = _BN_DATETIME_RE.match(after("Prebid Conference") or "")
+        if m:
+            events.append((_parse_date(m.group(1)), ""))
+    if events:
+        dated = sorted(d for d, _ in events if d)
+        out["walk_date"] = dated[0] if dated else None
+        atts = [a for _, a in events if a]
+        out["walk_mandatory"] = ("mandatory" in atts) if atts else None
+    return out
+
+
+async def _enrich_bidnet_details(page, bids: list[dict]) -> None:
+    """Log in, open each BidNet bid's detail page (cached by bid ID), and stamp
+    location / description / job walk onto the bid. Re-runs relevance with the
+    description. Never fatal — a failed login just leaves bids as they were."""
+    import json
+    from parser import _bidnet_login
+
+    try:
+        with open(BIDNET_DETAIL_CACHE) as f:
+            cache = json.load(f)
+    except (OSError, ValueError):
+        cache = {}
+
+    todo = [b for b in bids if b.get("bid_id") and "/solicitations/" in (b.get("url") or "")
+            and "/public/solicitations/open" not in b["url"]]
+    missing = [b for b in todo if b["bid_id"] not in cache][:BIDNET_DETAIL_MAX]
+    if missing:
+        if not await _bidnet_login(page):
+            print("  ⚠ BidNet login failed — detail pages skipped (location/job walk stay blank)")
+            missing = []
+        for b in missing:
+            try:
+                await page.goto(b["url"], wait_until="domcontentloaded", timeout=25000)
+                await page.wait_for_timeout(1500)
+                more = await page.query_selector("text=See more")
+                if more:
+                    await more.click(timeout=3000)
+                    await page.wait_for_timeout(300)
+                text = await page.inner_text("body")
+                detail = parse_bidnet_detail([l.strip() for l in text.split("\n") if l.strip()])
+                if detail["walk_date"]:
+                    detail["walk_date"] = detail["walk_date"].isoformat()
+                cache[b["bid_id"]] = detail
+            except Exception as e:
+                print(f"    ⚠ BidNet detail {b['bid_id']}: {e}")
+
+    enriched = 0
+    for b in todo:
+        d = cache.get(b["bid_id"])
+        if not d:
+            continue
+        enriched += 1
+        b["location_raw"] = d.get("location")
+        b["pop_raw"] = d.get("location") or ""
+        b["description"] = d.get("description")
+        b["contact_email"] = d.get("contact_email")
+        b["walk_date"] = _parse_date(d["walk_date"]) if d.get("walk_date") else None
+        b["walk_mandatory"] = d.get("walk_mandatory")
+        if b["description"]:
+            reason = _compute_relevance_reason(b["title"], b["description"])
+            _RELEVANCE_REASON_CACHE[(b["title"] or "").strip().lower()] = reason
+            b["is_relevant"] = reason is None
+    print(f"  ✓ BidNet details: {enriched}/{len(todo)} bids ({len(missing)} fetched this run)")
+
+    try:
+        os.makedirs(os.path.dirname(BIDNET_DETAIL_CACHE), exist_ok=True)
+        with open(BIDNET_DETAIL_CACHE, "w") as f:
+            json.dump(cache, f)
+    except OSError as e:
+        print(f"    ⚠ could not write BidNet detail cache: {e}")
+
+
 def _dedup(bids: list[dict]) -> list[dict]:
     """Remove duplicates by bid_id, then title, then LAUSD project number.
 
@@ -2569,11 +2704,14 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
                 print("Searching BidNet Direct (CA public bids)...")
                 with funnel.guard("BidNet Direct"):
                     page = await context.new_page()
+                    bn_bids = []
                     for keyword in keywords:
                         bids = await _search_keyword(page, keyword)
                         for b in bids:
                             b.setdefault("source", "BidNet Direct")
-                        all_bids.extend(bids)
+                        bn_bids.extend(bids)
+                    await _enrich_bidnet_details(page, bn_bids)
+                    all_bids.extend(bn_bids)
                     await page.close()
 
             # VendorLine covers every PlanetBids agency in one authenticated
