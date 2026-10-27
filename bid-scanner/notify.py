@@ -334,37 +334,84 @@ _TIER_RANK = {"prime": 0, "package": 1, "mixed": 2}
 _CLOSED_STATUSES = ("expired", "no_bid", "submitted")
 
 
+# A bid with no due date stays "open" forever unless something retires it.
+# Drop it from the email once no source has listed it for this many days.
+NO_DUE_STALE_DAYS = 3
+
+_FEED_COLUMNS = ("bid_id,title,agency,source,county,region,geo_status,due_date,due_date_raw,"
+                 "url,scope_tier,walk_date,walk_mandatory,description,location_raw,bid_status,"
+                 "first_seen_at,last_seen_at")
+
+
 def fetch_open_feed() -> list[dict]:
-    """Open relevant bids that aren't out of area, with job-walk info merged in
-    from the listing (bids.walk_*) or, failing that, the parsed spec."""
+    """Open relevant bids that aren't out of area — see prepare_feed."""
     from datetime import date as _date
-    from db import get_client
+    from db import get_client, missing_bid_columns
     sb = get_client()
     if not sb:
         return []
+    missing = missing_bid_columns()
+    cols = ",".join(c for c in _FEED_COLUMNS.split(",") if c not in missing)
     today = _date.today().isoformat()
-    rows = (sb.table("bids")
-            .select("bid_id,title,agency,source,county,region,geo_status,due_date,due_date_raw,"
-                    "url,scope_tier,walk_date,walk_mandatory,bid_status,first_seen_at")
+    rows = (sb.table("bids").select(cols)
             .eq("is_relevant", True)
             .or_(f"due_date.gte.{today},due_date.is.null")
             .execute().data or [])
-    rows = [r for r in rows
-            if r.get("geo_status") != "out" and r.get("bid_status") not in _CLOSED_STATUSES]
-    if rows:
-        ids = [r["bid_id"] for r in rows]
-        specs = {}
-        for i in range(0, len(ids), 200):
-            for s in (sb.table("bid_specs").select("bid_id,walk_required,walk_date")
-                      .in_("bid_id", ids[i:i + 200]).execute().data or []):
-                specs[s["bid_id"]] = s
-        for r in rows:
-            s = specs.get(r["bid_id"])
-            if s and not r.get("walk_date") and s.get("walk_date"):
-                r["walk_date"] = s["walk_date"]
-            if s and r.get("walk_mandatory") is None and s.get("walk_required") is not None:
-                r["walk_mandatory"] = s["walk_required"]
-    return rows
+    specs = {}
+    ids = [r["bid_id"] for r in rows]
+    for i in range(0, len(ids), 200):
+        for sp in (sb.table("bid_specs").select("bid_id,walk_required,walk_date")
+                   .in_("bid_id", ids[i:i + 200]).execute().data or []):
+            specs[sp["bid_id"]] = sp
+    return prepare_feed(rows, specs)
+
+
+def _title_key(title: str | None) -> str:
+    import re
+    return re.sub(r"[^a-z0-9]", "", (title or "").lower())[:60]
+
+
+def prepare_feed(rows: list[dict], specs: dict, now=None) -> list[dict]:
+    """
+    Turn raw open-bid rows into email rows:
+      - drop out-of-area and closed (expired / no_bid / submitted) bids
+      - drop no-due-date bids not listed by any source for NO_DUE_STALE_DAYS
+      - merge job-walk info from the parsed spec when the listing had none;
+        `walk_checked` says whether anything (listing detail page or parsed
+        docs) actually looked for a walk
+      - collapse the same bid seen on two sources (BidNet + VendorLine …),
+        keeping the row with the most information
+    """
+    from datetime import datetime as _dt, timedelta, timezone as _tz
+    now = now or _dt.now(_tz.utc)
+    stale_before = (now - timedelta(days=NO_DUE_STALE_DAYS)).isoformat()
+
+    kept = []
+    for r in rows:
+        if r.get("geo_status") == "out" or r.get("bid_status") in _CLOSED_STATUSES:
+            continue
+        if not r.get("due_date") and (r.get("last_seen_at") or "") < stale_before:
+            continue
+        sp = specs.get(r["bid_id"])
+        if sp and not r.get("walk_date") and sp.get("walk_date"):
+            r["walk_date"] = sp["walk_date"]
+        if sp and r.get("walk_mandatory") is None and sp.get("walk_required") is not None:
+            r["walk_mandatory"] = sp["walk_required"]
+        r["walk_checked"] = (bool(sp) or r.get("description") is not None
+                             or r.get("location_raw") is not None   # listing detail page read
+                             or r.get("walk_date") is not None or r.get("walk_mandatory") is not None)
+        kept.append(r)
+
+    def richness(r):
+        return (r.get("geo_status") == "in", r.get("walk_checked", False),
+                bool(r.get("due_date")), bool(r.get("url")))
+
+    best: dict[str, dict] = {}
+    for r in kept:
+        k = _title_key(r.get("title")) or r["bid_id"]
+        if k not in best or richness(r) > richness(best[k]):
+            best[k] = r
+    return list(best.values())
 
 
 def _days_until(d: str | None, today) -> int | None:
@@ -429,8 +476,10 @@ def _feed_row(b: dict, is_new: bool, today) -> str:
         walk = f'<span style="color:#8E8E93;">{"Mandatory walk" if mand else "Walk"} was {_fmt_day(b["walk_date"])}</span>'
     elif mand:
         walk = '<span style="color:#FF9F0A;">Mandatory walk — date not read, check the docs</span>'
-    else:
+    elif b.get("walk_checked"):
         walk = '<span style="color:#8E8E93;">No job walk listed</span>'
+    else:
+        walk = '<span style="color:#8E8E93;">Job walk: not checked yet — bid documents not read</span>'
 
     link = dashboard_bid_url(b["bid_id"]) if b.get("bid_id") else (b.get("url") or DASHBOARD_URL)
     return f"""

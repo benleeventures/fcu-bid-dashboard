@@ -1606,13 +1606,25 @@ async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
     Fail-fast: one attempt, short timeouts — never stall the nightly scan.
     """
     print("\nSearching Cal eProcure (CA state portal)...")
+    # The portal sometimes takes >30s to render the table (seen 2026-10-27), so
+    # wait up to 60s and reload once before giving up for the day.
+    loaded = False
+    for attempt in (1, 2):
+        try:
+            await page.goto(CALEPROCURE_URL, wait_until="domcontentloaded", timeout=30000)
+            # Rows are cloned from an empty template after load — wait for real IDs
+            await page.wait_for_function(
+                """() => Array.from(document.querySelectorAll("td[data-if-label='tdEventId']"))
+                             .filter(td => td.innerText.trim()).length > 5""",
+                timeout=60000)
+            loaded = True
+            break
+        except Exception as e:
+            print(f"  ⚠ Cal eProcure attempt {attempt} failed: {str(e)[:80]}")
+    if not loaded:
+        print("  ⚠ Cal eProcure unavailable today")
+        return []
     try:
-        await page.goto(CALEPROCURE_URL, wait_until="domcontentloaded", timeout=20000)
-        # Rows are cloned from an empty template after load — wait for real IDs
-        await page.wait_for_function(
-            """() => Array.from(document.querySelectorAll("td[data-if-label='tdEventId']"))
-                         .filter(td => td.innerText.trim()).length > 5""",
-            timeout=30000)
         await page.wait_for_timeout(1500)
         rows = await page.evaluate("""() => {
             const seen = new Set(), out = [];

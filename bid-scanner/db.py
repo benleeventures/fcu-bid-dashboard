@@ -33,6 +33,54 @@ def get_client():
     return _client
 
 
+# Columns added to `bids` by migrations the scanner writes to. If one hasn't
+# been applied yet, the scanner keeps running without it (writes skip the
+# column) and says which SQL file to run — instead of every insert failing.
+MIGRATION_COLUMNS = {
+    "relevance_reason": "supabase/add_relevance_reason.sql",
+    "region":           "supabase/add_region.sql",
+    "description":      "supabase/add_listing_details.sql",
+    "location_raw":     "supabase/add_listing_details.sql",
+    "contact_email":    "supabase/add_listing_details.sql",
+    "walk_date":        "supabase/add_listing_details.sql",
+    "walk_mandatory":   "supabase/add_listing_details.sql",
+    "scope_tier":       "supabase/add_scope_tier.sql",
+}
+_missing_columns: set | None = None
+
+
+def missing_bid_columns() -> set:
+    """Migration columns not present on `bids` (cached per process)."""
+    global _missing_columns
+    if _missing_columns is not None:
+        return _missing_columns
+    sb = get_client()
+    if not sb:
+        return set()
+    missing = set()
+    for col in MIGRATION_COLUMNS:
+        try:
+            sb.table("bids").select(col).limit(1).execute()
+        except Exception as e:
+            if "does not exist" in str(e):
+                missing.add(col)
+    _missing_columns = missing
+    if missing:
+        files = sorted({MIGRATION_COLUMNS[c] for c in missing})
+        print(f"  ⚠ DB missing columns {sorted(missing)} — run in Supabase SQL editor: "
+              f"{', '.join(files)}. Continuing without them.")
+    return missing
+
+
+def migration_warning() -> str:
+    """One-line summary for the scan's error_summary, or '' when all is applied."""
+    missing = missing_bid_columns()
+    if not missing:
+        return ""
+    files = sorted({MIGRATION_COLUMNS[c] for c in missing})
+    return f"DB migration not applied: {', '.join(files)}"
+
+
 def _serialize_bid(bid: dict) -> dict:
     """Convert scanner bid dict to Supabase row format."""
     def _date_str(d):
@@ -80,7 +128,9 @@ def upsert_bids(bids: list[dict]) -> tuple[int, int]:
     if not bids:
         return 0, 0
 
-    rows = [_serialize_bid(b) for b in bids if b.get("bid_id")]
+    missing = missing_bid_columns()
+    rows = [{k: v for k, v in _serialize_bid(b).items() if k not in missing}
+            for b in bids if b.get("bid_id")]
 
     # Fetch existing bid_ids to distinguish new vs updated
     existing_ids = set()
@@ -139,13 +189,14 @@ def _refresh_geo(sb, rows: list[dict]) -> None:
     improvements (new districts, Kern, region) reach rows already in the table.
     One update per distinct (county, geo_status, region) group.
     """
+    fields = [f for f in _GEO_FIELDS if f not in missing_bid_columns()]
     groups: dict[tuple, list[str]] = {}
     for r in rows:
-        groups.setdefault(tuple(r[f] for f in _GEO_FIELDS), []).append(r["bid_id"])
+        groups.setdefault(tuple(r[f] for f in fields), []).append(r["bid_id"])
     try:
         for values, ids in groups.items():
             for i in range(0, len(ids), 100):
-                sb.table("bids").update(dict(zip(_GEO_FIELDS, values))) \
+                sb.table("bids").update(dict(zip(fields, values))) \
                     .in_("bid_id", ids[i:i + 100]).execute()
     except Exception as e:
         print(f"  ⚠ DB geo refresh error: {e}")
@@ -160,7 +211,7 @@ def _refresh_details(sb, rows: list[dict]) -> None:
     Only fields the source actually stated — a blank never erases a value."""
     try:
         for r in rows:
-            update = {f: r[f] for f in _DETAIL_FIELDS if r.get(f) is not None}
+            update = {f: r[f] for f in _DETAIL_FIELDS if r.get(f) is not None}  # missing cols never in r
             if update:
                 sb.table("bids").update(update).eq("bid_id", r["bid_id"]).execute()
     except Exception as e:

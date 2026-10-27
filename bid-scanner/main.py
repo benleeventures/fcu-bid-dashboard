@@ -248,6 +248,9 @@ async def main():
     # --- Scheduled / full run ---
     from funnel import ScanFunnel
     funnel = ScanFunnel(mode=SOURCE or "full")
+    # Unapplied migration -> flag the run (⚠ on /scanner) instead of failing inserts
+    from db import migration_warning
+    funnel.error_summary = migration_warning()
     bids = await run_scan(source=SOURCE, headless=HEADLESS, funnel=funnel)
     duration = time.time() - t_start
     funnel.finish(duration)
