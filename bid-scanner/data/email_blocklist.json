@@ -1,0 +1,22 @@
+{
+  "_comment": "email_intake.py skips these before any Claude call. domains match the sender domain and its subdomains; senders match a substring of the address or display name; subject_patterns are case-insensitive regexes. Add estimating / takeoff services here as they show up in the intake log.",
+  "domains": [],
+  "senders": [
+    "bids@floorcoveringunlimited.com",
+    "mailer-daemon",
+    "postmaster@"
+  ],
+  "subject_patterns": [
+    "\\bpay ?app(lication)?\\b",
+    "\\bEFT\\b.*notif",
+    "\\b(ACH|wire)\\b.*(notif|remit|payment)",
+    "\\bupdated COI\\b",
+    "mail ?(box|account) security",
+    "password (expir|reset)",
+    "verify your (mailbox|account|email)",
+    "\\bvoicemail\\b",
+    "\\b(takeoff|take-off|estimating) services?\\b",
+    "\\boutsourc(e|ed|ing) estimat",
+    "\\bunsubscribe\\b.*\\bbid leads\\b"
+  ]
+}

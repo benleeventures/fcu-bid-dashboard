@@ -2,7 +2,8 @@
 #
 # FCU scheduled jobs — installer.
 #
-# The launchd jobs (scraper, parser, digest, jobwalk, expirer, supervisor) run
+# The launchd jobs (scraper, parser, digest, jobwalk, expirer, supervisor,
+# emailintake) run
 # out of a DEDICATED git worktree at ~/fcu-cron kept on a DETACHED HEAD at
 # origin/main — no human ever works in it, and it does not hold the `main`
 # branch (so the primary checkout can). Each job does
@@ -19,8 +20,8 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"   # primary checkout
 CRON_TREE="$HOME/fcu-cron"
 LA="$HOME/Library/LaunchAgents"
-JOBS=(scraper parser digest jobwalk expirer supervisor)
-RUNTIME_FILES=(bid-scanner/.env bid-scanner/cookies.json bid-scanner/cookies_opengov.json)
+JOBS=(scraper parser digest jobwalk expirer supervisor emailintake)
+RUNTIME_FILES=(bid-scanner/.env bid-scanner/cookies.json bid-scanner/cookies_opengov.json bid-scanner/gmail_intake_client.json bid-scanner/gmail_intake_token.json)
 
 echo "primary checkout : $REPO"
 echo "cron worktree    : $CRON_TREE"
