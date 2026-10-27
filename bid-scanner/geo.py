@@ -3,10 +3,12 @@ FCU Bid Scanner — geographic + agency-type classification.
 
 Single source of truth for the spec's two gating filters:
 
-  §1  Geographic — hard boundary. In scope: Los Angeles, Orange, Ventura,
-      Riverside, San Bernardino, San Diego counties. Everything else (other
-      CA counties, other states, federal work outside these six) does not
-      appear.
+  §1  Geographic — hard boundary. In scope (Phase 2, Ben 2026-10-21: "San
+      Diego to Bakersfield, Inland Empire included"): Los Angeles, Ventura,
+      Kern (North) and Orange, Riverside, San Bernardino, San Diego (South).
+      Everything else (other CA counties, other states) does not appear.
+      Every in-scope bid also gets a region — North routes to Melvin, South
+      to Robert.
 
   §2  Agency type — tag each bid so the tracker can prioritise the agencies
       that bid year-round and hold K-12 (dormant until February) separately.
@@ -31,10 +33,27 @@ The primary signal is the `agency` string, which is almost always
 
 import re
 
-# Name is legacy (used to be exactly four) — now six counties. Left unrenamed
+
+def _norm(s: str) -> str:
+    return re.sub(r"\s+", " ", (s or "").lower()).strip()
+
+
+# Name is legacy (used to be exactly four) — now seven counties. Left unrenamed
 # since other modules import it by this name.
-FOUR_COUNTIES = ("Los Angeles", "Orange", "Ventura", "Riverside",
+FOUR_COUNTIES = ("Los Angeles", "Orange", "Ventura", "Kern", "Riverside",
                   "San Bernardino", "San Diego")
+
+# Region routing (Phase 2): North -> Melvin, South -> Robert.
+COUNTY_REGION = {
+    "Los Angeles": "North", "Ventura": "North", "Kern": "North",
+    "Orange": "South", "Riverside": "South", "San Bernardino": "South",
+    "San Diego": "South",
+}
+
+
+def region_for(county: str | None) -> str | None:
+    """'North' | 'South' for an in-scope county, else None."""
+    return COUNTY_REGION.get(county or "")
 
 # ---------------------------------------------------------------------------
 # Incorporated cities of the in-scope counties
@@ -86,6 +105,11 @@ _SD_CITIES = {
     "vista",
 }
 
+_KERN_CITIES = {
+    "bakersfield", "delano", "shafter", "wasco", "arvin", "mcfarland",
+    "tehachapi", "taft", "ridgecrest", "california city", "maricopa",
+}
+
 _RIVERSIDE_CITIES = {
     "riverside", "moreno valley", "corona", "temecula", "murrieta",
     "menifee", "hemet", "perris", "eastvale", "jurupa valley",
@@ -107,6 +131,7 @@ COUNTY_CITIES = {
     "Los Angeles": _LA_CITIES,
     "Orange": _OC_CITIES,
     "Ventura": _VENTURA_CITIES,
+    "Kern": _KERN_CITIES,
     "Riverside": _RIVERSIDE_CITIES,
     "San Bernardino": _SAN_BERNARDINO_CITIES,
     "San Diego": _SD_CITIES,
@@ -142,6 +167,150 @@ _CITY_TO_COUNTY = {}
 for _county, _cities in COUNTY_CITIES.items():
     for _c in _cities:
         _CITY_TO_COUNTY[_c] = _county
+
+# Neighborhoods / unincorporated communities that show up as a bid's location
+# but aren't incorporated cities (mostly City of LA neighborhoods). Only names
+# that don't collide with a place elsewhere in CA.
+_PLACE_COUNTY = {
+    **dict.fromkeys((
+        "northridge", "chatsworth", "van nuys", "north hollywood", "sherman oaks",
+        "encino", "tarzana", "woodland hills", "canoga park", "reseda", "sylmar",
+        "pacoima", "granada hills", "porter ranch", "studio city", "panorama city",
+        "san pedro", "wilmington", "harbor city", "valencia", "newhall", "saugus",
+        "canyon country", "stevenson ranch", "altadena", "hacienda heights",
+        "rowland heights", "east los angeles", "boyle heights", "watts",
+    ), "Los Angeles"),
+    **dict.fromkeys(("newbury park", "oak park"), "Ventura"),
+    **dict.fromkeys(("rosamond", "lamont", "oildale", "mojave", "frazier park",
+                     "boron"), "Kern"),
+    **dict.fromkeys(("ladera ranch", "coto de caza", "rossmoor", "midway city"),
+                    "Orange"),
+}
+
+# Community college districts / colleges, CSU and UC campuses in scope. Matched
+# as substrings of the agency (then title) — these institutions post on the
+# statewide feeds (BidNet, VendorLine, Cal eProcure) with no city in the name.
+_INSTITUTION_COUNTY = {
+    **dict.fromkeys((
+        "los angeles community college", "laccd", "pasadena city college",
+        "pasadena area community college", "glendale community college",
+        "long beach city college", "long beach community college",
+        "el camino college", "el camino community college", "compton college",
+        "compton community college", "santa monica college",
+        "santa monica community college", "college of the canyons",
+        "santa clarita community college", "rio hondo college",
+        "rio hondo community college", "cerritos college",
+        "cerritos community college", "citrus college", "citrus community college",
+        "mt. san antonio", "mt san antonio", "mount san antonio",
+        "antelope valley college", "antelope valley community college",
+        "northridge", "csun", "cal state la", "cal state los angeles",
+        "california state university, los angeles", "csulb", "long beach state",
+        "california state university, long beach", "dominguez hills",
+        "cal poly pomona", "ucla", "university of california, los angeles",
+    ), "Los Angeles"),
+    **dict.fromkeys((
+        "ventura county community college", "moorpark college", "oxnard college",
+        "ventura college", "channel islands",
+    ), "Ventura"),
+    **dict.fromkeys((
+        "kern community college", "bakersfield college", "cerro coso",
+        "csu bakersfield", "cal state bakersfield",
+        "california state university, bakersfield",
+    ), "Kern"),
+    **dict.fromkeys((
+        "coast community college", "golden west college", "orange coast college",
+        "north orange county community college", "fullerton college",
+        "cypress college", "rancho santiago", "santa ana college",
+        "santiago canyon college", "south orange county community college",
+        "saddleback college", "irvine valley college", "cal state fullerton",
+        "csuf", "california state university, fullerton", "uc irvine",
+        "university of california, irvine",
+    ), "Orange"),
+    **dict.fromkeys((
+        "riverside community college", "norco college", "moreno valley college",
+        "mt. san jacinto", "mt san jacinto", "mount san jacinto",
+        "desert community college", "college of the desert", "uc riverside",
+        "university of california, riverside",
+    ), "Riverside"),
+    **dict.fromkeys((
+        "san bernardino community college", "san bernardino valley college",
+        "crafton hills", "chaffey", "victor valley college",
+        "victor valley community college", "barstow community college",
+        "copper mountain college", "cal state san bernardino", "csusb",
+        "california state university, san bernardino",
+    ), "San Bernardino"),
+    **dict.fromkeys((
+        "san diego community college", "miramar college", "san diego mesa college",
+        "san diego city college", "grossmont", "cuyamaca", "miracosta",
+        "palomar college", "palomar community college", "southwestern college",
+        "southwestern community college", "san diego state", "sdsu",
+        "cal state san marcos", "csusm", "uc san diego", "ucsd",
+        "university of california, san diego",
+    ), "San Diego"),
+}
+_INSTITUTION_RE = [(re.compile(rf"\b{re.escape(k)}\b"), c)
+                   for k, c in _INSTITUTION_COUNTY.items()]
+
+# ---------------------------------------------------------------------------
+# K-12 school district -> county, for every CA district (CDE directory via
+# gis.data.ca.gov "California School District Offices 2025-26", refresh with
+# data/refresh_school_districts.py). Resolves districts in AND out of scope:
+# "Sulphur Springs Union School District" -> Los Angeles, "Kern High School
+# District" -> Kern, "Sacramento City Unified" -> out.
+# ---------------------------------------------------------------------------
+
+_DISTRICT_TYPE_WORDS_RE = re.compile(
+    r"\b(?:school district|unified|union|joint|elementary|high|district|"
+    r"school|schools|usd|uhsd|esd|jusd|juhsd|sd)\b")
+_DISTRICT_MARKER_RE = re.compile(
+    r"\b(?:unified|school district|usd|uhsd|esd|jusd|juhsd)\b")
+
+
+def _district_core(name: str) -> str:
+    n = _norm(name).replace("-", " ")
+    n = _DISTRICT_TYPE_WORDS_RE.sub(" ", n)
+    return re.sub(r"\s+", " ", n).strip(" .,'")
+
+
+def _load_school_districts() -> dict[str, str | None]:
+    """district core name -> county (None when the core is shared across counties)."""
+    import csv
+    import os
+    path = os.path.join(os.path.dirname(__file__), "data", "ca_school_districts.csv")
+    index: dict[str, set] = {}
+    try:
+        with open(path, newline="") as f:
+            for row in csv.DictReader(f):
+                if row["district_type"] not in ("Unified", "Elementary", "High"):
+                    continue
+                core = _district_core(row["district_name"])
+                if core:
+                    index.setdefault(core, set()).add(row["county"])
+    except OSError:
+        return {}
+    return {core: (next(iter(c)) if len(c) == 1 else None) for core, c in index.items()}
+
+
+_SCHOOL_DISTRICT_COUNTY = _load_school_districts()
+
+
+def school_district_county(text: str) -> str | None:
+    """
+    Find a school district named in `text` and return its county (any CA
+    county, in scope or not). Looks at up to six words before each district
+    marker ("Unified", "School District", "USD"…), longest match first.
+    """
+    text_l = _norm(text).replace("-", " ")
+    for m in _DISTRICT_MARKER_RE.finditer(text_l):
+        words = re.sub(r"[^a-z0-9 .']", " ", text_l[:m.start()]).split()[-6:]
+        for j in range(len(words), 0, -1):
+            core = _district_core(" ".join(words[-j:]))
+            if core in _SCHOOL_DISTRICT_COUNTY:
+                county = _SCHOOL_DISTRICT_COUNTY[core]
+                if county:
+                    return county
+                break
+    return None
 
 # ---------------------------------------------------------------------------
 # Drive-time bands from the FCU shop (9601 Cozycroft Ave, Chatsworth 91311).
@@ -218,6 +387,7 @@ _BAND_D_CITIES = frozenset({
 
 _COUNTY_DEFAULT_BAND = {
     "Ventura": "B",
+    "Kern": "D",
     "Los Angeles": "C",
     "Orange": "C",
     "Riverside": "D",
@@ -263,7 +433,7 @@ _OUT_OF_SCOPE_MARKERS = {
     "citrus heights", "rancho cordova", "davis", "woodland", "yuba city",
     "stockton", "modesto", "turlock", "tracy", "manteca", "lodi", "merced",
     "fresno", "clovis", "visalia", "tulare", "hanford", "madera",
-    "bakersfield", "kern county", "delano",
+    "porterville", "lemoore",
     # Central Coast (outside scope)
     "santa barbara", "santa maria", "lompoc", "san luis obispo",
     "paso robles", "monterey", "salinas", "seaside", "santa cruz",
@@ -280,6 +450,7 @@ _COUNTY_PHRASE_TO_COUNTY = {
     "la county": "Los Angeles",
     "orange county": "Orange",
     "ventura county": "Ventura",
+    "kern county": "Kern",
     "riverside county": "Riverside",
     "san bernardino county": "San Bernardino",
     "san diego county": "San Diego",
@@ -373,7 +544,7 @@ _AGENCY_TYPE_RULES = [
         r"library district|cemetery district|resource conservation", re.I)),
     ("county", re.compile(
         r"county of |\bLA County\b|los angeles county|orange county|"
-        r"ventura county|riverside county|san bernardino county|"
+        r"ventura county|kern county|riverside county|san bernardino county|"
         r"san diego county|county sanitation|county public works",
         re.I)),
     ("state", re.compile(
@@ -448,10 +619,6 @@ _FEDERAL_PLACE_COUNTY = {
 }
 
 
-def _norm(s: str) -> str:
-    return re.sub(r"\s+", " ", (s or "").lower()).strip()
-
-
 def _extract_place(agency_l: str) -> str | None:
     """Pull the municipality/place name out of a formatted agency string."""
     for pat in (
@@ -509,6 +676,16 @@ def classify_location(title: str, agency: str, state: str | None = None,
         if re.search(rf"\b{abbr}\b", agency_l):
             return {"county": county, "geo_status": "in"}
 
+    # 0b. K-12 district named in the agency -> its county, in scope or not
+    county = school_district_county(agency_l)
+    if county:
+        return _in_or_out(county)
+
+    # 0c. In-scope college / university campus named in the agency
+    county = _institution_county(agency_l)
+    if county:
+        return {"county": county, "geo_status": "in"}
+
     # 1. Explicit county phrase anywhere
     for phrase, county in _COUNTY_PHRASE_TO_COUNTY.items():
         if phrase in blob:
@@ -542,6 +719,11 @@ def classify_location(title: str, agency: str, state: str | None = None,
         if re.search(rf"\b{re.escape(city)}\b", agency_l):
             return {"county": county, "geo_status": "in"}
 
+    # 4a. In-scope neighborhood / unincorporated community in the agency string
+    county = _place_county(agency_l)
+    if county:
+        return {"county": county, "geo_status": "in"}
+
     # 4b. In-area federal installation named in the agency / place string
     for place_name, county in _FEDERAL_PLACE_COUNTY.items():
         if re.search(rf"\b{re.escape(place_name)}\b", agency_l):
@@ -559,7 +741,35 @@ def classify_location(title: str, agency: str, state: str | None = None,
         if re.search(rf"\b{re.escape(city)}\b", title_l):
             return {"county": county, "geo_status": "in"}
 
+    # 7. Same lookups against the title — BidNet rows carry no agency at all
+    county = school_district_county(title_l)
+    if county:
+        return _in_or_out(county)
+    county = _institution_county(title_l) or _place_county(title_l)
+    if county:
+        return {"county": county, "geo_status": "in"}
+
     return {"county": None, "geo_status": "unknown"}
+
+
+def _in_or_out(county: str) -> dict:
+    if county in FOUR_COUNTIES:
+        return {"county": county, "geo_status": "in"}
+    return {"county": None, "geo_status": "out"}
+
+
+def _institution_county(text_l: str) -> str | None:
+    for pat, county in _INSTITUTION_RE:
+        if pat.search(text_l):
+            return county
+    return None
+
+
+def _place_county(text_l: str) -> str | None:
+    for place, county in _PLACE_COUNTY.items():
+        if re.search(rf"\b{re.escape(place)}\b", text_l):
+            return county
+    return None
 
 
 def classify_agency(agency: str, source: str = "") -> dict:
@@ -597,6 +807,7 @@ PORTAL_COUNTY = {
     "county of riverside": "Riverside",
     "county of san bernardino": "San Bernardino",
     "county of san diego": "San Diego",
+    "county of kern": "Kern",
 }
 
 
@@ -632,4 +843,5 @@ def enrich(bid: dict) -> dict:
         bid.get("title", ""), bid.get("agency", ""), bid.get("state"), known,
         place_text=bid.get("pop_raw", "")))
     bid.update(classify_agency(bid.get("agency", ""), bid.get("source", "")))
+    bid["region"] = region_for(bid.get("county")) if bid.get("geo_status") == "in" else None
     return bid

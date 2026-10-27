@@ -96,6 +96,7 @@ const BAND_D = new Set([
 ])
 const COUNTY_DEFAULT_BAND: Record<string, 'A' | 'B' | 'C' | 'D'> = {
   Ventura: 'B',
+  Kern: 'D',
   'Los Angeles': 'C',
   Orange: 'C',
   Riverside: 'D',

@@ -58,6 +58,7 @@ def _serialize_bid(bid: dict) -> dict:
         "geo_status":     bid.get("geo_status") or None,
         "agency_type":    bid.get("agency_type") or None,
         "is_k12":         bool(bid.get("is_k12", False)),
+        "region":         bid.get("region") or None,
     }
 
 
@@ -115,10 +116,32 @@ def upsert_bids(bids: list[dict]) -> tuple[int, int]:
                 ids = [r["bid_id"] for r in updated_rows[i:i+chunk_size]]
                 sb.table("bids").update({"last_seen_at": now}).in_("bid_id", ids).execute()
             updated_count = len(updated_rows)
+            _refresh_geo(sb, updated_rows)
         except Exception as e:
             print(f"  ⚠ DB update error: {e}")
 
     return new_count, updated_count
+
+
+_GEO_FIELDS = ("county", "geo_status", "region")
+
+
+def _refresh_geo(sb, rows: list[dict]) -> None:
+    """
+    Re-stamp county / geo_status / region on bids we've seen before, so geo.py
+    improvements (new districts, Kern, region) reach rows already in the table.
+    One update per distinct (county, geo_status, region) group.
+    """
+    groups: dict[tuple, list[str]] = {}
+    for r in rows:
+        groups.setdefault(tuple(r[f] for f in _GEO_FIELDS), []).append(r["bid_id"])
+    try:
+        for values, ids in groups.items():
+            for i in range(0, len(ids), 100):
+                sb.table("bids").update(dict(zip(_GEO_FIELDS, values))) \
+                    .in_("bid_id", ids[i:i + 100]).execute()
+    except Exception as e:
+        print(f"  ⚠ DB geo refresh error: {e}")
 
 
 def fetch_undigested_opengov() -> list[dict]:
