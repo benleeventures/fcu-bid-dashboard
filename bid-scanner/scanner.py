@@ -2821,6 +2821,9 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     for b in all_bids:
         enrich(b)
     apply_federal_policy(all_bids)
+    # Last resort for relevant bids no structured source could place
+    from geo_llm import resolve_unknown_locations
+    resolve_unknown_locations(all_bids)
     funnel.note_geo(all_bids)
     before_geo = len(all_bids)
     all_bids = [b for b in all_bids if b.get("geo_status") != "out"]
