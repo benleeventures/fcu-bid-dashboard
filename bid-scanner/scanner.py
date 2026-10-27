@@ -1508,114 +1508,83 @@ CALEPROCURE_URL = "https://caleprocure.ca.gov/pages/Events-BS3/event-search.aspx
 
 async def _search_caleprocure(page, keywords: list[str]) -> list[dict]:
     """
-    Search Cal eProcure (CA state portal) for open flooring bids.
-    Public search — no login required.
+    Cal eProcure (CA state PeopleSoft portal) — public, no login.
 
-    Fail-fast: this PeopleSoft/Angular portal is slow and frequently unavailable,
-    and it has yet to surface a flooring-relevant bid. Give it one short attempt
-    (~15s to load, 2s per keyword) and bail the moment it stops cooperating —
-    never let it stall the whole nightly scan.
+    The event-search page lists EVERY open event (~400) on load, so we read the
+    whole table and filter locally instead of driving the search box. Rows carry
+    stable data-if-label attributes (tdEventId / tdEventName / tdDepName /
+    tdEndDate). The old parser guessed columns from a generic selector, stored
+    the event name as the agency, never parsed a due date, and gave rows
+    positional IDs CAL-0…CAL-99 — so from April 2026 every new event collided
+    with an existing ID and was never saved.
+
+    No per-event detail URL: /event/<business-unit>/<id> needs a department code
+    the list doesn't show. Location comes from the event name (often "… in
+    Shasta County" / "CHP Monterey Area") and the department.
+
+    Fail-fast: one attempt, short timeouts — never stall the nightly scan.
     """
     print("\nSearching Cal eProcure (CA state portal)...")
-    all_bids: list[dict] = []
-
     try:
-        await page.goto(CALEPROCURE_URL, wait_until="domcontentloaded", timeout=15000)
-        await page.wait_for_timeout(5000)  # Angular SPA needs a beat to render the search form
-
-        title = await page.title()
-        if "maintenance" in title.lower() or "error" in title.lower():
-            print("  ⚠ Cal eProcure unavailable (maintenance)")
-            return []
-
-        for keyword in keywords:
-            try:
-                # Find search input — Angular SPA uses various selectors
-                search_input = await page.query_selector(
-                    'input[placeholder*="keyword" i], input[placeholder*="search" i], '
-                    'input[ng-model*="keyword" i], input[id*="keyword" i], '
-                    'input[name*="keyword" i], input[type="search"]'
-                )
-                if not search_input:
-                    # Try finding any visible text input
-                    inputs = await page.query_selector_all('input[type="text"]')
-                    search_input = inputs[0] if inputs else None
-
-                if not search_input:
-                    print("  ⚠ Cal eProcure search UI not present — skipping")
-                    break
-
-                await search_input.click(click_count=3, timeout=5000)
-                await search_input.fill(keyword, timeout=5000)
-                await page.keyboard.press("Enter")
-                await page.wait_for_timeout(2000)
-
-                # Collect bid rows — PeopleSoft/Angular tables
-                rows = await page.query_selector_all(
-                    'tr.ps_grid-row, tr[class*="row"], .bid-row, '
-                    '[class*="event-row"], [class*="result-row"], tbody tr'
-                )
-
-                bid_links = await page.evaluate("""() => {
-                    const results = [];
-                    document.querySelectorAll('a[href*="event"], a[href*="bid"], a[href*="solicitation"]').forEach(a => {
-                        const text = (a.innerText || '').trim();
-                        if (text.length > 5) results.push({ href: a.href, text: text.substring(0, 120) });
-                    });
-                    return results;
-                }""")
-
-                # Parse table rows for structured data
-                row_data = await page.evaluate("""() => {
-                    const rows = [];
-                    document.querySelectorAll('tbody tr, tr.ps_grid-row').forEach(tr => {
-                        const cells = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
-                        if (cells.length >= 3 && cells.some(c => c.length > 3)) rows.push(cells);
-                    });
-                    return rows.slice(0, 100);
-                }""")
-
-                for i, row in enumerate(row_data):
-                    if len(row) < 3:
-                        continue
-                    # Typical PeopleSoft columns: EventID | Title | Agency | PostDate | DueDate | Status
-                    title_cell = next((c for c in row if len(c) > 10 and not re.match(r'^\d{1,2}/\d{1,2}/\d{4}$', c)), row[0] if row else "")
-                    due_raw = next((c for c in row if re.match(r'\d{1,2}/\d{1,2}/\d{4}', c)), "")
-                    agency = row[2] if len(row) > 2 else ""
-                    bid_id = row[0] if re.match(r'[\w-]{3,20}', row[0]) else f"CAL-{i}"
-                    url = bid_links[i]["href"] if i < len(bid_links) else CALEPROCURE_URL
-
-                    if len(title_cell) < 5:
-                        continue
-
-                    all_bids.append({
-                        "bid_id": bid_id,
-                        "title": title_cell,
-                        "agency": agency,
-                        "state": "California",
-                        "published_date": None,
-                        "published_raw": "",
-                        "due_date": _parse_date(due_raw),
-                        "due_date_raw": due_raw,
-                        "is_relevant": _is_relevant(title_cell),
-                        "search_keyword": keyword,
-                        "url": url,
-                        "source": "Cal eProcure",
-                    })
-
-                print(f"  → \"{keyword}\": {len(row_data)} rows, {sum(1 for b in all_bids if b['search_keyword'] == keyword)} parsed")
-
-            except Exception as e:
-                # Portal is not cooperating — stop hammering it, don't burn
-                # ~30s per remaining keyword.
-                print(f"  ⚠ Cal eProcure stopped after '{keyword}': {str(e)[:80]}")
-                break
-
+        await page.goto(CALEPROCURE_URL, wait_until="domcontentloaded", timeout=20000)
+        # Rows are cloned from an empty template after load — wait for real IDs
+        await page.wait_for_function(
+            """() => Array.from(document.querySelectorAll("td[data-if-label='tdEventId']"))
+                         .filter(td => td.innerText.trim()).length > 5""",
+            timeout=30000)
+        await page.wait_for_timeout(1500)
+        rows = await page.evaluate("""() => {
+            const seen = new Set(), out = [];
+            document.querySelectorAll("tr").forEach(tr => {
+                const cell = l => {
+                    const td = tr.querySelector(`td[data-if-label='${l}']`);
+                    return td ? td.innerText.trim() : "";
+                };
+                const id = cell("tdEventId");
+                if (!id || seen.has(id)) return;
+                seen.add(id);
+                out.push({id, name: cell("tdEventName"), dept: cell("tdDepName"),
+                          end: cell("tdEndDate"), status: cell("tdStatus")});
+            });
+            return out;
+        }""")
     except Exception as e:
         print(f"  ⚠ Cal eProcure unavailable: {str(e)[:80]}")
+        return []
 
-    print(f"  ✓ Cal eProcure total: {len(all_bids)} bids")
+    all_bids = [b for b in (caleprocure_row_to_bid(r) for r in rows) if b]
+    relevant = sum(1 for b in all_bids if b["is_relevant"])
+    print(f"  ✓ Cal eProcure: {len(all_bids)} open events, {relevant} flooring-relevant")
     return all_bids
+
+
+_CEP_DATE_RE = re.compile(r"(\d{1,2}/\d{1,2}/\d{4})")
+
+
+def caleprocure_row_to_bid(row: dict) -> dict | None:
+    """One Cal eProcure table row -> bid dict (None for blank / non-posted rows)."""
+    event_id = (row.get("id") or "").strip()
+    name = re.sub(r"\s+", " ", row.get("name") or "").strip()
+    if not event_id or len(name) < 5:
+        return None
+    if row.get("status") and row["status"].strip().lower() != "posted":
+        return None
+    m = _CEP_DATE_RE.search(row.get("end") or "")   # "10/27/2026\n2:00PM PST"
+    due_raw = m.group(1) if m else ""
+    return {
+        "bid_id": f"CEP-{event_id}",
+        "title": name,
+        "agency": (row.get("dept") or "").strip(),
+        "state": "California",
+        "published_date": None,
+        "published_raw": "",
+        "due_date": _parse_date(due_raw) if due_raw else None,
+        "due_date_raw": due_raw,
+        "is_relevant": _is_relevant(name),
+        "search_keyword": "",
+        "url": CALEPROCURE_URL,
+        "source": "Cal eProcure",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -2641,6 +2610,11 @@ def samgov_due_today() -> bool:
     return datetime.now(ZoneInfo("America/Los_Angeles")).weekday() == SAMGOV_WEEKDAY
 
 
+# Sources that only list California state agencies. Their "Dept of Veterans
+# Affairs" is CalVet (state veterans homes), not the federal VA.
+_STATE_ONLY_SOURCES = {"Cal eProcure"}
+
+
 def apply_federal_policy(bids: list[dict]) -> None:
     """
     Mark federal work out of scope (geo_status="out", dropped by the geo gate):
@@ -2660,6 +2634,8 @@ def apply_federal_policy(bids: list[dict]) -> None:
             if b.get("geo_status") != "in":
                 b["geo_status"] = "out"
                 sam_dropped += 1
+        elif b.get("source") in _STATE_ONLY_SOURCES:
+            continue
         elif is_federal(b.get("title", ""), b.get("agency", ""), b.get("bid_id", "")):
             b["geo_status"] = "out"
             fed_dropped += 1
