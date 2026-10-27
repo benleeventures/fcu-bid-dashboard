@@ -1258,6 +1258,7 @@ async def _search_samgov(keywords: list[str]) -> list[dict]:
                 # title + agency + pop_raw is the real backstop here; feeding
                 # it a fabricated "California" only masked the problem.
                 ca_bids.append({
+                    "_opp_id": opp_id,
                     "bid_id": f"SAM-{notice_id}",
                     "title": title,
                     "agency": agency,
@@ -1278,7 +1279,89 @@ async def _search_samgov(keywords: list[str]) -> list[dict]:
 
         await browser.close()
 
+    await asyncio.to_thread(_apply_samgov_pop, all_bids)
     return all_bids
+
+
+# SAM.gov's own opportunity-detail record (the JSON its web app renders from) —
+# public, no API key. Carries a structured placeOfPerformance {city, state, zip}
+# that the search-result cards don't show. Live check 2026-10-27: 128 results,
+# ~80% with a structured state/ZIP, a few more only via the street lines; the
+# rest carry no location and fall to "unknown" (dropped for SAM.gov).
+SAMGOV_OPP_API = "https://sam.gov/api/prod/opps/v2/opportunities/{opp_id}"
+SAMGOV_POP_CACHE = os.path.join(os.path.dirname(__file__), "output", "samgov_pop_cache.json")
+
+
+def fetch_samgov_pop(opp_id: str) -> dict | None:
+    """Return {"city", "state", "zip"} for a SAM.gov opportunity, or None on failure."""
+    resp = requests.get(
+        SAMGOV_OPP_API.format(opp_id=opp_id),
+        headers={"User-Agent": USER_AGENT, "Accept": "application/hal+json"},
+        timeout=20,
+    )
+    resp.raise_for_status()
+    pop = (resp.json().get("data2") or {}).get("placeOfPerformance") or {}
+    return {
+        "city": ((pop.get("city") or {}).get("name") or "").strip(),
+        "state": ((pop.get("state") or {}).get("code") or "").strip(),
+        "zip": (pop.get("zip") or "").strip(),
+        # ~1 in 5 records leave city/state/zip blank but put the location in the
+        # street lines instead ("Cincinnati, Ohio 45220-2637").
+        "street": " ".join(filter(None, (
+            (pop.get("streetAddress") or "").strip(),
+            (pop.get("streetAddress2") or "").strip()))),
+    }
+
+
+def samgov_pop_fields(pop: dict | None) -> dict:
+    """
+    Map a place of performance to the bid fields geo.classify_location reads.
+    A non-CA state (or, with no state, a non-CA ZIP) makes the bid "out".
+    """
+    if not pop:
+        return {}
+    state = pop.get("state") or ""
+    zip5 = pop.get("zip") or ""
+    if not state and zip5[:3].isdigit():
+        # California ZIPs are 900xx–961xx
+        state = "CA" if 900 <= int(zip5[:3]) <= 961 else f"non-CA (ZIP {zip5})"
+    parts = [p for p in (pop.get("street"), pop.get("city"), state, zip5) if p]
+    if not parts:
+        return {}   # keep whatever the result card gave us
+    return {"state": state or None, "pop_raw": ", ".join(parts)}
+
+
+def _apply_samgov_pop(bids: list[dict]) -> None:
+    """Stamp each SAM.gov bid with its real place of performance (cached by opp ID)."""
+    import json
+    try:
+        with open(SAMGOV_POP_CACHE) as f:
+            cache = json.load(f)
+    except (OSError, ValueError):
+        cache = {}
+
+    failed = 0
+    for b in bids:
+        opp_id = b.pop("_opp_id", "")
+        if not opp_id:
+            continue
+        if opp_id not in cache:
+            try:
+                cache[opp_id] = fetch_samgov_pop(opp_id)
+            except Exception as e:
+                failed += 1
+                print(f"    ⚠ SAM.gov place-of-performance lookup failed for {b['bid_id']}: {e}")
+                continue
+        b.update(samgov_pop_fields(cache[opp_id]))
+
+    if failed:
+        print(f"    ⚠ {failed} SAM.gov bid(s) without a place of performance — dropped by the geo gate")
+    try:
+        os.makedirs(os.path.dirname(SAMGOV_POP_CACHE), exist_ok=True)
+        with open(SAMGOV_POP_CACHE, "w") as f:
+            json.dump(cache, f)
+    except OSError as e:
+        print(f"    ⚠ could not write SAM.gov place-of-performance cache: {e}")
 
 
 # ---------------------------------------------------------------------------
@@ -2414,6 +2497,42 @@ async def _search_crisp(page) -> list[dict]:
     return all_bids
 
 
+SAMGOV_WEEKDAY = int(os.getenv("SAMGOV_WEEKDAY", "0"))   # Pacific weekday, Mon=0
+
+
+def samgov_due_today() -> bool:
+    """True on the one Pacific weekday the full scan runs the SAM.gov check."""
+    from zoneinfo import ZoneInfo
+    return datetime.now(ZoneInfo("America/Los_Angeles")).weekday() == SAMGOV_WEEKDAY
+
+
+def apply_federal_policy(bids: list[dict]) -> None:
+    """
+    Mark federal work out of scope (geo_status="out", dropped by the geo gate):
+      - SAM.gov bids whose place of performance isn't confirmed in-area. SAM now
+        returns a structured location for every bid, so "unknown" means the
+        lookup failed or the city isn't one of ours — not worth a human check.
+      - Federal bids (VA, military, other federal agencies) from any other
+        source. SAM.gov is the source of record for federal opportunities;
+        BidNet and friends only mirror them.
+    """
+    from geo import is_federal
+    sam_dropped = fed_dropped = 0
+    for b in bids:
+        if b.get("geo_status") == "out":
+            continue
+        if b.get("source") == "SAM.gov":
+            if b.get("geo_status") != "in":
+                b["geo_status"] = "out"
+                sam_dropped += 1
+        elif is_federal(b.get("title", ""), b.get("agency", ""), b.get("bid_id", "")):
+            b["geo_status"] = "out"
+            fed_dropped += 1
+    if sam_dropped or fed_dropped:
+        print(f"\nFederal filter: {sam_dropped} SAM.gov bid(s) outside the area, "
+              f"{fed_dropped} federal bid(s) from other sources")
+
+
 async def run_scan(keywords: list[str] = None, source: str = None, headless: bool = True,
                    live_page=None, funnel=None) -> list[dict]:
     """
@@ -2516,7 +2635,9 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
 
             await browser.close()
 
-    if src in (None, "sam"):
+    # Federal work is a weekly check, not daily (Phase 2 scope). The full scan
+    # only hits SAM.gov on SAMGOV_WEEKDAY; `--source sam` always runs it.
+    if src == "sam" or (src is None and samgov_due_today()):
         with funnel.guard("SAM.gov"):
             sam_bids = await _search_samgov(keywords)
             all_bids.extend(sam_bids)
@@ -2561,6 +2682,7 @@ async def run_scan(keywords: list[str] = None, source: str = None, headless: boo
     from geo import enrich
     for b in all_bids:
         enrich(b)
+    apply_federal_policy(all_bids)
     funnel.note_geo(all_bids)
     before_geo = len(all_bids)
     all_bids = [b for b in all_bids if b.get("geo_status") != "out"]

@@ -386,6 +386,68 @@ _AGENCY_TYPE_RULES = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# Federal work (Phase 2 scope, Ben 2026-10-21): VA, military bases and other
+# federal agencies are cut from the daily feed. SAM.gov is the source of record
+# for federal contract opportunities and now runs weekly (scanner.run_scan);
+# federal rows that other aggregators (BidNet especially) mirror are dropped.
+# Deliberately avoids generic "Department of X" — California has its own
+# Departments of Transportation, Justice, General Services, etc.
+# ---------------------------------------------------------------------------
+
+_FEDERAL_TEXT_RE = re.compile(
+    r"\bveterans affairs\b|\bvamc\b|\bvahcs\b|\bvaglahs\b|"
+    r"\bva\b.{0,40}\b(?:medical|health ?care|hospital|clinic|campus)\b|"
+    r"\b(?:army|navy|air force|defense|homeland security|veterans affairs),"
+    r" department of\b|"
+    r"\bdept\.? of (?:the )?(?:army|navy|air force|defense|homeland security)\b|"
+    r"\bdepartment of (?:the )?(?:army|navy|air force|defense|homeland security)\b|"
+    r"\bu\.?s\.? (?:army|navy|air force|coast guard|marine corps|forest service|"
+    r"postal service|department of)\b|"
+    r"\bunited states (?:army|navy|air force|coast guard|marine corps)\b|"
+    r"\bair force base\b|\bafb\b|\bspace force\b|\bnaval\b|\bnavfac\b|"
+    r"\bmarine corps\b|\bmcas\b|\bcoast guard\b|\buscg\b|\barmy corps\b|\busace\b|"
+    r"\bnational guard\b|\bgeneral services administration\b|\bgsa\b|"
+    r"\bfederal (?:building|bureau|aviation|courthouse|correctional)\b|"
+    r"\bvandenberg\b|\bmcclellan\b|\bcamp pendleton\b|\bfort irwin\b|"
+    r"\bedwards air\b|\bchina lake\b|\bpoint mugu\b|\bnbvc\b|\bnaval base\b|"
+    r"\bmarch air reserve\b",   # not bare "miramar" — Miramar College is SD CCD
+    re.I)
+
+# Federal solicitation-number shapes (title or bid ID). VA "36C26327Q0019",
+# DoD "W912HQ26PA083" / "N4008526R0435" / "FA309926D0004" / "SP4701…",
+# USCG "70Z03326P…", GSA "47PD5527Q0010", USDA "1232SA26P0751", and the
+# PSC-prefixed VA project titles BidNet mirrors ("Z2DA--612A4-27-018").
+_FEDERAL_SOLICITATION_RE = re.compile(
+    r"\b36C\d{5}[A-Z]\d{4}\b|"
+    r"\b(?:W9\d{2}[A-Z0-9]{2}|N\d{5}|FA\d{4}|SP\d{4}|HQ\d{4}|M\d{5})\d{2}[A-Z][A-Z0-9]{4}\b|"
+    r"\b70Z0\d{3}\d{2}[A-Z]|\b47P[A-Z0-9]{3}\d{2}[A-Z]\d{4}\b|"
+    r"\b12\d{2}[A-Z0-9]{2}\d{2}[A-Z]\d{4}\b|"
+    r"\b[A-Z]\d[A-Z]{2}--|\b\d{3}[A-Z]\d-\d{2}-\d{3}\b")
+
+
+def is_federal(title: str, agency: str = "", bid_id: str = "") -> bool:
+    """True when a bid is federal work (VA, military, other federal agency)."""
+    text = f"{agency or ''} — {title or ''}"
+    if _FEDERAL_TEXT_RE.search(text):
+        return True
+    return bool(_FEDERAL_SOLICITATION_RE.search(f"{title or ''} {bid_id or ''}"))
+
+
+# In-area federal installations whose SAM.gov place-of-performance city isn't an
+# incorporated city in COUNTY_CITIES. Lets the weekly SAM.gov check keep in-area
+# federal work (it's dropped as "unknown" otherwise).
+_FEDERAL_PLACE_COUNTY = {
+    "camp pendleton": "San Diego", "marine corps base camp pendleton": "San Diego",
+    "miramar": "San Diego", "mcas miramar": "San Diego", "point loma": "San Diego",
+    "naval base san diego": "San Diego", "north island": "San Diego",
+    "point mugu": "Ventura", "naval base ventura county": "Ventura",
+    "fort irwin": "San Bernardino", "march air reserve base": "Riverside",
+    "march arb": "Riverside", "los angeles air force base": "Los Angeles",
+    "west los angeles": "Los Angeles",
+}
+
+
 def _norm(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").lower()).strip()
 
@@ -478,6 +540,11 @@ def classify_location(title: str, agency: str, state: str | None = None,
         if city in _AMBIGUOUS_CITIES:
             continue
         if re.search(rf"\b{re.escape(city)}\b", agency_l):
+            return {"county": county, "geo_status": "in"}
+
+    # 4b. In-area federal installation named in the agency / place string
+    for place_name, county in _FEDERAL_PLACE_COUNTY.items():
+        if re.search(rf"\b{re.escape(place_name)}\b", agency_l):
             return {"county": county, "geo_status": "in"}
 
     # 5. Out-of-scope marker anywhere
