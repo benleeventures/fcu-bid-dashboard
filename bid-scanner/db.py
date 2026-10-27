@@ -59,6 +59,11 @@ def _serialize_bid(bid: dict) -> dict:
         "agency_type":    bid.get("agency_type") or None,
         "is_k12":         bool(bid.get("is_k12", False)),
         "region":         bid.get("region") or None,
+        "description":    (bid.get("description") or "")[:4000] or None,
+        "location_raw":   (bid.get("location_raw") or "")[:200] or None,
+        "contact_email":  (bid.get("contact_email") or "")[:200] or None,
+        "walk_date":      _date_str(bid.get("walk_date")),
+        "walk_mandatory": bid.get("walk_mandatory"),
     }
 
 
@@ -117,6 +122,7 @@ def upsert_bids(bids: list[dict]) -> tuple[int, int]:
                 sb.table("bids").update({"last_seen_at": now}).in_("bid_id", ids).execute()
             updated_count = len(updated_rows)
             _refresh_geo(sb, updated_rows)
+            _refresh_details(sb, updated_rows)
         except Exception as e:
             print(f"  ⚠ DB update error: {e}")
 
@@ -142,6 +148,21 @@ def _refresh_geo(sb, rows: list[dict]) -> None:
                     .in_("bid_id", ids[i:i + 100]).execute()
     except Exception as e:
         print(f"  ⚠ DB geo refresh error: {e}")
+
+
+_DETAIL_FIELDS = ("description", "location_raw", "contact_email", "walk_date", "walk_mandatory")
+
+
+def _refresh_details(sb, rows: list[dict]) -> None:
+    """Write listing details (description, job walk…) onto bids seen before.
+    Only fields the source actually stated — a blank never erases a value."""
+    try:
+        for r in rows:
+            update = {f: r[f] for f in _DETAIL_FIELDS if r.get(f) is not None}
+            if update:
+                sb.table("bids").update(update).eq("bid_id", r["bid_id"]).execute()
+    except Exception as e:
+        print(f"  ⚠ DB detail refresh error: {e}")
 
 
 def fetch_undigested_opengov() -> list[dict]:
