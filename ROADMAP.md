@@ -336,6 +336,13 @@ Full reference: **`bid-scanner/docs/scoring.md`**.
 
 ### Geographic + agency-type gate (spec §1 / §2) — ✅ Session 1 (2026-08)
 
+**LLM location fallback (2026-10, `geo_llm.py`).** Runs inside `run_scan` after `enrich` +
+the federal filter, only on bids that are relevant **and** still `geo_status=unknown`. Claude
+reads the listing text (title, agency, description, contact email — not documents) and returns
+city / county / agency via structured output, null when not stated; the county still goes
+through the in/out check. Cached per bid ID (`output/geo_llm_cache.json`), max 25 calls a run.
+`GEO_LLM=off` disables; `GEO_LLM_MODEL` picks the model (default Opus 5.5, low effort).
+
 **Phase 2 update (2026-10, Ben's scope "San Diego to Bakersfield, Inland Empire included"):**
 seven counties. **North** = Los Angeles, Ventura, **Kern** (→ Melvin); **South** = Orange,
 Riverside, San Bernardino, San Diego (→ Robert). `geo.region_for()` → `bids.region`
