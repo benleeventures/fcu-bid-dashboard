@@ -25,6 +25,7 @@
     "no-reply-forms@webflow.com",
     "notifications@mail.granola.ai",
     "team@mail.airtable.com",
+    "noreply@airtable.com",
     "customercare@govdirections.com"
   ],
   "subject_patterns": [
