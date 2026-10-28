@@ -4,7 +4,28 @@
   "senders": [
     "bids@floorcoveringunlimited.com",
     "mailer-daemon",
-    "postmaster@"
+    "postmaster@",
+    "bids@send.recenterlife.com",
+    "bids@vendorline.com",
+    "noreply@laschools.org",
+    "login@planetbids.com",
+    "noreply@signin.autodesk.com",
+    "quickbooks_payroll_service@intuit.com",
+    "intuitpayrollservices@",
+    "payments-noreply@google.com",
+    "workspace-noreply@google.com",
+    "no-reply@accounts.google.com",
+    "notify-noreply@google.com",
+    "e-billexpress@",
+    "credit_1k@mohawkind.com",
+    "ar@desotosales.com",
+    "noreply@messaging.squareup.com",
+    "officedepot",
+    "harborfreight",
+    "no-reply-forms@webflow.com",
+    "notifications@mail.granola.ai",
+    "team@mail.airtable.com",
+    "customercare@govdirections.com"
   ],
   "subject_patterns": [
     "\\bpay ?app(lication)?\\b",
@@ -17,6 +38,19 @@
     "\\bvoicemail\\b",
     "\\b(takeoff|take-off|estimating) services?\\b",
     "\\boutsourc(e|ed|ing) estimat",
-    "\\bunsubscribe\\b.*\\bbid leads\\b"
+    "\\bunsubscribe\\b.*\\bbid leads\\b",
+    "\\[FCU Bid Agent\\]",
+    "Statewide Bid Opportunities",
+    "one-time (sign-in )?(code|passcode)",
+    "Accepted Tax (Payment|Return)",
+    "direct deposit receipt",
+    "payment receipt",
+    "past due",
+    "statement of account",
+    "^(invoice|statement)$",
+    "Vendor Profile Update Confirmation",
+    "Registration Confirmation",
+    "Submit Confirmation",
+    "subscription (will be renewed|details)"
   ]
 }

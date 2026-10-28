@@ -79,7 +79,7 @@ def test_build_record_south_by_city_and_blank_when_unknown():
 
 def test_out_of_area_noted():
     f = ei.build_record(_msg("05_shared_plans_unknown.eml"), _extraction(county="Sacramento"))
-    assert "Region" not in f and "outside our area" in f["Notes"]
+    assert "Region" not in f and f["_out_of_area"] is True
 
 
 def test_duplicate_by_url_name_and_id():
@@ -91,6 +91,23 @@ def test_duplicate_by_url_name_and_id():
     assert ei.is_duplicate({**base, "Listing URL": "https://A.example/plans/"}, index)
     assert ei.is_duplicate({**base, "Project Name": "The Arroyo High School Modernization Project"}, index)
     assert not ei.is_duplicate({**base, "Project Name": "Bid"}, ({""}, set(), {ei._norm_name("Bid")}))
+    ucla = ({""}, set(), {ei._norm_name("UCLA Wilshire Center Suite 650 Renovation")})
+    assert ei.is_duplicate({**base, "Project Name": "UCLA Wilshire Center Suite 650"}, ucla)
+    assert not ei.is_duplicate({**base, "Project Name": "UCLA Wilshire Center Suite 410"}, ucla)
+
+
+def test_blocklist_october_noise():
+    bl = ei.load_blocklist()
+    for addr, subj in [("bids@send.recenterlife.com", "[FCU Bid Agent] 3 new relevant bids found"),
+                       ("bids@vendorline.com", "VendorLine Today Oct 1"),
+                       ("noreply@bidnet.com", "Statewide Bid Opportunities - 10/09/2026"),
+                       ("noreply@laschools.org", "Your one-time sign-in code"),
+                       ("quickbooks_payroll_service@intuit.com", "Accepted Tax Payment")]:
+        assert ei.blocked_reason({"from_addr": addr, "from_name": "", "subject": subj}, bl), subj
+    for addr, subj in [("team@buildingconnected.com", "Bid Invite: 1527 Lincoln Project"),
+                       ("customercare@planetbids.com", "Opportunity Alert: BERNIECE BENNETT PARK"),
+                       ("noreply@bidnet.com", "Award(s) Published for 27-013")]:
+        assert ei.blocked_reason({"from_addr": addr, "from_name": "", "subject": subj}, bl) is None, subj
 
 
 if __name__ == "__main__":

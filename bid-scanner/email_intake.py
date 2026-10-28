@@ -59,6 +59,7 @@ except ImportError:
 
 HERE = Path(__file__).parent
 STATE_FILE = HERE / "output" / "email_intake_state.json"
+CACHE_FILE = HERE / "output" / "email_intake_cache.json"   # Claude answers by message id
 BLOCKLIST_FILE = HERE / "data" / "email_blocklist.json"
 CLIENT_FILE = HERE / os.getenv("GMAIL_INTAKE_CLIENT_FILE", "gmail_intake_client.json")
 TOKEN_FILE = HERE / os.getenv("GMAIL_INTAKE_TOKEN_FILE", "gmail_intake_token.json")
@@ -171,6 +172,19 @@ def authorize():
         print(f"⚠ signed in as {profile.get('emailAddress')}, expected {ACCOUNT}")
 
 
+def _gmail_get(session, url: str, params: dict):
+    """GET with backoff on Gmail's per-minute quota (403 rateLimit / 429) and 5xx."""
+    import time
+    for attempt in range(6):
+        r = session.get(url, params=params, timeout=60)
+        throttled = r.status_code == 429 or (r.status_code == 403 and "uota" in r.text)
+        if not (throttled or r.status_code >= 500):
+            break
+        time.sleep(min(60, 5 * 2 ** attempt))
+    r.raise_for_status()
+    return r.json()
+
+
 def gmail_messages(session, after: datetime):
     """Yield parsed messages received after `after`, oldest first."""
     q = f"after:{int(after.timestamp())} -in:sent -in:drafts -in:spam -in:trash -in:chats"
@@ -179,17 +193,14 @@ def gmail_messages(session, after: datetime):
         params = {"q": q, "maxResults": 500, "includeSpamTrash": "false"}
         if page:
             params["pageToken"] = page
-        r = session.get(f"{GMAIL_API}/messages", params=params)
-        r.raise_for_status()
-        data = r.json()
+        data = _gmail_get(session, f"{GMAIL_API}/messages", params)
         ids += [(m["id"], m.get("threadId", "")) for m in data.get("messages", [])]
         page = data.get("nextPageToken")
         if not page:
             break
     for msg_id, thread_id in reversed(ids):          # Gmail lists newest first
-        r = session.get(f"{GMAIL_API}/messages/{msg_id}", params={"format": "raw"})
-        r.raise_for_status()
-        raw = base64.urlsafe_b64decode(r.json()["raw"])
+        raw = base64.urlsafe_b64decode(
+            _gmail_get(session, f"{GMAIL_API}/messages/{msg_id}", {"format": "raw"})["raw"])
         yield parse_mime(raw, msg_id, thread_id)
 
 
@@ -393,6 +404,15 @@ def build_record(msg: dict, x: dict) -> dict:
            "agency": x.get("agency_or_owner")}
     apply_answer(bid, {"city": x.get("city"), "county": x.get("county"),
                        "agency": x.get("agency_or_owner")})
+    if bid["geo_status"] == "unknown":
+        # The email gave no place — fall back to geo's agency / institution /
+        # school-district tables (LAUSD, UCSB, …), plus the sender's address.
+        from geo import classify_location, region_for
+        loc = classify_location(x.get("project_name") or msg["subject"],
+                                " ".join(v for v in (x.get("agency_or_owner"), msg["from_addr"]) if v))
+        if loc["geo_status"] != "unknown":
+            bid.update(loc)
+            bid["region"] = region_for(loc["county"]) if loc["geo_status"] == "in" else None
 
     owner_by_region = {
         "North": os.getenv("AIRTABLE_OWNER_NORTH_EMAIL", "").strip(),
@@ -405,13 +425,9 @@ def build_record(msg: dict, x: dict) -> dict:
              f"Subject: {msg['subject']}"]
     if x.get("summary"):
         notes.append(x["summary"])
-    if x["kind"] == "bid_update":
-        notes.append("Addendum / update email — no matching tracker record found.")
     if x.get("flooring_scope") != "yes":
         notes.append(f"Flooring scope: {x.get('flooring_scope')} — check before qualifying.")
-    if bid["geo_status"] == "out":
-        notes.append("Location looks outside our area (San Diego–Bakersfield).")
-    elif not bid.get("region"):
+    if not bid.get("region"):
         notes.append("Needs region — location not stated in the email.")
     if msg["attachments"]:
         notes.append("Attachments NOT opened: " + ", ".join(msg["attachments"][:10]))
@@ -427,6 +443,7 @@ def build_record(msg: dict, x: dict) -> dict:
         "Sender Company": sender[:200],
         "Status": "Surfaced",
         "Notes": "\n".join(notes),
+        "_out_of_area": bid["geo_status"] == "out",   # popped by run(); never sent
     }
     optional = {
         "Bid Due Date": _iso_date(x.get("due_date")),
@@ -455,7 +472,15 @@ def is_duplicate(fields: dict, index) -> bool:
     if url and url in urls:
         return True
     name = _norm_name(fields["Project Name"])
-    return len(name) >= 12 and name in names
+    if len(name) < 12:
+        return False
+    if name in names:
+        return True
+    # "UCLA Wilshire Center Suite 650" vs "... Suite 650 Renovation": one name's
+    # words all inside the other's, with at least 4 words in common.
+    words = set(name.split())
+    return any(len(words & set(n.split())) >= 4 and
+               (words <= set(n.split()) or set(n.split()) <= words) for n in names)
 
 
 # ---------------------------------------------------------------------------
@@ -502,6 +527,10 @@ def run(args) -> int:
     index = existing_index(table) if table is not None else (set(), set(), set())
 
     bl = load_blocklist()
+    try:
+        cache = json.loads(CACHE_FILE.read_text())
+    except (OSError, ValueError):
+        cache = {}
     counts = {"seen": 0, "blocked": 0, "created": 0, "duplicate": 0, "skipped": 0, "error": 0}
     asked = 0
     newest = state.get("last_received")
@@ -520,21 +549,34 @@ def run(args) -> int:
         if asked >= (args.limit or MAX_PER_RUN):
             say(f"  … per-run cap reached; rest next run")
             break
-        asked += 1
         try:
-            x = classify(msg)
+            if msg["id"] in cache:
+                x = cache[msg["id"]]
+            else:
+                asked += 1
+                x = cache[msg["id"]] = classify(msg)
         except Exception as e:
             counts["error"] += 1
             say(f"  ⚠ classify failed: {tag} — {str(e)[:120]}")
             break                      # retry this message next run, keep order
-        if not x or x["kind"] not in ("bid_invitation", "bid_update"):
+        if x and x["kind"] == "bid_invitation" and x.get("flooring_scope") == "no":
+            counts["skipped"] += 1
+            say(f"  · no flooring scope: {tag}")
+        elif not x or x["kind"] != "bid_invitation":
             counts["skipped"] += 1
             say(f"  · {x['kind'] if x else 'refused'}: {tag}")
         else:
             fields = build_record(msg, x)
-            if is_duplicate(fields, index):
+            due = fields.get("Bid Due Date")
+            if fields.pop("_out_of_area", False):
+                counts["skipped"] += 1
+                say(f"  · out of area ({x.get('city') or x.get('county')}): {tag}")
+            elif due and due < date.today().isoformat():
+                counts["skipped"] += 1
+                say(f"  · already past due ({due}): {tag}")
+            elif is_duplicate(fields, index):
                 counts["duplicate"] += 1
-                say(f"  = already on tracker: {fields['Project Name'][:70]}")
+                say(f"  = already on tracker: {tag}  →  {fields['Project Name'][:60]}")
             else:
                 if args.dry_run:
                     say(f"  + WOULD CREATE: {tag}\n" + json.dumps(fields, indent=2, default=str))
@@ -550,6 +592,9 @@ def run(args) -> int:
         rec = msg["received"].isoformat()
         newest = max(newest or rec, rec)
 
+    if not args.eml_dir:
+        CACHE_FILE.parent.mkdir(exist_ok=True)
+        CACHE_FILE.write_text(json.dumps(dict(list(cache.items())[-KEEP_IDS:])))
     say("email intake: " + ", ".join(f"{k} {v}" for k, v in counts.items()))
     if not args.dry_run and not args.eml_dir:
         state["processed"] = list(done)
