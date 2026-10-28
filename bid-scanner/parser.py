@@ -28,6 +28,7 @@ Workflows:
 
   Queue maintenance:
     python parser.py --writeoff-backlog  # one-time: mark current unparsed relevant bids 'skipped'
+    python parser.py --retry-word-docs [--apply]  # requeue open bids whose doc is a Word file
 
   List:
     python parser.py --list              # show unprocessed relevant bids
@@ -1017,6 +1018,39 @@ async def _download_bidnet_docs(page, context, bid_id: str, bid_url: str) -> lis
     return downloaded
 
 
+def _docx_xml_text(xml_bytes: bytes) -> str:
+    """Plain text of a DOCX's word/document.xml, one line per paragraph."""
+    import xml.etree.ElementTree as ET
+    W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+    paragraphs = []
+    for para in ET.fromstring(xml_bytes).iter(f"{{{W}}}p"):
+        text = "".join(t.text or "" for t in para.iter(f"{{{W}}}t"))
+        if text.strip():
+            paragraphs.append(text)
+    return "\n".join(paragraphs)
+
+
+def _word_file_text(path: Path) -> str | None:
+    """
+    Text of a Word (.docx) file, or None if `path` isn't one. Downloaders save
+    the primary document as <bid_id>.pdf whatever its real type — BidNet often
+    serves the bid ad as .docx (13 of ~40 BidNet downloads by 2026-10-28), which
+    then failed as "No /Root object! - Is this really a PDF?".
+    """
+    import io, zipfile
+    try:
+        with open(path, "rb") as f:
+            if f.read(2) != b"PK":
+                return None
+        with zipfile.ZipFile(path) as zf:
+            if "word/document.xml" not in zf.namelist():
+                return None
+            return _docx_xml_text(zf.read("word/document.xml"))
+    except Exception as e:
+        print(f"  ⚠ Word file read failed: {e}")
+        return None
+
+
 def _extract_best_pdf_from_zip(zip_data: bytes, bid_id: str) -> tuple[bytes | None, str]:
     """
     Open a ZIP in memory and return (content_bytes, extension).
@@ -1051,15 +1085,7 @@ def _extract_best_pdf_from_zip(zip_data: bytes, bid_id: str) -> tuple[bytes | No
 
             # 2. DOCX — extract plain text from word/document.xml
             if "word/document.xml" in names:
-                xml_bytes = zf.read("word/document.xml")
-                root = ET.fromstring(xml_bytes)
-                W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-                paragraphs = []
-                for para in root.iter(f"{{{W}}}p"):
-                    text = "".join(t.text or "" for t in para.iter(f"{{{W}}}t"))
-                    if text.strip():
-                        paragraphs.append(text)
-                text_content = "\n".join(paragraphs)
+                text_content = _docx_xml_text(zf.read("word/document.xml"))
                 if text_content.strip():
                     print(f"    ↳ ZIP: extracted DOCX text ({len(text_content)//1024} KB)")
                     return text_content.encode("utf-8"), ".txt"
@@ -1668,8 +1694,16 @@ def _parse_with_claude_text(pdf_path: Path) -> dict | None:
         print("  ⚠ pdfplumber not installed — run: pip install pdfplumber")
         return None
 
+    word_text = _word_file_text(pdf_path)
+    if word_text is not None:
+        print("  ↳ Word document (saved as .pdf) — reading its text")
+        if not word_text.strip():
+            print("  ⚠ Word document has no text")
+            return None
     try:
-        if str(pdf_path).endswith(".txt"):
+        if word_text is not None:
+            text = word_text.strip()
+        elif str(pdf_path).endswith(".txt"):
             text = pdf_path.read_text(encoding="utf-8", errors="ignore").strip()
         else:
             with pdfplumber.open(pdf_path) as pdf:
@@ -2005,6 +2039,40 @@ def cmd_writeoff_backlog():
     print(f"\n✓ {len(bids)} written off. The digest 'pending' count will drop to ~0.")
 
 
+def cmd_retry_word_docs(apply: bool):
+    """
+    Put relevant, still-open bids whose downloaded document is a Word file back
+    in the parse queue. Before the Word-file fix they failed as "not a PDF" and
+    hit the attempt cap (parse_status 'unparseable' or stuck pending).
+    Dry run unless --apply.
+    """
+    from datetime import date as _date
+    sb = _sb()
+    word = [p.stem for p in SPECS_DIR.glob("*.pdf") if _word_file_text(p) is not None]
+    if not word:
+        print("No Word documents in output/specs — nothing to retry.")
+        return
+    today = _date.today().isoformat()
+    rows = []
+    for i in range(0, len(word), 100):
+        rows += (sb.table("bids").select("bid_id,title,parse_status,parse_attempts,due_date")
+                 .in_("bid_id", word[i:i + 100]).eq("is_relevant", True)
+                 .or_(f"due_date.gte.{today},due_date.is.null").execute().data or [])
+    parsed = {r["bid_id"] for r in (sb.table("bid_specs").select("bid_id")
+              .in_("bid_id", [r["bid_id"] for r in rows] or ["-"]).execute().data or [])}
+    retry = [r for r in rows if r["bid_id"] not in parsed]
+    print(f"{len(word)} Word document(s) on disk · {len(retry)} open relevant bid(s) to retry:\n")
+    for r in retry:
+        print(f"  {r['bid_id']}  [{r.get('parse_status') or 'pending'}, {r.get('parse_attempts') or 0} tries]  "
+              f"due {r.get('due_date')}  {r.get('title', '')[:60]}")
+    if not apply:
+        print("\nDry run — re-run with --apply, then: python parser.py --parse-all --claude")
+        return
+    for r in retry:
+        sb.table("bids").update({"parse_status": None, "parse_attempts": 0}).eq("bid_id", r["bid_id"]).execute()
+    print(f"\n✓ {len(retry)} bid(s) back in the queue — next: python parser.py --parse-all --claude")
+
+
 def cmd_rfq(bid_id: str):
     """Send an RFQ draft email for a bid that has a saved estimate with material lines."""
     sb = _sb()
@@ -2058,6 +2126,8 @@ if __name__ == "__main__":
         cmd_parse_all(backend=backend, only=_opt("--bid"))
     elif "--writeoff-backlog" in argv:
         cmd_writeoff_backlog()
+    elif "--retry-word-docs" in argv:
+        cmd_retry_word_docs(apply="--apply" in argv)
     elif "--save" in argv:
         idx = argv.index("--save")
         cmd_save(argv[idx+1:])
