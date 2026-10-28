@@ -419,7 +419,9 @@ def build_record(msg: dict, x: dict) -> dict:
 
     fields = {
         "Project Name": (x.get("project_name") or msg["subject"])[:500],
-        "Bid ID": f"EMAIL-{msg['id']}",
+        # One record per Gmail conversation, so replies / forwards in the
+        # same thread don't stack up as separate bids.
+        "Bid ID": f"EMAIL-{msg.get('thread_id') or msg['id']}",
         "Date Surfaced": date.today().isoformat(),
         "Date Received": msg["received"].isoformat(),
         "Source Platform": "Email",
@@ -493,14 +495,12 @@ def run(args) -> int:
         after = datetime.now(timezone.utc) - timedelta(days=BACKFILL_DAYS)
 
     messages = eml_messages(args.eml_dir) if args.eml_dir else gmail_messages(gmail_session(), after)
-    table = None
-    index = (set(), set(), set())
-    if not args.dry_run:
-        from airtable_sync import _get_table
-        table = _get_table()
-        if table is None:
-            sys.exit("Airtable not configured (AIRTABLE_API_KEY / AIRTABLE_BASE_ID)")
-        index = existing_index(table)
+    # Read the tracker even on a dry run, so the preview shows real duplicates.
+    from airtable_sync import _get_table
+    table = _get_table()
+    if table is None and not args.dry_run:
+        sys.exit("Airtable not configured (AIRTABLE_API_KEY / AIRTABLE_BASE_ID)")
+    index = existing_index(table) if table is not None else (set(), set(), set())
 
     bl = load_blocklist()
     counts = {"seen": 0, "blocked": 0, "created": 0, "duplicate": 0, "skipped": 0, "error": 0}
@@ -536,17 +536,17 @@ def run(args) -> int:
             if is_duplicate(fields, index):
                 counts["duplicate"] += 1
                 say(f"  = already on tracker: {fields['Project Name'][:70]}")
-            elif args.dry_run:
-                counts["created"] += 1
-                say(f"  + WOULD CREATE: {tag}\n" + json.dumps(fields, indent=2, default=str))
             else:
-                table.create(fields, typecast=True)
+                if args.dry_run:
+                    say(f"  + WOULD CREATE: {tag}\n" + json.dumps(fields, indent=2, default=str))
+                else:
+                    table.create(fields, typecast=True)
+                    say(f"  + created [{fields.get('Region') or 'no region'}]: {fields['Project Name'][:70]}")
                 counts["created"] += 1
                 index[0].add(fields["Bid ID"])
                 if fields.get("Listing URL"):
                     index[1].add(fields["Listing URL"].strip().rstrip("/").lower())
                 index[2].add(_norm_name(fields["Project Name"]))
-                say(f"  + created [{fields.get('Region') or 'no region'}]: {fields['Project Name'][:70]}")
         done.add(msg["id"])
         rec = msg["received"].isoformat()
         newest = max(newest or rec, rec)
