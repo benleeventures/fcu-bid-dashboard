@@ -601,8 +601,39 @@ def run(args) -> int:
         if newest:
             state["last_received"] = newest
         state["last_run"] = datetime.now(timezone.utc).isoformat()
+        if not counts["error"]:
+            state["last_ok"] = state["last_run"]
         save_state(state)
+        write_heartbeat(state, counts)
     return 1 if counts["error"] else 0
+
+
+HEARTBEAT_BUCKET = "ops"
+HEARTBEAT_PATH = "heartbeat/email_intake.json"
+
+
+def write_heartbeat(state: dict, counts: dict):
+    """
+    Off-machine dead-man's switch: upload the last-success time to Supabase
+    Storage (private bucket "ops"). The Vercel watchdog
+    (app/api/cron/scanner-watchdog) emails ADMIN_EMAIL when last_ok goes stale
+    — which also covers the Mac being down, since then nothing uploads.
+    Never fails the run.
+    """
+    try:
+        from db import get_client
+        storage = get_client().storage
+        body = json.dumps({"last_run": state.get("last_run"), "last_ok": state.get("last_ok"),
+                           "counts": counts}).encode()
+        try:
+            storage.from_(HEARTBEAT_BUCKET).upload(
+                HEARTBEAT_PATH, body, {"content-type": "application/json", "upsert": "true"})
+        except Exception:
+            storage.create_bucket(HEARTBEAT_BUCKET, options={"public": False})
+            storage.from_(HEARTBEAT_BUCKET).upload(
+                HEARTBEAT_PATH, body, {"content-type": "application/json", "upsert": "true"})
+    except Exception as e:
+        print(f"  ⚠ heartbeat upload failed: {str(e)[:150]}")
 
 
 def main():
