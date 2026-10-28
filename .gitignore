@@ -32,3 +32,7 @@ bid-scanner/logs/
 
 # Vercel
 .vercel
+
+# Gmail intake OAuth (info@ read-only)
+bid-scanner/gmail_intake_client.json
+bid-scanner/gmail_intake_token.json

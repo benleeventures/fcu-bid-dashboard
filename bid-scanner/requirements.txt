@@ -11,6 +11,8 @@ undetected-chromedriver>=3.5.0
 beautifulsoup4>=4.12.0
 selenium>=4.18.0
 pyairtable>=2.3.0
+google-auth>=2.29.0          # email_intake.py — Gmail API (read-only)
+google-auth-oauthlib>=1.2.0
 
 # System dependency (not pip): poppler — `brew install poppler` — required by
 # pdf2image for the scanned-PDF (Claude vision) parse path.
