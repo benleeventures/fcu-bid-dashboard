@@ -23,7 +23,7 @@ are noted. Links are stored, never fetched.
 
 Usage (from bid-scanner/):
   python email_intake.py --auth                 one-time Google sign-in as info@
-  python email_intake.py --setup-airtable       create the missing tracker fields
+  python email_intake.py --setup-airtable       create the missing tracker fields (incl. 48h formula)
   python email_intake.py --dry-run --since 2026-10-01   classify, print, write nothing
   python email_intake.py                        normal scheduled run (launchd, every 15 min)
   python email_intake.py --eml-dir DIR --dry-run        offline test on saved .eml files
@@ -332,11 +332,13 @@ NEW_FIELDS = [
     {"name": "Decision Date", "type": "date", "options": {"dateFormat": {"name": "us"}}},
 ]
 
-# Airtable's API can't create formula fields — paste this one in the UI.
+# 48-hour rule: red when an invitation has no Decision after 48 hours.
 OVERDUE_FORMULA = (
     'IF(AND({Decision} = BLANK(), {Date Received}, '
     'DATETIME_DIFF(NOW(), {Date Received}, "hours") > 48), "🔴 No decision 48h+", "")'
 )
+NEW_FIELDS.append({"name": "Decision Overdue", "type": "formula",
+                   "options": {"formula": OVERDUE_FORMULA}})
 
 
 def setup_airtable():
@@ -354,9 +356,6 @@ def setup_airtable():
         r = requests.post(f"https://api.airtable.com/v0/meta/bases/{base}/tables/{opp['id']}/fields",
                           headers=h, json=spec, timeout=30)
         print(f"  {'+' if r.ok else '✗'} {spec['name']}" + ("" if r.ok else f" — {r.text[:200]}"))
-    if "Decision Overdue" not in have:
-        print("\nAdd one formula field by hand (API can't create formulas):\n"
-              f"  Name: Decision Overdue\n  Formula: {OVERDUE_FORMULA}")
 
 
 def _norm_name(s: str) -> str:

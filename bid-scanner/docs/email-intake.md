@@ -54,10 +54,7 @@ This creates the following fields on Opportunities, if they're missing:
 | Email Link | URL |
 | Decision | Yes / No / Maybe |
 | Decision Date | date |
-
-Airtable's API can't create formula fields. Add **Decision Overdue** by hand with the
-formula the command prints. It shows 🔴 when an invitation is more than 48 hours old
-with no Decision.
+| Decision Overdue | formula: 🔴 when an invitation is 48+ hours old with no Decision |
 
 ### 4. Dry run on real mail, then turn it on
 
